@@ -1,0 +1,77 @@
+BASELINE
+command=['scripts/check-tray.sh', 'docs/tray-transaction/BASELINE.swift']
+stdout=launch=window; menu=yes
+audio-protection=18%; hardware-not-invoked
+
+stderr=
+exit=0
+MODIFIED
+command=['scripts/check-tray.sh', 'Sources/MacTools/MacTools.swift']
+stdout=launch=tray-only; reopen=reuse-window; close=keep-running
+audio-protection=18%; hardware-not-invoked
+
+stderr=
+exit=0
+RESTORE
+command=['docs/tray-transaction/ROLLBACK.sh', '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpyvydcpny/MacTools.swift']
+stdout=
+stderr=
+exit=0
+ROLLBACK
+command=['scripts/check-tray.sh', '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpyvydcpny/MacTools.swift']
+stdout=launch=window; menu=yes
+audio-protection=18%; hardware-not-invoked
+
+stderr=
+exit=0
+rollback hash equals baseline: true
+RECONSTRUCT
+command=['patch', '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpyvydcpny/MacTools.swift', 'docs/tray-transaction/DIFF.patch']
+stdout=patching file '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpyvydcpny/MacTools.swift'
+
+stderr=
+exit=0
+patch reconstructs modified: true
+/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/BASELINE.swift sha256=dc42a5a724586d0f40cfc05e424e10d3141ea9bf78cb31a922d5f9279bb5353b
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/MacTools.swift sha256=9beb2295cc0a177dd78393e3a8ee260f6d17e280d4317838a6d7bd54d58e5f40
+changed: MacToolsApp.body; AppDelegate lifecycle; MenuContent.showWindow
+[0/1] Planning build
+Building for debugging...
+[0/5] Write sources
+[1/5] Write swift-version--58304C5D6DBC2206.txt
+[3/7] Compiling MacTools MacTools.swift
+[4/7] Emitting module MacTools
+[4/8] Write Objects.LinkFileList
+[5/8] Linking MacTools
+[6/8] Applying MacTools
+[8/10] Emitting module MacToolsTests
+[9/10] Compiling MacToolsTests Checks.swift
+[9/11] Write Objects.LinkFileList
+[10/11] Linking MacToolsPackageTests
+Build complete! (2.48s)
+Test Suite 'All tests' started at 2026-09-08 16:21:46.490.
+Test Suite 'MacToolsPackageTests.xctest' started at 2026-09-08 16:21:46.491.
+Test Suite 'Checks' started at 2026-09-08 16:21:46.491.
+Test Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' started.
+Test Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' passed (0.029 seconds).
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' started.
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' passed (0.000 seconds).
+Test Suite 'Checks' passed at 2026-09-08 16:21:46.521.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.030 (0.030) seconds
+Test Suite 'MacToolsPackageTests.xctest' passed at 2026-09-08 16:21:46.521.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.030 (0.030) seconds
+Test Suite 'All tests' passed at 2026-09-08 16:21:46.521.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.030 (0.031) seconds
+◇ Test run started.
+↳ Testing Library Version: 1501
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+
+swift test exit=0; 2 tests passed, 0 failures.
+./scripts/build-app.sh exit=0; release build succeeded, Info.plist OK, codesign verification succeeded.
+open build/MacTools.app exit=0; pgrep exit=0: PID 87631 /Users/yangruihan/Workspace/mac_tools/build/MacTools.app/Contents/MacOS/MacTools
+CUA baseline: standard window Mac 工具箱 visible.
+CUA quit old app: procNotFound (-600) after Command-Q; then open launched new process.
+CUA new getApp: timeoutReached (-10005); getState confirmed com.ryanai.mactools isRunning=true.
+Runtime menu click / reopen / close could not be verified by CUA; source checks are not full UI acceptance.
+No audio or brightness application was invoked during this change.

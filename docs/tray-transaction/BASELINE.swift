@@ -185,44 +185,19 @@ struct ContentView: View {
         }
     }
 }
-final class AppDelegate: NSObject, NSApplicationDelegate {
-    private var window: NSWindow?
-
-    func applicationDidFinishLaunching(_ notification: Notification) {
-        NSApp.setActivationPolicy(.accessory)
-    }
-
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
-
-    func showWindow(store: Store) {
-        if window == nil {
-            let panel = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 800, height: 560),
-                                 styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)
-            panel.title = "Mac 工具箱"
-            panel.contentView = NSHostingView(rootView: ContentView(store: store))
-            panel.isReleasedWhenClosed = false
-            panel.center()
-            window = panel
-        }
-        window?.makeKeyAndOrderFront(nil)
-        NSApp.activate(ignoringOtherApps: true)
-    }
-}
-
 @main
 struct MacToolsApp: App {
-    @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
     @StateObject private var store = Store()
     var body: some Scene {
-        MenuBarExtra("Mac 工具箱", systemImage: "slider.horizontal.3") { MenuContent(store: store, showWindow: { delegate.showWindow(store: store) }) }
+        WindowGroup("Mac 工具箱", id: "main") { ContentView(store: store) }
+        MenuBarExtra("Mac 工具箱", systemImage: "slider.horizontal.3") { MenuContent(store: store) }
     }
 }
 struct MenuContent: View {
     @ObservedObject var store: Store
-    let showWindow: () -> Void
+    @Environment(\.openWindow) var openWindow
     var body: some View {
-        Button("打开工具箱", action: showWindow)
-        Text(store.protection ? "耳机保护：开启（最高 18%）" : "耳机保护：已关闭")
+        Button("打开工具箱") { openWindow(id: "main"); NSApp.activate(ignoringOtherApps: true) }
         ForEach(store.presets) { preset in Button("\(preset.audio ? "音量" : "亮度") · \(preset.name) · \(Int(preset.value))%") { store.apply(preset) } }
         Divider()
         Text(store.message)
