@@ -64,7 +64,9 @@ final class Store: ObservableObject {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         if let data = defaults.data(forKey: "presets") {
-            do { presets = try JSONDecoder().decode([Preset].self, from: data) }
+            do { let loaded = try JSONDecoder().decode([Preset].self, from: data)
+                guard Set(loaded.map(\.id)).count == loaded.count, loaded.allSatisfy({ $0.value.isFinite && (0...100).contains($0.value) }) else { throw Failure.message("配置数值或标识无效") }
+                presets = loaded }
             catch { message = "配置读取失败，原数据未覆盖：\(error.localizedDescription)" }
         }
         var event = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))

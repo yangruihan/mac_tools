@@ -1,0 +1,34 @@
+[0/1] Planning build
+Building for debugging...
+[0/9] /Users/yangruihan/Workspace/mac_tools/.build/arm64-apple-macosx/debug/MacToolsPackageTests.derived/runner.swift
+[1/9] Write sources
+[4/9] Write swift-version--58304C5D6DBC2206.txt
+[6/11] Emitting module MacTools
+[7/11] Compiling MacTools MacTools.swift
+[7/12] Write Objects.LinkFileList
+[8/12] Linking MacTools
+[9/12] Applying MacTools
+[11/14] Compiling MacToolsTests Checks.swift
+[12/14] Emitting module MacToolsTests
+[13/16] Emitting module MacToolsPackageTests
+[14/16] Compiling MacToolsPackageTests runner.swift
+[14/16] Write Objects.LinkFileList
+[15/16] Linking MacToolsPackageTests
+Build complete! (10.07s)
+Test Suite 'All tests' started at 2026-09-08 16:17:22.600.
+Test Suite 'MacToolsPackageTests.xctest' started at 2026-09-08 16:17:22.601.
+Test Suite 'Checks' started at 2026-09-08 16:17:22.601.
+Test Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' started.
+Test Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' passed (0.030 seconds).
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' started.
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' passed (0.000 seconds).
+Test Suite 'Checks' passed at 2026-09-08 16:17:22.633.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.031 (0.031) seconds
+Test Suite 'MacToolsPackageTests.xctest' passed at 2026-09-08 16:17:22.633.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.031 (0.031) seconds
+Test Suite 'All tests' passed at 2026-09-08 16:17:22.633.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.031 (0.032) seconds
+◇ Test run started.
+↳ Testing Library Version: 1501
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
