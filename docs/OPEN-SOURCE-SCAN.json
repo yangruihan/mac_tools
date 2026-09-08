@@ -1,0 +1,9 @@
+{
+  "scope": "all reachable local Git blob objects; regex heuristic, not a full secret scanner",
+  "blob_count": 31,
+  "credential_pattern_hits": [],
+  "local_username_path_files": [
+    "docs/TEST-OUTPUT.txt",
+    "docs/tray-transaction/VERIFICATION.txt"
+  ]
+}

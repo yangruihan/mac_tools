@@ -178,3 +178,9 @@ sha256=9b750aa78da40de8e632b8a96d281032265030ed8a6064c4565163dc5aab80dc
 Bundle plist icon=AppIcon; bundled icon matches source: true
 codesign --verify --strict: stdout= stderr= exit=0
 ROLLBACK pristine hash match; patch reconstruction match.
+
+2026-09-09 MIT review follow-up: no application source changes.
+check-window-shortcut.sh BASELINE: stdout=window-shortcut=absent; audio-protection=18%; hardware-not-invoked; stderr empty; exit=0.
+check-window-shortcut.sh MODIFIED: stdout=window-shortcut=configurable; toggle=show/hide; persistence=yes; shared-conflict-check=yes; audio-protection=18%; hardware-not-invoked; stderr empty; exit=0.
+ROLLBACK.sh on disposable source copy exit=0; same check stdout=window-shortcut=absent; audio-protection=18%; hardware-not-invoked; stderr empty; exit=0. cmp restored and original baseline exit=0. Active source unchanged.
+swift test exit=0; full test summary appended to OPEN-SOURCE-REVIEW.md.
