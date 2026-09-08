@@ -75,3 +75,80 @@ CUA quit old app: procNotFound (-600) after Command-Q; then open launched new pr
 CUA new getApp: timeoutReached (-10005); getState confirmed com.ryanai.mactools isRunning=true.
 Runtime menu click / reopen / close could not be verified by CUA; source checks are not full UI acceptance.
 No audio or brightness application was invoked during this change.
+
+FOLLOW-UP: configurable window shortcut; MacToolsApp.body / AppDelegate.toggleWindow / Store.windowShortcut
+BASELINE
+['scripts/check-window-shortcut.sh', 'docs/tray-transaction/BASELINE.swift']
+stdout=window-shortcut=absent
+audio-protection=18%; hardware-not-invoked
+
+stderr=
+exit=0
+PREVIOUS
+['scripts/check-window-shortcut.sh', 'docs/tray-transaction/PREVIOUS.swift']
+stdout=window-shortcut=absent
+audio-protection=18%; hardware-not-invoked
+
+stderr=
+exit=0
+MODIFIED
+['scripts/check-window-shortcut.sh', 'Sources/MacTools/MacTools.swift']
+stdout=window-shortcut=configurable; toggle=show/hide; persistence=yes; shared-conflict-check=yes
+audio-protection=18%; hardware-not-invoked
+
+stderr=
+exit=0
+RESTORE
+['docs/tray-transaction/ROLLBACK.sh', '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmp3xfskigg/copy.swift']
+stdout=
+stderr=
+exit=0
+ROLLBACK
+['scripts/check-window-shortcut.sh', '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmp3xfskigg/copy.swift']
+stdout=window-shortcut=absent
+audio-protection=18%; hardware-not-invoked
+
+stderr=
+exit=0
+rollback hash equals original: true
+REAPPLY
+['patch', '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmp3xfskigg/copy.swift', 'docs/tray-transaction/DIFF.patch']
+stdout=patching file '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmp3xfskigg/copy.swift'
+
+stderr=
+exit=0
+/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/BASELINE.swift sha256=dc42a5a724586d0f40cfc05e424e10d3141ea9bf78cb31a922d5f9279bb5353b
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/MacTools.swift sha256=32dca706a0a5290f010f27611b666b197d8a49afbecb5fee77324c5b3f5521eb
+release build / plist / codesign: exit=0
+Native AX: window visible with 显示界面 / 收起到托盘, modifier controls, M picker, 收起到托盘 button.
+CUA shortcut attempt interrupted by user change. Refreshed UI showed user settings Option+Shift+M; no further UI actions taken. End-to-end toggle not claimed verified.
+[0/1] Planning build
+Building for debugging...
+[0/5] Write sources
+[1/5] Write swift-version--58304C5D6DBC2206.txt
+[3/5] Compiling MacToolsTests Checks.swift
+[4/5] Emitting module MacToolsTests
+[4/6] Write Objects.LinkFileList
+[5/6] Linking MacToolsPackageTests
+Build complete! (1.18s)
+Test Suite 'All tests' started at 2026-09-08 16:31:54.522.
+Test Suite 'MacToolsPackageTests.xctest' started at 2026-09-08 16:31:54.523.
+Test Suite 'Checks' started at 2026-09-08 16:31:54.523.
+Test Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' started.
+Test Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' passed (0.026 seconds).
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' started.
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.Checks testWindowShortcutPersistenceAndConflict]' started.
+Test Case '-[MacToolsTests.Checks testWindowShortcutPersistenceAndConflict]' passed (0.004 seconds).
+Test Suite 'Checks' passed at 2026-09-08 16:31:54.554.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.030 (0.031) seconds
+Test Suite 'MacToolsPackageTests.xctest' passed at 2026-09-08 16:31:54.554.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.030 (0.031) seconds
+Test Suite 'All tests' passed at 2026-09-08 16:31:54.554.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.030 (0.032) seconds
+◇ Test run started.
+↳ Testing Library Version: 1501
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+
+swift test exit=0

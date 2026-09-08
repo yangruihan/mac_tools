@@ -54,8 +54,6 @@ enum Hardware {
 
 final class Store: ObservableObject {
     @Published var presets: [Preset] = []
-    @Published var windowShortcut = Preset(name: "显示 / 收起界面", key: "M")
-    var toggleWindow: (() -> Void)?
     @Published var protection = true
     @Published var message = "尚未应用配置；耳机保护默认开启"
     @Published var shortcutErrors: [UUID: String] = [:]
@@ -71,8 +69,6 @@ final class Store: ObservableObject {
                 presets = loaded }
             catch { message = "配置读取失败，原数据未覆盖：\(error.localizedDescription)" }
         }
-        if let data = defaults.data(forKey: "windowShortcut"),
-           let shortcut = try? JSONDecoder().decode(Preset.self, from: data) { windowShortcut = shortcut }
         var event = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
         InstallEventHandler(GetApplicationEventTarget(), { _, event, context in
             guard let event, let context else { return OSStatus(eventNotHandledErr) }
@@ -80,10 +76,7 @@ final class Store: ObservableObject {
             let status = GetEventParameter(event, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID), nil, MemoryLayout<EventHotKeyID>.size, nil, &key)
             guard status == noErr else { return status }
             let store = Unmanaged<Store>.fromOpaque(context).takeUnretainedValue()
-            if let id = store.ids[key.id] {
-                if id == store.windowShortcut.id { store.toggleWindow?() }
-                else if let preset = store.presets.first(where: { $0.id == id }) { store.apply(preset) }
-            }
+            if let id = store.ids[key.id], let preset = store.presets.first(where: { $0.id == id }) { store.apply(preset) }
             return noErr
         }, 1, &event, Unmanaged.passUnretained(self).toOpaque(), &handler)
         register()
@@ -96,13 +89,9 @@ final class Store: ObservableObject {
         do { defaults.set(try JSONEncoder().encode(presets), forKey: "presets"); register() }
         catch { message = "保存失败：\(error.localizedDescription)" }
     }
-    func saveWindowShortcut() {
-        do { defaults.set(try JSONEncoder().encode(windowShortcut), forKey: "windowShortcut"); register() }
-        catch { message = "快捷键保存失败：\(error.localizedDescription)" }
-    }
     func register() {
         references.forEach { UnregisterEventHotKey($0) }; references.removeAll(); ids.removeAll(); shortcutErrors.removeAll()
-        for (index, preset) in ([windowShortcut] + presets).enumerated() where !preset.key.isEmpty {
+        for (index, preset) in presets.enumerated() where !preset.key.isEmpty {
             guard let code = keyCodes[preset.key.uppercased()], preset.modifiers & UInt32(cmdKey | optionKey | controlKey) != 0 else {
                 shortcutErrors[preset.id] = "请选择字母/数字，至少包含 ⌘、⌥ 或 ⌃"; continue
             }
@@ -161,23 +150,6 @@ struct ContentView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("快捷控制").font(.largeTitle.bold())
             Text("配置自动保存 · 快捷键在应用运行时全局生效").foregroundStyle(.secondary)
-            GroupBox("显示界面 / 收起到托盘") {
-                HStack {
-                    ForEach([("⌘", UInt32(cmdKey)), ("⌥", UInt32(optionKey)), ("⌃", UInt32(controlKey)), ("⇧", UInt32(shiftKey))], id: \.1) { label, flag in
-                        Toggle(label, isOn: Binding(get: { store.windowShortcut.modifiers & flag != 0 }, set: { on in
-                            if on { store.windowShortcut.modifiers |= flag } else { store.windowShortcut.modifiers &= ~flag }
-                            store.saveWindowShortcut()
-                        })).toggleStyle(.button)
-                    }
-                    Picker("按键", selection: $store.windowShortcut.key) {
-                        Text("不设置").tag("")
-                        ForEach(keyCodes.keys.sorted(), id: \.self) { Text($0).tag($0) }
-                    }.frame(width: 135)
-                    .onChange(of: store.windowShortcut.key) { _ in store.saveWindowShortcut() }
-                    Button("收起到托盘") { store.toggleWindow?() }
-                    if let error = store.shortcutErrors[store.windowShortcut.id] { Text(error).font(.caption).foregroundStyle(.red) }
-                }.padding(6)
-            }
             Toggle("耳机保护：音量最高 18%（重启自动开启）", isOn: Binding(get: { store.protection }, set: { value in
                 if value { store.protection = true } else { confirm = true }
             }))
@@ -214,26 +186,13 @@ struct ContentView: View {
     }
 }
 final class AppDelegate: NSObject, NSApplicationDelegate {
-    let store = Store()
     private var window: NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
-        store.toggleWindow = { [weak self] in self?.toggleWindow() }
-        showWindow(store: store)
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
-
-    func toggleWindow() {
-        if let window, window.isVisible && !window.isMiniaturized && NSApp.isActive { window.orderOut(nil) }
-        else { showWindow(store: store) }
-    }
-
-    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        showWindow(store: store)
-        return true
-    }
 
     func showWindow(store: Store) {
         if window == nil {
@@ -245,7 +204,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             panel.center()
             window = panel
         }
-        window?.deminiaturize(nil)
         window?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
     }
@@ -254,9 +212,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 @main
 struct MacToolsApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
-
+    @StateObject private var store = Store()
     var body: some Scene {
-        MenuBarExtra("Mac 工具箱", systemImage: "slider.horizontal.3") { MenuContent(store: delegate.store, showWindow: { delegate.showWindow(store: delegate.store) }) }
+        MenuBarExtra("Mac 工具箱", systemImage: "slider.horizontal.3") { MenuContent(store: store, showWindow: { delegate.showWindow(store: store) }) }
     }
 }
 struct MenuContent: View {
