@@ -4,8 +4,7 @@ cd "$(dirname "$0")/.."
 swift build -c release
 BIN=$(swift build -c release --show-bin-path)
 APP="$PWD/build/MacTools.app"
-mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp Assets/AppIcon/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
+mkdir -p "$APP/Contents/MacOS"
 cp "$BIN/MacTools" "$APP/Contents/MacOS/MacTools"
 cat > "$APP/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
@@ -13,7 +12,6 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 <plist version="1.0"><dict>
 <key>CFBundleExecutable</key><string>MacTools</string>
 <key>CFBundleIdentifier</key><string>com.ryanai.mactools</string>
-<key>CFBundleIconFile</key><string>AppIcon</string>
 <key>CFBundleName</key><string>Mac 工具箱</string>
 <key>CFBundlePackageType</key><string>APPL</string>
 <key>CFBundleShortVersionString</key><string>0.1.0</string>

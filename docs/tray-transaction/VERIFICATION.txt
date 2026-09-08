@@ -152,3 +152,29 @@ Test Suite 'All tests' passed at 2026-09-08 16:31:54.554.
 ✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
 
 swift test exit=0
+
+ICON UPDATE: scripts/build-app.sh CFBundleIconFile / Resources/AppIcon.icns
+BASELINE
+['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("CFBundleIconFile=" + ("AppIcon" if "<key>CFBundleIconFile</key><string>AppIcon</string>" in s else "absent"))', 'docs/tray-transaction/ICON-BUILD-BASELINE.sh']
+stdout=CFBundleIconFile=absent
+
+stderr=
+exit=0
+sha256=9b750aa78da40de8e632b8a96d281032265030ed8a6064c4565163dc5aab80dc
+MODIFIED
+['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("CFBundleIconFile=" + ("AppIcon" if "<key>CFBundleIconFile</key><string>AppIcon</string>" in s else "absent"))', 'scripts/build-app.sh']
+stdout=CFBundleIconFile=AppIcon
+
+stderr=
+exit=0
+sha256=1f78bc87fe8380adecf27461f3622388b1c63111951ca7ea3bc4b759d0865652
+ROLLBACK
+['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("CFBundleIconFile=" + ("AppIcon" if "<key>CFBundleIconFile</key><string>AppIcon</string>" in s else "absent"))', '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpzctvcfgn/build-app.sh']
+stdout=CFBundleIconFile=absent
+
+stderr=
+exit=0
+sha256=9b750aa78da40de8e632b8a96d281032265030ed8a6064c4565163dc5aab80dc
+Bundle plist icon=AppIcon; bundled icon matches source: true
+codesign --verify --strict: stdout= stderr= exit=0
+ROLLBACK pristine hash match; patch reconstruction match.
