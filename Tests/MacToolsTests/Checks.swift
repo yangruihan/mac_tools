@@ -2,6 +2,40 @@ import XCTest
 @testable import MacTools
 
 final class Checks: XCTestCase {
+    func testLocksAndLegacyPresets() throws {
+        let suite = "LockTests.\(UUID())"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+        var values = [false: 50.0, true: 10.0]
+        var fail = false
+        let store = Store(defaults: defaults, writeHardware: { value, audio in
+            if fail { throw Failure.message("simulated failure") }
+            values[audio] = value
+        }, readHardware: { values[$0]! })
+        let old = Preset(name: "legacy")
+        let decoded = try JSONDecoder().decode(Preset.self, from: JSONEncoder().encode(old))
+        XCTAssertNil(decoded.locked)
+        let audio = Preset(audio: true, value: 90, locked: true)
+        let brightness = Preset(value: 40, locked: true)
+        store.apply(audio); store.apply(brightness)
+        XCTAssertEqual(values[true], 18)
+        values[true] = 70; values[false] = 80
+        store.enforceLocks()
+        XCTAssertEqual(values[true], 18); XCTAssertEqual(values[false], 40)
+        fail = true
+        store.apply(Preset(audio: true, value: 10))
+        XCTAssertEqual(store.locks[true], 18)
+        fail = false
+        store.apply(Preset(audio: true, value: 10))
+        values[true] = 12; values[false] = 80
+        store.enforceLocks()
+        XCTAssertEqual(values[true], 12); XCTAssertEqual(values[false], 40)
+        store.presets = []; store.save()
+        XCTAssertEqual(store.locks[false], 40)
+        store.apply(Preset(value: 50))
+        XCTAssertTrue(store.locks.isEmpty)
+        print("LOCK CHECK: legacy=unlocked; external-change=restored; failed-switch=retained; unlocked-switch=released; channels=independent")
+    }
     func testWindowShortcutPersistenceAndConflict() throws {
         let suite = "MacToolsTests.\(UUID())"
         let defaults = UserDefaults(suiteName: suite)!

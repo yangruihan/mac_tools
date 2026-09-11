@@ -10,7 +10,6 @@ struct Preset: Codable, Identifiable {
     var name = "新配置"
     var audio = false
     var value = 15.0
-    var locked: Bool? = nil // Missing in older saved presets means unlocked.
     var key = ""
     var modifiers = UInt32(cmdKey | optionKey)
 }
@@ -26,31 +25,6 @@ enum Failure: LocalizedError {
 }
 
 enum Hardware {
-    static func read(audio: Bool) throws -> Double {
-        if audio {
-            var device = AudioDeviceID(0)
-            var size = UInt32(MemoryLayout.size(ofValue: device))
-            var address = AudioObjectPropertyAddress(mSelector: kAudioHardwarePropertyDefaultOutputDevice, mScope: kAudioObjectPropertyScopeGlobal, mElement: kAudioObjectPropertyElementMain)
-            guard AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &address, 0, nil, &size, &device) == noErr else { throw Failure.message("无法读取输出设备") }
-            address = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMainVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMain)
-            var value: Float32 = 0
-            size = UInt32(MemoryLayout.size(ofValue: value))
-            guard AudioObjectGetPropertyData(device, &address, 0, nil, &size, &value) == noErr else { throw Failure.message("无法读取音量") }
-            return Double(value) * 100
-        }
-        var displays = [CGDirectDisplayID](repeating: 0, count: 16)
-        var count: UInt32 = 0
-        guard CGGetActiveDisplayList(16, &displays, &count) == .success,
-              let display = displays.prefix(Int(count)).first(where: { CGDisplayIsBuiltin($0) != 0 }),
-              let handle = dlopen("/System/Library/PrivateFrameworks/DisplayServices.framework/DisplayServices", RTLD_LAZY) else { throw Failure.message("无法读取内置屏幕亮度") }
-        defer { dlclose(handle) }
-        guard let symbol = dlsym(handle, "DisplayServicesGetBrightness") else { throw Failure.message("亮度读取接口不可用") }
-        typealias Getter = @convention(c) (UInt32, UnsafeMutablePointer<Float>) -> Int32
-        var value: Float = 0
-        guard unsafeBitCast(symbol, to: Getter.self)(display, &value) == 0 else { throw Failure.message("亮度读取失败") }
-        return Double(value) * 100
-    }
-
     static func apply(_ value: Double, audio: Bool) throws {
         if audio {
             var device = AudioDeviceID(0)
@@ -88,16 +62,8 @@ final class Store: ObservableObject {
     private var references: [EventHotKeyRef] = []
     private var handler: EventHandlerRef?
     private var ids: [UInt32: UUID] = [:]
-    @Published private(set) var locks: [Bool: Double] = [:]
-    private var lockTimer: Timer?
-    private let writeHardware: (Double, Bool) throws -> Void
-    private let readHardware: (Bool) throws -> Double
     private let defaults: UserDefaults
-    init(defaults: UserDefaults = .standard,
-         writeHardware: @escaping (Double, Bool) throws -> Void = { try Hardware.apply($0, audio: $1) },
-         readHardware: @escaping (Bool) throws -> Double = { try Hardware.read(audio: $0) }) {
-        self.writeHardware = writeHardware
-        self.readHardware = readHardware
+    init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         if let data = defaults.data(forKey: "presets") {
             do { let loaded = try JSONDecoder().decode([Preset].self, from: data)
@@ -123,7 +89,6 @@ final class Store: ObservableObject {
         register()
     }
     deinit {
-        lockTimer?.invalidate()
         references.forEach { UnregisterEventHotKey($0) }
         if let handler { RemoveEventHandler(handler) }
     }
@@ -148,30 +113,10 @@ final class Store: ObservableObject {
             else { shortcutErrors[preset.id] = "快捷键冲突或注册失败（\(status)）" }
         }
     }
-    private func updateLockTimer() {
-        guard !locks.isEmpty else { lockTimer?.invalidate(); lockTimer = nil; return }
-        guard lockTimer == nil else { return }
-        // ponytail: 200ms reconciliation can briefly expose system changes; device notifications if latency matters.
-        let timer = Timer(timeInterval: 0.2, repeats: true) { [weak self] _ in self?.enforceLocks() }
-        timer.tolerance = 0.03
-        RunLoop.main.add(timer, forMode: .common)
-        lockTimer = timer
-    }
-    func enforceLocks() {
-        for (audio, lockedValue) in locks {
-            do {
-                let value = try appliedValue(lockedValue, audio: audio, protection: protection)
-                if abs(try readHardware(audio) - value) > 0.1 { try writeHardware(value, audio) }
-            } catch { message = "锁定恢复失败（仍保留锁定，请切换未锁定配置）：\(error.localizedDescription)" }
-        }
-    }
     func apply(_ preset: Preset) {
         do {
             let value = try appliedValue(preset.value, audio: preset.audio, protection: protection)
-            if preset.locked == true { _ = try readHardware(preset.audio) }
-            try writeHardware(value, preset.audio)
-            locks[preset.audio] = preset.locked == true ? value : nil
-            updateLockTimer()
+            try Hardware.apply(value, audio: preset.audio)
             message = "已设置\(preset.audio ? "音量" : "亮度")：\(Int(value))%" + (value != preset.value ? "（耳机保护限制）" : "")
         } catch { message = error.localizedDescription }
     }
@@ -186,8 +131,6 @@ struct PresetRow: View {
                 TextField("配置名称", text: $preset.name).frame(width: 130)
                 Slider(value: $preset.value, in: 0...100, step: 1)
                 Text("\(Int(preset.value))%").monospacedDigit().frame(width: 42)
-                Toggle("锁定", isOn: Binding(get: { preset.locked == true }, set: { preset.locked = $0; store.save() }))
-                    .help("应用后锁定；编辑或删除配置不会解除，需应用同类未锁定配置")
                 Button("应用") { store.apply(preset) }
                 Button(role: .destructive) { store.presets.removeAll { $0.id == preset.id }; store.save() } label: { Image(systemName: "trash") }.accessibilityLabel("删除配置")
             }
@@ -244,7 +187,6 @@ struct ContentView: View {
                     section("音频", audio: true)
                 }
             }
-            Text("亮度：\(store.locks[false].map { "已锁定 \(Int($0))%" } ?? "未锁定") · 音量：\(store.locks[true].map { "已锁定 \(Int($0))%" } ?? "未锁定")").font(.caption)
             Text(store.message).font(.callout).textSelection(.enabled)
             Text("亮度仅支持内置屏幕；关闭窗口后可通过菜单栏重新打开。退出后快捷键失效。").font(.caption).foregroundStyle(.secondary)
         }.padding(24).frame(minWidth: 740, minHeight: 500)

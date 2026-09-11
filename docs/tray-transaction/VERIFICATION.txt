@@ -184,3 +184,61 @@ check-window-shortcut.sh BASELINE: stdout=window-shortcut=absent; audio-protecti
 check-window-shortcut.sh MODIFIED: stdout=window-shortcut=configurable; toggle=show/hide; persistence=yes; shared-conflict-check=yes; audio-protection=18%; hardware-not-invoked; stderr empty; exit=0.
 ROLLBACK.sh on disposable source copy exit=0; same check stdout=window-shortcut=absent; audio-protection=18%; hardware-not-invoked; stderr empty; exit=0. cmp restored and original baseline exit=0. Active source unchanged.
 swift test exit=0; full test summary appended to OPEN-SOURCE-REVIEW.md.
+
+LOCK CHANGE: Preset.locked; Store.apply/enforceLocks; source-structure checks (not hardware acceptance)
+BASELINE
+['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("lock=" + ("reconcile-200ms" if "func enforceLocks()" in s else "absent")); print("hardware-not-invoked")', 'docs/tray-transaction/BASELINE.swift']
+stdout=lock=absent
+hardware-not-invoked
+
+stderr=
+exit=0
+MODIFIED
+['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("lock=" + ("reconcile-200ms" if "func enforceLocks()" in s else "absent")); print("hardware-not-invoked")', 'Sources/MacTools/MacTools.swift']
+stdout=lock=reconcile-200ms
+hardware-not-invoked
+
+stderr=
+exit=0
+ROLLBACK
+['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("lock=" + ("reconcile-200ms" if "func enforceLocks()" in s else "absent")); print("hardware-not-invoked")', '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpms62g9ee/copy.swift']
+stdout=lock=absent
+hardware-not-invoked
+
+stderr=
+exit=0
+rollback pristine and reconstructed modified hashes match
+/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/BASELINE.swift sha256=dc42a5a724586d0f40cfc05e424e10d3141ea9bf78cb31a922d5f9279bb5353b
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/MacTools.swift sha256=00466b40a008083d873fce06a218ca7d3680bf7c5de92065b7fde0c88efeb57c
+Building for debugging...
+[0/5] Write sources
+[1/5] Write swift-version--58304C5D6DBC2206.txt
+[3/5] Emitting module MacToolsTests
+[4/5] Compiling MacToolsTests Checks.swift
+[4/6] Write Objects.LinkFileList
+[5/6] Linking MacToolsPackageTests
+Build complete! (0.81s)
+Test Suite 'All tests' started at 2026-09-11 18:10:36.810.
+Test Suite 'MacToolsPackageTests.xctest' started at 2026-09-11 18:10:36.811.
+Test Suite 'Checks' started at 2026-09-11 18:10:36.811.
+Test Case '-[MacToolsTests.Checks testLocksAndLegacyPresets]' started.
+Test Case '-[MacToolsTests.Checks testLocksAndLegacyPresets]' passed (0.037 seconds).
+Test Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' started.
+Test Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' started.
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.Checks testWindowShortcutPersistenceAndConflict]' started.
+Test Case '-[MacToolsTests.Checks testWindowShortcutPersistenceAndConflict]' passed (0.002 seconds).
+Test Suite 'Checks' passed at 2026-09-11 18:10:36.852.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.041 (0.041) seconds
+Test Suite 'MacToolsPackageTests.xctest' passed at 2026-09-11 18:10:36.853.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.041 (0.041) seconds
+Test Suite 'All tests' passed at 2026-09-11 18:10:36.853.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.041 (0.042) seconds
+LOCK CHECK: legacy=unlocked; external-change=restored; failed-switch=retained; unlocked-switch=released; channels=independent
+◇ Test run started.
+↳ Testing Library Version: 1501
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+
+Lock tests exit=0; release build/plist/codesign exit=0. No real hardware writes tested. Installed /Applications version not replaced.
