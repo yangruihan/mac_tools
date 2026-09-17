@@ -1,7 +1,33 @@
 import XCTest
+import IOKit.pwr_mgt
 @testable import MacTools
 
 final class Checks: XCTestCase {
+    func testKeepAwakeNativeLifecycle() throws {
+        let suite = "AwakeTests.\(UUID())"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { defaults.removePersistentDomain(forName: suite) }
+        var store: Store? = Store(defaults: defaults)
+        XCTAssertFalse(store!.keepAwake)
+        store!.setKeepAwake(true)
+        defer { store?.setKeepAwake(false) }
+        XCTAssertTrue(store!.keepAwake, store!.message)
+        let ids = store!.awakeAssertions
+        XCTAssertEqual(ids.count, 2)
+        for id in ids { XCTAssertNotNil(IOPMAssertionCopyProperties(id)?.takeRetainedValue()) }
+        store!.setKeepAwake(true)
+        XCTAssertEqual(ids, store!.awakeAssertions)
+        print("AWAKE native ON: two IOPM assertions exist; repeated ON creates no duplicates")
+        store!.setKeepAwake(false)
+        XCTAssertFalse(store!.keepAwake)
+        for id in ids { XCTAssertNil(IOPMAssertionCopyProperties(id)?.takeRetainedValue()) }
+        print("AWAKE native OFF: both assertions released")
+        store!.setKeepAwake(true)
+        let finalIDs = store!.awakeAssertions
+        store = nil
+        for id in finalIDs { XCTAssertNil(IOPMAssertionCopyProperties(id)?.takeRetainedValue()) }
+        print("AWAKE deinit: assertions released; no audio writes")
+    }
     func testLocksAndLegacyPresets() throws {
         let suite = "LockTests.\(UUID())"
         let defaults = UserDefaults(suiteName: suite)!

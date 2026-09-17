@@ -242,3 +242,76 @@ LOCK CHECK: legacy=unlocked; external-change=restored; failed-switch=retained; u
 ✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
 
 Lock tests exit=0; release build/plist/codesign exit=0. No real hardware writes tested. Installed /Applications version not replaced.
+
+KEEP AWAKE: Store.setKeepAwake, ContentView, MenuContent; structural baseline check is not runtime sleep acceptance.
+BASELINE
+['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("keep-awake=" + ("IOPM-toggle" if "func setKeepAwake(" in s else "absent")); print("audio-not-invoked")', 'docs/tray-transaction/BASELINE.swift']
+stdout=keep-awake=absent
+audio-not-invoked
+
+stderr=
+exit=0
+PREVIOUS
+['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("keep-awake=" + ("IOPM-toggle" if "func setKeepAwake(" in s else "absent")); print("audio-not-invoked")', 'docs/tray-transaction/PRE-AWAKE.swift']
+stdout=keep-awake=absent
+audio-not-invoked
+
+stderr=
+exit=0
+MODIFIED
+['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("keep-awake=" + ("IOPM-toggle" if "func setKeepAwake(" in s else "absent")); print("audio-not-invoked")', 'Sources/MacTools/MacTools.swift']
+stdout=keep-awake=IOPM-toggle
+audio-not-invoked
+
+stderr=
+exit=0
+ROLLBACK.sh stdout=
+stderr=
+exit=0
+ROLLBACK
+['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("keep-awake=" + ("IOPM-toggle" if "func setKeepAwake(" in s else "absent")); print("audio-not-invoked")', '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpcqq0f4do/copy.swift']
+stdout=keep-awake=absent
+audio-not-invoked
+
+stderr=
+exit=0
+rollback bytes/hash equal pristine; patch reconstructs active modified source
+/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/BASELINE.swift sha256=dc42a5a724586d0f40cfc05e424e10d3141ea9bf78cb31a922d5f9279bb5353b
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/MacTools.swift sha256=75f3704982cc22fdd839cd4fdc3292b6e415dda3e0ae315ee0671b55b9b8d442
+Building for debugging...
+[0/5] Write sources
+[1/5] Write swift-version--58304C5D6DBC2206.txt
+[3/5] Emitting module MacToolsTests
+[4/5] Compiling MacToolsTests Checks.swift
+[4/6] Write Objects.LinkFileList
+[5/6] Linking MacToolsPackageTests
+Build complete! (0.79s)
+Test Suite 'All tests' started at 2026-09-17 14:17:15.462.
+Test Suite 'MacToolsPackageTests.xctest' started at 2026-09-17 14:17:15.463.
+Test Suite 'Checks' started at 2026-09-17 14:17:15.463.
+Test Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' started.
+Test Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' passed (0.033 seconds).
+Test Case '-[MacToolsTests.Checks testLocksAndLegacyPresets]' started.
+Test Case '-[MacToolsTests.Checks testLocksAndLegacyPresets]' passed (0.006 seconds).
+Test Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' started.
+Test Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' started.
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.Checks testWindowShortcutPersistenceAndConflict]' started.
+Test Case '-[MacToolsTests.Checks testWindowShortcutPersistenceAndConflict]' passed (0.001 seconds).
+Test Suite 'Checks' passed at 2026-09-17 14:17:15.506.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.043 (0.043) seconds
+Test Suite 'MacToolsPackageTests.xctest' passed at 2026-09-17 14:17:15.506.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.043 (0.043) seconds
+Test Suite 'All tests' passed at 2026-09-17 14:17:15.506.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.043 (0.044) seconds
+AWAKE native ON: two IOPM assertions exist; repeated ON creates no duplicates
+AWAKE native OFF: both assertions released
+AWAKE deinit: assertions released; no audio writes
+LOCK CHECK: legacy=unlocked; external-change=restored; failed-switch=retained; unlocked-switch=released; channels=independent
+◇ Test run started.
+↳ Testing Library Version: 1501
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+
+swift test exit=0; build-app.sh exit=0; plist and codesign verified. Native IOPM create/release checked; full idle timeout / UI behavior not tested. /Applications build not replaced.

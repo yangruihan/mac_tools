@@ -4,7 +4,6 @@ import CoreAudio
 import AudioToolbox
 import CoreGraphics
 import Darwin
-import IOKit.pwr_mgt
 
 struct Preset: Codable, Identifiable {
     var id = UUID()
@@ -80,34 +79,6 @@ enum Hardware {
 }
 
 final class Store: ObservableObject {
-    @Published private(set) var keepAwake = false
-    private(set) var awakeAssertions: [IOPMAssertionID] = []
-    func setKeepAwake(_ enabled: Bool) {
-        guard enabled != keepAwake else { return }
-        if enabled {
-            var created: [IOPMAssertionID] = []
-            for type in [kIOPMAssertionTypePreventUserIdleDisplaySleep, kIOPMAssertionTypePreventUserIdleSystemSleep] {
-                var id = IOPMAssertionID(0)
-                let result = IOPMAssertionCreateWithName(type as CFString, IOPMAssertionLevel(kIOPMAssertionLevelOn), "MacTools Keep Awake" as CFString, &id)
-                guard result == kIOReturnSuccess else {
-                    created.forEach { IOPMAssertionRelease($0) }
-                    message = "保持唤醒开启失败：\(result)"
-                    return
-                }
-                created.append(id)
-            }
-            awakeAssertions = created
-            keepAwake = true
-        } else {
-            var failed: [IOPMAssertionID] = []
-            for id in awakeAssertions {
-                if IOPMAssertionRelease(id) != kIOReturnSuccess { failed.append(id) }
-            }
-            awakeAssertions = failed
-            keepAwake = !failed.isEmpty
-            if keepAwake { message = "部分唤醒请求释放失败，请重试或退出应用" }
-        }
-    }
     @Published var presets: [Preset] = []
     @Published var windowShortcut = Preset(name: "显示 / 收起界面", key: "M")
     var toggleWindow: (() -> Void)?
@@ -152,7 +123,6 @@ final class Store: ObservableObject {
         register()
     }
     deinit {
-        awakeAssertions.forEach { IOPMAssertionRelease($0) }
         lockTimer?.invalidate()
         references.forEach { UnregisterEventHotKey($0) }
         if let handler { RemoveEventHandler(handler) }
@@ -265,8 +235,6 @@ struct ContentView: View {
                     if let error = store.shortcutErrors[store.windowShortcut.id] { Text(error).font(.caption).foregroundStyle(.red) }
                 }.padding(6)
             }
-            Toggle("保持唤醒（防闲置熄屏 / 休眠）", isOn: Binding(get: { store.keepAwake }, set: { store.setKeepAwake($0) }))
-                .help("关闭或退出后恢复；不阻止手动锁屏、屏保锁屏、合盖及管理策略。重启默认关闭。")
             Toggle("耳机保护：音量最高 18%（重启自动开启）", isOn: Binding(get: { store.protection }, set: { value in
                 if value { store.protection = true } else { confirm = true }
             }))
@@ -313,8 +281,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         showWindow(store: store)
     }
 
-    func applicationWillTerminate(_ notification: Notification) { store.setKeepAwake(false) }
-
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
 
     func toggleWindow() {
@@ -356,7 +322,6 @@ struct MenuContent: View {
     let showWindow: () -> Void
     var body: some View {
         Button("打开工具箱", action: showWindow)
-        Toggle("保持唤醒", isOn: Binding(get: { store.keepAwake }, set: { store.setKeepAwake($0) }))
         Text(store.protection ? "耳机保护：开启（最高 18%）" : "耳机保护：已关闭")
         ForEach(store.presets) { preset in Button("\(preset.audio ? "音量" : "亮度") · \(preset.name) · \(Int(preset.value))%") { store.apply(preset) } }
         Divider()
