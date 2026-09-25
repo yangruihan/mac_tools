@@ -1,10 +1,11 @@
 --- a/MacTools.swift
 +++ b/MacTools.swift
-@@ -4,12 +4,14 @@
+@@ -4,12 +4,15 @@
  import AudioToolbox
  import CoreGraphics
  import Darwin
 +import IOKit.pwr_mgt
++import ApplicationServices
  
  struct Preset: Codable, Identifiable {
      var id = UUID()
@@ -15,7 +16,7 @@
      var key = ""
      var modifiers = UInt32(cmdKey | optionKey)
  }
-@@ -25,6 +27,31 @@
+@@ -25,6 +28,31 @@
  }
  
  enum Hardware {
@@ -47,35 +48,57 @@
      static func apply(_ value: Double, audio: Bool) throws {
          if audio {
              var device = AudioDeviceID(0)
-@@ -52,16 +79,92 @@
+@@ -52,16 +80,115 @@
      }
  }
  
 +final class TrackpadPreference {
-+    private let domain: CFString
-+    init(domain: CFString = "com.apple.AppleMultitouchTrackpad" as CFString) { self.domain = domain }
-+    private let key: CFString = "USBMouseStopsTrackpad" as CFString
-+    private var previous: CFPropertyList?
++    private var previous = false
 +    private(set) var enabled = false
++
++    private func systemToggle() throws -> AXUIElement {
++        let trust = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
++        guard AXIsProcessTrustedWithOptions(trust) else { throw Failure.message("需要辅助功能权限；授权 Mac 工具箱后重试") }
++        guard let url = URL(string: "x-apple.systempreferences:com.apple.Accessibility-Settings.extension?PointerControl") else { throw Failure.message("无法打开指针控制设置") }
++        NSWorkspace.shared.open(url)
++        for _ in 0..<30 {
++            if let app = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.systempreferences").first,
++               let toggle = findToggle(AXUIElementCreateApplication(app.processIdentifier)) { return toggle }
++            Thread.sleep(forTimeInterval: 0.1)
++        }
++        throw Failure.message("找不到系统的内置触控板开关；系统版本可能不兼容")
++    }
++
++    private func findToggle(_ element: AXUIElement) -> AXUIElement? {
++        var id: CFTypeRef?
++        if AXUIElementCopyAttributeValue(element, kAXIdentifierAttribute as CFString, &id) == .success,
++           String(describing: id).contains("AX_IGNORE_TRACKPAD") { return element }
++        var children: CFTypeRef?
++        if AXUIElementCopyAttributeValue(element, kAXChildrenAttribute as CFString, &children) == .success,
++           let children = children as? [AXUIElement] {
++            for child in children { if let found = findToggle(child) { return found } }
++        }
++        return nil
++    }
++
++    private func value(_ toggle: AXUIElement) throws -> Bool {
++        var raw: CFTypeRef?
++        guard AXUIElementCopyAttributeValue(toggle, kAXValueAttribute as CFString, &raw) == .success,
++              let number = raw as? NSNumber else { throw Failure.message("无法读取系统触控板开关") }
++        return number.boolValue
++    }
 +
 +    func setEnabled(_ on: Bool) throws {
 +        guard on != enabled else { return }
-+        let original = CFPreferencesCopyAppValue(key, domain)
-+        if on { previous = original }
-+        CFPreferencesSetAppValue(key, on ? kCFBooleanTrue : previous, domain)
-+        guard CFPreferencesAppSynchronize(domain) else {
-+            CFPreferencesSetAppValue(key, original, domain)
-+            _ = CFPreferencesAppSynchronize(domain)
-+            throw Failure.message("触控板系统偏好设置写入失败")
-+        }
-+        let value = CFPreferencesCopyAppValue(key, domain)
-+        guard (value as? Bool) == (on ? true : (previous as? Bool ?? false)) || (!on && previous == nil && value == nil) else {
-+            CFPreferencesSetAppValue(key, original, domain)
-+            _ = CFPreferencesAppSynchronize(domain)
-+            throw Failure.message("触控板设置校验失败；未确认已生效")
++        let toggle = try systemToggle()
++        let current = try value(toggle)
++        if on { previous = current }
++        let desired = on ? true : previous
++        if current != desired {
++            guard AXUIElementPerformAction(toggle, kAXPressAction as CFString) == .success,
++                  try value(toggle) == desired else { throw Failure.message("系统触控板开关未生效") }
 +        }
 +        enabled = on
-+        if !on { previous = nil }
 +    }
 +    deinit { if enabled { try? setEnabled(false) } }
 +}
@@ -87,7 +110,7 @@
 +        do {
 +            try trackpad.setEnabled(on)
 +            trackpadDisabledWithMouse = trackpad.enabled
-+            message = on ? "已启用系统选项：有外接鼠标时忽略内置触控板" : "已恢复原触控板系统设置"
++            message = on ? "系统已开启：有外接鼠标时忽略内置触控板" : "已恢复原触控板系统设置"
 +        } catch { message = error.localizedDescription }
 +    }
 +    @Published private(set) var keepAwake = false
@@ -120,6 +143,7 @@
 +    }
      @Published var presets: [Preset] = []
 +    @Published var windowShortcut = Preset(name: "显示 / 收起界面", key: "M")
++    @Published var unlockShortcut = Preset(name: "解除所有锁定", key: "")
 +    var toggleWindow: (() -> Void)?
      @Published var protection = true
      @Published var message = "尚未应用配置；耳机保护默认开启"
@@ -141,22 +165,25 @@
          self.defaults = defaults
          if let data = defaults.data(forKey: "presets") {
              do { let loaded = try JSONDecoder().decode([Preset].self, from: data)
-@@ -69,6 +172,8 @@
+@@ -69,6 +196,10 @@
                  presets = loaded }
              catch { message = "配置读取失败，原数据未覆盖：\(error.localizedDescription)" }
          }
 +        if let data = defaults.data(forKey: "windowShortcut"),
 +           let shortcut = try? JSONDecoder().decode(Preset.self, from: data) { windowShortcut = shortcut }
++        if let data = defaults.data(forKey: "unlockShortcut"),
++           let shortcut = try? JSONDecoder().decode(Preset.self, from: data) { unlockShortcut = shortcut }
          var event = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
          InstallEventHandler(GetApplicationEventTarget(), { _, event, context in
              guard let event, let context else { return OSStatus(eventNotHandledErr) }
-@@ -76,12 +181,18 @@
+@@ -76,12 +207,19 @@
              let status = GetEventParameter(event, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID), nil, MemoryLayout<EventHotKeyID>.size, nil, &key)
              guard status == noErr else { return status }
              let store = Unmanaged<Store>.fromOpaque(context).takeUnretainedValue()
 -            if let id = store.ids[key.id], let preset = store.presets.first(where: { $0.id == id }) { store.apply(preset) }
 +            if let id = store.ids[key.id] {
 +                if id == store.windowShortcut.id { store.toggleWindow?() }
++                else if id == store.unlockShortcut.id { store.releaseAllLocks() }
 +                else if let preset = store.presets.first(where: { $0.id == id }) { store.apply(preset) }
 +            }
              return noErr
@@ -170,7 +197,7 @@
          references.forEach { UnregisterEventHotKey($0) }
          if let handler { RemoveEventHandler(handler) }
      }
-@@ -89,9 +200,13 @@
+@@ -89,9 +227,17 @@
          do { defaults.set(try JSONEncoder().encode(presets), forKey: "presets"); register() }
          catch { message = "保存失败：\(error.localizedDescription)" }
      }
@@ -178,14 +205,18 @@
 +        do { defaults.set(try JSONEncoder().encode(windowShortcut), forKey: "windowShortcut"); register() }
 +        catch { message = "快捷键保存失败：\(error.localizedDescription)" }
 +    }
++    func saveUnlockShortcut() {
++        do { defaults.set(try JSONEncoder().encode(unlockShortcut), forKey: "unlockShortcut"); register() }
++        catch { message = "解锁快捷键保存失败：\(error.localizedDescription)" }
++    }
      func register() {
          references.forEach { UnregisterEventHotKey($0) }; references.removeAll(); ids.removeAll(); shortcutErrors.removeAll()
 -        for (index, preset) in presets.enumerated() where !preset.key.isEmpty {
-+        for (index, preset) in ([windowShortcut] + presets).enumerated() where !preset.key.isEmpty {
++        for (index, preset) in ([windowShortcut, unlockShortcut] + presets).enumerated() where !preset.key.isEmpty {
              guard let code = keyCodes[preset.key.uppercased()], preset.modifiers & UInt32(cmdKey | optionKey | controlKey) != 0 else {
                  shortcutErrors[preset.id] = "请选择字母/数字，至少包含 ⌘、⌥ 或 ⌃"; continue
              }
-@@ -102,10 +217,35 @@
+@@ -102,10 +248,35 @@
              else { shortcutErrors[preset.id] = "快捷键冲突或注册失败（\(status)）" }
          }
      }
@@ -222,7 +253,7 @@
              message = "已设置\(preset.audio ? "音量" : "亮度")：\(Int(value))%" + (value != preset.value ? "（耳机保护限制）" : "")
          } catch { message = error.localizedDescription }
      }
-@@ -120,6 +260,8 @@
+@@ -120,6 +291,8 @@
                  TextField("配置名称", text: $preset.name).frame(width: 130)
                  Slider(value: $preset.value, in: 0...100, step: 1)
                  Text("\(Int(preset.value))%").monospacedDigit().frame(width: 42)
@@ -231,7 +262,7 @@
                  Button("应用") { store.apply(preset) }
                  Button(role: .destructive) { store.presets.removeAll { $0.id == preset.id }; store.save() } label: { Image(systemName: "trash") }.accessibilityLabel("删除配置")
              }
-@@ -150,15 +292,41 @@
+@@ -150,15 +323,57 @@
          VStack(alignment: .leading, spacing: 16) {
              Text("快捷控制").font(.largeTitle.bold())
              Text("配置自动保存 · 快捷键在应用运行时全局生效").foregroundStyle(.secondary)
@@ -257,6 +288,22 @@
              Toggle("耳机保护：音量最高 18%（重启自动开启）", isOn: Binding(get: { store.protection }, set: { value in
                  if value { store.protection = true } else { confirm = true }
              }))
++            GroupBox("解除所有锁定快捷键") {
++                HStack {
++                    ForEach([("⌘", UInt32(cmdKey)), ("⌥", UInt32(optionKey)), ("⌃", UInt32(controlKey)), ("⇧", UInt32(shiftKey))], id: \.1) { label, flag in
++                        Toggle(label, isOn: Binding(get: { store.unlockShortcut.modifiers & flag != 0 }, set: { on in
++                            if on { store.unlockShortcut.modifiers |= flag } else { store.unlockShortcut.modifiers &= ~flag }
++                            store.saveUnlockShortcut()
++                        })).toggleStyle(.button)
++                    }
++                    Picker("按键", selection: $store.unlockShortcut.key) {
++                        Text("不设置").tag("")
++                        ForEach(keyCodes.keys.sorted(), id: \.self) { Text($0).tag($0) }
++                    }.frame(width: 135)
++                    .onChange(of: store.unlockShortcut.key) { _ in store.saveUnlockShortcut() }
++                    if let error = store.shortcutErrors[store.unlockShortcut.id] { Text(error).foregroundStyle(.red) }
++                }.padding(6)
++            }
 +            HStack {
 +                Button("一键解除所有锁定") { store.releaseAllLocks() }
 +                    .disabled(store.locks.isEmpty)
@@ -273,7 +320,7 @@
              Text(store.message).font(.callout).textSelection(.enabled)
              Text("亮度仅支持内置屏幕；关闭窗口后可通过菜单栏重新打开。退出后快捷键失效。").font(.caption).foregroundStyle(.secondary)
          }.padding(24).frame(minWidth: 740, minHeight: 500)
-@@ -185,19 +353,66 @@
+@@ -185,19 +400,66 @@
          }
      }
  }

@@ -5,7 +5,6 @@ import AudioToolbox
 import CoreGraphics
 import Darwin
 import IOKit.pwr_mgt
-import ApplicationServices
 
 struct Preset: Codable, Identifiable {
     var id = UUID()
@@ -81,52 +80,30 @@ enum Hardware {
 }
 
 final class TrackpadPreference {
-    private var previous = false
+    private let domain: CFString
+    init(domain: CFString = "com.apple.AppleMultitouchTrackpad" as CFString) { self.domain = domain }
+    private let key: CFString = "USBMouseStopsTrackpad" as CFString
+    private var previous: CFPropertyList?
     private(set) var enabled = false
-
-    private func systemToggle() throws -> AXUIElement {
-        let trust = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
-        guard AXIsProcessTrustedWithOptions(trust) else { throw Failure.message("需要辅助功能权限；授权 Mac 工具箱后重试") }
-        guard let url = URL(string: "x-apple.systempreferences:com.apple.Accessibility-Settings.extension?PointerControl") else { throw Failure.message("无法打开指针控制设置") }
-        NSWorkspace.shared.open(url)
-        for _ in 0..<30 {
-            if let app = NSRunningApplication.runningApplications(withBundleIdentifier: "com.apple.systempreferences").first,
-               let toggle = findToggle(AXUIElementCreateApplication(app.processIdentifier)) { return toggle }
-            Thread.sleep(forTimeInterval: 0.1)
-        }
-        throw Failure.message("找不到系统的内置触控板开关；系统版本可能不兼容")
-    }
-
-    private func findToggle(_ element: AXUIElement) -> AXUIElement? {
-        var id: CFTypeRef?
-        if AXUIElementCopyAttributeValue(element, kAXIdentifierAttribute as CFString, &id) == .success,
-           String(describing: id).contains("AX_IGNORE_TRACKPAD") { return element }
-        var children: CFTypeRef?
-        if AXUIElementCopyAttributeValue(element, kAXChildrenAttribute as CFString, &children) == .success,
-           let children = children as? [AXUIElement] {
-            for child in children { if let found = findToggle(child) { return found } }
-        }
-        return nil
-    }
-
-    private func value(_ toggle: AXUIElement) throws -> Bool {
-        var raw: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(toggle, kAXValueAttribute as CFString, &raw) == .success,
-              let number = raw as? NSNumber else { throw Failure.message("无法读取系统触控板开关") }
-        return number.boolValue
-    }
 
     func setEnabled(_ on: Bool) throws {
         guard on != enabled else { return }
-        let toggle = try systemToggle()
-        let current = try value(toggle)
-        if on { previous = current }
-        let desired = on ? true : previous
-        if current != desired {
-            guard AXUIElementPerformAction(toggle, kAXPressAction as CFString) == .success,
-                  try value(toggle) == desired else { throw Failure.message("系统触控板开关未生效") }
+        let original = CFPreferencesCopyAppValue(key, domain)
+        if on { previous = original }
+        CFPreferencesSetAppValue(key, on ? kCFBooleanTrue : previous, domain)
+        guard CFPreferencesAppSynchronize(domain) else {
+            CFPreferencesSetAppValue(key, original, domain)
+            _ = CFPreferencesAppSynchronize(domain)
+            throw Failure.message("触控板系统偏好设置写入失败")
+        }
+        let value = CFPreferencesCopyAppValue(key, domain)
+        guard (value as? Bool) == (on ? true : (previous as? Bool ?? false)) || (!on && previous == nil && value == nil) else {
+            CFPreferencesSetAppValue(key, original, domain)
+            _ = CFPreferencesAppSynchronize(domain)
+            throw Failure.message("触控板设置校验失败；未确认已生效")
         }
         enabled = on
+        if !on { previous = nil }
     }
     deinit { if enabled { try? setEnabled(false) } }
 }
@@ -138,7 +115,7 @@ final class Store: ObservableObject {
         do {
             try trackpad.setEnabled(on)
             trackpadDisabledWithMouse = trackpad.enabled
-            message = on ? "系统已开启：有外接鼠标时忽略内置触控板" : "已恢复原触控板系统设置"
+            message = on ? "已启用系统选项：有外接鼠标时忽略内置触控板" : "已恢复原触控板系统设置"
         } catch { message = error.localizedDescription }
     }
     @Published private(set) var keepAwake = false
@@ -171,7 +148,6 @@ final class Store: ObservableObject {
     }
     @Published var presets: [Preset] = []
     @Published var windowShortcut = Preset(name: "显示 / 收起界面", key: "M")
-    @Published var unlockShortcut = Preset(name: "解除所有锁定", key: "")
     var toggleWindow: (() -> Void)?
     @Published var protection = true
     @Published var message = "尚未应用配置；耳机保护默认开启"
@@ -198,8 +174,6 @@ final class Store: ObservableObject {
         }
         if let data = defaults.data(forKey: "windowShortcut"),
            let shortcut = try? JSONDecoder().decode(Preset.self, from: data) { windowShortcut = shortcut }
-        if let data = defaults.data(forKey: "unlockShortcut"),
-           let shortcut = try? JSONDecoder().decode(Preset.self, from: data) { unlockShortcut = shortcut }
         var event = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
         InstallEventHandler(GetApplicationEventTarget(), { _, event, context in
             guard let event, let context else { return OSStatus(eventNotHandledErr) }
@@ -209,7 +183,6 @@ final class Store: ObservableObject {
             let store = Unmanaged<Store>.fromOpaque(context).takeUnretainedValue()
             if let id = store.ids[key.id] {
                 if id == store.windowShortcut.id { store.toggleWindow?() }
-                else if id == store.unlockShortcut.id { store.releaseAllLocks() }
                 else if let preset = store.presets.first(where: { $0.id == id }) { store.apply(preset) }
             }
             return noErr
@@ -231,13 +204,9 @@ final class Store: ObservableObject {
         do { defaults.set(try JSONEncoder().encode(windowShortcut), forKey: "windowShortcut"); register() }
         catch { message = "快捷键保存失败：\(error.localizedDescription)" }
     }
-    func saveUnlockShortcut() {
-        do { defaults.set(try JSONEncoder().encode(unlockShortcut), forKey: "unlockShortcut"); register() }
-        catch { message = "解锁快捷键保存失败：\(error.localizedDescription)" }
-    }
     func register() {
         references.forEach { UnregisterEventHotKey($0) }; references.removeAll(); ids.removeAll(); shortcutErrors.removeAll()
-        for (index, preset) in ([windowShortcut, unlockShortcut] + presets).enumerated() where !preset.key.isEmpty {
+        for (index, preset) in ([windowShortcut] + presets).enumerated() where !preset.key.isEmpty {
             guard let code = keyCodes[preset.key.uppercased()], preset.modifiers & UInt32(cmdKey | optionKey | controlKey) != 0 else {
                 shortcutErrors[preset.id] = "请选择字母/数字，至少包含 ⌘、⌥ 或 ⌃"; continue
             }
@@ -345,22 +314,6 @@ struct ContentView: View {
             Toggle("耳机保护：音量最高 18%（重启自动开启）", isOn: Binding(get: { store.protection }, set: { value in
                 if value { store.protection = true } else { confirm = true }
             }))
-            GroupBox("解除所有锁定快捷键") {
-                HStack {
-                    ForEach([("⌘", UInt32(cmdKey)), ("⌥", UInt32(optionKey)), ("⌃", UInt32(controlKey)), ("⇧", UInt32(shiftKey))], id: \.1) { label, flag in
-                        Toggle(label, isOn: Binding(get: { store.unlockShortcut.modifiers & flag != 0 }, set: { on in
-                            if on { store.unlockShortcut.modifiers |= flag } else { store.unlockShortcut.modifiers &= ~flag }
-                            store.saveUnlockShortcut()
-                        })).toggleStyle(.button)
-                    }
-                    Picker("按键", selection: $store.unlockShortcut.key) {
-                        Text("不设置").tag("")
-                        ForEach(keyCodes.keys.sorted(), id: \.self) { Text($0).tag($0) }
-                    }.frame(width: 135)
-                    .onChange(of: store.unlockShortcut.key) { _ in store.saveUnlockShortcut() }
-                    if let error = store.shortcutErrors[store.unlockShortcut.id] { Text(error).foregroundStyle(.red) }
-                }.padding(6)
-            }
             HStack {
                 Button("一键解除所有锁定") { store.releaseAllLocks() }
                     .disabled(store.locks.isEmpty)

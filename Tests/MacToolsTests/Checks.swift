@@ -4,24 +4,7 @@ import CoreFoundation
 @testable import MacTools
 
 final class Checks: XCTestCase {
-    func testUnlockAllAndTrackpadPreference() throws {
-        let suite = "MacToolsTrackpadTests.\(UUID())" as CFString
-        let key = "USBMouseStopsTrackpad" as CFString
-        defer { CFPreferencesSetAppValue(key, nil, suite); _ = CFPreferencesAppSynchronize(suite) }
-        let preference = TrackpadPreference(domain: suite)
-        XCTAssertFalse(preference.enabled)
-        try preference.setEnabled(true)
-        XCTAssertTrue(preference.enabled)
-        XCTAssertEqual(CFPreferencesCopyAppValue(key, suite) as? Bool, true)
-        try preference.setEnabled(false)
-        XCTAssertFalse(preference.enabled)
-        XCTAssertNil(CFPreferencesCopyAppValue(key, suite))
-        CFPreferencesSetAppValue(key, kCFBooleanFalse, suite)
-        _ = CFPreferencesAppSynchronize(suite)
-        try preference.setEnabled(true)
-        try preference.setEnabled(false)
-        XCTAssertEqual(CFPreferencesCopyAppValue(key, suite) as? Bool, false)
-
+    func testUnlockAllAndShortcut() throws {
         let defaults = UserDefaults(suiteName: "UnlockAllTests.\(UUID())")!
         var writes = 0
         let store = Store(defaults: defaults, writeHardware: { _, _ in writes += 1 }, readHardware: { _ in 12 })
@@ -33,7 +16,17 @@ final class Checks: XCTestCase {
         XCTAssertTrue(store.locks.isEmpty)
         store.enforceLocks()
         XCTAssertEqual(writes, before)
-        print("UNLOCK ALL: both locks removed without hardware write; TRACKPAD: temporary preference true then original nil/false restored")
+        let shortcutDefaults = UserDefaults(suiteName: "UnlockHotkeyTests.\(UUID())")!
+        let shortcutStore = Store(defaults: shortcutDefaults)
+        shortcutStore.unlockShortcut.key = "U"
+        shortcutStore.saveUnlockShortcut()
+        XCTAssertNil(shortcutStore.shortcutErrors[shortcutStore.unlockShortcut.id])
+        let saved = try JSONDecoder().decode(Preset.self, from: shortcutDefaults.data(forKey: "unlockShortcut")!)
+        XCTAssertEqual(saved.key, "U")
+        var conflict = shortcutStore.unlockShortcut; conflict.id = UUID()
+        shortcutStore.presets = [conflict]; shortcutStore.save()
+        XCTAssertNotNil(shortcutStore.shortcutErrors[conflict.id])
+        print("UNLOCK ALL: both locks removed without hardware write; shortcut persisted and conflict detected")
     }
     func testKeepAwakeNativeLifecycle() throws {
         let suite = "AwakeTests.\(UUID())"

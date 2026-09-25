@@ -353,3 +353,55 @@ build-app.sh command=observed process execution
 stdout/stderr combined='[0/1] Planning build\nBuilding for production...\n[0/3] Write sources\n[1/3] Write swift-version--58304C5D6DBC2206.txt\n[3/4] Compiling MacTools MacTools.swift\n[3/5] Write Objects.LinkFileList\n[4/5] Linking MacTools\nBuild complete! (2.74s)\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app: replacing existing signature\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app/Contents/Info.plist: OK\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app\n'
 exit=0
 Trackpad effect on physical device: unobserved; tested only isolated preference domain. Existing /Applications app not replaced.
+
+2026-09-25 USER BUGFIX: Preset Store.unlockShortcut/saveUnlockShortcut + Carbon dispatch; TrackpadPreference.setEnabled changed from CFPreferences-only to live AXUIElement system toggle. Same check input for all source states.
+BASELINE
+command=['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("unlock_shortcut=" + ("present" if "func saveUnlockShortcut()" in s else "absent")); print("trackpad_AX=" + ("present" if "AXUIElementPerformAction(toggle" in s else "absent"))', 'docs/tray-transaction/BASELINE.swift']
+stdout='unlock_shortcut=absent\ntrackpad_AX=absent\n'
+stderr=''
+exit=0
+PREVIOUS
+command=['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("unlock_shortcut=" + ("present" if "func saveUnlockShortcut()" in s else "absent")); print("trackpad_AX=" + ("present" if "AXUIElementPerformAction(toggle" in s else "absent"))', 'docs/tray-transaction/PRE-TRACKPAD-FIX.swift']
+stdout='unlock_shortcut=absent\ntrackpad_AX=absent\n'
+stderr=''
+exit=0
+MODIFIED
+command=['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("unlock_shortcut=" + ("present" if "func saveUnlockShortcut()" in s else "absent")); print("trackpad_AX=" + ("present" if "AXUIElementPerformAction(toggle" in s else "absent"))', 'Sources/MacTools/MacTools.swift']
+stdout='unlock_shortcut=present\ntrackpad_AX=present\n'
+stderr=''
+exit=0
+RESTORE
+command=['docs/tray-transaction/ROLLBACK.sh', '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpo_a0mqgc/MacTools.swift']
+stdout=''
+stderr=''
+exit=0
+ROLLBACK
+command=['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("unlock_shortcut=" + ("present" if "func saveUnlockShortcut()" in s else "absent")); print("trackpad_AX=" + ("present" if "AXUIElementPerformAction(toggle" in s else "absent"))', '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpo_a0mqgc/MacTools.swift']
+stdout='unlock_shortcut=absent\ntrackpad_AX=absent\n'
+stderr=''
+exit=0
+restored_sha256_equals_original=true
+REAPPLY
+command=['patch', '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpo_a0mqgc/MacTools.swift', 'docs/tray-transaction/DIFF.patch']
+stdout="patching file '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpo_a0mqgc/MacTools.swift'\n"
+stderr=''
+exit=0
+patch_reconstructs_modified=true
+/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/BASELINE.swift sha256=dc42a5a724586d0f40cfc05e424e10d3141ea9bf78cb31a922d5f9279bb5353b
+/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/PRE-TRACKPAD-FIX.swift sha256=7d3fbc75ac90f94c1a3984657f8a37d8fa696a8deb7e7fb4997239fd660ff7a5
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/MacTools.swift sha256=bbf8707b3bb92ccffa1dac31ccdec3dd06b52e7efbd53ecd6e5074141ad34f91
+Initial swift test command exit=1: old test constructed TrackpadPreference(domain:) after API replacement; test was rewritten for unlock/shortcut without touching real trackpad.
+System UI probe via CUA AX_IGNORE_TRACKPAD: baseline Value off, after click Value on, after second click Value off.
+IORegistry AppleMultitouchTrackpadHIDEventDriver MultitouchPreferences USBMouseStopsTrackpad: 0 -> 1 -> 0 for UI click; programmatic defaults both domains 1 left driver 0; both domains restored 0.
+Standalone AXUIElementPerformAction probe: before Optional(0), press 0, after Optional(1), driver 1; second press before Optional(1), press 0, after Optional(0), driver 0.
+Production MacTools app AX permission not granted/tested; installed /Applications app still previous version.
+swift test observed command execution
+stdout/stderr combined="Building for debugging...\n[0/5] Write sources\n[1/5] Write swift-version--58304C5D6DBC2206.txt\n[3/6] Emitting module MacToolsTests\n[4/6] Compiling MacToolsTests Checks.swift\n[4/6] Write Objects.LinkFileList\n[5/6] Linking MacToolsPackageTests\nBuild complete! (0.91s)\nTest Suite 'All tests' started at 2026-09-25 09:53:38.598.\nTest Suite 'MacToolsPackageTests.xctest' started at 2026-09-25 09:53:38.599.\nTest Suite 'Checks' started at 2026-09-25 09:53:38.599.\nTest Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' started.\nTest Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' passed (0.036 seconds).\nTest Case '-[MacToolsTests.Checks testLocksAndLegacyPresets]' started.\nTest Case '-[MacToolsTests.Checks testLocksAndLegacyPresets]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' started.\nTest Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' passed (0.006 seconds).\nTest Case '-[MacToolsTests.Checks testProtectionAndValidation]' started.\nTest Case '-[MacToolsTests.Checks testProtectionAndValidation]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.Checks testUnlockAllAndShortcut]' started.\nTest Case '-[MacToolsTests.Checks testUnlockAllAndShortcut]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testWindowShortcutPersistenceAndConflict]' started.\nTest Case '-[MacToolsTests.Checks testWindowShortcutPersistenceAndConflict]' passed (0.004 seconds).\nTest Suite 'Checks' passed at 2026-09-25 09:53:38.648.\n\t Executed 6 tests, with 0 failures (0 unexpected) in 0.049 (0.050) seconds\nTest Suite 'MacToolsPackageTests.xctest' passed at 2026-09-25 09:53:38.648.\n\t Executed 6 tests, with 0 failures (0 unexpected) in 0.049 (0.050) seconds\nTest Suite 'All tests' passed at 2026-09-25 09:53:38.648.\n\t Executed 6 tests, with 0 failures (0 unexpected) in 0.049 (0.051) seconds\nAWAKE native ON: two IOPM assertions exist; repeated ON creates no duplicates\nAWAKE native OFF: both assertions released\nAWAKE deinit: assertions released; no audio writes\nLOCK CHECK: legacy=unlocked; external-change=restored; failed-switch=retained; unlocked-switch=released; channels=independent\nUNLOCK ALL: both locks removed without hardware write; shortcut persisted and conflict detected\n◇ Test run started.\n↳ Testing Library Version: 1501\n↳ Target Platform: arm64e-apple-macos14.0\n✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.\n"
+exit=0
+build-app.sh observed command execution
+stdout/stderr combined='[0/1] Planning build\nBuilding for production...\n[0/3] Write sources\n[1/3] Write swift-version--58304C5D6DBC2206.txt\n[3/4] Compiling MacTools MacTools.swift\n[3/5] Write Objects.LinkFileList\n[4/5] Linking MacTools\nBuild complete! (2.57s)\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app: replacing existing signature\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app/Contents/Info.plist: OK\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app\n'
+exit=0
+Post-commit verification of live trackpad route (2026-09-25):
+- From System Settings General page, command `open 'x-apple.systempreferences:com.apple.Accessibility-Settings.extension?PointerControl'` stdout='' stderr='' exit=0; CUA AX tree then showed Window='指针控制', AX_IGNORE_TRACKPAD Value=off.
+- Standalone `swift /tmp/ax_trackpad_type.swift` stdout='before Optional(0) NSNumber true', stderr='', exit=0. This supports TrackpadPreference.value(_:) NSNumber cast.
+- No application runtime permission grant or physical touch input test claimed. The real system switch was restored off; both preference domains and IORegistry property read 0 afterward.
