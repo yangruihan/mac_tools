@@ -79,45 +79,7 @@ enum Hardware {
     }
 }
 
-final class TrackpadPreference {
-    private let domain: CFString
-    init(domain: CFString = "com.apple.AppleMultitouchTrackpad" as CFString) { self.domain = domain }
-    private let key: CFString = "USBMouseStopsTrackpad" as CFString
-    private var previous: CFPropertyList?
-    private(set) var enabled = false
-
-    func setEnabled(_ on: Bool) throws {
-        guard on != enabled else { return }
-        let original = CFPreferencesCopyAppValue(key, domain)
-        if on { previous = original }
-        CFPreferencesSetAppValue(key, on ? kCFBooleanTrue : previous, domain)
-        guard CFPreferencesAppSynchronize(domain) else {
-            CFPreferencesSetAppValue(key, original, domain)
-            _ = CFPreferencesAppSynchronize(domain)
-            throw Failure.message("触控板系统偏好设置写入失败")
-        }
-        let value = CFPreferencesCopyAppValue(key, domain)
-        guard (value as? Bool) == (on ? true : (previous as? Bool ?? false)) || (!on && previous == nil && value == nil) else {
-            CFPreferencesSetAppValue(key, original, domain)
-            _ = CFPreferencesAppSynchronize(domain)
-            throw Failure.message("触控板设置校验失败；未确认已生效")
-        }
-        enabled = on
-        if !on { previous = nil }
-    }
-    deinit { if enabled { try? setEnabled(false) } }
-}
-
 final class Store: ObservableObject {
-    @Published private(set) var trackpadDisabledWithMouse = false
-    private let trackpad = TrackpadPreference()
-    func setTrackpadDisabledWithMouse(_ on: Bool) {
-        do {
-            try trackpad.setEnabled(on)
-            trackpadDisabledWithMouse = trackpad.enabled
-            message = on ? "已启用系统选项：有外接鼠标时忽略内置触控板" : "已恢复原触控板系统设置"
-        } catch { message = error.localizedDescription }
-    }
     @Published private(set) var keepAwake = false
     private(set) var awakeAssertions: [IOPMAssertionID] = []
     func setKeepAwake(_ enabled: Bool) {
@@ -190,7 +152,6 @@ final class Store: ObservableObject {
         register()
     }
     deinit {
-        try? trackpad.setEnabled(false)
         awakeAssertions.forEach { IOPMAssertionRelease($0) }
         lockTimer?.invalidate()
         references.forEach { UnregisterEventHotKey($0) }
@@ -225,11 +186,6 @@ final class Store: ObservableObject {
         timer.tolerance = 0.03
         RunLoop.main.add(timer, forMode: .common)
         lockTimer = timer
-    }
-    func releaseAllLocks() {
-        locks.removeAll()
-        updateLockTimer()
-        message = "已解除全部亮度和音量锁定；当前数值未改变"
     }
     func enforceLocks() {
         for (audio, lockedValue) in locks {
@@ -314,12 +270,6 @@ struct ContentView: View {
             Toggle("耳机保护：音量最高 18%（重启自动开启）", isOn: Binding(get: { store.protection }, set: { value in
                 if value { store.protection = true } else { confirm = true }
             }))
-            HStack {
-                Button("一键解除所有锁定") { store.releaseAllLocks() }
-                    .disabled(store.locks.isEmpty)
-                Toggle("有外接鼠标时屏蔽内置触控板", isOn: Binding(get: { store.trackpadDisabledWithMouse }, set: { store.setTrackpadDisabledWithMouse($0) }))
-                    .help("使用 macOS 辅助功能选项；仅外接鼠标连接时生效，退出恢复原设置")
-            }
             ScrollView {
                 VStack(spacing: 20) {
                     section("亮度", audio: false)
@@ -363,10 +313,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         showWindow(store: store)
     }
 
-    func applicationWillTerminate(_ notification: Notification) {
-        store.setKeepAwake(false)
-        store.setTrackpadDisabledWithMouse(false)
-    }
+    func applicationWillTerminate(_ notification: Notification) { store.setKeepAwake(false) }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
 
@@ -410,8 +357,6 @@ struct MenuContent: View {
     var body: some View {
         Button("打开工具箱", action: showWindow)
         Toggle("保持唤醒", isOn: Binding(get: { store.keepAwake }, set: { store.setKeepAwake($0) }))
-        Toggle("有外接鼠标时屏蔽内置触控板", isOn: Binding(get: { store.trackpadDisabledWithMouse }, set: { store.setTrackpadDisabledWithMouse($0) }))
-        Button("解除所有锁定") { store.releaseAllLocks() }.disabled(store.locks.isEmpty)
         Text(store.protection ? "耳机保护：开启（最高 18%）" : "耳机保护：已关闭")
         ForEach(store.presets) { preset in Button("\(preset.audio ? "音量" : "亮度") · \(preset.name) · \(Int(preset.value))%") { store.apply(preset) } }
         Divider()

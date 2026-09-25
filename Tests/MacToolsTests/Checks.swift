@@ -1,8 +1,40 @@
 import XCTest
 import IOKit.pwr_mgt
+import CoreFoundation
 @testable import MacTools
 
 final class Checks: XCTestCase {
+    func testUnlockAllAndTrackpadPreference() throws {
+        let suite = "MacToolsTrackpadTests.\(UUID())" as CFString
+        let key = "USBMouseStopsTrackpad" as CFString
+        defer { CFPreferencesSetAppValue(key, nil, suite); _ = CFPreferencesAppSynchronize(suite) }
+        let preference = TrackpadPreference(domain: suite)
+        XCTAssertFalse(preference.enabled)
+        try preference.setEnabled(true)
+        XCTAssertTrue(preference.enabled)
+        XCTAssertEqual(CFPreferencesCopyAppValue(key, suite) as? Bool, true)
+        try preference.setEnabled(false)
+        XCTAssertFalse(preference.enabled)
+        XCTAssertNil(CFPreferencesCopyAppValue(key, suite))
+        CFPreferencesSetAppValue(key, kCFBooleanFalse, suite)
+        _ = CFPreferencesAppSynchronize(suite)
+        try preference.setEnabled(true)
+        try preference.setEnabled(false)
+        XCTAssertEqual(CFPreferencesCopyAppValue(key, suite) as? Bool, false)
+
+        let defaults = UserDefaults(suiteName: "UnlockAllTests.\(UUID())")!
+        var writes = 0
+        let store = Store(defaults: defaults, writeHardware: { _, _ in writes += 1 }, readHardware: { _ in 12 })
+        store.apply(Preset(audio: true, value: 10, locked: true))
+        store.apply(Preset(value: 40, locked: true))
+        XCTAssertEqual(store.locks.count, 2)
+        let before = writes
+        store.releaseAllLocks()
+        XCTAssertTrue(store.locks.isEmpty)
+        store.enforceLocks()
+        XCTAssertEqual(writes, before)
+        print("UNLOCK ALL: both locks removed without hardware write; TRACKPAD: temporary preference true then original nil/false restored")
+    }
     func testKeepAwakeNativeLifecycle() throws {
         let suite = "AwakeTests.\(UUID())"
         let defaults = UserDefaults(suiteName: suite)!

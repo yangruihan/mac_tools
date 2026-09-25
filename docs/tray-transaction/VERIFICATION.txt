@@ -315,3 +315,41 @@ LOCK CHECK: legacy=unlocked; external-change=restored; failed-switch=retained; u
 ✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
 
 swift test exit=0; build-app.sh exit=0; plist and codesign verified. Native IOPM create/release checked; full idle timeout / UI behavior not tested. /Applications build not replaced.
+
+2026-09-25 QUICK UNLOCK / TRACKPAD: changed Store.releaseAllLocks, Store.setTrackpadDisabledWithMouse, TrackpadPreference.setEnabled, ContentView, MenuContent. Structural baseline uses identical input and command; modified runtime tests separately recorded.
+BASELINE
+command=['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("unlock_all="+("present" if "func releaseAllLocks()" in s else "absent")); print("trackpad_toggle="+("present" if "func setTrackpadDisabledWithMouse(" in s else "absent")); print("audio_write=not_invoked")', '/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/BASELINE.swift']
+stdout='unlock_all=absent\ntrackpad_toggle=absent\naudio_write=not_invoked\n'
+stderr=''
+exit=0
+MODIFIED
+command=['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("unlock_all="+("present" if "func releaseAllLocks()" in s else "absent")); print("trackpad_toggle="+("present" if "func setTrackpadDisabledWithMouse(" in s else "absent")); print("audio_write=not_invoked")', '/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/MacTools.swift']
+stdout='unlock_all=present\ntrackpad_toggle=present\naudio_write=not_invoked\n'
+stderr=''
+exit=0
+RESTORE
+command=['/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/ROLLBACK.sh', '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpz5bi2f1l/MacTools.swift']
+stdout=''
+stderr=''
+exit=0
+ROLLBACK
+command=['python3', '-c', 'import sys; s=open(sys.argv[1]).read(); print("unlock_all="+("present" if "func releaseAllLocks()" in s else "absent")); print("trackpad_toggle="+("present" if "func setTrackpadDisabledWithMouse(" in s else "absent")); print("audio_write=not_invoked")', '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpz5bi2f1l/MacTools.swift']
+stdout='unlock_all=absent\ntrackpad_toggle=absent\naudio_write=not_invoked\n'
+stderr=''
+exit=0
+restored_sha256_equals_original=true
+REAPPLY
+command=['patch', '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpz5bi2f1l/MacTools.swift', '/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/DIFF.patch']
+stdout="patching file '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpz5bi2f1l/MacTools.swift'\n"
+stderr=''
+exit=0
+patch_reconstructs_modified=true
+/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/BASELINE.swift sha256=dc42a5a724586d0f40cfc05e424e10d3141ea9bf78cb31a922d5f9279bb5353b
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/MacTools.swift sha256=7d3fbc75ac90f94c1a3984657f8a37d8fa696a8deb7e7fb4997239fd660ff7a5
+swift test command=observed process execution
+stdout/stderr combined="Building for debugging...\n[0/6] Write sources\n[2/6] Write swift-version--58304C5D6DBC2206.txt\n[4/8] Emitting module MacTools\n[5/8] Compiling MacTools MacTools.swift\n[5/10] Write Objects.LinkFileList\n[6/10] Linking MacTools\n[7/10] Applying MacTools\n[9/12] Compiling MacToolsTests Checks.swift\n[10/12] Emitting module MacToolsTests\n[10/12] Write Objects.LinkFileList\n[11/12] Linking MacToolsPackageTests\nBuild complete! (2.24s)\nTest Suite 'All tests' started at 2026-09-25 09:46:42.244.\nTest Suite 'MacToolsPackageTests.xctest' started at 2026-09-25 09:46:42.245.\nTest Suite 'Checks' started at 2026-09-25 09:46:42.245.\nTest Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' started.\nTest Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' passed (0.047 seconds).\nTest Case '-[MacToolsTests.Checks testLocksAndLegacyPresets]' started.\nTest Case '-[MacToolsTests.Checks testLocksAndLegacyPresets]' passed (0.003 seconds).\nTest Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' started.\nTest Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testProtectionAndValidation]' started.\nTest Case '-[MacToolsTests.Checks testProtectionAndValidation]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.Checks testUnlockAllAndTrackpadPreference]' started.\nTest Case '-[MacToolsTests.Checks testUnlockAllAndTrackpadPreference]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testWindowShortcutPersistenceAndConflict]' started.\nTest Case '-[MacToolsTests.Checks testWindowShortcutPersistenceAndConflict]' passed (0.002 seconds).\nTest Suite 'Checks' passed at 2026-09-25 09:46:42.302.\n\t Executed 6 tests, with 0 failures (0 unexpected) in 0.057 (0.057) seconds\nTest Suite 'MacToolsPackageTests.xctest' passed at 2026-09-25 09:46:42.302.\n\t Executed 6 tests, with 0 failures (0 unexpected) in 0.057 (0.057) seconds\nTest Suite 'All tests' passed at 2026-09-25 09:46:42.302.\n\t Executed 6 tests, with 0 failures (0 unexpected) in 0.057 (0.058) seconds\nAWAKE native ON: two IOPM assertions exist; repeated ON creates no duplicates\nAWAKE native OFF: both assertions released\nAWAKE deinit: assertions released; no audio writes\nLOCK CHECK: legacy=unlocked; external-change=restored; failed-switch=retained; unlocked-switch=released; channels=independent\nUNLOCK ALL: both locks removed without hardware write; TRACKPAD: temporary preference true then original nil/false restored\n◇ Test run started.\n↳ Testing Library Version: 1501\n↳ Target Platform: arm64e-apple-macos14.0\n✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.\n"
+exit=0
+build-app.sh command=observed process execution
+stdout/stderr combined='[0/1] Planning build\nBuilding for production...\n[0/3] Write sources\n[1/3] Write swift-version--58304C5D6DBC2206.txt\n[3/4] Compiling MacTools MacTools.swift\n[3/5] Write Objects.LinkFileList\n[4/5] Linking MacTools\nBuild complete! (2.74s)\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app: replacing existing signature\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app/Contents/Info.plist: OK\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app\n'
+exit=0
+Trackpad effect on physical device: unobserved; tested only isolated preference domain. Existing /Applications app not replaced.
