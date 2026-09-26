@@ -314,39 +314,40 @@ struct ShortcutEditor: View {
 struct PresetRow: View {
     @Binding var preset: Preset
     @ObservedObject var store: Store
+    private var accent: Color { preset.audio ? .blue : .orange }
 
     var body: some View {
-        GroupBox {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack(spacing: 14) {
-                    TextField("配置名称", text: $preset.name)
-                        .textFieldStyle(.plain).font(.system(size: 14, weight: .semibold))
-                        .accessibilityLabel("配置名称")
-                    Spacer(minLength: 8)
-                    Toggle("锁定", isOn: Binding(get: { preset.locked == true }, set: { preset.locked = $0; store.save() }))
-                        .toggleStyle(.checkbox).controlSize(.small)
-                        .help("应用后锁定；修改勾选不影响当前锁定，可用「解除所有锁定」解锁")
-                    Button("应用") { store.apply(preset) }
-                        .buttonStyle(.bordered)
-                    Button(role: .destructive) { store.presets.removeAll { $0.id == preset.id }; store.save() } label: {
-                        Image(systemName: "trash").foregroundStyle(.secondary)
-                    }.buttonStyle(.borderless).accessibilityLabel("删除配置 \(preset.name)").help("删除此配置")
-                }
-                HStack(spacing: 12) {
-                    Image(systemName: preset.audio ? "speaker.wave.2" : "sun.max").foregroundStyle(.secondary).frame(width: 20)
-                    Slider(value: $preset.value, in: 0...100, step: 1)
-                        .accessibilityLabel("\(preset.name)\(preset.audio ? "音量" : "亮度")百分比")
-                    Text("\(Int(preset.value))%")
-                        .font(.system(size: 22, weight: .medium)).monospacedDigit().frame(width: 66, alignment: .trailing)
-                }
-                HStack(alignment: .top, spacing: 10) {
-                    Label("快捷键", systemImage: "keyboard").font(.caption).foregroundStyle(.secondary).padding(.top, 3)
-                    ShortcutEditor(shortcut: $preset, error: store.shortcutErrors[preset.id], save: store.save)
-                    Spacer(minLength: 0)
-                }
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 14) {
+                TextField("配置名称", text: $preset.name)
+                    .textFieldStyle(.plain).font(.system(size: 14, weight: .semibold))
+                    .accessibilityLabel("配置名称")
+                Spacer(minLength: 8)
+                Toggle("锁定", isOn: Binding(get: { preset.locked == true }, set: { preset.locked = $0; store.save() }))
+                    .toggleStyle(.checkbox).controlSize(.small)
+                    .help("应用后锁定；修改勾选不影响当前锁定，可用「解除所有锁定」解锁")
+                Button("应用") { store.apply(preset) }
+                    .buttonStyle(.borderedProminent).tint(accent)
+                Button(role: .destructive) { store.presets.removeAll { $0.id == preset.id }; store.save() } label: {
+                    Image(systemName: "trash").foregroundStyle(.secondary)
+                }.buttonStyle(.borderless).accessibilityLabel("删除配置 \(preset.name)").help("删除此配置")
             }
-            .padding(10)
+            HStack(spacing: 12) {
+                Image(systemName: preset.audio ? "speaker.wave.2" : "sun.max").foregroundStyle(accent).frame(width: 20)
+                Slider(value: $preset.value, in: 0...100, step: 1).tint(accent)
+                    .accessibilityLabel("\(preset.name)\(preset.audio ? "音量" : "亮度")百分比")
+                Text("\(Int(preset.value))%")
+                    .font(.system(size: 22, weight: .medium, design: .rounded)).monospacedDigit().frame(width: 66, alignment: .trailing)
+            }
+            HStack(alignment: .top, spacing: 10) {
+                Label("快捷键", systemImage: "keyboard").font(.caption).foregroundStyle(.secondary).padding(.top, 3)
+                ShortcutEditor(shortcut: $preset, error: store.shortcutErrors[preset.id], save: store.save)
+                Spacer(minLength: 0)
+            }
         }
+        .padding(16)
+        .background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 14))
+        .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color.primary.opacity(0.07)))
         .onChange(of: preset.name) { _ in store.save() }
         .onChange(of: preset.value) { _ in store.save() }
     }
@@ -361,10 +362,11 @@ struct ContentView: View {
         VStack(spacing: 0) {
             HStack(spacing: 12) {
                 Image(systemName: "wrench.and.screwdriver.fill")
-                    .font(.system(size: 25, weight: .regular)).foregroundStyle(.secondary)
-                    .frame(width: 38, height: 46)
+                    .font(.system(size: 21)).foregroundStyle(.white)
+                    .frame(width: 46, height: 46)
+                    .background(.blue.gradient, in: RoundedRectangle(cornerRadius: 13))
                 VStack(alignment: .leading, spacing: 3) {
-                    Text("快捷控制").font(.system(size: 22, weight: .semibold))
+                    Text("快捷控制").font(.system(size: 23, weight: .bold))
                     Text("Mac 工具箱 · 让常用操作触手可及").font(.caption).foregroundStyle(.secondary)
                 }
                 Spacer()
@@ -379,14 +381,14 @@ struct ContentView: View {
             .controlSize(.regular).padding(.horizontal, 24).padding(.top, 20).padding(.bottom, 16)
 
             HStack(spacing: 12) {
-                utility("保持唤醒", detail: "防闲置熄屏与休眠", icon: "cup.and.saucer",
+                utility("保持唤醒", detail: "防闲置熄屏与休眠", icon: "cup.and.saucer", color: .teal,
                         isOn: Binding(get: { store.keepAwake }, set: { store.setKeepAwake($0) }))
                     .help("退出后释放；不阻止手动锁屏、屏保锁屏或合盖")
-                utility("耳机保护", detail: "音量上限 18%", icon: "earbuds",
+                utility("耳机保护", detail: "音量上限 18%", icon: "earbuds", color: .blue,
                         isOn: Binding(get: { store.protection }, set: { value in
                             if value { store.protection = true } else { confirm = true }
                         }))
-                utility("屏蔽内置触控板", detail: "仅外接鼠标时生效", icon: "hand.draw",
+                utility("屏蔽内置触控板", detail: "仅外接鼠标时生效", icon: "hand.draw", color: .orange,
                         isOn: Binding(get: { store.trackpadDisabledWithMouse }, set: { store.setTrackpadDisabledWithMouse($0) }))
                     .help("需要辅助功能权限；正常退出恢复原系统开关")
             }.padding(.horizontal, 24).padding(.bottom, 16)
@@ -400,7 +402,7 @@ struct ContentView: View {
             }
             .frame(maxWidth: .infinity, minHeight: 350, maxHeight: .infinity)
             .accessibilityIdentifier("preset-list")
-            .background(Color(nsColor: .windowBackgroundColor))
+            .background(Color(nsColor: .underPageBackgroundColor))
             .layoutPriority(1)
             Divider()
 
@@ -440,29 +442,30 @@ struct ContentView: View {
         }.padding(20).frame(width: 360)
     }
 
-    private func utility(_ title: String, detail: String, icon: String, isOn: Binding<Bool>) -> some View {
-        GroupBox {
-            Toggle(isOn: isOn) {
-                HStack(spacing: 9) {
-                    Image(systemName: icon).foregroundStyle(.secondary).font(.title3).frame(width: 24)
-                    VStack(alignment: .leading, spacing: 3) {
-                        Text(title).font(.system(size: 12, weight: .semibold))
-                        Text(detail).font(.system(size: 10)).foregroundStyle(.secondary)
-                    }
+    private func utility(_ title: String, detail: String, icon: String, color: Color, isOn: Binding<Bool>) -> some View {
+        Toggle(isOn: isOn) {
+            HStack(spacing: 9) {
+                Image(systemName: icon).foregroundStyle(color).font(.title3).frame(width: 24)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(title).font(.system(size: 12, weight: .semibold))
+                    Text(detail).font(.system(size: 10)).foregroundStyle(.secondary)
                 }
             }
-            .toggleStyle(.switch).controlSize(.small)
-            .accessibilityLabel(title)
-            .padding(6).frame(maxWidth: .infinity)
         }
+        .toggleStyle(.switch).controlSize(.small)
+        .padding(12).frame(maxWidth: .infinity)
+        .background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 12))
+        .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(Color.primary.opacity(0.06)))
     }
 
     private func section(_ title: String, audio: Bool) -> some View {
         let count = store.presets.filter { $0.audio == audio }.count
+        let accent: Color = audio ? .blue : .orange
         return VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 10) {
                 Image(systemName: audio ? "speaker.wave.2.fill" : "sun.max.fill")
-                    .foregroundStyle(.secondary).frame(width: 28, height: 34)
+                    .foregroundStyle(accent).frame(width: 34, height: 34)
+                    .background(accent.opacity(0.12), in: RoundedRectangle(cornerRadius: 10))
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title).font(.headline)
                     Text(audio ? "默认输出设备 · \(count) 个配置" : "内置显示器 · \(count) 个配置")
@@ -471,7 +474,7 @@ struct ContentView: View {
                 Spacer()
                 Label(store.locks[audio].map { "已锁定 \(Int($0))%" } ?? "未锁定",
                       systemImage: store.locks[audio] == nil ? "lock.open" : "lock.fill")
-                    .font(.caption).foregroundStyle(.secondary)
+                    .font(.caption).foregroundStyle(store.locks[audio] == nil ? Color.secondary : accent)
                 Button {
                     store.presets.append(Preset(name: audio ? "音量配置" : "亮度配置", audio: audio, value: audio ? 15 : 50))
                     store.save()
@@ -482,14 +485,13 @@ struct ContentView: View {
                 if preset.audio == audio { PresetRow(preset: $preset, store: store) }
             }
             if count == 0 {
-                GroupBox {
-                    VStack(spacing: 6) {
-                        Text("还没有\(title)配置").font(.subheadline.weight(.medium))
-                        Text("点击「添加配置」，保存常用档位和快捷键。")
-                            .font(.caption).foregroundStyle(.secondary)
-                    }
-                    .frame(maxWidth: .infinity).padding(.vertical, 16)
+                VStack(spacing: 6) {
+                    Text("还没有\(title)配置").font(.subheadline.weight(.medium))
+                    Text("点击「添加配置」，保存常用档位和快捷键。")
+                        .font(.caption).foregroundStyle(.secondary)
                 }
+                .frame(maxWidth: .infinity).padding(.vertical, 22)
+                .background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 14))
             }
         }
     }

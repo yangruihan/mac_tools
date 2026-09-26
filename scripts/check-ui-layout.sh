@@ -4,8 +4,16 @@ set -eu
 SOURCE=${1:-Sources/MacTools/MacTools.swift}
 TMP=$(mktemp -d)
 python3 - "$SOURCE" "$TMP/Source.swift" <<'PY'
-import pathlib, sys
+import pathlib, sys, os
 s = pathlib.Path(sys.argv[1]).read_text()
+ui = s[s.index('struct PresetRow: View'):s.index('@main')]
+custom = any(x in ui for x in ['.blue', '.orange', '.teal', '.white', '.black', '.gradient'])
+print('custom-decorative-palette=' + str(custom), flush=True)
+if os.environ.get('EXPECT_NATIVE') == '1':
+    assert not custom
+    assert '.preferredColorScheme' not in s
+    assert '.tint(' not in ui
+    assert 'GroupBox {' in ui
 pathlib.Path(sys.argv[2]).write_text(s.replace('@main\nstruct MacToolsApp', 'struct MacToolsApp'))
 PY
 cat > "$TMP/Probe.swift" <<'SWIFT'
@@ -16,7 +24,8 @@ import AppKit
 struct Probe {
     static func main() {
         _ = NSApplication.shared
-        if ProcessInfo.processInfo.environment["UI_DARK"] == "1" { NSApp.appearance = NSAppearance(named: .darkAqua) }
+        let appearance: NSAppearance.Name = ProcessInfo.processInfo.environment["UI_DARK"] == "1" ? .darkAqua : .aqua
+        NSApp.appearance = NSAppearance(named: appearance)
         let suite = "MacToolsLayoutCheck.\(UUID())"
         let defaults = UserDefaults(suiteName: suite)!
         defer { defaults.removePersistentDomain(forName: suite) }
@@ -41,6 +50,17 @@ struct Probe {
                 precondition(list.frame.height >= 350, "Preset viewport too small")
                 precondition(list.frame.height / size.height >= 0.58, "Too much fixed chrome")
             }
+        }
+        for name in [NSAppearance.Name.aqua, .darkAqua] {
+            NSApp.appearance = NSAppearance(named: name)
+            RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.1))
+            let actual = window.contentView!.effectiveAppearance.bestMatch(from: [.aqua, .darkAqua])
+            precondition(actual == name, "View did not follow application appearance")
+            var background: CGFloat = 0
+            window.contentView!.effectiveAppearance.performAsCurrentDrawingAppearance {
+                background = NSColor.windowBackgroundColor.usingColorSpace(.sRGB)!.redComponent
+            }
+            print("appearance=\(name.rawValue); window-background-red=\(String(format: "%.3f", Double(background)))")
         }
         print("hardware-writes=0; live-user-defaults=untouched")
     }
