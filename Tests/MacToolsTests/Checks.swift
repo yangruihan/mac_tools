@@ -173,7 +173,7 @@ final class Checks: XCTestCase {
 
     func testBuiltinsAndWindowShortcutPersistence() {
         let prefs = defaults(); let model = AppModel(defaults: prefs)
-        XCTAssertEqual(Set(model.plugins.plugins.map { $0.info.id }), ["quick-controls", "keep-awake", "trackpad"])
+        XCTAssertEqual(Set(model.plugins.plugins.map { $0.info.id }), ["quick-controls", "keep-awake", "trackpad", "window-preview"])
         model.windowShortcut = KeyChord(key: "7", modifiers: 0x100 | 0x800 | 0x1000); model.saveWindowShortcut()
         XCTAssertEqual(AppModel(defaults: prefs).windowShortcut, model.windowShortcut)
     }

@@ -4,18 +4,19 @@ set -eu
 SOURCE=${1:-Sources/MacTools}
 TMP=$(mktemp -d)
 python3 - "$SOURCE" "$TMP/Source.swift" <<'PY'
-import pathlib, sys, os
+import pathlib, sys, os, re
 source = pathlib.Path(sys.argv[1])
 if source.is_file() and source.name == 'MacTools.swift' and (source.parent / 'AppModel.swift').exists():
     source = source.parent
 files = sorted(source.rglob('*.swift')) if source.is_dir() else [source]
 contents = [p.read_text() for p in files]
 s = '\n'.join(contents)
-custom = any(x in s for x in ['.blue', '.orange', '.teal', '.white', '.black', '.gradient'])
+custom = bool(re.search(r'\.(?:blue|orange|teal|white|black|gradient)\b', s))
 print('custom-decorative-palette=' + str(custom), flush=True)
 print('manual-appearance-selection=' + str('enum AppearanceMode:' in s), flush=True)
 plugin_host = 'protocol ToolPlugin:' in s
 print('plugin-host=' + str(plugin_host), flush=True)
+print('window-preview-plugin=' + str('final class WindowPreviewPlugin:' in s), flush=True)
 if os.environ.get('EXPECT_NATIVE') == '1':
     assert not custom and '.preferredColorScheme' not in s
     assert '.tint(' not in s and 'GroupBox {' in s

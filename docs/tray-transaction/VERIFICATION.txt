@@ -746,3 +746,99 @@ No installed /Applications replacement. Original audio/brightness driver code an
 Additional checks: old Hardware enum and TrackpadPreference class bodies equal moved implementations byte-for-byte (excluding surrounding whitespace).
 First documentation example typecheck exit=1; stdout/stderr combined='build/plugin-review/ExamplePlugin.swift:11:32: error: reference to property \'context\' in closure requires explicit use of \'self\' to make capture semantics explicit\n 9 |     func makeView() -> AnyView {\n10 |         AnyView(GroupBox("示例工具") {\n11 |             Button("运行") { context.report("示例工具已运行") }\n   |                          | |- error: reference to property \'context\' in closure requires explicit use of \'self\' to make capture semantics explicit\n   |                          | `- note: reference \'self.\' explicitly\n   |                          `- note: capture \'self\' explicitly to enable implicit \'self\' in this closure\n12 |         })\n13 |     }\n\nbuild/plugin-review/ExamplePlugin.swift:15:48: error: reference to property \'context\' in closure requires explicit use of \'self\' to make capture semantics explicit\n13 |     }\n14 |     func makeMenuItems() -> AnyView {\n15 |         AnyView(Button("运行示例工具") { context.report("示例工具已运行") })\n   |                                  | |- error: reference to property \'context\' in closure requires explicit use of \'self\' to make capture semantics explicit\n   |                                  | `- note: reference \'self.\' explicitly\n   |                                  `- note: capture \'self\' explicitly to enable implicit \'self\' in this closure\n16 |     }\n17 | }\n'
 Corrected example closures to [weak self] explicit capture; repeated swiftc typecheck exit=0; stdout/stderr combined=''
+
+2026-09-26 WINDOW PREVIEW: AppModel builtins register WindowPreviewPlugin; FloatingPreview.begin uses nonactivating floating resizable panel, aspect-fit image, serial snapshots <=5fps/1600px. User action required for permission/window selection. macOS 14+ capture backend.
+source manifest={
+  "MacTools.swift": "08f39ff89bd3895365abfbf40dd13ccbcb96d6bfc56e4fcc2f8b4723600c4438",
+  "AppModel.swift": "b9fce1b547fff072a898cb89a9eadc9fd77befe26460f6109e786081ac066c58",
+  "UI/SharedControls.swift": "f788875ea451e20691af6f41228d09573f2568b2e0641b8139e83800a25d4fb0",
+  "UI/ContentView.swift": "44af3726fcdcb510efdcfe731df959165b5186ea5ddb7e8b412f30f85a88dad1",
+  "Core/HotKeyService.swift": "b2bc1bb21cf386973553abf930c5e1122936b1a846df311bff575d65efcc2592",
+  "Core/ToolPlugin.swift": "cc2a10dc3a95eab32d4b5c441eaf2481d4dfec1f3a6b540c94291059c93eb260",
+  "Plugins/QuickControls/QuickControlsPlugin.swift": "5d413457f0e5bb65938a9ae97725aed77f732e7b2bd1869a1b3e5abacffe6013",
+  "Plugins/QuickControls/Hardware.swift": "56f34026dfe702c136382d9a7798711e526944f76ba36bad2393d4e3570b483f",
+  "Plugins/QuickControls/QuickControlsView.swift": "430244544fe31cc2b9a4c5082ed3ea745615f3c9b2b39fcf76fbb3aaae59b53f",
+  "Plugins/KeepAwake/KeepAwakePlugin.swift": "348d212e424bba06efcd58cc926af5f1a92d3449163ef9b96625d03d979fc5d0",
+  "Plugins/Trackpad/TrackpadPlugin.swift": "a8e00111704aaf308b8936e7b92527c4decbad5b56c60196f6882a49f14bc105",
+  "Plugins/WindowPreview/FloatingPreview.swift": "4657000e70d73deb303868f46e6d3cbd640e9136ceb55800544c0545cd63585d",
+  "Plugins/WindowPreview/WindowPreviewPlugin.swift": "12fb314e322fcae8053b1421de8fd70ee5ebe98dd2190e5f9f72f7e2ea8f4c81"
+}
+[
+  {
+    "label": "BASELINE",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/scripts/check-ui-layout.sh",
+      "/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/BASELINE.swift"
+    ],
+    "stdout": "custom-decorative-palette=False\nmanual-appearance-selection=False\nplugin-host=False\nwindow-preview-plugin=False\nwindow=980x740; list=932x521; height-share=70%\nwindow=900x640; list=852x421; height-share=65%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "label": "MODIFIED",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/scripts/check-ui-layout.sh",
+      "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools"
+    ],
+    "stdout": "custom-decorative-palette=False\nmanual-appearance-selection=True\nplugin-host=True\nwindow-preview-plugin=True\nwindow=980x740; list=980x617; height-share=83%\nwindow=900x640; list=900x517; height-share=80%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "label": "RESTORE",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/ROLLBACK.sh",
+      "--sources",
+      "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpuu2wwhnc/Sources"
+    ],
+    "stdout": "Prior source copy preserved: /var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpuu2wwhnc/Sources.before-rollback.19365\n",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "label": "ROLLBACK",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/scripts/check-ui-layout.sh",
+      "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpuu2wwhnc/Sources"
+    ],
+    "stdout": "custom-decorative-palette=False\nmanual-appearance-selection=False\nplugin-host=False\nwindow-preview-plugin=False\nwindow=980x740; list=932x521; height-share=70%\nwindow=900x640; list=852x421; height-share=65%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "label": "REAPPLY",
+    "command": [
+      "patch",
+      "-p1",
+      "-d",
+      "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpuu2wwhnc/Sources",
+      "-i",
+      "/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/DIFF.patch"
+    ],
+    "stdout": "patching file AppModel.swift\npatching file 'Core/HotKeyService.swift'\npatching file 'Core/ToolPlugin.swift'\npatching file MacTools.swift\npatching file 'Plugins/KeepAwake/KeepAwakePlugin.swift'\npatching file 'Plugins/QuickControls/Hardware.swift'\npatching file 'Plugins/QuickControls/QuickControlsPlugin.swift'\npatching file 'Plugins/QuickControls/QuickControlsView.swift'\npatching file 'Plugins/Trackpad/TrackpadPlugin.swift'\npatching file 'Plugins/WindowPreview/FloatingPreview.swift'\npatching file 'Plugins/WindowPreview/WindowPreviewPlugin.swift'\npatching file 'UI/ContentView.swift'\npatching file 'UI/SharedControls.swift'\n",
+    "stderr": "",
+    "exit": 0
+  }
+]
+rollback pristine hash match; multi-file patch reconstruction match
+swift test before window-preview
+stdout/stderr combined="[0/1] Planning build\nBuilding for debugging...\n[0/4] Write swift-version--58304C5D6DBC2206.txt\nBuild complete! (0.18s)\nTest Suite 'All tests' started at 2026-09-26 16:18:12.320.\nTest Suite 'MacToolsPackageTests.xctest' started at 2026-09-26 16:18:12.321.\nTest Suite 'Checks' started at 2026-09-26 16:18:12.321.\nTest Case '-[MacToolsTests.Checks testAppearanceSwitchAndPersistence]' started.\nTest Case '-[MacToolsTests.Checks testAppearanceSwitchAndPersistence]' passed (0.056 seconds).\nTest Case '-[MacToolsTests.Checks testBuiltinsAndWindowShortcutPersistence]' started.\nTest Case '-[MacToolsTests.Checks testBuiltinsAndWindowShortcutPersistence]' passed (0.004 seconds).\nTest Case '-[MacToolsTests.Checks testCrossPluginShortcutConflictsAndRelease]' started.\nTest Case '-[MacToolsTests.Checks testCrossPluginShortcutConflictsAndRelease]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' started.\nTest Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testLegacyMigrationAndSettingsIsolation]' started.\nTest Case '-[MacToolsTests.Checks testLegacyMigrationAndSettingsIsolation]' passed (0.003 seconds).\nTest Case '-[MacToolsTests.Checks testLocksProtectionAndDisableCleanup]' started.\nTest Case '-[MacToolsTests.Checks testLocksProtectionAndDisableCleanup]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testPluginDiscoveryLifecyclePersistenceAndDuplicateGuard]' started.\nTest Case '-[MacToolsTests.Checks testPluginDiscoveryLifecyclePersistenceAndDuplicateGuard]' passed (0.004 seconds).\nTest Case '-[MacToolsTests.Checks testProtectionAndValidation]' started.\nTest Case '-[MacToolsTests.Checks testProtectionAndValidation]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.Checks testTrackpadDisableRestoresAndFailureRetainsRegistryState]' started.\nTest Case '-[MacToolsTests.Checks testTrackpadDisableRestoresAndFailureRetainsRegistryState]' passed (0.001 seconds).\nTest Suite 'Checks' passed at 2026-09-26 16:18:12.396.\n\t Executed 9 tests, with 0 failures (0 unexpected) in 0.074 (0.075) seconds\nTest Suite 'MacToolsPackageTests.xctest' passed at 2026-09-26 16:18:12.396.\n\t Executed 9 tests, with 0 failures (0 unexpected) in 0.074 (0.075) seconds\nTest Suite 'All tests' passed at 2026-09-26 16:18:12.396.\n\t Executed 9 tests, with 0 failures (0 unexpected) in 0.074 (0.076) seconds\nHOTKEYS: cross-owner conflict surfaced; removing owner/disabled plugin releases chord\nAWAKE: native assertions ON -> released on stop/deinit; no audio writes\nMIGRATION: preset IDs/lock/key preserved; legacy bytes unchanged; namespaced settings isolated\nQUICK CONTROLS: cap/restore/unlock preserved; stop clears locks/timer; stopped actions do not write\nPLUGIN HOST: new plugin views/menu/lifecycle need no host branch; disable persists; invalid IDs rejected\n◇ Test run started.\n↳ Testing Library Version: 1501\n↳ Target Platform: arm64e-apple-macos14.0\n✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.\n"
+exit=0
+swift test
+stdout/stderr combined="Building for debugging...\n[0/5] Write sources\n[1/5] Write swift-version--58304C5D6DBC2206.txt\n[3/7] Compiling MacTools WindowPreviewPlugin.swift\n[4/7] Emitting module MacTools\n[4/9] Write Objects.LinkFileList\n[5/9] Linking MacTools\n[6/9] Applying MacTools\n[8/10] Emitting module MacToolsTests\n[8/10] Write Objects.LinkFileList\n[9/10] Linking MacToolsPackageTests\nBuild complete! (2.65s)\nTest Suite 'All tests' started at 2026-09-26 16:25:35.578.\nTest Suite 'MacToolsPackageTests.xctest' started at 2026-09-26 16:25:35.580.\nTest Suite 'Checks' started at 2026-09-26 16:25:35.580.\nTest Case '-[MacToolsTests.Checks testAppearanceSwitchAndPersistence]' started.\nTest Case '-[MacToolsTests.Checks testAppearanceSwitchAndPersistence]' passed (0.061 seconds).\nTest Case '-[MacToolsTests.Checks testBuiltinsAndWindowShortcutPersistence]' started.\nTest Case '-[MacToolsTests.Checks testBuiltinsAndWindowShortcutPersistence]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testCrossPluginShortcutConflictsAndRelease]' started.\nTest Case '-[MacToolsTests.Checks testCrossPluginShortcutConflictsAndRelease]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' started.\nTest Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testLegacyMigrationAndSettingsIsolation]' started.\nTest Case '-[MacToolsTests.Checks testLegacyMigrationAndSettingsIsolation]' passed (0.004 seconds).\nTest Case '-[MacToolsTests.Checks testLocksProtectionAndDisableCleanup]' started.\nTest Case '-[MacToolsTests.Checks testLocksProtectionAndDisableCleanup]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testPluginDiscoveryLifecyclePersistenceAndDuplicateGuard]' started.\nTest Case '-[MacToolsTests.Checks testPluginDiscoveryLifecyclePersistenceAndDuplicateGuard]' passed (0.003 seconds).\nTest Case '-[MacToolsTests.Checks testProtectionAndValidation]' started.\nTest Case '-[MacToolsTests.Checks testProtectionAndValidation]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.Checks testTrackpadDisableRestoresAndFailureRetainsRegistryState]' started.\nTest Case '-[MacToolsTests.Checks testTrackpadDisableRestoresAndFailureRetainsRegistryState]' passed (0.001 seconds).\nTest Suite 'Checks' passed at 2026-09-26 16:25:35.660.\n\t Executed 9 tests, with 0 failures (0 unexpected) in 0.079 (0.080) seconds\nTest Suite 'FloatingPreviewTests' started at 2026-09-26 16:25:35.660.\nTest Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' started.\nTest Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' passed (0.086 seconds).\nTest Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' started.\nTest Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' started.\nTest Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' passed (0.081 seconds).\nTest Suite 'FloatingPreviewTests' passed at 2026-09-26 16:25:35.828.\n\t Executed 3 tests, with 0 failures (0 unexpected) in 0.167 (0.168) seconds\nTest Suite 'MacToolsPackageTests.xctest' passed at 2026-09-26 16:25:35.828.\n\t Executed 12 tests, with 0 failures (0 unexpected) in 0.247 (0.248) seconds\nTest Suite 'All tests' passed at 2026-09-26 16:25:35.828.\n\t Executed 12 tests, with 0 failures (0 unexpected) in 0.247 (0.249) seconds\nHOTKEYS: cross-owner conflict surfaced; removing owner/disabled plugin releases chord\nAWAKE: native assertions ON -> released on stop/deinit; no audio writes\nMIGRATION: preset IDs/lock/key preserved; legacy bytes unchanged; namespaced settings isolated\nQUICK CONTROLS: cap/restore/unlock preserved; stop clears locks/timer; stopped actions do not write\nPLUGIN HOST: new plugin views/menu/lifecycle need no host branch; disable persists; invalid IDs rejected\nPREVIEW: floating + resizable; landscape/portrait sizes verified; disabling plugin clears panel and pixels\nPREVIEW: cancelled in-flight frame discarded; source failure clears stale pixels\n◇ Test run started.\n↳ Testing Library Version: 1501\n↳ Target Platform: arm64e-apple-macos14.0\n✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.\n"
+exit=0
+./scripts/build-app.sh
+stdout/stderr combined='[0/1] Planning build\nBuilding for production...\n[0/3] Write sources\n[1/3] Write swift-version--58304C5D6DBC2206.txt\n[3/4] Compiling MacTools AppModel.swift\n[3/5] Write Objects.LinkFileList\n[4/5] Linking MacTools\nBuild complete! (4.01s)\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app: replacing existing signature\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app/Contents/Info.plist: OK\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app\n'
+exit=0
+scripts/check-window-preview.sh
+stdout/stderr combined='REAL CAPTURE: own window only; covered source updates; distinct frame hashes=true; size=640x416\nREAL CAPTURE: closed source rejected; no audio; no image saved\n'
+exit=0
+EXPECT_NATIVE=1 EXPECT_MODERN=1 scripts/check-ui-layout.sh (original substring palette check)
+stdout/stderr combined='custom-decorative-palette=True\nmanual-appearance-selection=True\nplugin-host=True\nTraceback (most recent call last):\n  File "<stdin>", line 14, in <module>\nAssertionError\n'
+exit=1
+EXPECT_NATIVE=1 EXPECT_MODERN=1 scripts/check-ui-layout.sh (word-boundary regex fixed)
+stdout/stderr combined='custom-decorative-palette=False\nmanual-appearance-selection=True\nplugin-host=True\nwindow=980x740; list=980x617; height-share=83%\nwindow=900x640; list=900x517; height-share=80%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n'
+exit=0
+Palette check correction: .whitespacesAndNewlines was falsely matched as .white; matched symbol boundaries instead.
+CUA FloatingDemo used production FloatingPreview with synthetic circle/test frame, no personal window captured. Initial screenshot 1280x~895 pixels; dragging lower-right to smaller size produced 910x676, then taller/narrower 710x732; frame kept aspect ratio with letterboxing. Close button clicked; test process terminated afterward. Native test additionally verifies non-deactivating floating level and landscape/portrait content sizes.
+Actual ScreenCaptureKit capture tested only against same test process fixture: occluded source pixel hashes changed; closed source rejected. Permission was already available to test runner; no permission grant performed. Production app Screen Recording grant still requires user action. No audio writes, no images saved/uploaded, /Applications version not replaced.

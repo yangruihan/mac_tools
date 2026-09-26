@@ -32,8 +32,7 @@ final class AppModel: ObservableObject {
         let builtins: [any ToolPlugin] = [
             QuickControlsPlugin(context: context(for: QuickControlsPlugin.id)),
             KeepAwakePlugin(context: context(for: KeepAwakePlugin.id)),
-            TrackpadPlugin(context: context(for: TrackpadPlugin.id)),
-            WindowPreviewPlugin(context: context(for: WindowPreviewPlugin.id))
+            TrackpadPlugin(context: context(for: TrackpadPlugin.id))
         ]
         // IDs are compile-time constants covered by registry tests; never accept downloaded code here.
         return try! PluginRegistry(plugins: builtins, defaults: defaults, report: { [weak self] in self?.message = $0 })
