@@ -40,8 +40,33 @@ final class FloatingPreviewTests: XCTestCase {
             XCTAssertEqual(try XCTUnwrap(panel.contentView).bounds.height, size.height, accuracy: 1)
         }
         XCTAssertTrue(registry.setEnabled(false, id: plugin.info.id))
-        XCTAssertNil(plugin.preview.panel); XCTAssertNil(plugin.preview.image); XCTAssertFalse(plugin.preview.isRunning)
+        XCTAssertNil(plugin.preview.panel); XCTAssertNil(plugin.preview.image); XCTAssertFalse(plugin.preview.isRunning); XCTAssertFalse(plugin.preview.isPaused)
         print("PREVIEW: floating + resizable; landscape/portrait sizes verified; disabling plugin clears panel and pixels")
+    }
+    @MainActor
+    func testHiddenWindowPausesAndRestoresWithoutLosingFrame() async throws {
+        _ = NSApplication.shared
+        let preview = FloatingPreview(); let image = frame()
+        var attempts = 0
+        preview.begin(title: "pause fixture", showPanel: false) {
+            attempts += 1
+            if attempts == 1 { return image }
+            if attempts < 4 { throw PreviewPaused() }
+            return image
+        }
+        defer { preview.stop() }
+        for _ in 0..<100 where preview.image == nil { try await Task.sleep(nanoseconds: 10_000_000) }
+        let original = try XCTUnwrap(preview.image)
+        for _ in 0..<100 where !preview.isPaused { try await Task.sleep(nanoseconds: 10_000_000) }
+        XCTAssertTrue(preview.isPaused)
+        XCTAssertTrue(preview.isRunning)
+        XCTAssertTrue(preview.image === original, "Paused view must keep the previous frame")
+        XCTAssertTrue(preview.status.contains("自动继续"))
+        for _ in 0..<300 where preview.isPaused { try await Task.sleep(nanoseconds: 10_000_000) }
+        XCTAssertFalse(preview.isPaused)
+        XCTAssertTrue(preview.isRunning)
+        XCTAssertNotNil(preview.image)
+        print("PREVIEW PAUSE: frame retained while hidden; automatically resumed after source reappeared")
     }
     @MainActor
     func testStopDiscardsLateFrameAndErrorsClearImage() async throws {

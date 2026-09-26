@@ -71,26 +71,16 @@ final class WindowPreviewPlugin: ObservableObject, ToolPlugin {
         context.report(message)
     }
 
-    private enum Visibility { case visible([String: Any]), paused, closed }
-
-    @available(macOS 14.0, *)
-    private static func visibility(of window: SCWindow) async throws -> Visibility {
-        guard let app = window.owningApplication else { return .closed }
-        let records = CGWindowListCopyWindowInfo(.optionIncludingWindow, window.windowID) as? [[String: Any]] ?? []
-        if let record = records.first(where: { ( $0[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value == app.processID }),
-           (record[kCGWindowIsOnscreen as String] as? Bool) == true { return .visible(record) }
-        // A minimized window disappears from CGWindowList, but remains in ScreenCaptureKit's all-window list.
-        let all = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: false)
-        return all.windows.contains(where: { $0.windowID == window.windowID && $0.owningApplication?.processID == app.processID }) ? .paused : .closed
-    }
-
     @available(macOS 14.0, *)
     static func capture(_ window: SCWindow) async throws -> CGImage {
-        let record: [String: Any]
-        switch try await visibility(of: window) {
-        case .visible(let value): record = value
-        case .paused: throw PreviewPaused()
-        case .closed: throw Failure.message("源窗口已关闭，请重新选择")
+        guard let app = window.owningApplication,
+              let records = CGWindowListCopyWindowInfo(.optionIncludingWindow, window.windowID) as? [[String: Any]],
+              let record = records.first,
+              (record[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value == app.processID else {
+            throw Failure.message("源窗口已关闭，请重新选择")
+        }
+        guard (record[kCGWindowIsOnscreen as String] as? Bool) == true else {
+            throw Failure.message("源窗口已最小化、隐藏或不在可用桌面，请恢复后重新开始")
         }
         var size = window.frame.size
         if let bounds = record[kCGWindowBounds as String] as? NSDictionary,
@@ -101,11 +91,7 @@ final class WindowPreviewPlugin: ObservableObject, ToolPlugin {
         config.showsCursor = false; config.capturesAudio = false
         config.scalesToFit = true; config.preservesAspectRatio = true
         config.ignoreShadowsSingleWindow = true
-        do { return try await SCScreenshotManager.captureImage(contentFilter: SCContentFilter(desktopIndependentWindow: window), configuration: config) }
-        catch {
-            if case .paused = try await visibility(of: window) { throw PreviewPaused() }
-            throw error
-        }
+        return try await SCScreenshotManager.captureImage(contentFilter: SCContentFilter(desktopIndependentWindow: window), configuration: config)
     }
 
     func showChooser() {

@@ -842,3 +842,110 @@ exit=0
 Palette check correction: .whitespacesAndNewlines was falsely matched as .white; matched symbol boundaries instead.
 CUA FloatingDemo used production FloatingPreview with synthetic circle/test frame, no personal window captured. Initial screenshot 1280x~895 pixels; dragging lower-right to smaller size produced 910x676, then taller/narrower 710x732; frame kept aspect ratio with letterboxing. Close button clicked; test process terminated afterward. Native test additionally verifies non-deactivating floating level and landscape/portrait content sizes.
 Actual ScreenCaptureKit capture tested only against same test process fixture: occluded source pixel hashes changed; closed source rejected. Permission was already available to test runner; no permission grant performed. Production app Screen Recording grant still requires user action. No audio writes, no images saved/uploaded, /Applications version not replaced.
+
+2026-09-26 PREVIEW AUTO-RESUME: WindowPreviewPlugin.visibility/capture distinguishes temporary invisibility via SCShareableContent all-windows from unavailable source; FloatingPreview captureTask catches PreviewPaused, retains last image with pause overlay, waits 1 second between visibility checks, auto-resumes on next frame, still stops on terminal errors/cancellation.
+/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/PRE-PAUSE-FloatingPreview.swift sha256=4657000e70d73deb303868f46e6d3cbd640e9136ceb55800544c0545cd63585d
+/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/PRE-PAUSE-WindowPreviewPlugin.swift sha256=12fb314e322fcae8053b1421de8fd70ee5ebe98dd2190e5f9f72f7e2ea8f4c81
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/WindowPreview/FloatingPreview.swift sha256=04f5f88c35ca5a4838415fc348042fd09ad73d06abe33aee3afe3bd517dce5cc
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/WindowPreview/WindowPreviewPlugin.swift sha256=e692bd86324691e8e7c96caf21540549362cbdf92ffc5328493b71804c7f0391
+source-manifest={
+  "MacTools.swift": "08f39ff89bd3895365abfbf40dd13ccbcb96d6bfc56e4fcc2f8b4723600c4438",
+  "AppModel.swift": "b9fce1b547fff072a898cb89a9eadc9fd77befe26460f6109e786081ac066c58",
+  "UI/SharedControls.swift": "f788875ea451e20691af6f41228d09573f2568b2e0641b8139e83800a25d4fb0",
+  "UI/ContentView.swift": "44af3726fcdcb510efdcfe731df959165b5186ea5ddb7e8b412f30f85a88dad1",
+  "Core/HotKeyService.swift": "b2bc1bb21cf386973553abf930c5e1122936b1a846df311bff575d65efcc2592",
+  "Core/ToolPlugin.swift": "cc2a10dc3a95eab32d4b5c441eaf2481d4dfec1f3a6b540c94291059c93eb260",
+  "Plugins/QuickControls/QuickControlsPlugin.swift": "5d413457f0e5bb65938a9ae97725aed77f732e7b2bd1869a1b3e5abacffe6013",
+  "Plugins/QuickControls/Hardware.swift": "56f34026dfe702c136382d9a7798711e526944f76ba36bad2393d4e3570b483f",
+  "Plugins/QuickControls/QuickControlsView.swift": "430244544fe31cc2b9a4c5082ed3ea745615f3c9b2b39fcf76fbb3aaae59b53f",
+  "Plugins/KeepAwake/KeepAwakePlugin.swift": "348d212e424bba06efcd58cc926af5f1a92d3449163ef9b96625d03d979fc5d0",
+  "Plugins/Trackpad/TrackpadPlugin.swift": "a8e00111704aaf308b8936e7b92527c4decbad5b56c60196f6882a49f14bc105",
+  "Plugins/WindowPreview/FloatingPreview.swift": "04f5f88c35ca5a4838415fc348042fd09ad73d06abe33aee3afe3bd517dce5cc",
+  "Plugins/WindowPreview/WindowPreviewPlugin.swift": "e692bd86324691e8e7c96caf21540549362cbdf92ffc5328493b71804c7f0391"
+}
+[
+  {
+    "label": "BASELINE",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/scripts/check-ui-layout.sh",
+      "/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/BASELINE.swift"
+    ],
+    "stdout": "custom-decorative-palette=False\nmanual-appearance-selection=False\nplugin-host=False\nwindow-preview-plugin=False\npreview-auto-resume=False\nwindow=980x740; list=932x521; height-share=70%\nwindow=900x640; list=852x421; height-share=65%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "label": "MODIFIED",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/scripts/check-ui-layout.sh",
+      "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools"
+    ],
+    "stdout": "custom-decorative-palette=False\nmanual-appearance-selection=True\nplugin-host=True\nwindow-preview-plugin=True\npreview-auto-resume=True\nwindow=980x740; list=980x617; height-share=83%\nwindow=900x640; list=900x517; height-share=80%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "label": "RESTORE",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/ROLLBACK.sh",
+      "--sources",
+      "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpsgnukfre/Sources"
+    ],
+    "stdout": "Prior source copy preserved: /var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpsgnukfre/Sources.before-rollback.88374\n",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "label": "ROLLBACK",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/scripts/check-ui-layout.sh",
+      "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpsgnukfre/Sources"
+    ],
+    "stdout": "custom-decorative-palette=False\nmanual-appearance-selection=False\nplugin-host=False\nwindow-preview-plugin=False\npreview-auto-resume=False\nwindow=980x740; list=932x521; height-share=70%\nwindow=900x640; list=852x421; height-share=65%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "label": "REAPPLY",
+    "command": [
+      "patch",
+      "-p1",
+      "-d",
+      "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmpsgnukfre/Sources",
+      "-i",
+      "/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/DIFF.patch"
+    ],
+    "stdout": "patching file AppModel.swift\npatching file 'Core/HotKeyService.swift'\npatching file 'Core/ToolPlugin.swift'\npatching file MacTools.swift\npatching file 'Plugins/KeepAwake/KeepAwakePlugin.swift'\npatching file 'Plugins/QuickControls/Hardware.swift'\npatching file 'Plugins/QuickControls/QuickControlsPlugin.swift'\npatching file 'Plugins/QuickControls/QuickControlsView.swift'\npatching file 'Plugins/Trackpad/TrackpadPlugin.swift'\npatching file 'Plugins/WindowPreview/FloatingPreview.swift'\npatching file 'Plugins/WindowPreview/WindowPreviewPlugin.swift'\npatching file 'UI/ContentView.swift'\npatching file 'UI/SharedControls.swift'\n",
+    "stderr": "",
+    "exit": 0
+  }
+]
+Restored source-tree hash matches original; patch reconstructs all active Swift file hashes.
+baseline owner fixture capture: source minimized before modification
+stdout/stderr combined='REAL CAPTURE: own window only; covered source updates; distinct frame hashes=true; size=640x416\nMINIMIZED: isMiniaturized=true; records=0; onScreen=nil\nMINIMIZED: error=源窗口已关闭，请重新选择\nRESTORED: capture succeeded; size=640x416\nREAL CAPTURE: closed source rejected; no audio; no image saved\n'
+exit=0
+baseline owner fixture: minimized CG/SCK visibility probe
+stdout/stderr combined='REAL CAPTURE: own window only; covered source updates; distinct frame hashes=true; size=640x416\nMINIMIZED: isMiniaturized=true; records=0; onScreen=nil\nMINIMIZED: ScreenCaptureKit-allContainsTarget=true\nMINIMIZED: error=源窗口已关闭，请重新选择\nRESTORED: capture succeeded; size=640x416\nREAL CAPTURE: closed source rejected; no audio; no image saved\n'
+exit=0
+first modified fixture attempt: restore state not yet verified in fixture
+stdout/stderr combined='REAL CAPTURE: own window only; covered source updates; distinct frame hashes=true; size=640x416\nMINIMIZED: isMiniaturized=true; records=0; onScreen=nil\nMINIMIZED: ScreenCaptureKit-allContainsTarget=true\nMINIMIZED: paused (not closed)\nFAIL: 源窗口暂不可见\n'
+exit=1
+second modified fixture attempt: closed source still retained by OS
+stdout/stderr combined='REAL CAPTURE: own window only; covered source updates; distinct frame hashes=true; size=640x416\nMINIMIZED: isMiniaturized=true; records=0; onScreen=nil\nMINIMIZED: ScreenCaptureKit-allContainsTarget=true\nMINIMIZED: paused (not closed)\nRESTORED: isMiniaturized=false; records=1; onScreen=Optional(1)\nRESTORED: capture resumed; size=640x416\nFAIL: 源窗口暂不可见\n'
+exit=1
+CG all-windows diagnostic: closed retained object
+stdout/stderr combined='REAL CAPTURE: own window only; covered source updates; distinct frame hashes=true; size=640x416\nMINIMIZED: isMiniaturized=true; records=0; onScreen=nil\nMINIMIZED: CG-allContainsTarget=true\nMINIMIZED: ScreenCaptureKit-allContainsTarget=true\nMINIMIZED: paused (not closed)\nRESTORED: isMiniaturized=false; records=1; onScreen=Optional(1)\nRESTORED: capture resumed; size=640x416\nCLOSED: CG-allContainsTarget=true\nFAIL: 源窗口暂不可见\n'
+exit=1
+swift test
+stdout/stderr combined="Building for debugging...\n[0/5] Write sources\n[1/5] Write swift-version--58304C5D6DBC2206.txt\n[3/5] Compiling MacToolsTests FloatingPreviewTests.swift\n[4/5] Emitting module MacToolsTests\n[4/6] Write Objects.LinkFileList\n[5/6] Linking MacToolsPackageTests\nBuild complete! (1.55s)\nTest Suite 'All tests' started at 2026-09-26 16:39:42.497.\nTest Suite 'MacToolsPackageTests.xctest' started at 2026-09-26 16:39:42.498.\nTest Suite 'Checks' started at 2026-09-26 16:39:42.498.\nTest Case '-[MacToolsTests.Checks testAppearanceSwitchAndPersistence]' started.\nTest Case '-[MacToolsTests.Checks testAppearanceSwitchAndPersistence]' passed (0.050 seconds).\nTest Case '-[MacToolsTests.Checks testBuiltinsAndWindowShortcutPersistence]' started.\nTest Case '-[MacToolsTests.Checks testBuiltinsAndWindowShortcutPersistence]' passed (0.003 seconds).\nTest Case '-[MacToolsTests.Checks testCrossPluginShortcutConflictsAndRelease]' started.\nTest Case '-[MacToolsTests.Checks testCrossPluginShortcutConflictsAndRelease]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' started.\nTest Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testLegacyMigrationAndSettingsIsolation]' started.\nTest Case '-[MacToolsTests.Checks testLegacyMigrationAndSettingsIsolation]' passed (0.003 seconds).\nTest Case '-[MacToolsTests.Checks testLocksProtectionAndDisableCleanup]' started.\nTest Case '-[MacToolsTests.Checks testLocksProtectionAndDisableCleanup]' passed (0.001 seconds).\nTest Case '-[MacToolsTests.Checks testPluginDiscoveryLifecyclePersistenceAndDuplicateGuard]' started.\nTest Case '-[MacToolsTests.Checks testPluginDiscoveryLifecyclePersistenceAndDuplicateGuard]' passed (0.003 seconds).\nTest Case '-[MacToolsTests.Checks testProtectionAndValidation]' started.\nTest Case '-[MacToolsTests.Checks testProtectionAndValidation]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.Checks testTrackpadDisableRestoresAndFailureRetainsRegistryState]' started.\nTest Case '-[MacToolsTests.Checks testTrackpadDisableRestoresAndFailureRetainsRegistryState]' passed (0.001 seconds).\nTest Suite 'Checks' passed at 2026-09-26 16:39:42.565.\n\t Executed 9 tests, with 0 failures (0 unexpected) in 0.066 (0.067) seconds\nTest Suite 'FloatingPreviewTests' started at 2026-09-26 16:39:42.565.\nTest Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' started.\nTest Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' passed (0.169 seconds).\nTest Case '-[MacToolsTests.FloatingPreviewTests testHiddenWindowPausesAndRestoresWithoutLosingFrame]' started.\nTest Case '-[MacToolsTests.FloatingPreviewTests testHiddenWindowPausesAndRestoresWithoutLosingFrame]' passed (2.265 seconds).\nTest Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' started.\nTest Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' started.\nTest Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' passed (0.085 seconds).\nTest Suite 'FloatingPreviewTests' passed at 2026-09-26 16:39:45.085.\n\t Executed 4 tests, with 0 failures (0 unexpected) in 2.520 (2.520) seconds\nTest Suite 'MacToolsPackageTests.xctest' passed at 2026-09-26 16:39:45.085.\n\t Executed 13 tests, with 0 failures (0 unexpected) in 2.586 (2.587) seconds\nTest Suite 'All tests' passed at 2026-09-26 16:39:45.085.\n\t Executed 13 tests, with 0 failures (0 unexpected) in 2.586 (2.588) seconds\nHOTKEYS: cross-owner conflict surfaced; removing owner/disabled plugin releases chord\nAWAKE: native assertions ON -> released on stop/deinit; no audio writes\nMIGRATION: preset IDs/lock/key preserved; legacy bytes unchanged; namespaced settings isolated\nQUICK CONTROLS: cap/restore/unlock preserved; stop clears locks/timer; stopped actions do not write\nPLUGIN HOST: new plugin views/menu/lifecycle need no host branch; disable persists; invalid IDs rejected\nPREVIEW: floating + resizable; landscape/portrait sizes verified; disabling plugin clears panel and pixels\nPREVIEW PAUSE: frame retained while hidden; automatically resumed after source reappeared\nPREVIEW: cancelled in-flight frame discarded; source failure clears stale pixels\n◇ Test run started.\n↳ Testing Library Version: 1501\n↳ Target Platform: arm64e-apple-macos14.0\n✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.\n"
+exit=0
+scripts/check-window-preview.sh with minimized and restored own fixture
+stdout/stderr combined='REAL CAPTURE: own window only; covered source updates; distinct frame hashes=true; size=640x416\nMINIMIZED: isMiniaturized=true; records=0; onScreen=nil\nMINIMIZED: CG-allContainsTarget=true\nMINIMIZED: ScreenCaptureKit-allContainsTarget=true\nMINIMIZED: paused (not closed)\nRESTORED: isMiniaturized=false; records=1; onScreen=Optional(1)\nRESTORED: capture resumed; size=640x416\nCLOSED: CG-allContainsTarget=true\nCLOSED RETAINED: system still lists window; paused, not falsely shown live; manual close remains available\n'
+exit=0
+./scripts/build-app.sh
+stdout/stderr combined='[0/1] Planning build\nBuilding for production...\n[0/3] Write sources\n[1/3] Write swift-version--58304C5D6DBC2206.txt\n[3/4] Compiling MacTools AppModel.swift\n[3/5] Write Objects.LinkFileList\n[4/5] Linking MacTools\nBuild complete! (4.26s)\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app: replacing existing signature\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app/Contents/Info.plist: OK\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app\n'
+exit=0
+EXPECT_NATIVE=1 EXPECT_MODERN=1 scripts/check-ui-layout.sh Sources/MacTools
+stdout/stderr combined='custom-decorative-palette=False\nmanual-appearance-selection=True\nplugin-host=True\nwindow-preview-plugin=True\nwindow=980x740; list=980x617; height-share=83%\nwindow=900x640; list=900x517; height-share=80%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n'
+exit=0
+Important fixture correction: initial baseline pseudo-minimize used a non-miniaturizable NSWindow; valid baseline uses titled+miniaturizable, isMiniaturized=true and shows CG record missing while SCShareableContent all contains target. Source later restored and capture succeeded. Closed NSWindow retained by the OS may remain listed, so pause can persist until user manually closes preview. CUA preview UI showed paused text with last image retained then resumed status; no real user window captured. Installed binary remains previous version.

@@ -20,8 +20,8 @@ struct Probe {
         guard #available(macOS 14.0, *) else { print("SKIP: macOS 14+ required"); exit(77) }
         guard CGPreflightScreenCaptureAccess() else { print("SKIP: screen recording not authorized; no permission requested"); exit(77) }
         _ = NSApplication.shared; NSApp.setActivationPolicy(.accessory)
-        let source = NSWindow(contentRect: NSRect(x: 40, y: 40, width: 320, height: 180), styleMask: [.titled], backing: .buffered, defer: false)
-        source.title = "MacTools Capture Fixture"; source.isReleasedWhenClosed = false
+        let source = NSWindow(contentRect: NSRect(x: 40, y: 40, width: 320, height: 180), styleMask: [.titled, .miniaturizable], backing: .buffered, defer: false)
+        source.title = "MacTools Capture Fixture"; source.isReleasedWhenClosed = true
         let view = NSView(frame: NSRect(x: 0, y: 0, width: 320, height: 180)); view.wantsLayer = true
         view.layer?.backgroundColor = NSColor.systemRed.cgColor; source.contentView = view; source.orderFrontRegardless()
         let cover = NSWindow(contentRect: source.contentLayoutRect, styleMask: [.titled], backing: .buffered, defer: false)
@@ -39,13 +39,38 @@ struct Probe {
                 let hashA = SHA256.hash(data: a as Data), hashB = SHA256.hash(data: b as Data)
                 guard hashA != hashB, first.width > 0, second.width > 0 else { throw Failure.message("Covered source did not update") }
                 print("REAL CAPTURE: own window only; covered source updates; distinct frame hashes=true; size=\(second.width)x\(second.height)")
-                source.close()
-                try await Task.sleep(nanoseconds: 100_000_000)
+                source.miniaturize(nil)
+                try await Task.sleep(nanoseconds: 2_000_000_000)
+                let minimizedRecords = CGWindowListCopyWindowInfo(.optionIncludingWindow, window.windowID) as? [[String: Any]] ?? []
+                print("MINIMIZED: isMiniaturized=\(source.isMiniaturized); records=\(minimizedRecords.count); onScreen=\(String(describing: minimizedRecords.first?[kCGWindowIsOnscreen as String]))")
+                let allCG = CGWindowListCopyWindowInfo(.optionAll, kCGNullWindowID) as? [[String: Any]] ?? []
+                print("MINIMIZED: CG-allContainsTarget=\(allCG.contains(where: { ($0[kCGWindowNumber as String] as? NSNumber)?.uint32Value == window.windowID }))")
+                let allWindows = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: false)
+                print("MINIMIZED: ScreenCaptureKit-allContainsTarget=\(allWindows.windows.contains(where: { $0.windowID == window.windowID }))")
                 do {
                     _ = try await WindowPreviewPlugin.capture(window)
-                    throw Failure.message("Closed source was not rejected")
+                    throw Failure.message("Minimized source was captured")
+                } catch is PreviewPaused {
+                    print("MINIMIZED: paused (not closed)")
+                }
+                source.deminiaturize(nil)
+                source.orderFrontRegardless(); cover.orderFrontRegardless()
+                try await Task.sleep(nanoseconds: 2_000_000_000)
+                let restoredRecords = CGWindowListCopyWindowInfo(.optionIncludingWindow, window.windowID) as? [[String: Any]] ?? []
+                print("RESTORED: isMiniaturized=\(source.isMiniaturized); records=\(restoredRecords.count); onScreen=\(String(describing: restoredRecords.first?[kCGWindowIsOnscreen as String]))")
+                let resumed = try await WindowPreviewPlugin.capture(window)
+                print("RESTORED: capture resumed; size=\(resumed.width)x\(resumed.height)")
+                source.close()
+                try await Task.sleep(nanoseconds: 2_000_000_000)
+                let closedAllCG = CGWindowListCopyWindowInfo(.optionAll, kCGNullWindowID) as? [[String: Any]] ?? []
+                print("CLOSED: CG-allContainsTarget=\(closedAllCG.contains(where: { ($0[kCGWindowNumber as String] as? NSNumber)?.uint32Value == window.windowID }))")
+                do {
+                    _ = try await WindowPreviewPlugin.capture(window)
+                    throw Failure.message("Closed source was captured as live")
+                } catch is PreviewPaused {
+                    print("CLOSED RETAINED: system still lists window; paused, not falsely shown live; manual close remains available")
                 } catch Failure.message(let message) where message.contains("源窗口已关闭") {
-                    print("REAL CAPTURE: closed source rejected; no audio; no image saved")
+                    print("CLOSED REMOVED: source rejected and capture stopped")
                 }
                 cover.close(); exit(0)
             } catch {

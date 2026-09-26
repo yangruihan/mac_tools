@@ -972,14 +972,19 @@
 +}
 --- /dev/null
 +++ b/Plugins/WindowPreview/FloatingPreview.swift
-@@ -0,0 +1,88 @@
+@@ -0,0 +1,109 @@
 +import SwiftUI
++
++struct PreviewPaused: LocalizedError {
++    var errorDescription: String? { "源窗口暂不可见" }
++}
 +
 +// A single in-flight capture and a single displayed image: no frame backlog or recordings.
 +final class FloatingPreview: NSObject, ObservableObject, NSWindowDelegate {
 +    @Published private(set) var image: CGImage?
 +    @Published private(set) var status = "尚未开始预览"
 +    @Published private(set) var isRunning = false
++    @Published private(set) var isPaused = false
 +    private(set) var panel: NSPanel?
 +    private var captureTask: Task<Void, Never>?
 +    private var generation = UUID()
@@ -993,7 +998,7 @@
 +    func begin(title: String, showPanel: Bool = true, capture: @escaping () async throws -> CGImage) {
 +        stop()
 +        let token = generation
-+        status = "等待画面…"; isRunning = true
++        status = "等待画面…"; isRunning = true; isPaused = false
 +        let panel = NSPanel(contentRect: NSRect(x: 0, y: 0, width: 640, height: 420),
 +                            styleMask: [.titled, .closable, .resizable, .nonactivatingPanel], backing: .buffered, defer: false)
 +        panel.title = "悬浮预览 · \(title)"
@@ -1014,11 +1019,21 @@
 +                do {
 +                    let frame = try await capture()
 +                    guard !Task.isCancelled, let self, self.generation == token else { return }
-+                    self.image = frame; self.status = "只读预览 · 拖动边框调整大小"
++                    self.image = frame; self.isPaused = false
++                    self.status = "只读预览 · 拖动边框调整大小"
 +                    try await Task.sleep(nanoseconds: 200_000_000)
 +                } catch {
 +                    guard !Task.isCancelled, let self, self.generation == token else { return }
-+                    self.image = nil; self.isRunning = false
++                    if error is PreviewPaused {
++                        if !self.isPaused {
++                            self.isPaused = true
++                            self.status = "预览已暂停：源窗口暂不可见，恢复后自动继续"
++                        }
++                        // ponytail: while paused, query window visibility ~once/second, never request a screenshot.
++                        do { try await Task.sleep(nanoseconds: 1_000_000_000) } catch { return }
++                        continue
++                    }
++                    self.image = nil; self.isPaused = false; self.isRunning = false
 +                    self.status = "预览已停止：\(error.localizedDescription)"
 +                    self.captureTask = nil
 +                    return
@@ -1030,7 +1045,7 @@
 +    func stop() {
 +        generation = UUID()
 +        captureTask?.cancel(); captureTask = nil
-+        image = nil; isRunning = false; status = "尚未开始预览"
++        image = nil; isRunning = false; isPaused = false; status = "尚未开始预览"
 +        panel?.delegate = nil
 +        panel?.contentView = nil
 +        panel?.close(); panel = nil
@@ -1047,7 +1062,13 @@
 +                Color(nsColor: .windowBackgroundColor)
 +                if let image = preview.image {
 +                    Image(decorative: image, scale: 1).resizable().aspectRatio(contentMode: .fit)
-+                        .accessibilityLabel("所选窗口的只读画面")
++                        .opacity(preview.isPaused ? 0.55 : 1)
++                        .accessibilityLabel(preview.isPaused ? "已暂停的上一帧画面" : "所选窗口的只读画面")
++                }
++                if preview.isPaused {
++                    Label("已暂停 · 恢复源窗口后自动继续", systemImage: "pause.circle.fill")
++                        .font(.callout.weight(.medium)).padding(10)
++                        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
 +                } else {
 +                    Text(preview.status).foregroundStyle(.secondary).multilineTextAlignment(.center).padding()
 +                }
@@ -1063,7 +1084,7 @@
 +}
 --- /dev/null
 +++ b/Plugins/WindowPreview/WindowPreviewPlugin.swift
-@@ -0,0 +1,150 @@
+@@ -0,0 +1,164 @@
 +import SwiftUI
 +import ScreenCaptureKit
 +
@@ -1137,16 +1158,26 @@
 +        context.report(message)
 +    }
 +
++    private enum Visibility { case visible([String: Any]), paused, closed }
++
++    @available(macOS 14.0, *)
++    private static func visibility(of window: SCWindow) async throws -> Visibility {
++        guard let app = window.owningApplication else { return .closed }
++        let records = CGWindowListCopyWindowInfo(.optionIncludingWindow, window.windowID) as? [[String: Any]] ?? []
++        if let record = records.first(where: { ( $0[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value == app.processID }),
++           (record[kCGWindowIsOnscreen as String] as? Bool) == true { return .visible(record) }
++        // A minimized window disappears from CGWindowList, but remains in ScreenCaptureKit's all-window list.
++        let all = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: false)
++        return all.windows.contains(where: { $0.windowID == window.windowID && $0.owningApplication?.processID == app.processID }) ? .paused : .closed
++    }
++
 +    @available(macOS 14.0, *)
 +    static func capture(_ window: SCWindow) async throws -> CGImage {
-+        guard let app = window.owningApplication,
-+              let records = CGWindowListCopyWindowInfo(.optionIncludingWindow, window.windowID) as? [[String: Any]],
-+              let record = records.first,
-+              (record[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value == app.processID else {
-+            throw Failure.message("源窗口已关闭，请重新选择")
-+        }
-+        guard (record[kCGWindowIsOnscreen as String] as? Bool) == true else {
-+            throw Failure.message("源窗口已最小化、隐藏或不在可用桌面，请恢复后重新开始")
++        let record: [String: Any]
++        switch try await visibility(of: window) {
++        case .visible(let value): record = value
++        case .paused: throw PreviewPaused()
++        case .closed: throw Failure.message("源窗口已关闭，请重新选择")
 +        }
 +        var size = window.frame.size
 +        if let bounds = record[kCGWindowBounds as String] as? NSDictionary,
@@ -1157,7 +1188,11 @@
 +        config.showsCursor = false; config.capturesAudio = false
 +        config.scalesToFit = true; config.preservesAspectRatio = true
 +        config.ignoreShadowsSingleWindow = true
-+        return try await SCScreenshotManager.captureImage(contentFilter: SCContentFilter(desktopIndependentWindow: window), configuration: config)
++        do { return try await SCScreenshotManager.captureImage(contentFilter: SCContentFilter(desktopIndependentWindow: window), configuration: config) }
++        catch {
++            if case .paused = try await visibility(of: window) { throw PreviewPaused() }
++            throw error
++        }
 +    }
 +
 +    func showChooser() {
