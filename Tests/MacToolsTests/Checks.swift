@@ -43,7 +43,12 @@ final class Checks: XCTestCase {
         XCTAssertEqual(plugin.presets.first?.id, preset.id)
         XCTAssertEqual(plugin.presets.first?.locked, true)
         XCTAssertEqual(plugin.unlockShortcut.key, "U")
-        XCTAssertEqual(AppModel(defaults: prefs).windowShortcut.key, "M")
+        let host = AppModel(defaults: prefs)
+        XCTAssertEqual(host.windowShortcut.key, "M")
+        let legacyWindow = prefs.data(forKey: "windowShortcut")
+        host.windowShortcut.key = "N"; host.saveWindowShortcut()
+        XCTAssertEqual(prefs.data(forKey: "windowShortcut"), legacyWindow)
+        XCTAssertEqual(AppModel(defaults: prefs).windowShortcut.key, "N")
         plugin.presets[0].value = 8; plugin.save()
         let scoped = plugin.context.settings.data(forKey: "presets")!
         XCTAssertEqual(try JSONDecoder().decode([Preset].self, from: scoped)[0].value, 8)

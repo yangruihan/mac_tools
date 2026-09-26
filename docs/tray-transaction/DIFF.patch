@@ -1,11 +1,7 @@
---- a/MacTools.swift
-+++ b/MacTools.swift
-@@ -4,12 +4,33 @@
- import AudioToolbox
- import CoreGraphics
- import Darwin
-+import IOKit.pwr_mgt
-+import ApplicationServices
+--- /dev/null
++++ b/AppModel.swift
+@@ -0,0 +1,73 @@
++import SwiftUI
 +
 +enum AppearanceMode: String, CaseIterable {
 +    case system, light, dark
@@ -24,20 +20,576 @@
 +        }
 +    }
 +}
++
++final class AppModel: ObservableObject {
++    @Published private(set) var appearanceMode: AppearanceMode = .system
++    @Published var windowShortcut = KeyChord(key: "M")
++    @Published var message = "工具箱已就绪"
++    var toggleWindow: (() -> Void)?
++    let hotkeys = HotKeyService()
++    private let defaults: UserDefaults
++    private var running = false
++
++    // Single explicit registration point; adding a plugin requires no host UI branch.
++    lazy var plugins: PluginRegistry = {
++        let builtins: [any ToolPlugin] = [
++            QuickControlsPlugin(context: context(for: QuickControlsPlugin.id)),
++            KeepAwakePlugin(context: context(for: KeepAwakePlugin.id)),
++            TrackpadPlugin(context: context(for: TrackpadPlugin.id))
++        ]
++        // IDs are compile-time constants covered by registry tests; never accept downloaded code here.
++        return try! PluginRegistry(plugins: builtins, defaults: defaults, report: { [weak self] in self?.message = $0 })
++    }()
++
++    init(defaults: UserDefaults = .standard) {
++        self.defaults = defaults
++        appearanceMode = AppearanceMode(rawValue: defaults.string(forKey: "appearanceMode") ?? "") ?? .system
++        if let data = defaults.data(forKey: "app.windowShortcut") ?? defaults.data(forKey: "windowShortcut"),
++           let chord = try? JSONDecoder().decode(KeyChord.self, from: data) {
++            windowShortcut = chord
++            if defaults.data(forKey: "app.windowShortcut") == nil { defaults.set(data, forKey: "app.windowShortcut") }
++        }
++    }
++    private func context(for id: String) -> PluginContext {
++        PluginContext(settings: PluginSettings(id: id, defaults: defaults), hotkeys: hotkeys,
++                      report: { [weak self] in self?.message = $0 })
++    }
++    func setAppearance(_ mode: AppearanceMode) {
++        appearanceMode = mode; defaults.set(mode.rawValue, forKey: "appearanceMode")
++        NSApp.appearance = mode.nativeAppearance
++    }
++    func start() {
++        guard !running else { return }; running = true
++        NSApp.appearance = appearanceMode.nativeAppearance
++        registerWindowShortcut(); plugins.startAll()
++    }
++    func stop() { plugins.stopAll(); hotkeys.remove(owner: "app.window"); running = false }
++    func saveWindowShortcut() {
++        do {
++            defaults.set(try JSONEncoder().encode(windowShortcut), forKey: "app.windowShortcut")
++            if running { registerWindowShortcut() }
++        } catch { message = "窗口快捷键保存失败：\(error.localizedDescription)" }
++    }
++    private func registerWindowShortcut() {
++        hotkeys.replace(owner: "app.window", actions: [HotKeyAction(id: "toggle", chord: windowShortcut, perform: { [weak self] in self?.toggleWindow?() })])
++    }
++}
+--- /dev/null
++++ b/Core/HotKeyService.swift
+@@ -0,0 +1,77 @@
++import SwiftUI
++import Carbon
++
++struct KeyChord: Codable, Equatable {
++    var key = ""
++    var modifiers = UInt32(cmdKey | optionKey)
++}
++
++struct HotKeyAction {
++    let id: String
++    let chord: KeyChord
++    let perform: () -> Void
++}
++
++final class HotKeyService: ObservableObject {
++    @Published private(set) var errors: [String: String] = [:]
++    private var owners: [String: [HotKeyAction]] = [:]
++    private var references: [EventHotKeyRef] = []
++    private var actions: [UInt32: () -> Void] = [:]
++    private var nextID: UInt32 = 1
++    private var handler: EventHandlerRef?
++    private var installationStatus: OSStatus = noErr
++
++    init() {
++        var event = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
++        installationStatus = InstallEventHandler(GetApplicationEventTarget(), { _, event, context in
++            guard let event, let context else { return OSStatus(eventNotHandledErr) }
++            var key = EventHotKeyID()
++            let status = GetEventParameter(event, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID), nil, MemoryLayout<EventHotKeyID>.size, nil, &key)
++            guard status == noErr, key.signature == 0x4D54424F else { return OSStatus(eventNotHandledErr) }
++            Unmanaged<HotKeyService>.fromOpaque(context).takeUnretainedValue().actions[key.id]?()
++            return noErr
++        }, 1, &event, Unmanaged.passUnretained(self).toOpaque(), &handler)
++    }
++
++    func error(owner: String, id: String) -> String? { errors[owner + "/" + id] }
++    func replace(owner: String, actions: [HotKeyAction]) { owners[owner] = actions; register() }
++    func remove(owner: String) { owners.removeValue(forKey: owner); register() }
++
++    private func register() {
++        references.forEach { UnregisterEventHotKey($0) }; references.removeAll(); actions.removeAll()
++        var failures: [String: String] = [:]
++        // Deterministic priority: host keys (app.*), then plugins sorted by ID.
++        for owner in owners.keys.sorted(by: {
++            if $0.hasPrefix("app.") != $1.hasPrefix("app.") { return $0.hasPrefix("app.") }
++            return $0 < $1
++        }) {
++            let bindings = owners[owner] ?? []
++            guard Set(bindings.map(\.id)).count == bindings.count else {
++                for binding in bindings { failures[owner + "/" + binding.id] = "快捷键标识重复" }
++                continue
++            }
++            for binding in bindings {
++                let key = owner + "/" + binding.id
++                guard !binding.chord.key.isEmpty else { continue }
++                guard installationStatus == noErr else { failures[key] = "快捷键事件监听失败（\(installationStatus)）"; continue }
++                guard let code = keyCodes[binding.chord.key.uppercased()], binding.chord.modifiers & UInt32(cmdKey | optionKey | controlKey) != 0 else {
++                    failures[key] = "请选择字母/数字，至少包含 ⌘、⌥ 或 ⌃"; continue
++                }
++                guard nextID < UInt32.max else { failures[key] = "快捷键编号已耗尽，请重启应用"; continue }
++                let id = nextID; nextID += 1 // Never reuse IDs: queued old events must not execute a new binding.
++                var reference: EventHotKeyRef?
++                let status = RegisterEventHotKey(code, binding.chord.modifiers, EventHotKeyID(signature: 0x4D54424F, id: id), GetApplicationEventTarget(), 0, &reference)
++                if status == noErr, let reference { references.append(reference); actions[id] = binding.perform }
++                else { failures[key] = "快捷键冲突或注册失败（\(status)）" }
++            }
++        }
++        errors = failures
++    }
++
++    deinit {
++        references.forEach { UnregisterEventHotKey($0) }
++        if let handler { RemoveEventHandler(handler) }
++    }
++}
++
++let keyCodes: [String: UInt32] = ["A":0,"S":1,"D":2,"F":3,"H":4,"G":5,"Z":6,"X":7,"C":8,"V":9,"B":11,"Q":12,"W":13,"E":14,"R":15,"Y":16,"T":17,"1":18,"2":19,"3":20,"4":21,"6":22,"5":23,"9":25,"7":26,"8":28,"0":29,"O":31,"U":32,"I":34,"P":35,"L":37,"J":38,"K":40,"N":45,"M":46]
+--- /dev/null
++++ b/Core/ToolPlugin.swift
+@@ -0,0 +1,113 @@
++import SwiftUI
++
++struct PluginInfo {
++    enum Placement { case utility, content }
++    let id: String
++    let title: String
++    let symbol: String
++    let detail: String
++    let placement: Placement
++}
++
++// Built-in, trusted plugins only. All lifecycle and UI calls run on the main thread.
++protocol ToolPlugin: AnyObject {
++    var info: PluginInfo { get }
++    func start() throws
++    func stop() throws
++    func makeView() -> AnyView
++    func makeMenuItems() -> AnyView
++}
++
++extension ToolPlugin {
++    func start() throws {}
++    func stop() throws {}
++}
++
++struct PluginSettings {
++    let id: String
++    private let defaults: UserDefaults
++    init(id: String, defaults: UserDefaults) { self.id = id; self.defaults = defaults }
++    private func key(_ key: String) -> String { "plugin.\(id).\(key)" }
++    func data(forKey name: String) -> Data? { defaults.data(forKey: key(name)) }
++    func set(_ data: Data, forKey name: String) { defaults.set(data, forKey: key(name)) }
++    func migrateLegacyData(_ names: [String]) {
++        for name in names where data(forKey: name) == nil {
++            if let data = defaults.data(forKey: name) { set(data, forKey: name) }
++        }
++    }
++}
++
++struct PluginContext {
++    let settings: PluginSettings
++    let hotkeys: HotKeyService
++    let report: (String) -> Void
++}
++
++final class PluginRegistry: ObservableObject {
++    let plugins: [any ToolPlugin]
++    @Published private(set) var enabledIDs: Set<String>
++    private var startedIDs = Set<String>()
++    private var disabledIDs: Set<String>
++    private let defaults: UserDefaults
++    private let report: (String) -> Void
++
++    init(plugins: [any ToolPlugin], defaults: UserDefaults, report: @escaping (String) -> Void) throws {
++        let ids = plugins.map { $0.info.id }
++        guard Set(ids).count == ids.count,
++              ids.allSatisfy({ !$0.hasPrefix("app.") && $0.range(of: "^[a-z0-9]+(?:[.-][a-z0-9]+)*$", options: .regularExpression) != nil }) else {
++            throw Failure.message("插件标识重复或格式无效")
++        }
++        self.plugins = plugins; self.defaults = defaults; self.report = report
++        disabledIDs = Set(defaults.stringArray(forKey: "disabledPluginIDs") ?? [])
++        enabledIDs = Set(ids).subtracting(disabledIDs)
++    }
++
++    var enabledPlugins: [any ToolPlugin] { plugins.filter { enabledIDs.contains($0.info.id) } }
++
++    func startAll() {
++        for plugin in plugins where enabledIDs.contains(plugin.info.id) && !startedIDs.contains(plugin.info.id) {
++            do { try plugin.start(); startedIDs.insert(plugin.info.id) }
++            catch {
++                let startError = error
++                do { try plugin.stop(); enabledIDs.remove(plugin.info.id) }
++                catch { startedIDs.insert(plugin.info.id); report("\(plugin.info.title)启动及清理失败，请重试停用：\(error.localizedDescription)"); continue }
++                report("\(plugin.info.title)启动失败：\(startError.localizedDescription)")
++            }
++        }
++    }
++
++    @discardableResult func setEnabled(_ enabled: Bool, id: String) -> Bool {
++        guard let plugin = plugins.first(where: { $0.info.id == id }) else { return false }
++        guard enabled != enabledIDs.contains(id) else { return true }
++        do {
++            if enabled { try plugin.start(); startedIDs.insert(id); enabledIDs.insert(id); disabledIDs.remove(id) }
++            else { try plugin.stop(); startedIDs.remove(id); enabledIDs.remove(id); disabledIDs.insert(id) }
++            defaults.set(disabledIDs.sorted(), forKey: "disabledPluginIDs")
++            return true
++        } catch {
++            let operationError = error
++            if enabled {
++                do { try plugin.stop() }
++                catch {
++                    startedIDs.insert(id); enabledIDs.insert(id)
++                    report("\(plugin.info.title)启用及清理失败，请重试停用：\(error.localizedDescription)")
++                    return false
++                }
++            }
++            report("\(plugin.info.title)\(enabled ? "启用" : "停用")失败：\(operationError.localizedDescription)")
++            return false
++        }
++    }
++
++    func stopAll() {
++        for plugin in plugins.reversed() where startedIDs.contains(plugin.info.id) {
++            do { try plugin.stop(); startedIDs.remove(plugin.info.id) }
++            catch { report("\(plugin.info.title)清理失败：\(error.localizedDescription)") }
++        }
++    }
++}
++
++enum Failure: LocalizedError {
++    case message(String)
++    var errorDescription: String? { if case let .message(s) = self { return s }; return nil }
++}
+--- a/MacTools.swift
++++ b/MacTools.swift
+@@ -1,206 +1,54 @@
+ import SwiftUI
+-import Carbon
+-import CoreAudio
+-import AudioToolbox
+-import CoreGraphics
+-import Darwin
  
- struct Preset: Codable, Identifiable {
-     var id = UUID()
-     var name = "新配置"
-     var audio = false
-     var value = 15.0
-+    var locked: Bool? = nil // Missing in older saved presets means unlocked.
-     var key = ""
-     var modifiers = UInt32(cmdKey | optionKey)
- }
-@@ -25,6 +46,31 @@
+-struct Preset: Codable, Identifiable {
+-    var id = UUID()
+-    var name = "新配置"
+-    var audio = false
+-    var value = 15.0
+-    var key = ""
+-    var modifiers = UInt32(cmdKey | optionKey)
+-}
++final class AppDelegate: NSObject, NSApplicationDelegate {
++    let model = AppModel()
++    private var window: NSWindow?
+ 
+-let keyCodes: [String: UInt32] = ["A":0,"S":1,"D":2,"F":3,"H":4,"G":5,"Z":6,"X":7,"C":8,"V":9,"B":11,"Q":12,"W":13,"E":14,"R":15,"Y":16,"T":17,"1":18,"2":19,"3":20,"4":21,"6":22,"5":23,"9":25,"7":26,"8":28,"0":29,"O":31,"U":32,"I":34,"P":35,"L":37,"J":38,"K":40,"N":45,"M":46]
+-func appliedValue(_ value: Double, audio: Bool, protection: Bool) throws -> Double {
+-    guard value.isFinite, (0...100).contains(value) else { throw Failure.message("数值必须在 0–100% 之间") }
+-    return audio && protection ? min(value, 18) : value
+-}
+-enum Failure: LocalizedError {
+-    case message(String)
+-    var errorDescription: String? { if case let .message(s) = self { return s }; return nil }
+-}
++    func applicationDidFinishLaunching(_ notification: Notification) {
++        NSApp.setActivationPolicy(.accessory)
++        model.start()
++        model.toggleWindow = { [weak self] in self?.toggleWindow() }
++        showWindow(model: model)
++    }
+ 
+-enum Hardware {
+-    static func apply(_ value: Double, audio: Bool) throws {
+-        if audio {
+-            var device = AudioDeviceID(0)
+-            var size = UInt32(MemoryLayout.size(ofValue: device))
+-            var address = AudioObjectPropertyAddress(mSelector: kAudioHardwarePropertyDefaultOutputDevice, mScope: kAudioObjectPropertyScopeGlobal, mElement: kAudioObjectPropertyElementMain)
+-            guard AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &address, 0, nil, &size, &device) == noErr, device != 0 else { throw Failure.message("找不到默认音频输出设备") }
+-            address = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMainVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMain)
+-            var settable = DarwinBoolean(false)
+-            guard AudioObjectIsPropertySettable(device, &address, &settable) == noErr, settable.boolValue else { throw Failure.message("此输出设备不支持系统音量控制，请使用设备旋钮") }
+-            var scalar = Float32(value / 100)
+-            let status = AudioObjectSetPropertyData(device, &address, 0, nil, UInt32(MemoryLayout.size(ofValue: scalar)), &scalar)
+-            guard status == noErr else { throw Failure.message("音量设置失败：\(status)") }
+-        } else {
+-            var displays = [CGDirectDisplayID](repeating: 0, count: 16)
+-            var count: UInt32 = 0
+-            guard CGGetActiveDisplayList(16, &displays, &count) == .success,
+-                  let display = displays.prefix(Int(count)).first(where: { CGDisplayIsBuiltin($0) != 0 }) else { throw Failure.message("没有内置显示器；暂不支持外接屏亮度") }
+-            guard let handle = dlopen("/System/Library/PrivateFrameworks/DisplayServices.framework/DisplayServices", RTLD_LAZY) else { throw Failure.message("系统亮度接口不可用") }
+-            defer { dlclose(handle) }
+-            guard let symbol = dlsym(handle, "DisplayServicesSetBrightness") else { throw Failure.message("系统亮度接口不可用") }
+-            typealias Setter = @convention(c) (UInt32, Float) -> Int32
+-            let status = unsafeBitCast(symbol, to: Setter.self)(display, Float(value / 100))
+-            guard status == 0 else { throw Failure.message("亮度设置失败：\(status)") }
++    func applicationWillTerminate(_ notification: Notification) {
++        model.stop()
++    }
++
++    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
++
++    func toggleWindow() {
++        if let window, window.isVisible && !window.isMiniaturized && NSApp.isActive { window.orderOut(nil) }
++        else { showWindow(model: model) }
++    }
++
++    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
++        showWindow(model: model)
++        return true
++    }
++
++    func showWindow(model: AppModel) {
++        if window == nil {
++            let panel = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 980, height: 740),
++                                 styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)
++            panel.title = "Mac 工具箱"
++            panel.contentMinSize = NSSize(width: 900, height: 640)
++            panel.contentView = NSHostingView(rootView: ContentView(model: model))
++            panel.isReleasedWhenClosed = false
++            panel.center()
++            window = panel
+         }
++        window?.deminiaturize(nil)
++        window?.makeKeyAndOrderFront(nil)
++        NSApp.activate(ignoringOtherApps: true)
+     }
  }
  
- enum Hardware {
+-final class Store: ObservableObject {
+-    @Published var presets: [Preset] = []
+-    @Published var protection = true
+-    @Published var message = "尚未应用配置；耳机保护默认开启"
+-    @Published var shortcutErrors: [UUID: String] = [:]
+-    private var references: [EventHotKeyRef] = []
+-    private var handler: EventHandlerRef?
+-    private var ids: [UInt32: UUID] = [:]
+-    private let defaults: UserDefaults
+-    init(defaults: UserDefaults = .standard) {
+-        self.defaults = defaults
+-        if let data = defaults.data(forKey: "presets") {
+-            do { let loaded = try JSONDecoder().decode([Preset].self, from: data)
+-                guard Set(loaded.map(\.id)).count == loaded.count, loaded.allSatisfy({ $0.value.isFinite && (0...100).contains($0.value) }) else { throw Failure.message("配置数值或标识无效") }
+-                presets = loaded }
+-            catch { message = "配置读取失败，原数据未覆盖：\(error.localizedDescription)" }
+-        }
+-        var event = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
+-        InstallEventHandler(GetApplicationEventTarget(), { _, event, context in
+-            guard let event, let context else { return OSStatus(eventNotHandledErr) }
+-            var key = EventHotKeyID()
+-            let status = GetEventParameter(event, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID), nil, MemoryLayout<EventHotKeyID>.size, nil, &key)
+-            guard status == noErr else { return status }
+-            let store = Unmanaged<Store>.fromOpaque(context).takeUnretainedValue()
+-            if let id = store.ids[key.id], let preset = store.presets.first(where: { $0.id == id }) { store.apply(preset) }
+-            return noErr
+-        }, 1, &event, Unmanaged.passUnretained(self).toOpaque(), &handler)
+-        register()
+-    }
+-    deinit {
+-        references.forEach { UnregisterEventHotKey($0) }
+-        if let handler { RemoveEventHandler(handler) }
+-    }
+-    func save() {
+-        do { defaults.set(try JSONEncoder().encode(presets), forKey: "presets"); register() }
+-        catch { message = "保存失败：\(error.localizedDescription)" }
+-    }
+-    func register() {
+-        references.forEach { UnregisterEventHotKey($0) }; references.removeAll(); ids.removeAll(); shortcutErrors.removeAll()
+-        for (index, preset) in presets.enumerated() where !preset.key.isEmpty {
+-            guard let code = keyCodes[preset.key.uppercased()], preset.modifiers & UInt32(cmdKey | optionKey | controlKey) != 0 else {
+-                shortcutErrors[preset.id] = "请选择字母/数字，至少包含 ⌘、⌥ 或 ⌃"; continue
+-            }
+-            var reference: EventHotKeyRef?
+-            let id = UInt32(index + 1)
+-            let status = RegisterEventHotKey(code, preset.modifiers, EventHotKeyID(signature: 0x4D54424F, id: id), GetApplicationEventTarget(), 0, &reference)
+-            if status == noErr, let reference { references.append(reference); ids[id] = preset.id }
+-            else { shortcutErrors[preset.id] = "快捷键冲突或注册失败（\(status)）" }
+-        }
+-    }
+-    func apply(_ preset: Preset) {
+-        do {
+-            let value = try appliedValue(preset.value, audio: preset.audio, protection: protection)
+-            try Hardware.apply(value, audio: preset.audio)
+-            message = "已设置\(preset.audio ? "音量" : "亮度")：\(Int(value))%" + (value != preset.value ? "（耳机保护限制）" : "")
+-        } catch { message = error.localizedDescription }
++@main
++struct MacToolsApp: App {
++    @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
++
++    var body: some Scene {
++        MenuBarExtra("Mac 工具箱", systemImage: "slider.horizontal.3") { MenuContent(model: delegate.model, showWindow: { delegate.showWindow(model: delegate.model) }) }
+     }
+ }
+-
+-struct PresetRow: View {
+-    @Binding var preset: Preset
+-    @ObservedObject var store: Store
+-    var body: some View {
+-        VStack(alignment: .leading, spacing: 8) {
+-            HStack {
+-                TextField("配置名称", text: $preset.name).frame(width: 130)
+-                Slider(value: $preset.value, in: 0...100, step: 1)
+-                Text("\(Int(preset.value))%").monospacedDigit().frame(width: 42)
+-                Button("应用") { store.apply(preset) }
+-                Button(role: .destructive) { store.presets.removeAll { $0.id == preset.id }; store.save() } label: { Image(systemName: "trash") }.accessibilityLabel("删除配置")
+-            }
+-            HStack {
+-                Text("快捷键").foregroundStyle(.secondary)
+-                ForEach([("⌘", UInt32(cmdKey)), ("⌥", UInt32(optionKey)), ("⌃", UInt32(controlKey)), ("⇧", UInt32(shiftKey))], id: \.1) { label, flag in
+-                    Toggle(label, isOn: Binding(get: { preset.modifiers & flag != 0 }, set: { on in
+-                        if on { preset.modifiers |= flag } else { preset.modifiers &= ~flag }
+-                    })).toggleStyle(.button)
+-                }
+-                Picker("按键", selection: $preset.key) {
+-                    Text("不设置").tag("")
+-                    ForEach(keyCodes.keys.sorted(), id: \.self) { Text($0).tag($0) }
+-                }.frame(width: 135)
+-                if let error = store.shortcutErrors[preset.id] { Text(error).font(.caption).foregroundStyle(.red) }
+-            }
+-        }.padding(.vertical, 6)
+-        .onChange(of: preset.name) { _ in store.save() }
+-        .onChange(of: preset.value) { _ in store.save() }
+-        .onChange(of: preset.key) { _ in store.save() }
+-        .onChange(of: preset.modifiers) { _ in store.save() }
+-    }
+-}
+-struct ContentView: View {
+-    @ObservedObject var store: Store
+-    @State private var confirm = false
+-    var body: some View {
+-        VStack(alignment: .leading, spacing: 16) {
+-            Text("快捷控制").font(.largeTitle.bold())
+-            Text("配置自动保存 · 快捷键在应用运行时全局生效").foregroundStyle(.secondary)
+-            Toggle("耳机保护：音量最高 18%（重启自动开启）", isOn: Binding(get: { store.protection }, set: { value in
+-                if value { store.protection = true } else { confirm = true }
+-            }))
+-            ScrollView {
+-                VStack(spacing: 20) {
+-                    section("亮度", audio: false)
+-                    section("音频", audio: true)
+-                }
+-            }
+-            Text(store.message).font(.callout).textSelection(.enabled)
+-            Text("亮度仅支持内置屏幕；关闭窗口后可通过菜单栏重新打开。退出后快捷键失效。").font(.caption).foregroundStyle(.secondary)
+-        }.padding(24).frame(minWidth: 740, minHeight: 500)
+-        .alert("关闭耳机保护？", isPresented: $confirm) {
+-            Button("取消", role: .cancel) {}
+-            Button("关闭保护", role: .destructive) { store.protection = false }
+-        } message: { Text("关闭后音量配置最高可设置为 100%。请先确认耳机佩戴和音量。") }
+-    }
+-    func section(_ title: String, audio: Bool) -> some View {
+-        GroupBox {
+-            VStack(alignment: .leading) {
+-                HStack {
+-                    Label(title, systemImage: audio ? "speaker.wave.2" : "sun.max").font(.headline)
+-                    Spacer()
+-                    Button("添加配置", systemImage: "plus") {
+-                        store.presets.append(Preset(name: audio ? "音量配置" : "亮度配置", audio: audio, value: audio ? 15 : 50)); store.save()
+-                    }
+-                }
+-                ForEach($store.presets) { $preset in
+-                    if preset.audio == audio { PresetRow(preset: $preset, store: store) }
+-                }
+-                if !store.presets.contains(where: { $0.audio == audio }) { Text("添加一个配置，然后选择百分比和快捷键。").foregroundStyle(.secondary).padding(.vertical) }
+-            }.padding(8)
+-        }
+-    }
+-}
+-@main
+-struct MacToolsApp: App {
+-    @StateObject private var store = Store()
+-    var body: some Scene {
+-        WindowGroup("Mac 工具箱", id: "main") { ContentView(store: store) }
+-        MenuBarExtra("Mac 工具箱", systemImage: "slider.horizontal.3") { MenuContent(store: store) }
+-    }
+-}
+-struct MenuContent: View {
+-    @ObservedObject var store: Store
+-    @Environment(\.openWindow) var openWindow
+-    var body: some View {
+-        Button("打开工具箱") { openWindow(id: "main"); NSApp.activate(ignoringOtherApps: true) }
+-        ForEach(store.presets) { preset in Button("\(preset.audio ? "音量" : "亮度") · \(preset.name) · \(Int(preset.value))%") { store.apply(preset) } }
+-        Divider()
+-        Text(store.message)
+-        Button("退出") { NSApp.terminate(nil) }
+-    }
+-}
+--- /dev/null
++++ b/Plugins/KeepAwake/KeepAwakePlugin.swift
+@@ -0,0 +1,55 @@
++import SwiftUI
++import IOKit.pwr_mgt
++
++final class KeepAwakePlugin: ObservableObject, ToolPlugin {
++    static let id = "keep-awake"
++    let info = PluginInfo(id: id, title: "保持唤醒", symbol: "cup.and.saucer", detail: "防闲置熄屏与休眠；不保证防锁屏", placement: .utility)
++    private let context: PluginContext
++    private var active = false
++    @Published private(set) var isKeepingAwake = false
++    private(set) var assertions: [IOPMAssertionID] = []
++    init(context: PluginContext) { self.context = context }
++
++    func start() { active = true }
++    func setKeepAwake(_ enabled: Bool) {
++        guard active else { return }
++        do { try change(enabled) }
++        catch { context.report("保持唤醒操作失败：\(error.localizedDescription)") }
++    }
++    private func change(_ enabled: Bool) throws {
++        guard enabled != isKeepingAwake else { return }
++        if enabled {
++            var created: [IOPMAssertionID] = []
++            for type in [kIOPMAssertionTypePreventUserIdleDisplaySleep, kIOPMAssertionTypePreventUserIdleSystemSleep] {
++                var id = IOPMAssertionID(0)
++                let status = IOPMAssertionCreateWithName(type as CFString, IOPMAssertionLevel(kIOPMAssertionLevelOn), "MacTools Keep Awake" as CFString, &id)
++                guard status == kIOReturnSuccess else {
++                    created.forEach { IOPMAssertionRelease($0) }
++                    throw Failure.message("无法创建电源断言（\(status)）")
++                }
++                created.append(id)
++            }
++            assertions = created; isKeepingAwake = true
++        } else {
++            assertions = assertions.filter { IOPMAssertionRelease($0) != kIOReturnSuccess }
++            isKeepingAwake = !assertions.isEmpty
++            if isKeepingAwake { throw Failure.message("部分请求释放失败，请重试或退出应用") }
++        }
++    }
++    func stop() throws { try change(false); active = false }
++    deinit { assertions.forEach { IOPMAssertionRelease($0) } }
++    func makeView() -> AnyView { AnyView(KeepAwakeView(plugin: self)) }
++    func makeMenuItems() -> AnyView { AnyView(KeepAwakeMenu(plugin: self)) }
++}
++private struct KeepAwakeView: View {
++    @ObservedObject var plugin: KeepAwakePlugin
++    var body: some View {
++        NativeToggleCard(title: plugin.info.title, detail: "防闲置熄屏与休眠", icon: plugin.info.symbol,
++                         isOn: Binding(get: { plugin.isKeepingAwake }, set: plugin.setKeepAwake))
++            .help("退出或停用插件后释放；不阻止手动锁屏、屏保锁屏或合盖")
++    }
++}
++private struct KeepAwakeMenu: View {
++    @ObservedObject var plugin: KeepAwakePlugin
++    var body: some View { Toggle("保持唤醒", isOn: Binding(get: { plugin.isKeepingAwake }, set: plugin.setKeepAwake)) }
++}
+--- /dev/null
++++ b/Plugins/QuickControls/Hardware.swift
+@@ -0,0 +1,58 @@
++import CoreAudio
++import AudioToolbox
++import CoreGraphics
++import Darwin
++
++enum Hardware {
 +    static func read(audio: Bool) throws -> Double {
 +        if audio {
 +            var device = AudioDeviceID(0)
@@ -63,13 +615,272 @@
 +        return Double(value) * 100
 +    }
 +
-     static func apply(_ value: Double, audio: Bool) throws {
-         if audio {
-             var device = AudioDeviceID(0)
-@@ -52,23 +98,133 @@
-     }
- }
- 
++    static func apply(_ value: Double, audio: Bool) throws {
++        if audio {
++            var device = AudioDeviceID(0)
++            var size = UInt32(MemoryLayout.size(ofValue: device))
++            var address = AudioObjectPropertyAddress(mSelector: kAudioHardwarePropertyDefaultOutputDevice, mScope: kAudioObjectPropertyScopeGlobal, mElement: kAudioObjectPropertyElementMain)
++            guard AudioObjectGetPropertyData(AudioObjectID(kAudioObjectSystemObject), &address, 0, nil, &size, &device) == noErr, device != 0 else { throw Failure.message("找不到默认音频输出设备") }
++            address = AudioObjectPropertyAddress(mSelector: kAudioHardwareServiceDeviceProperty_VirtualMainVolume, mScope: kAudioDevicePropertyScopeOutput, mElement: kAudioObjectPropertyElementMain)
++            var settable = DarwinBoolean(false)
++            guard AudioObjectIsPropertySettable(device, &address, &settable) == noErr, settable.boolValue else { throw Failure.message("此输出设备不支持系统音量控制，请使用设备旋钮") }
++            var scalar = Float32(value / 100)
++            let status = AudioObjectSetPropertyData(device, &address, 0, nil, UInt32(MemoryLayout.size(ofValue: scalar)), &scalar)
++            guard status == noErr else { throw Failure.message("音量设置失败：\(status)") }
++        } else {
++            var displays = [CGDirectDisplayID](repeating: 0, count: 16)
++            var count: UInt32 = 0
++            guard CGGetActiveDisplayList(16, &displays, &count) == .success,
++                  let display = displays.prefix(Int(count)).first(where: { CGDisplayIsBuiltin($0) != 0 }) else { throw Failure.message("没有内置显示器；暂不支持外接屏亮度") }
++            guard let handle = dlopen("/System/Library/PrivateFrameworks/DisplayServices.framework/DisplayServices", RTLD_LAZY) else { throw Failure.message("系统亮度接口不可用") }
++            defer { dlclose(handle) }
++            guard let symbol = dlsym(handle, "DisplayServicesSetBrightness") else { throw Failure.message("系统亮度接口不可用") }
++            typealias Setter = @convention(c) (UInt32, Float) -> Int32
++            let status = unsafeBitCast(symbol, to: Setter.self)(display, Float(value / 100))
++            guard status == 0 else { throw Failure.message("亮度设置失败：\(status)") }
++        }
++    }
++}
++
+--- /dev/null
++++ b/Plugins/QuickControls/QuickControlsPlugin.swift
+@@ -0,0 +1,118 @@
++import SwiftUI
++import Carbon
++
++struct Preset: Codable, Identifiable {
++    var id = UUID()
++    var name = "新配置"
++    var audio = false
++    var value = 15.0
++    var locked: Bool? = nil // Missing in older saved presets means unlocked.
++    var key = ""
++    var modifiers = UInt32(cmdKey | optionKey)
++    var shortcut: KeyChord {
++        get { KeyChord(key: key, modifiers: modifiers) }
++        set { key = newValue.key; modifiers = newValue.modifiers }
++    }
++}
++
++func appliedValue(_ value: Double, audio: Bool, protection: Bool) throws -> Double {
++    guard value.isFinite, (0...100).contains(value) else { throw Failure.message("数值必须在 0–100% 之间") }
++    return audio && protection ? min(value, 18) : value
++}
++
++final class QuickControlsPlugin: ObservableObject, ToolPlugin {
++    static let id = "quick-controls"
++    let info = PluginInfo(id: id, title: "快捷控制", symbol: "slider.horizontal.3", detail: "亮度、音量、配置快捷键与锁定", placement: .content)
++    let context: PluginContext
++    @Published var presets: [Preset] = []
++    @Published var unlockShortcut = KeyChord()
++    @Published var protection = true
++    @Published private(set) var locks: [Bool: Double] = [:]
++    private(set) var active = false
++    private var lockTimer: Timer?
++    private let writeHardware: (Double, Bool) throws -> Void
++    private let readHardware: (Bool) throws -> Double
++
++    init(context: PluginContext,
++         writeHardware: @escaping (Double, Bool) throws -> Void = { try Hardware.apply($0, audio: $1) },
++         readHardware: @escaping (Bool) throws -> Double = { try Hardware.read(audio: $0) }) {
++        self.context = context; self.writeHardware = writeHardware; self.readHardware = readHardware
++        context.settings.migrateLegacyData(["presets", "unlockShortcut"])
++        if let data = context.settings.data(forKey: "presets") {
++            do {
++                let loaded = try JSONDecoder().decode([Preset].self, from: data)
++                guard Set(loaded.map(\.id)).count == loaded.count, loaded.allSatisfy({ $0.value.isFinite && (0...100).contains($0.value) }) else { throw Failure.message("配置数值或标识无效") }
++                presets = loaded
++            } catch { context.report("配置读取失败，原数据未覆盖：\(error.localizedDescription)") }
++        }
++        if let data = context.settings.data(forKey: "unlockShortcut"), let chord = try? JSONDecoder().decode(KeyChord.self, from: data) { unlockShortcut = chord }
++    }
++
++    func start() { guard !active else { return }; active = true; register() }
++    func stop() {
++        active = false
++        locks.removeAll(); lockTimer?.invalidate(); lockTimer = nil
++        context.hotkeys.remove(owner: info.id)
++    }
++    deinit { lockTimer?.invalidate(); context.hotkeys.remove(owner: info.id) }
++
++    func save() {
++        do { context.settings.set(try JSONEncoder().encode(presets), forKey: "presets"); register() }
++        catch { context.report("配置保存失败：\(error.localizedDescription)") }
++    }
++    func saveUnlockShortcut() {
++        do { context.settings.set(try JSONEncoder().encode(unlockShortcut), forKey: "unlockShortcut"); register() }
++        catch { context.report("解锁快捷键保存失败：\(error.localizedDescription)") }
++    }
++    private func register() {
++        guard active else { return }
++        let actions = [HotKeyAction(id: "unlock", chord: unlockShortcut, perform: { [weak self] in self?.releaseAllLocks() })]
++            + presets.map { preset in HotKeyAction(id: preset.id.uuidString, chord: preset.shortcut, perform: { [weak self] in self?.apply(preset) }) }
++        context.hotkeys.replace(owner: info.id, actions: actions)
++    }
++    private func updateLockTimer() {
++        guard !locks.isEmpty else { lockTimer?.invalidate(); lockTimer = nil; return }
++        guard lockTimer == nil else { return }
++        // ponytail: 200ms reconciliation can briefly expose system changes; notifications if latency matters.
++        let timer = Timer(timeInterval: 0.2, repeats: true) { [weak self] _ in self?.enforceLocks() }
++        timer.tolerance = 0.03
++        RunLoop.main.add(timer, forMode: .common); lockTimer = timer
++    }
++    func releaseAllLocks() {
++        locks.removeAll(); updateLockTimer()
++        context.report("已解除全部亮度和音量锁定；当前数值未改变")
++    }
++    func enforceLocks() {
++        guard active else { return }
++        for (audio, lockedValue) in locks {
++            do {
++                let value = try appliedValue(lockedValue, audio: audio, protection: protection)
++                if abs(try readHardware(audio) - value) > 0.1 { try writeHardware(value, audio) }
++            } catch { context.report("锁定恢复失败（仍保留锁定，请切换未锁定配置）：\(error.localizedDescription)") }
++        }
++    }
++    func apply(_ preset: Preset) {
++        guard active else { return }
++        do {
++            let value = try appliedValue(preset.value, audio: preset.audio, protection: protection)
++            if preset.locked == true { _ = try readHardware(preset.audio) }
++            try writeHardware(value, preset.audio)
++            locks[preset.audio] = preset.locked == true ? value : nil
++            updateLockTimer()
++            context.report("已设置\(preset.audio ? "音量" : "亮度")：\(Int(value))%" + (value != preset.value ? "（耳机保护限制）" : ""))
++        } catch { context.report(error.localizedDescription) }
++    }
++    func makeView() -> AnyView { AnyView(QuickControlsView(plugin: self)) }
++    func makeMenuItems() -> AnyView { AnyView(QuickControlsMenu(plugin: self)) }
++}
++
++struct QuickControlsMenu: View {
++    @ObservedObject var plugin: QuickControlsPlugin
++    var body: some View {
++        Button("解除所有锁定") { plugin.releaseAllLocks() }.disabled(plugin.locks.isEmpty)
++        Text(plugin.protection ? "耳机保护：开启（最高 18%）" : "耳机保护：已关闭")
++        ForEach(plugin.presets) { preset in
++            Button("\(preset.audio ? "音量" : "亮度") · \(preset.name) · \(Int(preset.value))%") { plugin.apply(preset) }
++        }
++    }
++}
+--- /dev/null
++++ b/Plugins/QuickControls/QuickControlsView.swift
+@@ -0,0 +1,109 @@
++import SwiftUI
++
++struct PresetRow: View {
++    @Binding var preset: Preset
++    @ObservedObject var plugin: QuickControlsPlugin
++
++    var body: some View {
++        GroupBox {
++            VStack(alignment: .leading, spacing: 12) {
++                HStack(spacing: 14) {
++                    TextField("配置名称", text: $preset.name)
++                        .textFieldStyle(.plain).font(.system(size: 14, weight: .semibold))
++                        .accessibilityLabel("配置名称")
++                    Spacer(minLength: 8)
++                    Toggle("锁定", isOn: Binding(get: { preset.locked == true }, set: { preset.locked = $0; plugin.save() }))
++                        .toggleStyle(.checkbox).controlSize(.small)
++                        .help("应用后锁定；修改勾选不影响当前锁定，可用「解除所有锁定」解锁")
++                    Button("应用") { plugin.apply(preset) }
++                        .buttonStyle(.bordered)
++                    Button(role: .destructive) { plugin.presets.removeAll { $0.id == preset.id }; plugin.save() } label: {
++                        Image(systemName: "trash").foregroundStyle(.secondary)
++                    }.buttonStyle(.borderless).accessibilityLabel("删除配置 \(preset.name)").help("删除此配置")
++                }
++                HStack(spacing: 12) {
++                    Image(systemName: preset.audio ? "speaker.wave.2" : "sun.max").foregroundStyle(.secondary).frame(width: 20)
++                    Slider(value: $preset.value, in: 0...100, step: 1)
++                        .accessibilityLabel("\(preset.name)\(preset.audio ? "音量" : "亮度")百分比")
++                    Text("\(Int(preset.value))%")
++                        .font(.system(size: 22, weight: .medium)).monospacedDigit().frame(width: 66, alignment: .trailing)
++                }
++                HStack(alignment: .top, spacing: 10) {
++                    Label("快捷键", systemImage: "keyboard").font(.caption).foregroundStyle(.secondary).padding(.top, 3)
++                    ShortcutEditor(shortcut: $preset.shortcut, hotkeys: plugin.context.hotkeys, owner: plugin.info.id, bindingID: preset.id.uuidString, save: plugin.save)
++                    Spacer(minLength: 0)
++                }
++            }
++            .padding(10)
++        }
++        .onChange(of: preset.name) { _ in plugin.save() }
++        .onChange(of: preset.value) { _ in plugin.save() }
++    }
++}
++
++struct QuickControlsView: View {
++    @ObservedObject var plugin: QuickControlsPlugin
++    @State private var confirm = false
++    @State private var showShortcut = false
++    var body: some View {
++        VStack(alignment: .leading, spacing: 24) {
++            HStack(spacing: 16) {
++                Toggle("耳机保护 · 音量最高 18%", isOn: Binding(get: { plugin.protection }, set: { value in
++                    if value { plugin.protection = true } else { confirm = true }
++                })).toggleStyle(.switch).controlSize(.small)
++                Spacer()
++                Button("解除所有锁定") { plugin.releaseAllLocks() }.disabled(plugin.locks.isEmpty)
++                Button { showShortcut.toggle() } label: { Label("解锁快捷键", systemImage: "keyboard") }
++                    .popover(isPresented: $showShortcut) {
++                        VStack(alignment: .leading, spacing: 12) {
++                            Text("解除所有锁定快捷键").font(.headline)
++                            ShortcutEditor(shortcut: $plugin.unlockShortcut, hotkeys: plugin.context.hotkeys,
++                                           owner: plugin.info.id, bindingID: "unlock", save: plugin.saveUnlockShortcut)
++                        }.padding(20).frame(width: 360)
++                    }
++            }
++            section("亮度", audio: false)
++            section("音频", audio: true)
++        }
++        .alert("关闭耳机保护？", isPresented: $confirm) {
++            Button("取消", role: .cancel) {}
++            Button("关闭保护", role: .destructive) { plugin.protection = false }
++        } message: { Text("关闭后音量最高可设置为 100%。请先确认耳机佩戴和音量。") }
++    }
++    private func section(_ title: String, audio: Bool) -> some View {
++        let count = plugin.presets.filter { $0.audio == audio }.count
++        return VStack(alignment: .leading, spacing: 12) {
++            HStack(spacing: 10) {
++                Image(systemName: audio ? "speaker.wave.2.fill" : "sun.max.fill")
++                    .foregroundStyle(.secondary).frame(width: 28, height: 34)
++                VStack(alignment: .leading, spacing: 2) {
++                    Text(title).font(.headline)
++                    Text(audio ? "默认输出设备 · \(count) 个配置" : "内置显示器 · \(count) 个配置")
++                        .font(.caption).foregroundStyle(.secondary)
++                }
++                Spacer()
++                Label(plugin.locks[audio].map { "已锁定 \(Int($0))%" } ?? "未锁定",
++                      systemImage: plugin.locks[audio] == nil ? "lock.open" : "lock.fill")
++                    .font(.caption).foregroundStyle(.secondary)
++                Button {
++                    plugin.presets.append(Preset(name: audio ? "音量配置" : "亮度配置", audio: audio, value: audio ? 15 : 50))
++                    plugin.save()
++                } label: { Label("添加配置", systemImage: "plus") }
++                .help("添加\(title)配置")
++            }
++            ForEach($plugin.presets) { $preset in
++                if preset.audio == audio { PresetRow(preset: $preset, plugin: plugin) }
++            }
++            if count == 0 {
++                GroupBox {
++                    VStack(spacing: 6) {
++                        Text("还没有\(title)配置").font(.subheadline.weight(.medium))
++                        Text("点击「添加配置」，保存常用档位和快捷键。")
++                            .font(.caption).foregroundStyle(.secondary)
++                    }
++                    .frame(maxWidth: .infinity).padding(.vertical, 16)
++                }
++            }
++        }
++    }
++}
+--- /dev/null
++++ b/Plugins/Trackpad/TrackpadPlugin.swift
+@@ -0,0 +1,91 @@
++import SwiftUI
++import ApplicationServices
++
 +final class TrackpadPreference {
 +    private var previous = false
 +    private(set) var enabled = false
@@ -121,168 +932,147 @@
 +    deinit { if enabled { try? setEnabled(false) } }
 +}
 +
- final class Store: ObservableObject {
-+    @Published private(set) var appearanceMode: AppearanceMode = .system
-+    func setAppearance(_ mode: AppearanceMode) {
-+        appearanceMode = mode
-+        defaults.set(mode.rawValue, forKey: "appearanceMode")
-+        NSApp.appearance = mode.nativeAppearance
++
++final class TrackpadPlugin: ObservableObject, ToolPlugin {
++    static let id = "trackpad"
++    let info = PluginInfo(id: id, title: "屏蔽内置触控板", symbol: "hand.draw", detail: "需辅助功能权限；仅外接鼠标时生效", placement: .utility)
++    private let context: PluginContext
++    private var active = false
++    private let applySystem: (Bool) throws -> Void
++    @Published private(set) var isDisabled = false
++    init(context: PluginContext, applySystem: ((Bool) throws -> Void)? = nil) {
++        self.context = context
++        self.applySystem = applySystem ?? TrackpadPreference().setEnabled
 +    }
-+    @Published private(set) var trackpadDisabledWithMouse = false
-+    private let trackpad = TrackpadPreference()
-+    func setTrackpadDisabledWithMouse(_ on: Bool) {
++    func start() { active = true }
++    func setDisabled(_ enabled: Bool) {
++        guard active else { return }
 +        do {
-+            try trackpad.setEnabled(on)
-+            trackpadDisabledWithMouse = trackpad.enabled
-+            message = on ? "系统已开启：有外接鼠标时忽略内置触控板" : "已恢复原触控板系统设置"
-+        } catch { message = error.localizedDescription }
++            try applySystem(enabled); isDisabled = enabled
++            context.report(enabled ? "系统已开启：有外接鼠标时忽略内置触控板" : "已恢复原触控板系统设置")
++        } catch { context.report(error.localizedDescription) }
 +    }
-+    @Published private(set) var keepAwake = false
-+    private(set) var awakeAssertions: [IOPMAssertionID] = []
-+    func setKeepAwake(_ enabled: Bool) {
-+        guard enabled != keepAwake else { return }
-+        if enabled {
-+            var created: [IOPMAssertionID] = []
-+            for type in [kIOPMAssertionTypePreventUserIdleDisplaySleep, kIOPMAssertionTypePreventUserIdleSystemSleep] {
-+                var id = IOPMAssertionID(0)
-+                let result = IOPMAssertionCreateWithName(type as CFString, IOPMAssertionLevel(kIOPMAssertionLevelOn), "MacTools Keep Awake" as CFString, &id)
-+                guard result == kIOReturnSuccess else {
-+                    created.forEach { IOPMAssertionRelease($0) }
-+                    message = "保持唤醒开启失败：\(result)"
-+                    return
++    func stop() throws { if isDisabled { try applySystem(false); isDisabled = false }; active = false }
++    deinit { if isDisabled { try? applySystem(false) } }
++    func makeView() -> AnyView { AnyView(TrackpadView(plugin: self)) }
++    func makeMenuItems() -> AnyView { AnyView(TrackpadMenu(plugin: self)) }
++}
++private struct TrackpadView: View {
++    @ObservedObject var plugin: TrackpadPlugin
++    var body: some View {
++        NativeToggleCard(title: plugin.info.title, detail: "仅外接鼠标时生效", icon: plugin.info.symbol,
++                         isOn: Binding(get: { plugin.isDisabled }, set: plugin.setDisabled))
++            .help("需要辅助功能权限；正常退出或停用插件时恢复原系统开关")
++    }
++}
++private struct TrackpadMenu: View {
++    @ObservedObject var plugin: TrackpadPlugin
++    var body: some View { Toggle("有外接鼠标时屏蔽内置触控板", isOn: Binding(get: { plugin.isDisabled }, set: plugin.setDisabled)) }
++}
+--- /dev/null
++++ b/UI/ContentView.swift
+@@ -0,0 +1,90 @@
++import SwiftUI
++
++struct ContentView: View {
++    @ObservedObject var model: AppModel
++    @ObservedObject private var registry: PluginRegistry
++    @State private var showShortcuts = false
++    init(model: AppModel) { self.model = model; self.registry = model.plugins }
++
++    var body: some View {
++        VStack(spacing: 0) {
++            HStack(spacing: 12) {
++                Image(systemName: "wrench.and.screwdriver.fill").font(.system(size: 25)).foregroundStyle(.secondary).frame(width: 38, height: 46)
++                VStack(alignment: .leading, spacing: 3) {
++                    Text("Mac 工具箱").font(.system(size: 22, weight: .semibold))
++                    Text("\(registry.enabledPlugins.count) 个插件已启用").font(.caption).foregroundStyle(.secondary)
 +                }
-+                created.append(id)
-+            }
-+            awakeAssertions = created
-+            keepAwake = true
-+        } else {
-+            var failed: [IOPMAssertionID] = []
-+            for id in awakeAssertions {
-+                if IOPMAssertionRelease(id) != kIOReturnSuccess { failed.append(id) }
-+            }
-+            awakeAssertions = failed
-+            keepAwake = !failed.isEmpty
-+            if keepAwake { message = "部分唤醒请求释放失败，请重试或退出应用" }
-+        }
-+    }
-     @Published var presets: [Preset] = []
-+    @Published var windowShortcut = Preset(name: "显示 / 收起界面", key: "M")
-+    @Published var unlockShortcut = Preset(name: "解除所有锁定", key: "")
-+    var toggleWindow: (() -> Void)?
-     @Published var protection = true
-     @Published var message = "尚未应用配置；耳机保护默认开启"
-     @Published var shortcutErrors: [UUID: String] = [:]
-     private var references: [EventHotKeyRef] = []
-     private var handler: EventHandlerRef?
-     private var ids: [UInt32: UUID] = [:]
-+    @Published private(set) var locks: [Bool: Double] = [:]
-+    private var lockTimer: Timer?
-+    private let writeHardware: (Double, Bool) throws -> Void
-+    private let readHardware: (Bool) throws -> Double
-     private let defaults: UserDefaults
--    init(defaults: UserDefaults = .standard) {
-+    init(defaults: UserDefaults = .standard,
-+         writeHardware: @escaping (Double, Bool) throws -> Void = { try Hardware.apply($0, audio: $1) },
-+         readHardware: @escaping (Bool) throws -> Double = { try Hardware.read(audio: $0) }) {
-+        self.writeHardware = writeHardware
-+        self.readHardware = readHardware
-         self.defaults = defaults
-+        appearanceMode = AppearanceMode(rawValue: defaults.string(forKey: "appearanceMode") ?? "") ?? .system
-         if let data = defaults.data(forKey: "presets") {
-             do { let loaded = try JSONDecoder().decode([Preset].self, from: data)
-                 guard Set(loaded.map(\.id)).count == loaded.count, loaded.allSatisfy({ $0.value.isFinite && (0...100).contains($0.value) }) else { throw Failure.message("配置数值或标识无效") }
-                 presets = loaded }
-             catch { message = "配置读取失败，原数据未覆盖：\(error.localizedDescription)" }
-         }
-+        if let data = defaults.data(forKey: "windowShortcut"),
-+           let shortcut = try? JSONDecoder().decode(Preset.self, from: data) { windowShortcut = shortcut }
-+        if let data = defaults.data(forKey: "unlockShortcut"),
-+           let shortcut = try? JSONDecoder().decode(Preset.self, from: data) { unlockShortcut = shortcut }
-         var event = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
-         InstallEventHandler(GetApplicationEventTarget(), { _, event, context in
-             guard let event, let context else { return OSStatus(eventNotHandledErr) }
-@@ -76,12 +232,19 @@
-             let status = GetEventParameter(event, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID), nil, MemoryLayout<EventHotKeyID>.size, nil, &key)
-             guard status == noErr else { return status }
-             let store = Unmanaged<Store>.fromOpaque(context).takeUnretainedValue()
--            if let id = store.ids[key.id], let preset = store.presets.first(where: { $0.id == id }) { store.apply(preset) }
-+            if let id = store.ids[key.id] {
-+                if id == store.windowShortcut.id { store.toggleWindow?() }
-+                else if id == store.unlockShortcut.id { store.releaseAllLocks() }
-+                else if let preset = store.presets.first(where: { $0.id == id }) { store.apply(preset) }
-+            }
-             return noErr
-         }, 1, &event, Unmanaged.passUnretained(self).toOpaque(), &handler)
-         register()
-     }
-     deinit {
-+        try? trackpad.setEnabled(false)
-+        awakeAssertions.forEach { IOPMAssertionRelease($0) }
-+        lockTimer?.invalidate()
-         references.forEach { UnregisterEventHotKey($0) }
-         if let handler { RemoveEventHandler(handler) }
-     }
-@@ -89,9 +252,17 @@
-         do { defaults.set(try JSONEncoder().encode(presets), forKey: "presets"); register() }
-         catch { message = "保存失败：\(error.localizedDescription)" }
-     }
-+    func saveWindowShortcut() {
-+        do { defaults.set(try JSONEncoder().encode(windowShortcut), forKey: "windowShortcut"); register() }
-+        catch { message = "快捷键保存失败：\(error.localizedDescription)" }
-+    }
-+    func saveUnlockShortcut() {
-+        do { defaults.set(try JSONEncoder().encode(unlockShortcut), forKey: "unlockShortcut"); register() }
-+        catch { message = "解锁快捷键保存失败：\(error.localizedDescription)" }
-+    }
-     func register() {
-         references.forEach { UnregisterEventHotKey($0) }; references.removeAll(); ids.removeAll(); shortcutErrors.removeAll()
--        for (index, preset) in presets.enumerated() where !preset.key.isEmpty {
-+        for (index, preset) in ([windowShortcut, unlockShortcut] + presets).enumerated() where !preset.key.isEmpty {
-             guard let code = keyCodes[preset.key.uppercased()], preset.modifiers & UInt32(cmdKey | optionKey | controlKey) != 0 else {
-                 shortcutErrors[preset.id] = "请选择字母/数字，至少包含 ⌘、⌥ 或 ⌃"; continue
-             }
-@@ -102,102 +273,321 @@
-             else { shortcutErrors[preset.id] = "快捷键冲突或注册失败（\(status)）" }
-         }
-     }
-+    private func updateLockTimer() {
-+        guard !locks.isEmpty else { lockTimer?.invalidate(); lockTimer = nil; return }
-+        guard lockTimer == nil else { return }
-+        // ponytail: 200ms reconciliation can briefly expose system changes; device notifications if latency matters.
-+        let timer = Timer(timeInterval: 0.2, repeats: true) { [weak self] _ in self?.enforceLocks() }
-+        timer.tolerance = 0.03
-+        RunLoop.main.add(timer, forMode: .common)
-+        lockTimer = timer
-+    }
-+    func releaseAllLocks() {
-+        locks.removeAll()
-+        updateLockTimer()
-+        message = "已解除全部亮度和音量锁定；当前数值未改变"
-+    }
-+    func enforceLocks() {
-+        for (audio, lockedValue) in locks {
-+            do {
-+                let value = try appliedValue(lockedValue, audio: audio, protection: protection)
-+                if abs(try readHardware(audio) - value) > 0.1 { try writeHardware(value, audio) }
-+            } catch { message = "锁定恢复失败（仍保留锁定，请切换未锁定配置）：\(error.localizedDescription)" }
-+        }
-+    }
-     func apply(_ preset: Preset) {
-         do {
-             let value = try appliedValue(preset.value, audio: preset.audio, protection: protection)
--            try Hardware.apply(value, audio: preset.audio)
-+            if preset.locked == true { _ = try readHardware(preset.audio) }
-+            try writeHardware(value, preset.audio)
-+            locks[preset.audio] = preset.locked == true ? value : nil
-+            updateLockTimer()
-             message = "已设置\(preset.audio ? "音量" : "亮度")：\(Int(value))%" + (value != preset.value ? "（耳机保护限制）" : "")
-         } catch { message = error.localizedDescription }
++                Spacer()
++                PluginMenu(registry: registry).fixedSize()
++                Picker("外观", selection: Binding(get: { model.appearanceMode }, set: model.setAppearance)) {
++                    ForEach(AppearanceMode.allCases, id: \.self) { Text($0.title).tag($0) }
++                }.pickerStyle(.menu).frame(width: 142)
++                Button { showShortcuts.toggle() } label: { Label("窗口快捷键", systemImage: "keyboard") }
++                    .popover(isPresented: $showShortcuts) {
++                        VStack(alignment: .leading, spacing: 12) {
++                            Text("显示界面 / 收起到托盘").font(.headline)
++                            ShortcutEditor(shortcut: $model.windowShortcut, hotkeys: model.hotkeys, owner: "app.window", bindingID: "toggle", save: model.saveWindowShortcut)
++                            Text("各工具的快捷键在对应插件内设置。").font(.caption).foregroundStyle(.secondary)
++                        }.padding(20).frame(width: 360)
++                    }
++                Button { model.toggleWindow?() } label: { Image(systemName: "rectangle.compress.vertical") }
++                    .accessibilityLabel("收起到托盘")
++            }.padding(.horizontal, 24).padding(.top, 20).padding(.bottom, 16)
++
++            Divider()
++            ScrollView {
++                VStack(alignment: .leading, spacing: 28) {
++                    if registry.enabledPlugins.contains(where: { $0.info.placement == .utility }) {
++                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 340), spacing: 12)], spacing: 12) {
++                            ForEach(registry.enabledPlugins.filter { $0.info.placement == .utility }, id: \.info.id) { $0.makeView() }
++                        }
++                    }
++                    ForEach(registry.enabledPlugins.filter { $0.info.placement == .content }, id: \.info.id) { $0.makeView() }
++                    if !registry.enabledPlugins.contains(where: { $0.info.placement == .content }) {
++                        Text("暂无启用的工具面板，可在「插件」菜单中启用。").foregroundStyle(.secondary).frame(maxWidth: .infinity).padding(32)
++                    }
++                }.padding(24)
++            }.frame(maxWidth: .infinity, minHeight: 350, maxHeight: .infinity)
++                .accessibilityIdentifier("preset-list").layoutPriority(1)
++            Divider()
++            HStack(alignment: .top, spacing: 10) {
++                Image(systemName: "info.circle").foregroundStyle(.secondary)
++                Text(model.message).font(.callout).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
++                Text("配置自动保存").font(.caption).foregroundStyle(.secondary)
++            }.padding(.horizontal, 24).padding(.vertical, 12)
++        }.frame(minWidth: 900, minHeight: 640).background(Color(nsColor: .windowBackgroundColor))
 +    }
 +}
 +
++struct PluginMenu: View {
++    @ObservedObject var registry: PluginRegistry
++    var body: some View {
++        Menu {
++            ForEach(registry.plugins, id: \.info.id) { plugin in
++                Toggle(plugin.info.title, isOn: Binding(get: { registry.enabledIDs.contains(plugin.info.id) }, set: { registry.setEnabled($0, id: plugin.info.id) }))
++                    .help(plugin.info.detail)
++            }
++        } label: { Label("插件", systemImage: "puzzlepiece.extension") }
++    }
++}
++
++struct MenuContent: View {
++    @ObservedObject var model: AppModel
++    @ObservedObject private var registry: PluginRegistry
++    let showWindow: () -> Void
++    init(model: AppModel, showWindow: @escaping () -> Void) { self.model = model; registry = model.plugins; self.showWindow = showWindow }
++    var body: some View {
++        Button("打开工具箱", action: showWindow)
++        Picker("外观", selection: Binding(get: { model.appearanceMode }, set: model.setAppearance)) {
++            ForEach(AppearanceMode.allCases, id: \.self) { Text($0.title).tag($0) }
++        }.pickerStyle(.menu)
++        PluginMenu(registry: registry)
++        ForEach(registry.enabledPlugins, id: \.info.id) { plugin in
++            Divider()
++            plugin.makeMenuItems()
++        }
++        Divider()
++        Text(model.message)
++        Button("退出") { NSApp.terminate(nil) }
++    }
++}
+--- /dev/null
++++ b/UI/SharedControls.swift
+@@ -0,0 +1,54 @@
++import SwiftUI
++import Carbon
++
 +struct ShortcutEditor: View {
-+    @Binding var shortcut: Preset
-+    var error: String?
++    @Binding var shortcut: KeyChord
++    @ObservedObject var hotkeys: HotKeyService
++    let owner: String
++    let bindingID: String
 +    var save: () -> Void
 +
 +    var body: some View {
@@ -304,321 +1094,28 @@
 +                }.labelsHidden().frame(width: 94)
 +                .onChange(of: shortcut.key) { _ in save() }
 +            }.controlSize(.small)
-+            if let error { Text(error).font(.caption).foregroundStyle(.red).fixedSize(horizontal: false, vertical: true) }
++            if let error = hotkeys.error(owner: owner, id: bindingID) { Text(error).font(.caption).foregroundStyle(.red).fixedSize(horizontal: false, vertical: true) }
 +        }
-     }
- }
- 
- struct PresetRow: View {
-     @Binding var preset: Preset
-     @ObservedObject var store: Store
-+
-     var body: some View {
--        VStack(alignment: .leading, spacing: 8) {
--            HStack {
--                TextField("配置名称", text: $preset.name).frame(width: 130)
--                Slider(value: $preset.value, in: 0...100, step: 1)
--                Text("\(Int(preset.value))%").monospacedDigit().frame(width: 42)
--                Button("应用") { store.apply(preset) }
--                Button(role: .destructive) { store.presets.removeAll { $0.id == preset.id }; store.save() } label: { Image(systemName: "trash") }.accessibilityLabel("删除配置")
--            }
--            HStack {
--                Text("快捷键").foregroundStyle(.secondary)
--                ForEach([("⌘", UInt32(cmdKey)), ("⌥", UInt32(optionKey)), ("⌃", UInt32(controlKey)), ("⇧", UInt32(shiftKey))], id: \.1) { label, flag in
--                    Toggle(label, isOn: Binding(get: { preset.modifiers & flag != 0 }, set: { on in
--                        if on { preset.modifiers |= flag } else { preset.modifiers &= ~flag }
--                    })).toggleStyle(.button)
--                }
--                Picker("按键", selection: $preset.key) {
--                    Text("不设置").tag("")
--                    ForEach(keyCodes.keys.sorted(), id: \.self) { Text($0).tag($0) }
--                }.frame(width: 135)
--                if let error = store.shortcutErrors[preset.id] { Text(error).font(.caption).foregroundStyle(.red) }
--            }
--        }.padding(.vertical, 6)
-+        GroupBox {
-+            VStack(alignment: .leading, spacing: 12) {
-+                HStack(spacing: 14) {
-+                    TextField("配置名称", text: $preset.name)
-+                        .textFieldStyle(.plain).font(.system(size: 14, weight: .semibold))
-+                        .accessibilityLabel("配置名称")
-+                    Spacer(minLength: 8)
-+                    Toggle("锁定", isOn: Binding(get: { preset.locked == true }, set: { preset.locked = $0; store.save() }))
-+                        .toggleStyle(.checkbox).controlSize(.small)
-+                        .help("应用后锁定；修改勾选不影响当前锁定，可用「解除所有锁定」解锁")
-+                    Button("应用") { store.apply(preset) }
-+                        .buttonStyle(.bordered)
-+                    Button(role: .destructive) { store.presets.removeAll { $0.id == preset.id }; store.save() } label: {
-+                        Image(systemName: "trash").foregroundStyle(.secondary)
-+                    }.buttonStyle(.borderless).accessibilityLabel("删除配置 \(preset.name)").help("删除此配置")
-+                }
-+                HStack(spacing: 12) {
-+                    Image(systemName: preset.audio ? "speaker.wave.2" : "sun.max").foregroundStyle(.secondary).frame(width: 20)
-+                    Slider(value: $preset.value, in: 0...100, step: 1)
-+                        .accessibilityLabel("\(preset.name)\(preset.audio ? "音量" : "亮度")百分比")
-+                    Text("\(Int(preset.value))%")
-+                        .font(.system(size: 22, weight: .medium)).monospacedDigit().frame(width: 66, alignment: .trailing)
-+                }
-+                HStack(alignment: .top, spacing: 10) {
-+                    Label("快捷键", systemImage: "keyboard").font(.caption).foregroundStyle(.secondary).padding(.top, 3)
-+                    ShortcutEditor(shortcut: $preset, error: store.shortcutErrors[preset.id], save: store.save)
-+                    Spacer(minLength: 0)
-+                }
-+            }
-+            .padding(10)
-+        }
-         .onChange(of: preset.name) { _ in store.save() }
-         .onChange(of: preset.value) { _ in store.save() }
--        .onChange(of: preset.key) { _ in store.save() }
--        .onChange(of: preset.modifiers) { _ in store.save() }
--    }
--}
 +    }
 +}
 +
- struct ContentView: View {
-     @ObservedObject var store: Store
-     @State private var confirm = false
-+    @State private var showShortcuts = false
-+
-     var body: some View {
--        VStack(alignment: .leading, spacing: 16) {
--            Text("快捷控制").font(.largeTitle.bold())
--            Text("配置自动保存 · 快捷键在应用运行时全局生效").foregroundStyle(.secondary)
--            Toggle("耳机保护：音量最高 18%（重启自动开启）", isOn: Binding(get: { store.protection }, set: { value in
--                if value { store.protection = true } else { confirm = true }
--            }))
-+        VStack(spacing: 0) {
-+            HStack(spacing: 12) {
-+                Image(systemName: "wrench.and.screwdriver.fill")
-+                    .font(.system(size: 25, weight: .regular)).foregroundStyle(.secondary)
-+                    .frame(width: 38, height: 46)
-+                VStack(alignment: .leading, spacing: 3) {
-+                    Text("快捷控制").font(.system(size: 22, weight: .semibold))
-+                    Text("Mac 工具箱 · 让常用操作触手可及").font(.caption).foregroundStyle(.secondary)
-+                }
-+                Spacer()
-+                Button { store.releaseAllLocks() } label: { Label("解除所有锁定", systemImage: "lock.open") }
-+                    .disabled(store.locks.isEmpty)
-+                    .help("解除亮度、音量锁定，不改变当前数值")
-+                Picker("外观", selection: Binding(get: { store.appearanceMode }, set: store.setAppearance)) {
-+                    ForEach(AppearanceMode.allCases, id: \.self) { Text($0.title).tag($0) }
-+                }.pickerStyle(.menu).frame(width: 142)
-+                    .help("只改变本应用的外观，自动保存选择")
-+                Button { showShortcuts.toggle() } label: { Label("快捷键设置", systemImage: "keyboard") }
-+                    .popover(isPresented: $showShortcuts, arrowEdge: .bottom) { shortcutSettings }
-+                Button { store.toggleWindow?() } label: { Image(systemName: "rectangle.compress.vertical") }
-+                    .accessibilityLabel("收起到托盘").help("收起到菜单栏，后台继续运行")
-+            }
-+            .controlSize(.regular).padding(.horizontal, 24).padding(.top, 20).padding(.bottom, 16)
-+
-+            HStack(spacing: 12) {
-+                utility("保持唤醒", detail: "防闲置熄屏与休眠", icon: "cup.and.saucer",
-+                        isOn: Binding(get: { store.keepAwake }, set: { store.setKeepAwake($0) }))
-+                    .help("退出后释放；不阻止手动锁屏、屏保锁屏或合盖")
-+                utility("耳机保护", detail: "音量上限 18%", icon: "earbuds",
-+                        isOn: Binding(get: { store.protection }, set: { value in
-+                            if value { store.protection = true } else { confirm = true }
-+                        }))
-+                utility("屏蔽内置触控板", detail: "仅外接鼠标时生效", icon: "hand.draw",
-+                        isOn: Binding(get: { store.trackpadDisabledWithMouse }, set: { store.setTrackpadDisabledWithMouse($0) }))
-+                    .help("需要辅助功能权限；正常退出恢复原系统开关")
-+            }.padding(.horizontal, 24).padding(.bottom, 16)
-+
-+            Divider()
-             ScrollView {
--                VStack(spacing: 20) {
-+                VStack(alignment: .leading, spacing: 28) {
-                     section("亮度", audio: false)
-                     section("音频", audio: true)
--                }
--            }
--            Text(store.message).font(.callout).textSelection(.enabled)
--            Text("亮度仅支持内置屏幕；关闭窗口后可通过菜单栏重新打开。退出后快捷键失效。").font(.caption).foregroundStyle(.secondary)
--        }.padding(24).frame(minWidth: 740, minHeight: 500)
-+                }.padding(24)
-+            }
-+            .frame(maxWidth: .infinity, minHeight: 350, maxHeight: .infinity)
-+            .accessibilityIdentifier("preset-list")
-+            .background(Color(nsColor: .windowBackgroundColor))
-+            .layoutPriority(1)
-+            Divider()
-+
-+            HStack(alignment: .top, spacing: 10) {
-+                Image(systemName: "info.circle").foregroundStyle(.secondary)
-+                Text(store.message).font(.callout).textSelection(.enabled)
-+                    .frame(maxWidth: .infinity, alignment: .leading)
-+                Text("配置自动保存").font(.caption).foregroundStyle(.secondary)
-+            }.padding(.horizontal, 24).padding(.vertical, 12)
-+        }
-+        .frame(minWidth: 900, minHeight: 640)
-+        .background(Color(nsColor: .windowBackgroundColor))
-         .alert("关闭耳机保护？", isPresented: $confirm) {
-             Button("取消", role: .cancel) {}
-             Button("关闭保护", role: .destructive) { store.protection = false }
-         } message: { Text("关闭后音量配置最高可设置为 100%。请先确认耳机佩戴和音量。") }
-     }
--    func section(_ title: String, audio: Bool) -> some View {
-+
-+    private var shortcutSettings: some View {
-+        VStack(alignment: .leading, spacing: 16) {
-+            HStack {
-+                Text("全局快捷键").font(.headline)
-+                Spacer()
-+                Button("完成") { showShortcuts = false }
-+            }
-+            Text("应用运行时全局生效，修改后自动保存。")
-+                .font(.caption).foregroundStyle(.secondary)
-+            VStack(alignment: .leading, spacing: 8) {
-+                Text("显示界面 / 收起到托盘").font(.subheadline.weight(.medium))
-+                ShortcutEditor(shortcut: $store.windowShortcut, error: store.shortcutErrors[store.windowShortcut.id], save: store.saveWindowShortcut)
-+            }
-+            Divider()
-+            VStack(alignment: .leading, spacing: 8) {
-+                Text("解除所有锁定").font(.subheadline.weight(.medium))
-+                ShortcutEditor(shortcut: $store.unlockShortcut, error: store.shortcutErrors[store.unlockShortcut.id], save: store.saveUnlockShortcut)
-+            }
-+        }.padding(20).frame(width: 360)
-+    }
-+
-+    private func utility(_ title: String, detail: String, icon: String, isOn: Binding<Bool>) -> some View {
-         GroupBox {
--            VStack(alignment: .leading) {
--                HStack {
--                    Label(title, systemImage: audio ? "speaker.wave.2" : "sun.max").font(.headline)
--                    Spacer()
--                    Button("添加配置", systemImage: "plus") {
--                        store.presets.append(Preset(name: audio ? "音量配置" : "亮度配置", audio: audio, value: audio ? 15 : 50)); store.save()
-+            Toggle(isOn: isOn) {
++struct NativeToggleCard: View {
++    let title: String
++    let detail: String
++    let icon: String
++    @Binding var isOn: Bool
++    var body: some View {
++        GroupBox {
++            Toggle(isOn: $isOn) {
 +                HStack(spacing: 9) {
 +                    Image(systemName: icon).foregroundStyle(.secondary).font(.title3).frame(width: 24)
 +                    VStack(alignment: .leading, spacing: 3) {
 +                        Text(title).font(.system(size: 12, weight: .semibold))
 +                        Text(detail).font(.system(size: 10)).foregroundStyle(.secondary)
-                     }
-                 }
--                ForEach($store.presets) { $preset in
--                    if preset.audio == audio { PresetRow(preset: $preset, store: store) }
--                }
--                if !store.presets.contains(where: { $0.audio == audio }) { Text("添加一个配置，然后选择百分比和快捷键。").foregroundStyle(.secondary).padding(.vertical) }
--            }.padding(8)
--        }
--    }
--}
-+            }
-+            .toggleStyle(.switch).controlSize(.small)
-+            .accessibilityLabel(title)
-+            .padding(6).frame(maxWidth: .infinity)
-+        }
-+    }
-+
-+    private func section(_ title: String, audio: Bool) -> some View {
-+        let count = store.presets.filter { $0.audio == audio }.count
-+        return VStack(alignment: .leading, spacing: 12) {
-+            HStack(spacing: 10) {
-+                Image(systemName: audio ? "speaker.wave.2.fill" : "sun.max.fill")
-+                    .foregroundStyle(.secondary).frame(width: 28, height: 34)
-+                VStack(alignment: .leading, spacing: 2) {
-+                    Text(title).font(.headline)
-+                    Text(audio ? "默认输出设备 · \(count) 个配置" : "内置显示器 · \(count) 个配置")
-+                        .font(.caption).foregroundStyle(.secondary)
-+                }
-+                Spacer()
-+                Label(store.locks[audio].map { "已锁定 \(Int($0))%" } ?? "未锁定",
-+                      systemImage: store.locks[audio] == nil ? "lock.open" : "lock.fill")
-+                    .font(.caption).foregroundStyle(.secondary)
-+                Button {
-+                    store.presets.append(Preset(name: audio ? "音量配置" : "亮度配置", audio: audio, value: audio ? 15 : 50))
-+                    store.save()
-+                } label: { Label("添加配置", systemImage: "plus") }
-+                .help("添加\(title)配置")
-+            }
-+            ForEach($store.presets) { $preset in
-+                if preset.audio == audio { PresetRow(preset: $preset, store: store) }
-+            }
-+            if count == 0 {
-+                GroupBox {
-+                    VStack(spacing: 6) {
-+                        Text("还没有\(title)配置").font(.subheadline.weight(.medium))
-+                        Text("点击「添加配置」，保存常用档位和快捷键。")
-+                            .font(.caption).foregroundStyle(.secondary)
 +                    }
-+                    .frame(maxWidth: .infinity).padding(.vertical, 16)
 +                }
-+            }
++            }.toggleStyle(.switch).controlSize(.small).accessibilityLabel(title)
++                .padding(6).frame(maxWidth: .infinity)
 +        }
 +    }
 +}
-+final class AppDelegate: NSObject, NSApplicationDelegate {
-+    let store = Store()
-+    private var window: NSWindow?
-+
-+    func applicationDidFinishLaunching(_ notification: Notification) {
-+        NSApp.setActivationPolicy(.accessory)
-+        NSApp.appearance = store.appearanceMode.nativeAppearance
-+        store.toggleWindow = { [weak self] in self?.toggleWindow() }
-+        showWindow(store: store)
-+    }
-+
-+    func applicationWillTerminate(_ notification: Notification) {
-+        store.setKeepAwake(false)
-+        store.setTrackpadDisabledWithMouse(false)
-+    }
-+
-+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
-+
-+    func toggleWindow() {
-+        if let window, window.isVisible && !window.isMiniaturized && NSApp.isActive { window.orderOut(nil) }
-+        else { showWindow(store: store) }
-+    }
-+
-+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-+        showWindow(store: store)
-+        return true
-+    }
-+
-+    func showWindow(store: Store) {
-+        if window == nil {
-+            let panel = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 980, height: 740),
-+                                 styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)
-+            panel.title = "Mac 工具箱"
-+            panel.contentMinSize = NSSize(width: 900, height: 640)
-+            panel.contentView = NSHostingView(rootView: ContentView(store: store))
-+            panel.isReleasedWhenClosed = false
-+            panel.center()
-+            window = panel
-+        }
-+        window?.deminiaturize(nil)
-+        window?.makeKeyAndOrderFront(nil)
-+        NSApp.activate(ignoringOtherApps: true)
-+    }
-+}
-+
- @main
- struct MacToolsApp: App {
--    @StateObject private var store = Store()
-+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
-+
-     var body: some Scene {
--        WindowGroup("Mac 工具箱", id: "main") { ContentView(store: store) }
--        MenuBarExtra("Mac 工具箱", systemImage: "slider.horizontal.3") { MenuContent(store: store) }
-+        MenuBarExtra("Mac 工具箱", systemImage: "slider.horizontal.3") { MenuContent(store: delegate.store, showWindow: { delegate.showWindow(store: delegate.store) }) }
-     }
- }
- struct MenuContent: View {
-     @ObservedObject var store: Store
--    @Environment(\.openWindow) var openWindow
-+    let showWindow: () -> Void
-     var body: some View {
--        Button("打开工具箱") { openWindow(id: "main"); NSApp.activate(ignoringOtherApps: true) }
-+        Button("打开工具箱", action: showWindow)
-+        Picker("外观", selection: Binding(get: { store.appearanceMode }, set: store.setAppearance)) {
-+            ForEach(AppearanceMode.allCases, id: \.self) { Text($0.title).tag($0) }
-+        }.pickerStyle(.menu)
-+        Toggle("保持唤醒", isOn: Binding(get: { store.keepAwake }, set: { store.setKeepAwake($0) }))
-+        Toggle("有外接鼠标时屏蔽内置触控板", isOn: Binding(get: { store.trackpadDisabledWithMouse }, set: { store.setTrackpadDisabledWithMouse($0) }))
-+        Button("解除所有锁定") { store.releaseAllLocks() }.disabled(store.locks.isEmpty)
-+        Text(store.protection ? "耳机保护：开启（最高 18%）" : "耳机保护：已关闭")
-         ForEach(store.presets) { preset in Button("\(preset.audio ? "音量" : "亮度") · \(preset.name) · \(Int(preset.value))%") { store.apply(preset) } }
-         Divider()
-         Text(store.message)

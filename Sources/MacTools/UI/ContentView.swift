@@ -15,7 +15,7 @@ struct ContentView: View {
                     Text("\(registry.enabledPlugins.count) 个插件已启用").font(.caption).foregroundStyle(.secondary)
                 }
                 Spacer()
-                PluginMenu(registry: registry)
+                PluginMenu(registry: registry).fixedSize()
                 Picker("外观", selection: Binding(get: { model.appearanceMode }, set: model.setAppearance)) {
                     ForEach(AppearanceMode.allCases, id: \.self) { Text($0.title).tag($0) }
                 }.pickerStyle(.menu).frame(width: 142)
@@ -35,7 +35,7 @@ struct ContentView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 28) {
                     if registry.enabledPlugins.contains(where: { $0.info.placement == .utility }) {
-                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 260), spacing: 12)], spacing: 12) {
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 340), spacing: 12)], spacing: 12) {
                             ForEach(registry.enabledPlugins.filter { $0.info.placement == .utility }, id: \.info.id) { $0.makeView() }
                         }
                     }

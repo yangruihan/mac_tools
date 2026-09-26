@@ -21,7 +21,7 @@ enum AppearanceMode: String, CaseIterable {
 final class AppModel: ObservableObject {
     @Published private(set) var appearanceMode: AppearanceMode = .system
     @Published var windowShortcut = KeyChord(key: "M")
-    @Published var message = "尚未应用配置；耳机保护默认开启"
+    @Published var message = "工具箱已就绪"
     var toggleWindow: (() -> Void)?
     let hotkeys = HotKeyService()
     private let defaults: UserDefaults
@@ -41,7 +41,11 @@ final class AppModel: ObservableObject {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         appearanceMode = AppearanceMode(rawValue: defaults.string(forKey: "appearanceMode") ?? "") ?? .system
-        if let data = defaults.data(forKey: "windowShortcut"), let chord = try? JSONDecoder().decode(KeyChord.self, from: data) { windowShortcut = chord }
+        if let data = defaults.data(forKey: "app.windowShortcut") ?? defaults.data(forKey: "windowShortcut"),
+           let chord = try? JSONDecoder().decode(KeyChord.self, from: data) {
+            windowShortcut = chord
+            if defaults.data(forKey: "app.windowShortcut") == nil { defaults.set(data, forKey: "app.windowShortcut") }
+        }
     }
     private func context(for id: String) -> PluginContext {
         PluginContext(settings: PluginSettings(id: id, defaults: defaults), hotkeys: hotkeys,
@@ -59,7 +63,7 @@ final class AppModel: ObservableObject {
     func stop() { plugins.stopAll(); hotkeys.remove(owner: "app.window"); running = false }
     func saveWindowShortcut() {
         do {
-            defaults.set(try JSONEncoder().encode(windowShortcut), forKey: "windowShortcut")
+            defaults.set(try JSONEncoder().encode(windowShortcut), forKey: "app.windowShortcut")
             if running { registerWindowShortcut() }
         } catch { message = "窗口快捷键保存失败：\(error.localizedDescription)" }
     }
