@@ -60,3 +60,7 @@ open build/MacTools.app
 运行 `EXPECT_MODERN=1 scripts/check-ui-layout.sh` 可检查原生 NSHostingView 的滚动区尺寸；`UI_DARK=1` 检查深色布局。检查使用临时配置域，不显示窗口、不应用硬件配置，不替代人工视觉和交互验收。
 
 外观更新：使用 macOS 原生 GroupBox、按钮、滑块和语义灰阶；移除蓝橙配色、渐变和自绘边框。不强制浅色/深色，也不覆盖系统强调色。`EXPECT_NATIVE=1 EXPECT_MODERN=1 scripts/check-ui-layout.sh` 检查无固定装饰配色、深浅外观随应用切换及滚动区域尺寸。
+
+## 手动切换外观
+
+主窗口右上角和菜单栏均提供“外观”选项：跟随系统、浅色、深色。选择立即应用到本应用窗口和弹出面板，并保存到本应用偏好，重启仍保留；“跟随系统”清除应用级外观覆盖。不会改变 macOS 全局外观。

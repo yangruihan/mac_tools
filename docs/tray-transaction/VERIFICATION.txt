@@ -572,3 +572,69 @@ EXPECT_NATIVE=1 EXPECT_MODERN=1 scripts/check-ui-layout.sh
 stdout/stderr combined='custom-decorative-palette=False\nwindow=980x740; list=980x548; height-share=74%\nwindow=900x640; list=900x448; height-share=70%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n'
 exit=0
 Final rollback and patch reconstruction passed. Installed /Applications/MacTools.app binary equals build; SHA256=bf158ff2145dc00601120ca02b4fb97f66e3e21aad542f4e19a09be74ba8f79d; codesign --verify --strict exit=0; launch exit=0, observed PID=63288. Previous installed app backed up at /Users/yangruihan/Library/Application Support/MacTools/Backups/20260926-101222/MacTools.app. Installed Aqua window screenshot inspected; no hardware settings applied.
+
+2026-09-26 MANUAL APPEARANCE: AppearanceMode system/light/dark; Store.appearanceMode/setAppearance; native NSApp.appearance; main and tray Pickers; persisted application-only override.
+/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/BASELINE.swift sha256=dc42a5a724586d0f40cfc05e424e10d3141ea9bf78cb31a922d5f9279bb5353b
+/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/PRE-APPEARANCE-SWITCH.swift sha256=ab218881f557c480d19be4577cc9ad1f855f2ebe9bb304b531b0bc5b9073a4c5
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/MacTools.swift sha256=fae109956dfbac3240f14ab73b2b4c6b91ebeffae2fc50481ffe50493280d53c
+[
+  {
+    "label": "BASELINE",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/scripts/check-ui-layout.sh",
+      "/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/BASELINE.swift"
+    ],
+    "stdout": "custom-decorative-palette=False\nmanual-appearance-selection=False\nwindow=980x740; list=932x521; height-share=70%\nwindow=900x640; list=852x421; height-share=65%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "label": "MODIFIED",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/scripts/check-ui-layout.sh",
+      "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/MacTools.swift"
+    ],
+    "stdout": "custom-decorative-palette=False\nmanual-appearance-selection=True\nwindow=980x740; list=980x548; height-share=74%\nwindow=900x640; list=900x448; height-share=70%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "label": "RESTORE",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/ROLLBACK.sh",
+      "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmps1xsk8j2/MacTools.swift"
+    ],
+    "stdout": "",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "label": "ROLLBACK",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/scripts/check-ui-layout.sh",
+      "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmps1xsk8j2/MacTools.swift"
+    ],
+    "stdout": "custom-decorative-palette=False\nmanual-appearance-selection=False\nwindow=980x740; list=932x521; height-share=70%\nwindow=900x640; list=852x421; height-share=65%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n",
+    "stderr": "",
+    "exit": 0
+  },
+  {
+    "label": "REAPPLY",
+    "command": [
+      "patch",
+      "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmps1xsk8j2/MacTools.swift",
+      "/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/DIFF.patch"
+    ],
+    "stdout": "patching file '/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/tmps1xsk8j2/MacTools.swift'\n",
+    "stderr": "",
+    "exit": 0
+  }
+]
+rollback pristine hash match; modified reconstruction match
+swift test
+stdout/stderr combined="Building for debugging...\n[0/6] Write sources\n[2/6] Write swift-version--58304C5D6DBC2206.txt\n[4/8] Compiling MacTools MacTools.swift\n[5/8] Emitting module MacTools\n[5/10] Write Objects.LinkFileList\n[6/10] Linking MacTools\n[7/10] Applying MacTools\n[9/12] Compiling MacToolsTests Checks.swift\n[10/12] Emitting module MacToolsTests\n[10/12] Write Objects.LinkFileList\n[11/12] Linking MacToolsPackageTests\nBuild complete! (3.38s)\nTest Suite 'All tests' started at 2026-09-26 10:17:54.688.\nTest Suite 'MacToolsPackageTests.xctest' started at 2026-09-26 10:17:54.689.\nTest Suite 'Checks' started at 2026-09-26 10:17:54.689.\nTest Case '-[MacToolsTests.Checks testAppearanceSwitchAndPersistence]' started.\nTest Case '-[MacToolsTests.Checks testAppearanceSwitchAndPersistence]' passed (0.064 seconds).\nTest Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' started.\nTest Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testLocksAndLegacyPresets]' started.\nTest Case '-[MacToolsTests.Checks testLocksAndLegacyPresets]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' started.\nTest Case '-[MacToolsTests.Checks testPersistenceAndShortcutConflict]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testProtectionAndValidation]' started.\nTest Case '-[MacToolsTests.Checks testProtectionAndValidation]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.Checks testUnlockAllAndShortcut]' started.\nTest Case '-[MacToolsTests.Checks testUnlockAllAndShortcut]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.Checks testWindowShortcutPersistenceAndConflict]' started.\nTest Case '-[MacToolsTests.Checks testWindowShortcutPersistenceAndConflict]' passed (0.003 seconds).\nTest Suite 'Checks' passed at 2026-09-26 10:17:54.764.\n\t Executed 7 tests, with 0 failures (0 unexpected) in 0.074 (0.075) seconds\nTest Suite 'MacToolsPackageTests.xctest' passed at 2026-09-26 10:17:54.764.\n\t Executed 7 tests, with 0 failures (0 unexpected) in 0.074 (0.075) seconds\nTest Suite 'All tests' passed at 2026-09-26 10:17:54.764.\n\t Executed 7 tests, with 0 failures (0 unexpected) in 0.074 (0.076) seconds\nAPPEARANCE: light -> dark -> system; native app appearance and persisted reload verified\nAWAKE native ON: two IOPM assertions exist; repeated ON creates no duplicates\nAWAKE native OFF: both assertions released\nAWAKE deinit: assertions released; no audio writes\nLOCK CHECK: legacy=unlocked; external-change=restored; failed-switch=retained; unlocked-switch=released; channels=independent\nUNLOCK ALL: both locks removed without hardware write; shortcut persisted and conflict detected\n◇ Test run started.\n↳ Testing Library Version: 1501\n↳ Target Platform: arm64e-apple-macos14.0\n✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.\n"
+exit=0
+./scripts/build-app.sh
+stdout/stderr combined='[0/1] Planning build\nBuilding for production...\n[0/3] Write sources\n[1/3] Write swift-version--58304C5D6DBC2206.txt\n[3/4] Compiling MacTools MacTools.swift\n[3/5] Write Objects.LinkFileList\n[4/5] Linking MacTools\nBuild complete! (3.62s)\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app: replacing existing signature\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app/Contents/Info.plist: OK\n/Users/yangruihan/Workspace/mac_tools/build/MacTools.app\n'
+exit=0
+CUA isolated preview used production ContentView Picker: clicked 深色 -> Value 深色 + dark screenshot; clicked 跟随系统 -> Value 跟随系统 + light screenshot. Existing production PID 63288 remains running with its two Keep Awake assertions. Preview closed. /Applications not replaced in this turn; no audio writes and no global appearance change.

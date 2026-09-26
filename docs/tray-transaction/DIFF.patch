@@ -1,11 +1,29 @@
 --- a/MacTools.swift
 +++ b/MacTools.swift
-@@ -4,12 +4,15 @@
+@@ -4,12 +4,33 @@
  import AudioToolbox
  import CoreGraphics
  import Darwin
 +import IOKit.pwr_mgt
 +import ApplicationServices
++
++enum AppearanceMode: String, CaseIterable {
++    case system, light, dark
++    var title: String {
++        switch self {
++        case .system: return "跟随系统"
++        case .light: return "浅色"
++        case .dark: return "深色"
++        }
++    }
++    var nativeAppearance: NSAppearance? {
++        switch self {
++        case .system: return nil
++        case .light: return NSAppearance(named: .aqua)
++        case .dark: return NSAppearance(named: .darkAqua)
++        }
++    }
++}
  
  struct Preset: Codable, Identifiable {
      var id = UUID()
@@ -16,7 +34,7 @@
      var key = ""
      var modifiers = UInt32(cmdKey | optionKey)
  }
-@@ -25,6 +28,31 @@
+@@ -25,6 +46,31 @@
  }
  
  enum Hardware {
@@ -48,7 +66,7 @@
      static func apply(_ value: Double, audio: Bool) throws {
          if audio {
              var device = AudioDeviceID(0)
-@@ -52,16 +80,115 @@
+@@ -52,23 +98,133 @@
      }
  }
  
@@ -104,6 +122,12 @@
 +}
 +
  final class Store: ObservableObject {
++    @Published private(set) var appearanceMode: AppearanceMode = .system
++    func setAppearance(_ mode: AppearanceMode) {
++        appearanceMode = mode
++        defaults.set(mode.rawValue, forKey: "appearanceMode")
++        NSApp.appearance = mode.nativeAppearance
++    }
 +    @Published private(set) var trackpadDisabledWithMouse = false
 +    private let trackpad = TrackpadPreference()
 +    func setTrackpadDisabledWithMouse(_ on: Bool) {
@@ -163,9 +187,10 @@
 +        self.writeHardware = writeHardware
 +        self.readHardware = readHardware
          self.defaults = defaults
++        appearanceMode = AppearanceMode(rawValue: defaults.string(forKey: "appearanceMode") ?? "") ?? .system
          if let data = defaults.data(forKey: "presets") {
              do { let loaded = try JSONDecoder().decode([Preset].self, from: data)
-@@ -69,6 +196,10 @@
+                 guard Set(loaded.map(\.id)).count == loaded.count, loaded.allSatisfy({ $0.value.isFinite && (0...100).contains($0.value) }) else { throw Failure.message("配置数值或标识无效") }
                  presets = loaded }
              catch { message = "配置读取失败，原数据未覆盖：\(error.localizedDescription)" }
          }
@@ -176,7 +201,7 @@
          var event = EventTypeSpec(eventClass: OSType(kEventClassKeyboard), eventKind: UInt32(kEventHotKeyPressed))
          InstallEventHandler(GetApplicationEventTarget(), { _, event, context in
              guard let event, let context else { return OSStatus(eventNotHandledErr) }
-@@ -76,12 +207,19 @@
+@@ -76,12 +232,19 @@
              let status = GetEventParameter(event, EventParamName(kEventParamDirectObject), EventParamType(typeEventHotKeyID), nil, MemoryLayout<EventHotKeyID>.size, nil, &key)
              guard status == noErr else { return status }
              let store = Unmanaged<Store>.fromOpaque(context).takeUnretainedValue()
@@ -197,7 +222,7 @@
          references.forEach { UnregisterEventHotKey($0) }
          if let handler { RemoveEventHandler(handler) }
      }
-@@ -89,9 +227,17 @@
+@@ -89,9 +252,17 @@
          do { defaults.set(try JSONEncoder().encode(presets), forKey: "presets"); register() }
          catch { message = "保存失败：\(error.localizedDescription)" }
      }
@@ -216,7 +241,7 @@
              guard let code = keyCodes[preset.key.uppercased()], preset.modifiers & UInt32(cmdKey | optionKey | controlKey) != 0 else {
                  shortcutErrors[preset.id] = "请选择字母/数字，至少包含 ⌘、⌥ 或 ⌃"; continue
              }
-@@ -102,102 +248,313 @@
+@@ -102,102 +273,321 @@
              else { shortcutErrors[preset.id] = "快捷键冲突或注册失败（\(status)）" }
          }
      }
@@ -376,6 +401,10 @@
 +                Button { store.releaseAllLocks() } label: { Label("解除所有锁定", systemImage: "lock.open") }
 +                    .disabled(store.locks.isEmpty)
 +                    .help("解除亮度、音量锁定，不改变当前数值")
++                Picker("外观", selection: Binding(get: { store.appearanceMode }, set: store.setAppearance)) {
++                    ForEach(AppearanceMode.allCases, id: \.self) { Text($0.title).tag($0) }
++                }.pickerStyle(.menu).frame(width: 142)
++                    .help("只改变本应用的外观，自动保存选择")
 +                Button { showShortcuts.toggle() } label: { Label("快捷键设置", systemImage: "keyboard") }
 +                    .popover(isPresented: $showShortcuts, arrowEdge: .bottom) { shortcutSettings }
 +                Button { store.toggleWindow?() } label: { Image(systemName: "rectangle.compress.vertical") }
@@ -526,6 +555,7 @@
 +
 +    func applicationDidFinishLaunching(_ notification: Notification) {
 +        NSApp.setActivationPolicy(.accessory)
++        NSApp.appearance = store.appearanceMode.nativeAppearance
 +        store.toggleWindow = { [weak self] in self?.toggleWindow() }
 +        showWindow(store: store)
 +    }
@@ -582,6 +612,9 @@
      var body: some View {
 -        Button("打开工具箱") { openWindow(id: "main"); NSApp.activate(ignoringOtherApps: true) }
 +        Button("打开工具箱", action: showWindow)
++        Picker("外观", selection: Binding(get: { store.appearanceMode }, set: store.setAppearance)) {
++            ForEach(AppearanceMode.allCases, id: \.self) { Text($0.title).tag($0) }
++        }.pickerStyle(.menu)
 +        Toggle("保持唤醒", isOn: Binding(get: { store.keepAwake }, set: { store.setKeepAwake($0) }))
 +        Toggle("有外接鼠标时屏蔽内置触控板", isOn: Binding(get: { store.trackpadDisabledWithMouse }, set: { store.setTrackpadDisabledWithMouse($0) }))
 +        Button("解除所有锁定") { store.releaseAllLocks() }.disabled(store.locks.isEmpty)

@@ -9,6 +9,7 @@ s = pathlib.Path(sys.argv[1]).read_text()
 ui = s[s.index('struct PresetRow: View'):s.index('@main')]
 custom = any(x in ui for x in ['.blue', '.orange', '.teal', '.white', '.black', '.gradient'])
 print('custom-decorative-palette=' + str(custom), flush=True)
+print('manual-appearance-selection=' + str('enum AppearanceMode:' in s), flush=True)
 if os.environ.get('EXPECT_NATIVE') == '1':
     assert not custom
     assert '.preferredColorScheme' not in s

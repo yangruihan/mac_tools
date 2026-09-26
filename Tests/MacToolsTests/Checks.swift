@@ -1,9 +1,28 @@
 import XCTest
+import AppKit
 import IOKit.pwr_mgt
 import CoreFoundation
 @testable import MacTools
 
 final class Checks: XCTestCase {
+    func testAppearanceSwitchAndPersistence() {
+        _ = NSApplication.shared
+        let original = NSApp.appearance
+        let suite = "AppearanceTests.\(UUID())"
+        let defaults = UserDefaults(suiteName: suite)!
+        defer { NSApp.appearance = original; defaults.removePersistentDomain(forName: suite) }
+        defaults.set("invalid", forKey: "appearanceMode")
+        let store = Store(defaults: defaults)
+        XCTAssertEqual(store.appearanceMode, .system)
+        for mode in [AppearanceMode.light, .dark, .system] {
+            store.setAppearance(mode)
+            XCTAssertEqual(defaults.string(forKey: "appearanceMode"), mode.rawValue)
+            XCTAssertEqual(NSApp.appearance?.name, mode.nativeAppearance?.name)
+            let reloaded = Store(defaults: defaults)
+            XCTAssertEqual(reloaded.appearanceMode, mode)
+        }
+        print("APPEARANCE: light -> dark -> system; native app appearance and persisted reload verified")
+    }
     func testUnlockAllAndShortcut() throws {
         let defaults = UserDefaults(suiteName: "UnlockAllTests.\(UUID())")!
         var writes = 0

@@ -7,24 +7,6 @@ import Darwin
 import IOKit.pwr_mgt
 import ApplicationServices
 
-enum AppearanceMode: String, CaseIterable {
-    case system, light, dark
-    var title: String {
-        switch self {
-        case .system: return "跟随系统"
-        case .light: return "浅色"
-        case .dark: return "深色"
-        }
-    }
-    var nativeAppearance: NSAppearance? {
-        switch self {
-        case .system: return nil
-        case .light: return NSAppearance(named: .aqua)
-        case .dark: return NSAppearance(named: .darkAqua)
-        }
-    }
-}
-
 struct Preset: Codable, Identifiable {
     var id = UUID()
     var name = "新配置"
@@ -150,12 +132,6 @@ final class TrackpadPreference {
 }
 
 final class Store: ObservableObject {
-    @Published private(set) var appearanceMode: AppearanceMode = .system
-    func setAppearance(_ mode: AppearanceMode) {
-        appearanceMode = mode
-        defaults.set(mode.rawValue, forKey: "appearanceMode")
-        NSApp.appearance = mode.nativeAppearance
-    }
     @Published private(set) var trackpadDisabledWithMouse = false
     private let trackpad = TrackpadPreference()
     func setTrackpadDisabledWithMouse(_ on: Bool) {
@@ -214,7 +190,6 @@ final class Store: ObservableObject {
         self.writeHardware = writeHardware
         self.readHardware = readHardware
         self.defaults = defaults
-        appearanceMode = AppearanceMode(rawValue: defaults.string(forKey: "appearanceMode") ?? "") ?? .system
         if let data = defaults.data(forKey: "presets") {
             do { let loaded = try JSONDecoder().decode([Preset].self, from: data)
                 guard Set(loaded.map(\.id)).count == loaded.count, loaded.allSatisfy({ $0.value.isFinite && (0...100).contains($0.value) }) else { throw Failure.message("配置数值或标识无效") }
@@ -396,10 +371,6 @@ struct ContentView: View {
                 Button { store.releaseAllLocks() } label: { Label("解除所有锁定", systemImage: "lock.open") }
                     .disabled(store.locks.isEmpty)
                     .help("解除亮度、音量锁定，不改变当前数值")
-                Picker("外观", selection: Binding(get: { store.appearanceMode }, set: store.setAppearance)) {
-                    ForEach(AppearanceMode.allCases, id: \.self) { Text($0.title).tag($0) }
-                }.pickerStyle(.menu).frame(width: 142)
-                    .help("只改变本应用的外观，自动保存选择")
                 Button { showShortcuts.toggle() } label: { Label("快捷键设置", systemImage: "keyboard") }
                     .popover(isPresented: $showShortcuts, arrowEdge: .bottom) { shortcutSettings }
                 Button { store.toggleWindow?() } label: { Image(systemName: "rectangle.compress.vertical") }
@@ -529,7 +500,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
-        NSApp.appearance = store.appearanceMode.nativeAppearance
         store.toggleWindow = { [weak self] in self?.toggleWindow() }
         showWindow(store: store)
     }
@@ -581,9 +551,6 @@ struct MenuContent: View {
     let showWindow: () -> Void
     var body: some View {
         Button("打开工具箱", action: showWindow)
-        Picker("外观", selection: Binding(get: { store.appearanceMode }, set: store.setAppearance)) {
-            ForEach(AppearanceMode.allCases, id: \.self) { Text($0.title).tag($0) }
-        }.pickerStyle(.menu)
         Toggle("保持唤醒", isOn: Binding(get: { store.keepAwake }, set: { store.setKeepAwake($0) }))
         Toggle("有外接鼠标时屏蔽内置触控板", isOn: Binding(get: { store.trackpadDisabledWithMouse }, set: { store.setTrackpadDisabledWithMouse($0) }))
         Button("解除所有锁定") { store.releaseAllLocks() }.disabled(store.locks.isEmpty)
