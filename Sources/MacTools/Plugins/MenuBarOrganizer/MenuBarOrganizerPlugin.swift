@@ -120,6 +120,9 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
     func hideIntoPanel() {
         guard isOrganizing, !isCollapsed else { return }
         guard CGPreflightScreenCaptureAccess() else { status = "先点击「授权屏幕录制」；未授权时不会隐藏任何图标。"; return }
+        if let error = context.hotkeys.error(owner: info.id, id: "emergency-reveal") {
+            status = "紧急展开快捷键不可用（\(error)），不会隐藏图标；请解除冲突后重试。"; return
+        }
         guard let geometry = placement(), Self.canCollapse(dividerX: geometry.divider.minX, controlX: geometry.control.minX, screen: geometry.screen) else {
             status = "收纳按钮必须在分隔符右侧且可见；请按住 ⌘ 拖动两者后重试。"; return
         }
