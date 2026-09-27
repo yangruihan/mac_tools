@@ -11,7 +11,14 @@ if [ "$#" -eq 2 ] && [ "$1" = '--sources' ]; then
     mkdir -p "$TARGET"
     cp "$HERE/BASELINE.swift" "$TARGET/MacTools.swift"
     printf 'Prior source copy preserved: %s\n' "$BACKUP"
+elif [ "$#" -eq 2 ] && [ "$1" = '--menu-bar' ]; then
+    TARGET=${2%/}
+    [ -f "$TARGET/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift" ] && [ -f "$TARGET/Tests/MacToolsTests/MenuBarOrganizerTests.swift" ] || {
+        echo 'Expected a copied MacTools project' >&2; exit 2;
+    }
+    cp "$HERE/BASELINE_MENU_BAR.swift" "$TARGET/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift"
+    cp "$HERE/BASELINE_MENU_BAR_TESTS.swift" "$TARGET/Tests/MacToolsTests/MenuBarOrganizerTests.swift"
 else
-    [ "$#" -eq 1 ] || { echo 'usage: ROLLBACK.sh TARGET_FILE_COPY | --sources TARGET_SOURCE_DIRECTORY_COPY' >&2; exit 2; }
+    [ "$#" -eq 1 ] || { echo 'usage: ROLLBACK.sh TARGET_FILE_COPY | --sources TARGET_SOURCE_DIRECTORY_COPY | --menu-bar TARGET_PROJECT_COPY' >&2; exit 2; }
     cp "$HERE/BASELINE.swift" "$1"
 fi
