@@ -48,8 +48,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 struct MacToolsApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
 
-    init() { MenuBarOrganizerPlugin.prepareMainStatusPosition() }
-
     var body: some Scene {
         MenuBarExtra("Mac 工具箱", systemImage: "slider.horizontal.3") { MenuContent(model: delegate.model, showWindow: { delegate.showWindow(model: delegate.model) }) }
     }

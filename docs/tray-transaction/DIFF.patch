@@ -274,7 +274,7 @@
 +}
 --- a/MacTools.swift
 +++ b/MacTools.swift
-@@ -1,206 +1,54 @@
+@@ -1,206 +1,56 @@
  import SwiftUI
 -import Carbon
 -import CoreAudio
@@ -426,6 +426,8 @@
 +@main
 +struct MacToolsApp: App {
 +    @NSApplicationDelegateAdaptor(AppDelegate.self) private var delegate
++
++    init() { MenuBarOrganizerPlugin.prepareMainStatusPosition() }
 +
 +    var body: some Scene {
 +        MenuBarExtra("Mac 工具箱", systemImage: "slider.horizontal.3") { MenuContent(model: delegate.model, showWindow: { delegate.showWindow(model: delegate.model) }) }
@@ -585,7 +587,7 @@
 +}
 --- /dev/null
 +++ b/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
-@@ -0,0 +1,470 @@
+@@ -0,0 +1,509 @@
 +import SwiftUI
 +import Carbon
 +import ScreenCaptureKit
@@ -600,6 +602,10 @@
 +
 +final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
 +    static let id = "menu-bar-organizer"
++    private static let controlName = "mactools_shelf_control"
++    private static let dividerName = "mactools_shelf_divider"
++    private static let mainPositionKey = "NSStatusItem Preferred Position Item-0"
++    private static let priorMainPositionKey = "plugin.menu-bar-organizer.priorMainPosition"
 +    let info = PluginInfo(id: id, title: "菜单栏收纳", symbol: "rectangle.3.group", detail: "按 ⌘ 拖动图标跨分隔符；点击收纳图标打开第二排", placement: .content)
 +    @Published private(set) var isOrganizing = false
 +    @Published private(set) var isCollapsed = false
@@ -616,6 +622,24 @@
 +    private var displayObserver: NSObjectProtocol?
 +    private var token = UUID()
 +    private var moving = false
++
++    static func prepareMainStatusPosition(defaults: UserDefaults = .standard) {
++        let optedIn = defaults.data(forKey: "plugin.menu-bar-organizer.optedIn")
++            .flatMap { try? JSONDecoder().decode(Bool.self, from: $0) } == true
++        let position = defaults.object(forKey: mainPositionKey) as? Double
++        if optedIn {
++            if (position.map { $0 > 500 } ?? true), defaults.object(forKey: priorMainPositionKey) == nil {
++                defaults.set(position ?? -1, forKey: priorMainPositionKey)
++                defaults.set(450.0, forKey: mainPositionKey)
++            }
++        } else if let prior = defaults.object(forKey: priorMainPositionKey) as? Double {
++            if position == 450 {
++                if prior >= 0 { defaults.set(prior, forKey: mainPositionKey) }
++                else { defaults.removeObject(forKey: mainPositionKey) }
++            }
++            defaults.removeObject(forKey: priorMainPositionKey)
++        }
++    }
 +
 +    init(context: PluginContext) { self.context = context; super.init() }
 +    func start() {
@@ -641,13 +665,21 @@
 +        guard ProcessInfo.processInfo.operatingSystemVersion.majorVersion < 27 else {
 +            status = "macOS 27 已改用系统菜单栏溢出菜单，此手动分隔符模式不适用"; return
 +        }
-+        // New items enter on the left: create the reachable control first, then its divider.
++        // A full bar parks new items under app menus; seed visible, ordered slots before creation.
++        let defaults = UserDefaults.standard
++        let controlPositionKey = "NSStatusItem Preferred Position \(Self.controlName)"
++        let dividerPositionKey = "NSStatusItem Preferred Position \(Self.dividerName)"
++        if !Self.sanePositions(control: defaults.object(forKey: controlPositionKey) as? Double,
++                               divider: defaults.object(forKey: dividerPositionKey) as? Double) {
++            defaults.set(250.0, forKey: controlPositionKey)
++            defaults.set(290.0, forKey: dividerPositionKey)
++        }
 +        let control = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-+        control.autosaveName = "mactools_shelf_control"
++        control.autosaveName = Self.controlName
 +        control.button?.image = NSImage(systemSymbolName: "rectangle.3.group", accessibilityDescription: "显示隐藏的菜单栏图标")
 +        control.button?.target = self; control.button?.action = #selector(controlClicked)
 +        let divider = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-+        divider.autosaveName = "mactools_shelf_divider"
++        divider.autosaveName = Self.dividerName
 +        divider.button?.title = "│"; divider.button?.toolTip = "按住 ⌘，将原生菜单栏图标拖到分隔符左右两侧"
 +        self.control = control; self.divider = divider; isOrganizing = true
 +        context.hotkeys.replace(owner: info.id, actions: [HotKeyAction(id: "emergency-reveal",
@@ -657,6 +689,7 @@
 +                                                                 object: nil, queue: .main) { [weak self] _ in self?.expand() }
 +        status = "已启用。请将收纳按钮留在分隔符右侧，再用 ⌘ 拖动需要收纳的图标。"
 +        saveOptIn(true)
++        Self.prepareMainStatusPosition()
 +    }
 +    func deactivate() {
 +        expand(); closePanel(); context.hotkeys.remove(owner: info.id)
@@ -666,10 +699,18 @@
 +        if let divider { NSStatusBar.system.removeStatusItem(divider) }
 +        control = nil; divider = nil; isOrganizing = false; icons = []; visibleIcons = []
 +    }
-+    func turnOff() { saveOptIn(false); deactivate(); status = "菜单栏收纳已关闭；原生图标已展开。" }
++    func turnOff() {
++        saveOptIn(false); deactivate(); Self.prepareMainStatusPosition()
++        status = "菜单栏收纳已关闭；原生图标已展开。原托盘位置下次启动时恢复。"
++    }
 +
 +    static func canCollapse(dividerX: CGFloat, controlX: CGFloat, screen: CGRect) -> Bool {
 +        dividerX >= screen.minX && controlX <= screen.maxX && dividerX + 8 < controlX
++    }
++    static func sanePositions(control: Double?, divider: Double?) -> Bool {
++        guard let control, let divider else { return false }
++        return control.isFinite && divider.isFinite && (0...10_000).contains(control)
++            && (0...10_000).contains(divider) && divider >= control + 16
 +    }
 +    static func hiddenWindows(_ windows: [(id: CGWindowID, frame: CGRect)], leftOf dividerX: CGFloat,
 +                              in screen: CGRect, statusBarY: CGFloat) -> [(id: CGWindowID, frame: CGRect)] {

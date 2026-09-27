@@ -3,30 +3,6 @@ import CoreGraphics
 @testable import MacTools
 
 final class MenuBarOrganizerTests: XCTestCase {
-    func testStatusItemSlotsStayVisibleAndOrdered() {
-        XCTAssertTrue(MenuBarOrganizerPlugin.sanePositions(control: 250, divider: 290))
-        XCTAssertFalse(MenuBarOrganizerPlugin.sanePositions(control: nil, divider: 290))
-        XCTAssertFalse(MenuBarOrganizerPlugin.sanePositions(control: 290, divider: 250))
-        XCTAssertFalse(MenuBarOrganizerPlugin.sanePositions(control: -4000, divider: 290))
-        XCTAssertFalse(MenuBarOrganizerPlugin.sanePositions(control: .nan, divider: 290))
-    }
-    func testMainTrayPositionRestoresOnDisable() throws {
-        let name = "MenuOrganizerPosition.\(UUID())"
-        let defaults = try XCTUnwrap(UserDefaults(suiteName: name))
-        defer { defaults.removePersistentDomain(forName: name) }
-        let main = "NSStatusItem Preferred Position Item-0"
-        defaults.set(648.0, forKey: main)
-        defaults.set(try JSONEncoder().encode(true), forKey: "plugin.menu-bar-organizer.optedIn")
-        MenuBarOrganizerPlugin.prepareMainStatusPosition(defaults: defaults)
-        XCTAssertEqual(defaults.double(forKey: main), 450)
-        XCTAssertEqual(defaults.double(forKey: "plugin.menu-bar-organizer.priorMainPosition"), 648)
-        MenuBarOrganizerPlugin.prepareMainStatusPosition(defaults: defaults)
-        XCTAssertEqual(defaults.double(forKey: main), 450)
-        defaults.set(try JSONEncoder().encode(false), forKey: "plugin.menu-bar-organizer.optedIn")
-        MenuBarOrganizerPlugin.prepareMainStatusPosition(defaults: defaults)
-        XCTAssertEqual(defaults.double(forKey: main), 648)
-        XCTAssertNil(defaults.object(forKey: "plugin.menu-bar-organizer.priorMainPosition"))
-    }
     func testFailOpenGeometryAndHiddenWindowSelection() {
         let screen = CGRect(x: 0, y: 0, width: 1200, height: 800)
         XCTAssertTrue(MenuBarOrganizerPlugin.canCollapse(dividerX: 700, controlX: 760, screen: screen))
