@@ -1533,3 +1533,182 @@ Reference research: https://github.com/junior-rj/menubar-hide (MIT), https://git
 
 2026-09-27 crowded menu bar fix deployment:
 Installed /Applications/MacTools.app from build/MacTools.app after exit 0 for swift test (19 tests), ./scripts/build-app.sh, codesign --verify --strict, and exact binary comparison. Both binaries SHA256=a81d759d601afb5d8e2dbfe73acc17095aaedcb2d3ca4e71ed6125ee3a6e6edf. Old process 85513 terminated; new process 93679 launched. Backup app and preferences: /Users/yangruihan/Library/Application Support/MacTools/Backups/20260927-125910-crowded-menu-fix. New process CGWindowList .optionAll status-layer frames: divider x=1371 width=24, control x=1437 width=38, original tray x=1181 width=33; NSScreen auxiliary right safe area minX=956. CUA installed app AX verified 2 brightness presets, 2 audio presets, and organizer enabled. No audio/brightness action invoked, no third-party icon moved. CGWindowList .optionOnScreenOnly from an unprivileged Swift probe returned no app windows, so visual on-screen rendering remains user acceptance rather than a claimed screenshot verification. Isolated preview processes terminated.
+
+
+{
+  "turn": "2026-09-27 professional UI and menu-bar UX",
+  "activeObject": "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift",
+  "changedSymbols": [
+    "ContentView sidebar selection",
+    "MenuBarOrganizerPlugin.openShelf/retryOpenShelf/showHelpPanel/showCachedPanel",
+    "ShelfPanelView tile contrast/status/toolbox action",
+    "prepareMainStatusPosition pinned main item"
+  ],
+  "originalHashes": {
+    "Sources/MacTools/UI/ContentView.swift": "44af3726fcdcb510efdcfe731df959165b5186ea5ddb7e8b412f30f85a88dad1",
+    "Sources/MacTools/UI/SharedControls.swift": "f788875ea451e20691af6f41228d09573f2568b2e0641b8139e83800a25d4fb0",
+    "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": "e687243e986030c8da487dbc95070a848c815db6d8e31d7d25497313b9e48837",
+    "Tests/MacToolsTests/MenuBarOrganizerTests.swift": "0abe3d5165dc15948e8fceb1ebd966a615a8a56760b43d059ed6dc3ec8dfe031"
+  },
+  "modifiedHashes": {
+    "Sources/MacTools/UI/ContentView.swift": "c9cece15ea7c53951cfdceef182d1c34ffd9f68aaae1308848e02e440c45ad23",
+    "Sources/MacTools/UI/SharedControls.swift": "2954b261ed93a40d43b3cfc18921084131971ad405895b160902f2bdb9b0f25d",
+    "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": "5ab13c870d5544ca26d1de878163a8f496a81d9068914238adbf4d467f0afad2",
+    "Tests/MacToolsTests/MenuBarOrganizerTests.swift": "ef353bded2e5de309f11b9430364b5821d3465412242115bb874034cceccb613"
+  },
+  "restoredHashes": {
+    "Sources/MacTools/UI/ContentView.swift": "44af3726fcdcb510efdcfe731df959165b5186ea5ddb7e8b412f30f85a88dad1",
+    "Sources/MacTools/UI/SharedControls.swift": "f788875ea451e20691af6f41228d09573f2568b2e0641b8139e83800a25d4fb0",
+    "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": "e687243e986030c8da487dbc95070a848c815db6d8e31d7d25497313b9e48837",
+    "Tests/MacToolsTests/MenuBarOrganizerTests.swift": "0abe3d5165dc15948e8fceb1ebd966a615a8a56760b43d059ed6dc3ec8dfe031"
+  },
+  "events": [
+    {
+      "label": "BASELINE",
+      "cwd": "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/mactools-ux-fxuy3fub/baseline",
+      "command": [
+        "swift",
+        "test",
+        "--filter",
+        "MenuBarOrganizerTests"
+      ],
+      "stdout": "Test Suite 'Selected tests' started at 2026-09-27 13:27:23.488.\nTest Suite 'MacToolsPackageTests.xctest' started at 2026-09-27 13:27:23.489.\nTest Suite 'MenuBarOrganizerTests' started at 2026-09-27 13:27:23.489.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' passed (0.002 seconds).\nTest Suite 'MenuBarOrganizerTests' passed at 2026-09-27 13:27:23.496.\n\t Executed 6 tests, with 0 failures (0 unexpected) in 0.006 (0.007) seconds\nTest Suite 'MacToolsPackageTests.xctest' passed at 2026-09-27 13:27:23.496.\n\t Executed 6 tests, with 0 failures (0 unexpected) in 0.006 (0.007) seconds\nTest Suite 'Selected tests' passed at 2026-09-27 13:27:23.496.\n\t Executed 6 tests, with 0 failures (0 unexpected) in 0.006 (0.008) seconds\nMENU BAR: load/stop inert until user opts in; no status icons created\nMENU BAR: only candidate status windows left of separator; recovery control geometry fail-closed\n◇ Test run started.\n↳ Testing Library Version: 1501\n↳ Target Platform: arm64e-apple-macos14.0\n✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.\n",
+      "stderr": "Building for debugging...\n[0/11] /private/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/mactools-ux-fxuy3fub/baseline/.build/arm64-apple-macosx/debug/MacToolsPackageTests.derived/runner.swift\n[1/11] Write sources\n[4/11] Write MacTools-entitlement.plist\n[5/11] Write swift-version--58304C5D6DBC2206.txt\n[7/25] Compiling MacTools ContentView.swift\n[8/25] Compiling MacTools TrackpadPlugin.swift\n[9/25] Compiling MacTools QuickControlsView.swift\n[10/25] Compiling MacTools FloatingPreview.swift\n[11/25] Compiling MacTools WindowPreviewPlugin.swift\n[12/26] Compiling MacTools Hardware.swift\n[13/26] Compiling MacTools KeepAwakePlugin.swift\n[14/26] Compiling MacTools QuickControlsPlugin.swift\n[15/26] Compiling MacTools AppModel.swift\n[16/26] Compiling MacTools MacTools.swift\n[17/26] Compiling MacTools ToolPlugin.swift\n[18/26] Emitting module MacTools\n[19/26] Compiling MacTools HotKeyService.swift\n[20/26] Compiling MacTools MenuBarOrganizerPlugin.swift\n[21/26] Compiling MacTools SharedControls.swift\n[21/26] Write Objects.LinkFileList\n[22/26] Linking MacTools\n[23/26] Applying MacTools\n[25/30] Compiling MacToolsTests MenuBarOrganizerTests.swift\n[26/30] Emitting module MacToolsTests\n[27/30] Compiling MacToolsTests Checks.swift\n[28/30] Compiling MacToolsTests FloatingPreviewTests.swift\n[29/32] Compiling MacToolsPackageTests runner.swift\n[30/32] Emitting module MacToolsPackageTests\n[30/32] Write Objects.LinkFileList\n[31/32] Linking MacToolsPackageTests\nBuild complete! (18.63s)\n",
+      "exit": 0
+    },
+    {
+      "label": "MODIFIED",
+      "cwd": "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/mactools-ux-fxuy3fub/modified",
+      "command": [
+        "swift",
+        "test",
+        "--filter",
+        "MenuBarOrganizerTests"
+      ],
+      "stdout": "Test Suite 'Selected tests' started at 2026-09-27 13:27:40.605.\nTest Suite 'MacToolsPackageTests.xctest' started at 2026-09-27 13:27:40.606.\nTest Suite 'MenuBarOrganizerTests' started at 2026-09-27 13:27:40.606.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' passed (0.001 seconds).\nTest Suite 'MenuBarOrganizerTests' passed at 2026-09-27 13:27:40.613.\n\t Executed 6 tests, with 0 failures (0 unexpected) in 0.006 (0.007) seconds\nTest Suite 'MacToolsPackageTests.xctest' passed at 2026-09-27 13:27:40.613.\n\t Executed 6 tests, with 0 failures (0 unexpected) in 0.006 (0.007) seconds\nTest Suite 'Selected tests' passed at 2026-09-27 13:27:40.613.\n\t Executed 6 tests, with 0 failures (0 unexpected) in 0.006 (0.007) seconds\nMENU BAR: load/stop inert until user opts in; no status icons created\nMENU BAR: only candidate status windows left of separator; recovery control geometry fail-closed\n◇ Test run started.\n↳ Testing Library Version: 1501\n↳ Target Platform: arm64e-apple-macos14.0\n✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.\n",
+      "stderr": "Building for debugging...\n[0/11] /private/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/mactools-ux-fxuy3fub/modified/.build/arm64-apple-macosx/debug/MacToolsPackageTests.derived/runner.swift\n[1/11] Write sources\n[2/11] Write MacTools-entitlement.plist\n[3/11] Write sources\n[5/11] Write swift-version--58304C5D6DBC2206.txt\n[7/25] Compiling MacTools TrackpadPlugin.swift\n[8/25] Compiling MacTools QuickControlsView.swift\n[9/25] Compiling MacTools FloatingPreview.swift\n[10/25] Compiling MacTools WindowPreviewPlugin.swift\n[11/25] Compiling MacTools ContentView.swift\n[12/25] Compiling MacTools QuickControlsPlugin.swift\n[13/26] Compiling MacTools HotKeyService.swift\n[14/26] Compiling MacTools KeepAwakePlugin.swift\n[15/26] Compiling MacTools Hardware.swift\n[16/26] Compiling MacTools MacTools.swift\n[17/26] Emitting module MacTools\n[18/26] Compiling MacTools MenuBarOrganizerPlugin.swift\n[19/26] Compiling MacTools AppModel.swift\n[20/26] Compiling MacTools ToolPlugin.swift\n[21/26] Compiling MacTools SharedControls.swift\n[21/26] Write Objects.LinkFileList\n[22/26] Linking MacTools\n[23/26] Applying MacTools\n[25/30] Compiling MacToolsTests Checks.swift\n[26/30] Emitting module MacToolsTests\n[27/30] Compiling MacToolsTests MenuBarOrganizerTests.swift\n[28/30] Compiling MacToolsTests FloatingPreviewTests.swift\n[29/32] Emitting module MacToolsPackageTests\n[30/32] Compiling MacToolsPackageTests runner.swift\n[30/32] Write Objects.LinkFileList\n[31/32] Linking MacToolsPackageTests\nBuild complete! (16.02s)\n",
+      "exit": 0
+    },
+    {
+      "label": "RESTORE",
+      "cwd": "/Users/yangruihan/Workspace/mac_tools",
+      "command": [
+        "/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/ROLLBACK.sh",
+        "--ux",
+        "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/mactools-ux-fxuy3fub/rollback"
+      ],
+      "stdout": "",
+      "stderr": "",
+      "exit": 0
+    },
+    {
+      "label": "ROLLBACK",
+      "cwd": "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/mactools-ux-fxuy3fub/rollback",
+      "command": [
+        "swift",
+        "test",
+        "--filter",
+        "MenuBarOrganizerTests"
+      ],
+      "stdout": "Test Suite 'Selected tests' started at 2026-09-27 13:27:58.005.\nTest Suite 'MacToolsPackageTests.xctest' started at 2026-09-27 13:27:58.006.\nTest Suite 'MenuBarOrganizerTests' started at 2026-09-27 13:27:58.006.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' passed (0.002 seconds).\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' passed (0.000 seconds).\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' started.\nTest Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' passed (0.002 seconds).\nTest Suite 'MenuBarOrganizerTests' passed at 2026-09-27 13:27:58.012.\n\t Executed 6 tests, with 0 failures (0 unexpected) in 0.006 (0.006) seconds\nTest Suite 'MacToolsPackageTests.xctest' passed at 2026-09-27 13:27:58.012.\n\t Executed 6 tests, with 0 failures (0 unexpected) in 0.006 (0.007) seconds\nTest Suite 'Selected tests' passed at 2026-09-27 13:27:58.012.\n\t Executed 6 tests, with 0 failures (0 unexpected) in 0.006 (0.007) seconds\nMENU BAR: load/stop inert until user opts in; no status icons created\nMENU BAR: only candidate status windows left of separator; recovery control geometry fail-closed\n◇ Test run started.\n↳ Testing Library Version: 1501\n↳ Target Platform: arm64e-apple-macos14.0\n✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.\n",
+      "stderr": "Building for debugging...\n[0/11] /private/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/mactools-ux-fxuy3fub/rollback/.build/arm64-apple-macosx/debug/MacToolsPackageTests.derived/runner.swift\n[1/11] Write sources\n[4/11] Write MacTools-entitlement.plist\n[5/11] Write swift-version--58304C5D6DBC2206.txt\n[7/25] Compiling MacTools KeepAwakePlugin.swift\n[8/26] Compiling MacTools TrackpadPlugin.swift\n[9/26] Compiling MacTools MacTools.swift\n[10/26] Compiling MacTools ContentView.swift\n[11/26] Compiling MacTools QuickControlsView.swift\n[12/26] Compiling MacTools WindowPreviewPlugin.swift\n[13/26] Compiling MacTools QuickControlsPlugin.swift\n[14/26] Compiling MacTools FloatingPreview.swift\n[15/26] Compiling MacTools AppModel.swift\n[16/26] Compiling MacTools ToolPlugin.swift\n[17/26] Compiling MacTools HotKeyService.swift\n[18/26] Compiling MacTools MenuBarOrganizerPlugin.swift\n[19/26] Compiling MacTools Hardware.swift\n[20/26] Emitting module MacTools\n[21/26] Compiling MacTools SharedControls.swift\n[21/26] Write Objects.LinkFileList\n[22/26] Linking MacTools\n[23/26] Applying MacTools\n[25/30] Emitting module MacToolsTests\n[26/30] Compiling MacToolsTests FloatingPreviewTests.swift\n[27/30] Compiling MacToolsTests Checks.swift\n[28/30] Compiling MacToolsTests MenuBarOrganizerTests.swift\n[29/32] Compiling MacToolsPackageTests runner.swift\n[30/32] Emitting module MacToolsPackageTests\n[30/32] Write Objects.LinkFileList\n[31/32] Linking MacToolsPackageTests\nBuild complete! (16.29s)\n",
+      "exit": 0
+    },
+    {
+      "label": "BASELINE_LAYOUT",
+      "cwd": "/Users/yangruihan/Workspace/mac_tools",
+      "command": [
+        "/usr/bin/env",
+        "EXPECT_NATIVE=1",
+        "EXPECT_MODERN=1",
+        "/Users/yangruihan/Workspace/mac_tools/scripts/check-ui-layout.sh",
+        "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/mactools-ux-fxuy3fub/baseline/Sources/MacTools"
+      ],
+      "stdout": "custom-decorative-palette=False\nmanual-appearance-selection=True\nplugin-host=True\nwindow-preview-plugin=True\nmenu-bar-organizer-plugin=True\npreview-auto-resume=True\nwindow=980x740; list=980x617; height-share=83%\nwindow=900x640; list=900x517; height-share=80%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n",
+      "stderr": "",
+      "exit": 0
+    },
+    {
+      "label": "MODIFIED_LAYOUT",
+      "cwd": "/Users/yangruihan/Workspace/mac_tools",
+      "command": [
+        "/usr/bin/env",
+        "EXPECT_NATIVE=1",
+        "EXPECT_MODERN=1",
+        "/Users/yangruihan/Workspace/mac_tools/scripts/check-ui-layout.sh",
+        "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools"
+      ],
+      "stdout": "custom-decorative-palette=False\nmanual-appearance-selection=True\nplugin-host=True\nwindow-preview-plugin=True\nmenu-bar-organizer-plugin=True\npreview-auto-resume=True\nwindow=980x740; list=771x630; height-share=85%\nwindow=900x640; list=691x530; height-share=82%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n",
+      "stderr": "",
+      "exit": 0
+    },
+    {
+      "label": "ROLLBACK_LAYOUT",
+      "cwd": "/Users/yangruihan/Workspace/mac_tools",
+      "command": [
+        "/usr/bin/env",
+        "EXPECT_NATIVE=1",
+        "EXPECT_MODERN=1",
+        "/Users/yangruihan/Workspace/mac_tools/scripts/check-ui-layout.sh",
+        "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/mactools-ux-fxuy3fub/rollback/Sources/MacTools"
+      ],
+      "stdout": "custom-decorative-palette=False\nmanual-appearance-selection=True\nplugin-host=True\nwindow-preview-plugin=True\nmenu-bar-organizer-plugin=True\npreview-auto-resume=True\nwindow=980x740; list=980x617; height-share=83%\nwindow=900x640; list=900x517; height-share=80%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n",
+      "stderr": "",
+      "exit": 0
+    },
+    {
+      "label": "RESTORE_PRISTINE",
+      "cwd": "/Users/yangruihan/Workspace/mac_tools",
+      "command": [
+        "/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/ROLLBACK.sh",
+        "--sources",
+        "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/mactools-ux-fxuy3fub/Sources"
+      ],
+      "stdout": "Prior source copy preserved: /var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/mactools-ux-fxuy3fub/Sources.before-rollback.13828\n",
+      "stderr": "",
+      "exit": 0
+    },
+    {
+      "label": "PRISTINE_LAYOUT",
+      "cwd": "/Users/yangruihan/Workspace/mac_tools",
+      "command": [
+        "/Users/yangruihan/Workspace/mac_tools/scripts/check-ui-layout.sh",
+        "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/mactools-ux-fxuy3fub/Sources"
+      ],
+      "stdout": "custom-decorative-palette=False\nmanual-appearance-selection=False\nplugin-host=False\nwindow-preview-plugin=False\nmenu-bar-organizer-plugin=False\npreview-auto-resume=False\nwindow=980x740; list=932x521; height-share=70%\nwindow=900x640; list=852x421; height-share=65%\nappearance=NSAppearanceNameAqua; window-background-red=0.925\nappearance=NSAppearanceNameDarkAqua; window-background-red=0.196\nhardware-writes=0; live-user-defaults=untouched\n",
+      "stderr": "",
+      "exit": 0
+    },
+    {
+      "label": "REAPPLY",
+      "cwd": "/Users/yangruihan/Workspace/mac_tools",
+      "command": [
+        "patch",
+        "-p1",
+        "-d",
+        "/var/folders/xx/7j3444wn61d4v4w3r68ypd9r0000gn/T/mactools-ux-fxuy3fub/Sources",
+        "-i",
+        "/Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/DIFF.patch"
+      ],
+      "stdout": "patching file AppModel.swift\npatching file 'Core/HotKeyService.swift'\npatching file 'Core/ToolPlugin.swift'\npatching file MacTools.swift\npatching file 'Plugins/KeepAwake/KeepAwakePlugin.swift'\npatching file 'Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift'\npatching file 'Plugins/QuickControls/Hardware.swift'\npatching file 'Plugins/QuickControls/QuickControlsPlugin.swift'\npatching file 'Plugins/QuickControls/QuickControlsView.swift'\npatching file 'Plugins/Trackpad/TrackpadPlugin.swift'\npatching file 'Plugins/WindowPreview/FloatingPreview.swift'\npatching file 'Plugins/WindowPreview/WindowPreviewPlugin.swift'\npatching file 'UI/ContentView.swift'\npatching file 'UI/SharedControls.swift'\n",
+      "stderr": "",
+      "exit": 0
+    }
+  ],
+  "fullSuite": "swift test exit 0; 19 tests passed",
+  "releaseBuild": "./scripts/build-app.sh exit 0; plist and codesign verified",
+  "nativeEvidence": [
+    "isolated preview main UI sidebar navigation selected menu-bar page; light and dark screenshots inspected",
+    "permission-denied button opened NSPanel help, captured 916x416 PNG; controls Screen Recording / Accessibility / Retry / Close visible, no icons moved",
+    "prior isolated authorized preview captured 26 real status icons and displayed shelf panel; old white-on-light thumbnails were nearly invisible, motivating dynamic-contrast tiles",
+    "separate isolated placement probe with main preferred position 200: main status window x1480 remained visible after collapse, control x1404; all preview apps stopped"
+  ],
+  "unverified": [
+    "new contrast tiles with third-party icons after Screen Recording authorization",
+    "real third-party click, drag and same-row reorder after Accessibility authorization"
+  ],
+  "corrections": [
+    "one Swift window-inspection command failed to import Foundation; rerun with Foundation succeeded",
+    "initial CUA row click timed out; coordinate click selected page and AX tree confirmed"
+  ]
+}

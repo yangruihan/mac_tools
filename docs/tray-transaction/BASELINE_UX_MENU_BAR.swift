@@ -16,7 +16,6 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
     private static let dividerName = "mactools_shelf_divider"
     private static let mainPositionKey = "NSStatusItem Preferred Position Item-0"
     private static let priorMainPositionKey = "plugin.menu-bar-organizer.priorMainPosition"
-    private static let pinnedMainPosition = 200.0
     let info = PluginInfo(id: id, title: "菜单栏收纳", symbol: "rectangle.3.group", detail: "按 ⌘ 拖动图标跨分隔符；点击收纳图标打开第二排", placement: .content)
     @Published private(set) var isOrganizing = false
     @Published private(set) var isCollapsed = false
@@ -39,14 +38,12 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
             .flatMap { try? JSONDecoder().decode(Bool.self, from: $0) } == true
         let position = defaults.object(forKey: mainPositionKey) as? Double
         if optedIn {
-            if defaults.object(forKey: priorMainPositionKey) != nil {
-                if position == 450 { defaults.set(pinnedMainPosition, forKey: mainPositionKey) }
-            } else if position.map({ $0 > 250 }) ?? true {
+            if (position.map { $0 > 500 } ?? true), defaults.object(forKey: priorMainPositionKey) == nil {
                 defaults.set(position ?? -1, forKey: priorMainPositionKey)
-                defaults.set(pinnedMainPosition, forKey: mainPositionKey)
+                defaults.set(450.0, forKey: mainPositionKey)
             }
         } else if let prior = defaults.object(forKey: priorMainPositionKey) as? Double {
-            if position == pinnedMainPosition || position == 450 {
+            if position == 450 {
                 if prior >= 0 { defaults.set(prior, forKey: mainPositionKey) }
                 else { defaults.removeObject(forKey: mainPositionKey) }
             }
@@ -170,26 +167,13 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
         return (dividerFrame, controlFrame, screen)
     }
     @objc private func controlClicked() {
-        if shelfPanel?.isVisible == true { closePanel(); return }
-        if isCollapsed { showCachedPanel() }
+        if isCollapsed { shelfPanel?.isVisible == true ? closePanel() : showCachedPanel() }
         else if let layout = placement() {
             let menuY = (NSScreen.screens.first?.frame.maxY ?? layout.screen.maxY) - layout.screen.maxY
             let count = Self.visibleWindows(statusWindows(), rightOf: layout.control.maxX, in: layout.screen, statusBarY: menuY).count
-            if !CGPreflightScreenCaptureAccess() {
-                status = "需要屏幕录制权限才能显示图标预览；尚未隐藏或移动图标。"
-                showHelpPanel()
-            } else if count > visibleLimit && !AXIsProcessTrusted() {
-                status = "需要辅助功能权限才能自动整理超出数量的图标；尚未移动图标。"
-                showHelpPanel()
-            } else if count > visibleLimit { applyVisibleLimit(showShelf: true) }
-            else { hideIntoPanel() }
-        } else {
-            status = "收纳图标位置不可读，保持菜单栏展开。"
-            showHelpPanel()
+            if count > visibleLimit { applyVisibleLimit(showShelf: true) } else { hideIntoPanel() }
         }
     }
-    func openShelf() { controlClicked() }
-    func retryOpenShelf() { closePanel(); controlClicked() }
     func expand() {
         work?.cancel(); work = nil; token = UUID(); closePanel()
         divider?.length = NSStatusItem.variableLength
@@ -324,22 +308,6 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
         }
     }
     private func closePanel() { shelfPanel?.contentView = nil; shelfPanel?.close(); shelfPanel = nil }
-    private func showHelpPanel() {
-        guard let frame = control?.button?.window?.frame,
-              let screen = screen(for: frame) else { return }
-        closePanel()
-        let panel = NSPanel(contentRect: CGRect(x: 0, y: 0, width: 390, height: 112),
-                            styleMask: [.titled, .closable, .nonactivatingPanel], backing: .buffered, defer: false)
-        panel.title = "菜单栏收纳"
-        panel.level = .statusBar; panel.hidesOnDeactivate = false; panel.isReleasedWhenClosed = false
-        let view = NSHostingView(rootView: OrganizerHelpView(plugin: self).frame(width: 390, height: 112))
-        view.sizingOptions = []
-        panel.contentView = view
-        panel.setFrameOrigin(CGPoint(x: max(screen.minX, min(frame.maxX - panel.frame.width, screen.maxX - panel.frame.width)),
-                                     y: frame.minY - panel.frame.height - 5))
-        panel.orderFrontRegardless(); shelfPanel = panel
-    }
-    func requestAccessibilityPermission() { _ = accessibilityReady() }
     func requestPermission() {
         guard active else { return }
         if CGPreflightScreenCaptureAccess() || CGRequestScreenCaptureAccess() { status = "已授权，点击收纳图标打开第二排。" }
@@ -347,25 +315,17 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
     }
     func hideIntoPanel() {
         guard isOrganizing, !isCollapsed, !moving else { return }
-        guard CGPreflightScreenCaptureAccess() else {
-            status = "先点击「授权屏幕录制」；未授权时不会隐藏任何图标。"
-            showHelpPanel(); return
-        }
+        guard CGPreflightScreenCaptureAccess() else { status = "先点击「授权屏幕录制」；未授权时不会隐藏任何图标。"; return }
         if let error = context.hotkeys.error(owner: info.id, id: "emergency-reveal") {
-            status = "紧急展开快捷键不可用（\(error)），不会隐藏图标；请解除冲突后重试。"
-            showHelpPanel(); return
+            status = "紧急展开快捷键不可用（\(error)），不会隐藏图标；请解除冲突后重试。"; return
         }
         guard let geometry = placement(), Self.canCollapse(dividerX: geometry.divider.minX, controlX: geometry.control.minX, screen: geometry.screen) else {
-            status = "收纳按钮必须在分隔符右侧且可见；请按住 ⌘ 拖动两者后重试。"
-            showHelpPanel(); return
+            status = "收纳按钮必须在分隔符右侧且可见；请按住 ⌘ 拖动两者后重试。"; return
         }
         let separatorX = geometry.divider.minX
         let menuY = (NSScreen.screens.first?.frame.maxY ?? geometry.screen.maxY) - geometry.screen.maxY
         let targets = Self.hiddenWindows(statusWindows(), leftOf: separatorX, in: geometry.screen, statusBarY: menuY)
-        guard !targets.isEmpty else {
-            status = "分隔符左侧尚无可收纳图标；先按住 ⌘ 拖动图标。"
-            showHelpPanel(); return
-        }
+        guard !targets.isEmpty else { status = "分隔符左侧尚无可收纳图标；先按住 ⌘ 拖动图标。"; return }
         let outside = Self.visibleWindows(statusWindows(), rightOf: geometry.control.maxX, in: geometry.screen, statusBarY: menuY)
         work?.cancel(); let id = UUID(); token = id
         status = "正在读取 \(targets.count) 个图标…"
@@ -396,8 +356,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
                 guard !Task.isCancelled, let self, self.token == id, self.isOrganizing else { return }
                 guard let latest = self.placement(), Self.canCollapse(dividerX: latest.divider.minX, controlX: latest.control.minX, screen: latest.screen),
                       Self.hiddenWindows(self.statusWindows(), leftOf: latest.divider.minX, in: latest.screen, statusBarY: menuY).map(\.id) == targets.map(\.id) else {
-                    self.status = "采集期间图标顺序发生变化，保持展开；请重试。"
-                    self.showHelpPanel(); return
+                    self.status = "采集期间图标顺序发生变化，保持展开；请重试。"; return
                 }
                 self.icons = captured
                 self.visibleIcons = outsideCaptured
@@ -415,21 +374,19 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
             } catch {
                 guard !Task.isCancelled, let self, self.token == id else { return }
                 self.expand(); self.status = "读取图标失败，保持原样：\(error.localizedDescription)"
-                self.showHelpPanel()
             }
         }
     }
     private func showCachedPanel() {
         guard isCollapsed, let geometry = placement(), !icons.isEmpty else { return }
         closePanel()
-        let view = NSHostingView(rootView: ShelfPanelView(plugin: self, icons: icons, outside: visibleIcons,
+        let view = NSHostingView(rootView: ShelfPanelView(icons: icons, outside: visibleIcons,
             onExpand: { [weak self] in self?.expand() },
             onMove: { [weak self] id, hidden in self?.moveIcon(id, intoShelf: hidden) },
             onReorder: { [weak self] id, target in self?.reorderIcon(id, nextTo: target) },
-            onClick: { [weak self] id in self?.activateIcon(id) },
-            onOpenToolbox: { [weak self] in self?.openToolbox() }))
-        let width = min(geometry.screen.width - 24, max(380, min(660, CGFloat(max(icons.count, visibleIcons.count)) * 46 + 40)))
-        let panel = NSPanel(contentRect: CGRect(x: 0, y: 0, width: width, height: 238),
+            onClick: { [weak self] id in self?.activateIcon(id) }))
+        let width = min(geometry.screen.width - 24, CGFloat(max(icons.count, visibleIcons.count)) * 38 + 40)
+        let panel = NSPanel(contentRect: CGRect(x: 0, y: 0, width: max(300, width), height: 180),
                             styleMask: [.titled, .closable, .nonactivatingPanel], backing: .buffered, defer: false)
         panel.title = "收纳的菜单栏图标"
         panel.level = .statusBar; panel.isFloatingPanel = true; panel.hidesOnDeactivate = false
@@ -437,10 +394,6 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
         let x = max(geometry.screen.minX, min(geometry.control.maxX - panel.frame.width, geometry.screen.maxX - panel.frame.width))
         panel.setFrameOrigin(CGPoint(x: x, y: geometry.control.minY - panel.frame.height - 5))
         panel.orderFrontRegardless(); shelfPanel = panel
-    }
-    private func openToolbox() {
-        closePanel()
-        if let delegate = NSApp.delegate as? AppDelegate { delegate.showWindow(model: delegate.model) }
     }
     func activateIcon(_ id: CGWindowID) {
         guard isCollapsed, accessibilityReady(), let frame = icons.first(where: { $0.id == id })?.frame else { return }
@@ -462,43 +415,22 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
     func makeMenuItems() -> AnyView { AnyView(MenuBarOrganizerMenu(plugin: self)) }
 }
 
-private struct OrganizerHelpView: View {
-    @ObservedObject var plugin: MenuBarOrganizerPlugin
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(plugin.status).font(.callout).frame(maxWidth: .infinity, alignment: .leading)
-            HStack {
-                Button("授权屏幕录制") { plugin.requestPermission() }
-                Button("授权辅助功能") { plugin.requestAccessibilityPermission() }
-                Button("重试") { plugin.retryOpenShelf() }
-                Button("关闭") { plugin.expand() }
-            }.controlSize(.small)
-            Spacer(minLength: 0)
-        }.padding(16)
-    }
-}
-
 private struct ShelfPanelView: View {
-    @ObservedObject var plugin: MenuBarOrganizerPlugin
     let icons: [ShelfIcon]
     let outside: [ShelfIcon]
     let onExpand: () -> Void
     let onMove: (CGWindowID, Bool) -> Void
     let onReorder: (CGWindowID, CGWindowID) -> Void
     let onClick: (CGWindowID) -> Void
-    let onOpenToolbox: () -> Void
     private func row(_ items: [ShelfIcon], hidden: Bool) -> some View {
         ScrollView(.horizontal) {
             HStack(spacing: 5) {
-                ForEach(items.indices, id: \.self) { index in
-                    let icon = items[index]
+                ForEach(items) { icon in
                     Button { if hidden { onClick(icon.id) } else { onMove(icon.id, true) } } label: {
                         Image(decorative: icon.image, scale: 2).resizable().aspectRatio(contentMode: .fit)
-                            .frame(width: 30, height: 27).padding(6)
-                            .background(Color.primary.opacity(0.52), in: RoundedRectangle(cornerRadius: 8))
+                            .frame(width: 28, height: 24).padding(3)
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel("\(hidden ? "收纳" : "可见")图标 \(index + 1)")
                     .help(hidden ? "点击原生图标；拖到可见区可移出" : "点击移入收纳区；也可拖动")
                     .onDrag { NSItemProvider(object: String(icon.id) as NSString) }
                     .onDrop(of: [UTType.text], isTargeted: nil) { providers in
@@ -515,7 +447,7 @@ private struct ShelfPanelView: View {
                 }
             }
         }
-        .frame(height: 43)
+        .frame(height: 36)
         .onDrop(of: [UTType.text], isTargeted: nil) { providers in
             guard let provider = providers.first else { return false }
             _ = provider.loadObject(ofClass: NSString.self) { value, _ in
@@ -526,67 +458,42 @@ private struct ShelfPanelView: View {
         }
     }
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text("已收纳 \(icons.count) 个图标").font(.headline)
-                Spacer()
-                Text("点击打开 · 拖动调整").font(.caption).foregroundStyle(.secondary)
-            }
-            Text("收纳区").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 8) {
+            Text("收纳区 · 点击打开，拖到下排移出").font(.caption)
             row(icons, hidden: true)
-            Text("可见区 · 拖到上排移入").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+            Text("可见区 · 点击或拖到上排移入").font(.caption)
             row(outside, hidden: false)
-            Text(plugin.status).font(.caption).foregroundStyle(.secondary).lineLimit(1)
-            HStack {
-                Button("打开工具箱") { onOpenToolbox() }
-                Spacer()
-                Button("展开全部图标") { onExpand() }
-            }
-        }.padding(14)
+            Button("展开菜单栏 · 按住 ⌘ 拖动图标") { onExpand() }
+                .font(.caption)
+        }.padding(10)
     }
 }
 private struct MenuBarOrganizerView: View {
     @ObservedObject var plugin: MenuBarOrganizerPlugin
     var body: some View {
         GroupBox {
-            VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    Label("状态与操作", systemImage: "rectangle.3.group").font(.headline)
-                    Spacer()
-                    Label(plugin.isCollapsed ? "已收纳" : plugin.isOrganizing ? "已展开" : "未启用",
-                          systemImage: plugin.isOrganizing ? "checkmark.circle.fill" : "circle")
-                        .font(.caption).foregroundStyle(.secondary)
-                }
-                Text("菜单栏保留收纳按钮与分隔符；点击按钮打开第二排，按住 ⌘ 可在原生菜单栏移动图标。")
-                    .font(.callout).foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 12) {
+                Label(plugin.info.title, systemImage: plugin.info.symbol).font(.headline)
+                Text("一个控制图标和一个分隔符；可按可见数量一键整理，也可 ⌘-拖动原生图标。收纳按钮必须留在分隔符右侧。")
+                    .font(.caption).foregroundStyle(.secondary)
                 HStack {
                     if plugin.isOrganizing {
-                        Button(plugin.isCollapsed ? "打开收纳面板" : "收纳并打开") { plugin.openShelf() }
-                            .buttonStyle(.borderedProminent)
-                        Button("展开全部") { plugin.expand() }
-                        Spacer()
-                        Button("关闭功能") { plugin.turnOff() }
-                    } else {
-                        Button("启用菜单栏收纳") { plugin.enable() }.buttonStyle(.borderedProminent)
-                    }
+                        Button("关闭收纳功能") { plugin.turnOff() }
+                        Button("展开并排列") { plugin.expand() }
+                        Button("收进弹框") { plugin.hideIntoPanel() }.disabled(plugin.isCollapsed)
+                    } else { Button("启用收纳图标") { plugin.enable() } }
+                    Button("授权屏幕录制") { plugin.requestPermission() }.disabled(!plugin.isOrganizing)
                 }
-                Divider()
                 HStack {
-                    Stepper("保留 \(plugin.visibleLimit) 个可见图标", value: Binding(
+                    Stepper("外面最多显示 \(plugin.visibleLimit) 个图标", value: Binding(
                         get: { plugin.visibleLimit }, set: { plugin.setVisibleLimit($0) }), in: 1...30)
-                    Spacer()
                     Button("按数量整理") { plugin.applyVisibleLimit() }.disabled(!plugin.isOrganizing)
                 }
-                Text(plugin.status).font(.callout).textSelection(.enabled)
-                    .fixedSize(horizontal: false, vertical: true)
-                HStack {
-                    Button("屏幕录制权限") { plugin.requestPermission() }
-                    Button("辅助功能权限") { plugin.requestAccessibilityPermission() }
-                    Spacer()
-                    Text("紧急展开 ⌃⌥⌘R").foregroundStyle(.secondary)
-                }.font(.caption)
-            }.padding(10).frame(maxWidth: .infinity, alignment: .leading)
-        }.frame(maxWidth: .infinity, alignment: .leading)
+                Text(plugin.status).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                Text("自动整理和弹框移动需辅助功能权限；收起前需屏幕录制权限。紧急展开：⌃⌥⌘R。")
+                    .font(.caption).foregroundStyle(.secondary)
+            }.padding(8)
+        }
     }
 }
 private struct MenuBarOrganizerMenu: View {
@@ -595,7 +502,7 @@ private struct MenuBarOrganizerMenu: View {
         Button(plugin.isOrganizing ? "关闭菜单栏收纳" : "启用菜单栏收纳") { plugin.isOrganizing ? plugin.turnOff() : plugin.enable() }
         if plugin.isOrganizing {
             Button("展开并排列") { plugin.expand() }
-            Button("打开收纳面板") { plugin.openShelf() }
+            Button("收进弹框") { plugin.hideIntoPanel() }.disabled(plugin.isCollapsed)
             Button("按可见数量整理") { plugin.applyVisibleLimit() }
         }
     }

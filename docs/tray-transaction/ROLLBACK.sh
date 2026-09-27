@@ -26,7 +26,16 @@ elif [ "$#" -eq 2 ] && [ "$1" = '--crowded-menu-bar' ]; then
     cp "$HERE/BASELINE_CROWDED_APP.swift" "$TARGET/Sources/MacTools/MacTools.swift"
     cp "$HERE/BASELINE_CROWDED_MENU_BAR.swift" "$TARGET/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift"
     cp "$HERE/BASELINE_CROWDED_TESTS.swift" "$TARGET/Tests/MacToolsTests/MenuBarOrganizerTests.swift"
+elif [ "$#" -eq 2 ] && [ "$1" = '--ux' ]; then
+    TARGET=${2%/}
+    for FILE in Sources/MacTools/UI/ContentView.swift Sources/MacTools/UI/SharedControls.swift Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift Tests/MacToolsTests/MenuBarOrganizerTests.swift; do
+        [ -f "$TARGET/$FILE" ] || { echo "Expected copied file: $FILE" >&2; exit 2; }
+    done
+    cp "$HERE/BASELINE_UX_CONTENT.swift" "$TARGET/Sources/MacTools/UI/ContentView.swift"
+    cp "$HERE/BASELINE_UX_SHARED.swift" "$TARGET/Sources/MacTools/UI/SharedControls.swift"
+    cp "$HERE/BASELINE_UX_MENU_BAR.swift" "$TARGET/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift"
+    cp "$HERE/BASELINE_UX_TESTS.swift" "$TARGET/Tests/MacToolsTests/MenuBarOrganizerTests.swift"
 else
-    [ "$#" -eq 1 ] || { echo 'usage: ROLLBACK.sh TARGET_FILE_COPY | --sources TARGET_SOURCE_DIRECTORY_COPY | --menu-bar TARGET_PROJECT_COPY | --crowded-menu-bar TARGET_PROJECT_COPY' >&2; exit 2; }
+    [ "$#" -eq 1 ] || { echo 'usage: ROLLBACK.sh TARGET_FILE_COPY | --sources DIR | --menu-bar PROJECT | --crowded-menu-bar PROJECT | --ux PROJECT' >&2; exit 2; }
     cp "$HERE/BASELINE.swift" "$1"
 fi
