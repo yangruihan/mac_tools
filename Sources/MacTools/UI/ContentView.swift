@@ -16,7 +16,7 @@ struct ContentView: View {
             VStack(alignment: .leading, spacing: 0) {
                 Label("Mac 工具箱", systemImage: "wrench.and.screwdriver.fill")
                     .font(.system(size: 17, weight: .semibold))
-                    .padding(.horizontal, 16).padding(.top, 20).padding(.bottom, 12)
+                    .padding(.horizontal, 16).padding(.top, 16).padding(.bottom, 10)
                 Text("工具")
                     .font(.caption.weight(.semibold)).foregroundStyle(.secondary)
                     .padding(.horizontal, 18).padding(.bottom, 6)
@@ -25,19 +25,19 @@ struct ContentView: View {
                         Label(plugin.info.title, systemImage: plugin.info.symbol)
                             .tag(plugin.info.id)
                     }
-                }.listStyle(.sidebar)
+                }.listStyle(.sidebar).scrollContentBackground(.hidden)
                 Text("\(registry.enabledPlugins.count) 个工具已启用")
                     .font(.caption).foregroundStyle(.secondary)
                     .padding(16)
             }
             .frame(width: 208)
-            .background(Color(nsColor: .underPageBackgroundColor))
+            .background(.regularMaterial)
             Divider()
             VStack(spacing: 0) {
                 HStack(spacing: 12) {
                     VStack(alignment: .leading, spacing: 3) {
                         Text(selectedPlugin?.info.title ?? "工具箱")
-                            .font(.system(size: 23, weight: .semibold))
+                            .font(.system(size: 21, weight: .semibold))
                         Text(selectedPlugin?.info.detail ?? "在左侧选择工具")
                             .font(.caption).foregroundStyle(.secondary).lineLimit(1)
                     }
@@ -57,7 +57,7 @@ struct ContentView: View {
                         }
                     Button { model.toggleWindow?() } label: { Image(systemName: "rectangle.compress.vertical") }
                         .help("收起到托盘").accessibilityLabel("收起到托盘")
-                }.padding(.horizontal, 22).padding(.vertical, 16)
+                }.padding(.horizontal, 22).padding(.vertical, 12).background(.regularMaterial)
                 Divider()
                 ScrollView {
                     if let selectedPlugin {
@@ -76,9 +76,10 @@ struct ContentView: View {
                     Image(systemName: "checkmark.circle").foregroundStyle(.secondary)
                     Text(model.message).lineLimit(1).frame(maxWidth: .infinity, alignment: .leading)
                     Text("自动保存").foregroundStyle(.secondary)
-                }.font(.caption).padding(.horizontal, 22).padding(.vertical, 10)
+                }.font(.caption).padding(.horizontal, 22).padding(.vertical, 10).background(.regularMaterial)
             }
         }.frame(minWidth: 900, minHeight: 640).background(Color(nsColor: .windowBackgroundColor))
+            .groupBoxStyle(SystemCardStyle())
             .onChange(of: registry.enabledIDs) { ids in
                 if let selectedPluginID, !ids.contains(selectedPluginID) {
                     self.selectedPluginID = registry.enabledPlugins.first?.info.id

@@ -1,6 +1,16 @@
 import SwiftUI
 import Carbon
 
+struct SystemCardStyle: GroupBoxStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.content
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color.primary.opacity(0.06)))
+    }
+}
+
 struct ShortcutEditor: View {
     @Binding var shortcut: KeyChord
     @ObservedObject var hotkeys: HotKeyService
