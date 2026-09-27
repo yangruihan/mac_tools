@@ -1,0 +1,11 @@
+--- a/scripts/build-app.sh
++++ b/scripts/build-app.sh
+@@ -22,7 +22,7 @@
+ <key>NSHighResolutionCapable</key><true/>
+ </dict></plist>
+ PLIST
+-codesign --force --sign - "$APP"
++codesign --force --sign "${MAC_TOOLS_SIGN_IDENTITY:--}" "$APP"
+ plutil -lint "$APP/Contents/Info.plist"
+ codesign --verify --strict "$APP"
+ printf '%s\n' "$APP"

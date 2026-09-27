@@ -44,7 +44,14 @@ elif [ "$#" -eq 2 ] && [ "$1" = '--style-drag' ]; then
     cp "$HERE/BASELINE_STYLE_SHARED.swift" "$TARGET/Sources/MacTools/UI/SharedControls.swift"
     cp "$HERE/BASELINE_DRAG_MENU_BAR.swift" "$TARGET/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift"
     cp "$HERE/BASELINE_DRAG_TESTS.swift" "$TARGET/Tests/MacToolsTests/MenuBarOrganizerTests.swift"
+elif [ "$#" -eq 2 ] && [ "$1" = '--signing-ux' ]; then
+    TARGET=${2%/}
+    [ -f "$TARGET/scripts/build-app.sh" ] && [ -f "$TARGET/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift" ] || {
+        echo 'Expected a copied MacTools project' >&2; exit 2;
+    }
+    cp "$HERE/BASELINE_SIGNING.sh" "$TARGET/scripts/build-app.sh"
+    cp "$HERE/BASELINE_DRAG_DIAGNOSTIC.swift" "$TARGET/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift"
 else
-    [ "$#" -eq 1 ] || { echo 'usage: ROLLBACK.sh TARGET_FILE_COPY | --sources DIR | --menu-bar PROJECT | --crowded-menu-bar PROJECT | --ux PROJECT | --style-drag PROJECT' >&2; exit 2; }
+    [ "$#" -eq 1 ] || { echo 'usage: ROLLBACK.sh TARGET_FILE_COPY | --sources DIR | --menu-bar PROJECT | --crowded-menu-bar PROJECT | --ux PROJECT | --style-drag PROJECT | --signing-ux PROJECT' >&2; exit 2; }
     cp "$HERE/BASELINE.swift" "$1"
 fi

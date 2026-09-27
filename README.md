@@ -58,7 +58,7 @@ UI_DARK=1 EXPECT_NATIVE=1 EXPECT_MODERN=1 scripts/check-ui-layout.sh Sources/Mac
 
 布局检查使用临时配置，不操作真实音量或亮度。测试不替代设备兼容或长时间闲置验收。
 
-产物 `build/MacTools.app` 为本机架构、临时签名，未做 Developer ID 签名和公证；分发二进制时请随包附带 LICENSE。退出通过菜单栏“退出”或 Command-Q。
+`./scripts/build-app.sh` 默认临时签名；多次替换二进制可能让 macOS 的屏幕录制/辅助功能授权失效。本机如有长期使用的代码签名证书，可设置 `MAC_TOOLS_SIGN_IDENTITY="证书名称" ./scripts/build-app.sh` 后再安装，并在系统设置中对新签名的应用授权一次。此选项不自动申请或修改权限，也不等于 Developer ID 公证；分发二进制时请随包附带 LICENSE。退出通过菜单栏“退出”或 Command-Q。
 
 ## 开源协议
 

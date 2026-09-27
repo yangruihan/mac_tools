@@ -194,7 +194,6 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
         work?.cancel(); work = nil; token = UUID(); closePanel()
         divider?.length = NSStatusItem.variableLength
         isCollapsed = false
-        if isOrganizing { status = "已展开；按住 ⌘ 在原生菜单栏拖动可见图标跨过分隔符。" }
     }
     func setVisibleLimit(_ value: Int) {
         visibleLimit = min(30, max(1, value))
@@ -562,7 +561,7 @@ private struct ShelfPanelView: View {
             HStack {
                 Text("已收纳 \(icons.count) 个图标").font(.headline)
                 Spacer()
-                Text(AXIsProcessTrusted() ? "点击打开 · 拖动调整" : "当前版本无法拖放")
+                Text(AXIsProcessTrusted() ? "点击打开 · 拖动调整" : "拖放需辅助功能权限")
                     .font(.caption).foregroundStyle(.secondary)
             }
             Text("收纳区").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
@@ -573,7 +572,7 @@ private struct ShelfPanelView: View {
             HStack {
                 Button("打开工具箱") { onOpenToolbox() }
                 Spacer()
-                Button(AXIsProcessTrusted() ? "展开全部图标" : "手动排列 · 展开全部") { onExpand() }
+                Button("展开全部图标") { onExpand() }
             }
         }.padding(14)
     }
@@ -612,12 +611,6 @@ private struct MenuBarOrganizerView: View {
                 }
                 Text(plugin.status).font(.callout).textSelection(.enabled)
                     .fixedSize(horizontal: false, vertical: true)
-                if plugin.isOrganizing && !AXIsProcessTrusted() {
-                    Label("当前安装版本未获辅助功能信任；弹框内无法移动系统图标。可展开后在原生菜单栏按住 ⌘ 拖动可见图标。",
-                          systemImage: "info.circle")
-                        .font(.caption).foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
                 HStack {
                     Menu("权限与帮助") {
                         Button("屏幕录制权限") { plugin.requestPermission() }

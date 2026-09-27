@@ -22,7 +22,7 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 <key>NSHighResolutionCapable</key><true/>
 </dict></plist>
 PLIST
-codesign --force --sign "${MAC_TOOLS_SIGN_IDENTITY:--}" "$APP"
+codesign --force --sign - "$APP"
 plutil -lint "$APP/Contents/Info.plist"
 codesign --verify --strict "$APP"
 printf '%s\n' "$APP"
