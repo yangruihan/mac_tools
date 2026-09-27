@@ -17,6 +17,7 @@ print('manual-appearance-selection=' + str('enum AppearanceMode:' in s), flush=T
 plugin_host = 'protocol ToolPlugin:' in s
 print('plugin-host=' + str(plugin_host), flush=True)
 print('window-preview-plugin=' + str('final class WindowPreviewPlugin:' in s), flush=True)
+print('menu-bar-organizer-plugin=' + str('final class MenuBarOrganizerPlugin:' in s), flush=True)
 print('preview-auto-resume=' + str('struct PreviewPaused:' in s and 'self.isPaused = true' in s), flush=True)
 if os.environ.get('EXPECT_NATIVE') == '1':
     assert not custom and '.preferredColorScheme' not in s

@@ -33,7 +33,8 @@ final class AppModel: ObservableObject {
             QuickControlsPlugin(context: context(for: QuickControlsPlugin.id)),
             KeepAwakePlugin(context: context(for: KeepAwakePlugin.id)),
             TrackpadPlugin(context: context(for: TrackpadPlugin.id)),
-            WindowPreviewPlugin(context: context(for: WindowPreviewPlugin.id))
+            WindowPreviewPlugin(context: context(for: WindowPreviewPlugin.id)),
+            MenuBarOrganizerPlugin(context: context(for: MenuBarOrganizerPlugin.id))
         ]
         // IDs are compile-time constants covered by registry tests; never accept downloaded code here.
         return try! PluginRegistry(plugins: builtins, defaults: defaults, report: { [weak self] in self?.message = $0 })
