@@ -2,16 +2,12 @@ import SwiftUI
 import Carbon
 import ScreenCaptureKit
 import ApplicationServices
+import UniformTypeIdentifiers
 
 struct ShelfIcon: Identifiable {
     let id: CGWindowID
     let frame: CGRect
     let image: CGImage
-}
-
-enum ShelfDropAction: Equatable {
-    case move(CGWindowID, Bool)
-    case reorder(CGWindowID, CGWindowID)
 }
 
 final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
@@ -32,7 +28,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
     private var active = false
     private var control: NSStatusItem?
     private var divider: NSStatusItem?
-    private var shelfPanel: NSWindow?
+    private var shelfPanel: NSPanel?
     private var work: Task<Void, Never>?
     private var displayObserver: NSObjectProtocol?
     private var token = UUID()
@@ -153,19 +149,6 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
               hidden ? x < dividerX : x > controlX else { return nil }
         return (x, after)
     }
-    static func shelfDrop(source: CGWindowID, at point: CGPoint, hidden: [CGWindowID], visible: [CGWindowID],
-                          hiddenRow: CGRect, visibleRow: CGRect, iconFrames: [CGWindowID: CGRect]) -> ShelfDropAction? {
-        let wasHidden = hidden.contains(source)
-        guard wasHidden || visible.contains(source) else { return nil }
-        let targetHidden: Bool
-        if hiddenRow.contains(point) { targetHidden = true }
-        else if visibleRow.contains(point) { targetHidden = false }
-        else { return nil }
-        if targetHidden != wasHidden { return .move(source, targetHidden) }
-        let targets = (targetHidden ? hidden : visible).filter { $0 != source && iconFrames[$0] != nil }
-        guard let target = targets.min(by: { abs(iconFrames[$0]!.midX - point.x) < abs(iconFrames[$1]!.midX - point.x) }) else { return nil }
-        return .reorder(source, target)
-    }
     private func statusWindows() -> [(id: CGWindowID, frame: CGRect)] {
         guard let list = CGWindowListCopyWindowInfo(.optionAll, kCGNullWindowID) as? [[String: Any]] else { return [] }
         let level = Int(CGWindowLevelForKey(.statusWindow))
@@ -262,9 +245,8 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
     }
     private func moveExpandedIcon(_ id: CGWindowID, intoShelf: Bool) async -> Bool {
             let moveToken = token
-            status = "正在等待菜单栏展开…"
             try? await Task.sleep(nanoseconds: 350_000_000)
-            guard token == moveToken, isOrganizing else { status = "移动已取消；菜单栏保持展开。"; return false }
+            guard token == moveToken, isOrganizing else { return false }
             guard let layout = placement(), let frame = statusFrame(id),
                   Self.canCollapse(dividerX: layout.divider.minX, controlX: layout.control.minX, screen: layout.screen) else {
                 status = "图标或分隔符已不可见，保持展开；请手动 ⌘ 拖动。"; return false
@@ -279,14 +261,10 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
             guard destinationX > layout.screen.minX + 8, destinationX < layout.screen.maxX - 8 else {
                 status = "目标位置不在可见菜单栏内，保持展开。"; return false
             }
-            status = "正在拖动原生图标…"
             guard await postDrag(from: CGPoint(x: frame.midX, y: frame.midY),
-                                 to: CGPoint(x: destinationX, y: frame.midY), token: moveToken) else {
-                status = "拖动被取消；菜单栏保持展开。"; return false
-            }
-            status = "正在确认图标位置…"
+                                 to: CGPoint(x: destinationX, y: frame.midY), token: moveToken) else { return false }
             try? await Task.sleep(nanoseconds: 350_000_000)
-            guard token == moveToken, isOrganizing else { status = "移动已取消；菜单栏保持展开。"; return false }
+            guard token == moveToken, isOrganizing else { return false }
             guard let after = statusFrame(id) else { status = "无法确认图标移动，保持展开。"; return false }
             let crossed = intoShelf ? after.maxX <= layout.divider.minX + 1 : after.minX >= layout.control.maxX - 1
             status = crossed ? "图标已移到\(intoShelf ? "收纳区" : "可见区")；菜单栏保持展开，可继续调整。" : "系统没有接受这次移动，保持展开；可手动 ⌘ 拖动。"
@@ -478,10 +456,10 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
             onClick: { [weak self] id in self?.activateIcon(id) },
             onOpenToolbox: { [weak self] in self?.openToolbox() }))
         let width = min(geometry.screen.width - 24, max(380, min(660, CGFloat(max(icons.count, visibleIcons.count)) * 46 + 40)))
-        let panel = NSWindow(contentRect: CGRect(x: 0, y: 0, width: width, height: 258),
-                             styleMask: [.titled, .closable], backing: .buffered, defer: false)
+        let panel = NSPanel(contentRect: CGRect(x: 0, y: 0, width: width, height: 258),
+                            styleMask: [.titled, .closable], backing: .buffered, defer: false)
         panel.title = "收纳的菜单栏图标"
-        panel.level = .statusBar; panel.hidesOnDeactivate = false
+        panel.level = .statusBar; panel.isFloatingPanel = true; panel.hidesOnDeactivate = false
         panel.isReleasedWhenClosed = false; panel.contentView = view
         let x = max(geometry.screen.minX, min(geometry.control.maxX - panel.frame.width, geometry.screen.maxX - panel.frame.width))
         panel.setFrameOrigin(CGPoint(x: x, y: geometry.control.minY - panel.frame.height - 5))
@@ -527,25 +505,10 @@ private struct OrganizerHelpView: View {
     }
 }
 
-private struct ShelfIconFramesKey: PreferenceKey {
-    static var defaultValue: [CGWindowID: CGRect] = [:]
-    static func reduce(value: inout [CGWindowID: CGRect], nextValue: () -> [CGWindowID: CGRect]) {
-        value.merge(nextValue()) { _, new in new }
-    }
-}
-private struct ShelfRowFramesKey: PreferenceKey {
-    static var defaultValue: [Bool: CGRect] = [:]
-    static func reduce(value: inout [Bool: CGRect], nextValue: () -> [Bool: CGRect]) {
-        value.merge(nextValue()) { _, new in new }
-    }
-}
-
 private struct ShelfPanelView: View {
     @ObservedObject var plugin: MenuBarOrganizerPlugin
-    @State private var iconFrames: [CGWindowID: CGRect] = [:]
-    @State private var rowFrames: [Bool: CGRect] = [:]
-    @State private var draggedID: CGWindowID?
-    @State private var dragPoint: CGPoint?
+    @State private var hiddenDropTarget = false
+    @State private var visibleDropTarget = false
     let icons: [ShelfIcon]
     let outside: [ShelfIcon]
     let onExpand: () -> Void
@@ -560,17 +523,6 @@ private struct ShelfPanelView: View {
             .foregroundStyle(.primary)
             .frame(width: 30, height: 27).padding(6)
     }
-    private func finishDrag(_ id: CGWindowID, at point: CGPoint) {
-        draggedID = nil; dragPoint = nil
-        guard let action = MenuBarOrganizerPlugin.shelfDrop(source: id, at: point,
-            hidden: icons.map(\.id), visible: outside.map(\.id),
-            hiddenRow: rowFrames[true] ?? .null, visibleRow: rowFrames[false] ?? .null,
-            iconFrames: iconFrames) else { return }
-        switch action {
-        case .move(let source, let hidden): onMove(source, hidden)
-        case .reorder(let source, let target): onReorder(source, target)
-        }
-    }
     private func row(_ items: [ShelfIcon], hidden: Bool) -> some View {
         ScrollView(.horizontal) {
             HStack(spacing: 5) {
@@ -578,27 +530,35 @@ private struct ShelfPanelView: View {
                     let icon = items[index]
                     Button { if hidden { onClick(icon.id) } else { onMove(icon.id, true) } } label: { thumbnail(icon) }
                     .buttonStyle(.plain)
-                    .scaleEffect(draggedID == icon.id ? 1.12 : 1)
-                    .background(GeometryReader { proxy in
-                        Color.clear.preference(key: ShelfIconFramesKey.self,
-                                               value: [icon.id: proxy.frame(in: .named("shelf"))])
-                    })
                     .accessibilityLabel("\(hidden ? "收纳" : "可见")图标 \(index + 1)")
                     .help(hidden ? "点击原生图标；拖到可见区可移出" : "点击移入收纳区；也可拖动")
                     .contextMenu { Button(hidden ? "移出收纳区" : "移入收纳区") { onMove(icon.id, !hidden) } }
-                    .highPriorityGesture(DragGesture(minimumDistance: 5, coordinateSpace: .named("shelf"))
-                        .onChanged { value in draggedID = icon.id; dragPoint = value.location }
-                        .onEnded { value in finishDrag(icon.id, at: value.location) })
+                    .onDrag { NSItemProvider(object: String(icon.id) as NSString) }
+                    .onDrop(of: [UTType.text], isTargeted: nil) { providers in
+                        guard let provider = providers.first, provider.canLoadObject(ofClass: NSString.self) else { return false }
+                        _ = provider.loadObject(ofClass: NSString.self) { value, _ in
+                            guard let text = value as? String, let id = CGWindowID(text) else { return }
+                            DispatchQueue.main.async {
+                                if items.contains(where: { $0.id == id }) { onReorder(id, icon.id) }
+                                else { onMove(id, hidden) }
+                            }
+                        }
+                        return true
+                    }
                 }
             }
         }
         .frame(height: 43)
-        .background(GeometryReader { proxy in
-            Color.clear.preference(key: ShelfRowFramesKey.self,
-                                   value: [hidden: proxy.frame(in: .named("shelf"))])
-        })
-        .background((dragPoint.map { rowFrames[hidden]?.contains($0) == true } ?? false) ? Color.accentColor.opacity(0.12) : Color.clear,
+        .background((hidden ? hiddenDropTarget : visibleDropTarget) ? Color.primary.opacity(0.08) : Color.clear,
                     in: RoundedRectangle(cornerRadius: 8))
+        .onDrop(of: [UTType.text], isTargeted: hidden ? $hiddenDropTarget : $visibleDropTarget) { providers in
+            guard let provider = providers.first, provider.canLoadObject(ofClass: NSString.self) else { return false }
+            _ = provider.loadObject(ofClass: NSString.self) { value, _ in
+                guard let text = value as? String, let id = CGWindowID(text) else { return }
+                DispatchQueue.main.async { onMove(id, hidden) }
+            }
+            return true
+        }
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -619,9 +579,6 @@ private struct ShelfPanelView: View {
                 Button(AXIsProcessTrusted() ? "展开全部图标" : "手动排列 · 展开全部") { onExpand() }
             }
         }.padding(14)
-            .coordinateSpace(name: "shelf")
-            .onPreferenceChange(ShelfIconFramesKey.self) { iconFrames = $0 }
-            .onPreferenceChange(ShelfRowFramesKey.self) { rowFrames = $0 }
     }
 }
 private struct MenuBarOrganizerView: View {

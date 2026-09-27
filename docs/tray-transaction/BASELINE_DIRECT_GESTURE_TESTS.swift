@@ -1,23 +1,19 @@
 import XCTest
 import CoreGraphics
+import UniformTypeIdentifiers
 @testable import MacTools
 
 final class MenuBarOrganizerTests: XCTestCase {
-    func testShelfDragRoutesAcrossRowsAndReordersWithinRow() {
-        let hidden = CGRect(x: 0, y: 0, width: 200, height: 40)
-        let visible = CGRect(x: 0, y: 70, width: 200, height: 40)
-        let frames: [CGWindowID: CGRect] = [1: CGRect(x: 10, y: 0, width: 30, height: 40),
-                                            2: CGRect(x: 60, y: 0, width: 30, height: 40),
-                                            3: CGRect(x: 10, y: 70, width: 30, height: 40)]
-        func drop(_ id: CGWindowID, _ point: CGPoint) -> ShelfDropAction? {
-            MenuBarOrganizerPlugin.shelfDrop(source: id, at: point, hidden: [1, 2], visible: [3],
-                                             hiddenRow: hidden, visibleRow: visible, iconFrames: frames)
+    func testShelfDragPayloadLoadsAsWindowID() {
+        let provider = NSItemProvider(object: "1001" as NSString)
+        XCTAssertTrue(provider.hasItemConformingToTypeIdentifier(UTType.text.identifier))
+        let loaded = expectation(description: "window ID")
+        _ = provider.loadObject(ofClass: NSString.self) { value, error in
+            XCTAssertNil(error)
+            XCTAssertEqual(CGWindowID(value as? String ?? ""), 1001)
+            loaded.fulfill()
         }
-        XCTAssertEqual(drop(1, CGPoint(x: 20, y: 80)), .move(1, false))
-        XCTAssertEqual(drop(3, CGPoint(x: 20, y: 20)), .move(3, true))
-        XCTAssertEqual(drop(1, CGPoint(x: 75, y: 20)), .reorder(1, 2))
-        XCTAssertNil(drop(1, CGPoint(x: 20, y: 55)))
-        XCTAssertNil(drop(99, CGPoint(x: 20, y: 20)))
+        wait(for: [loaded], timeout: 2)
     }
     func testStatusItemSlotsStayVisibleAndOrdered() {
         XCTAssertTrue(MenuBarOrganizerPlugin.sanePositions(control: 250, divider: 290))
