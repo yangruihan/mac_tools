@@ -587,7 +587,7 @@
 +}
 --- /dev/null
 +++ b/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
-@@ -0,0 +1,602 @@
+@@ -0,0 +1,636 @@
 +import SwiftUI
 +import Carbon
 +import ScreenCaptureKit
@@ -789,10 +789,11 @@
 +        visibleLimit = min(30, max(1, value))
 +        if let data = try? JSONEncoder().encode(visibleLimit) { context.settings.set(data, forKey: "visibleLimit") }
 +    }
-+    private func accessibilityReady() -> Bool {
++    private func accessibilityReady(prompt: Bool = false) -> Bool {
 +        let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
-+        guard AXIsProcessTrustedWithOptions(options) else {
-+            status = "请在系统设置 → 隐私与安全性 → 辅助功能中授权本应用，然后重试；未移动任何图标。"
++        let trusted = prompt ? AXIsProcessTrustedWithOptions(options) : AXIsProcessTrusted()
++        guard trusted else {
++            status = "辅助功能未授权；未移动图标。可在原生菜单栏按住 ⌘ 手动拖动。"
 +            return false
 +        }
 +        return true
@@ -826,8 +827,9 @@
 +        status = "正在移动图标…"
 +        Task { @MainActor [weak self] in
 +            guard let self else { return }
-+            defer { self.moving = false }
-+            _ = await self.moveExpandedIcon(id, intoShelf: intoShelf)
++            let moved = await self.moveExpandedIcon(id, intoShelf: intoShelf)
++            self.moving = false
++            if moved { self.hideIntoPanel() }
 +        }
 +    }
 +    private func moveExpandedIcon(_ id: CGWindowID, intoShelf: Bool) async -> Bool {
@@ -911,6 +913,7 @@
 +            guard self.token == moveToken, let after = self.statusFrame(id), let targetAfter = self.statusFrame(targetID) else { return }
 +            let ordered = destination.after ? after.midX > targetAfter.midX : after.midX < targetAfter.midX
 +            self.status = ordered ? "已调整原生图标顺序；菜单栏保持展开。" : "系统未接受顺序调整；可手动 ⌘ 拖动。"
++            if ordered { self.moving = false; self.hideIntoPanel() }
 +        }
 +    }
 +    private func closePanel() { shelfPanel?.contentView = nil; shelfPanel?.close(); shelfPanel = nil }
@@ -929,11 +932,18 @@
 +                                     y: frame.minY - panel.frame.height - 5))
 +        panel.orderFrontRegardless(); shelfPanel = panel
 +    }
-+    func requestAccessibilityPermission() { _ = accessibilityReady() }
++    func requestAccessibilityPermission() { _ = accessibilityReady(prompt: true) }
 +    func requestPermission() {
 +        guard active else { return }
 +        if CGPreflightScreenCaptureAccess() || CGRequestScreenCaptureAccess() { status = "已授权，点击收纳图标打开第二排。" }
 +        else { status = "请在系统设置 → 隐私与安全性 → 屏幕录制中授权本应用，然后重启。" }
++    }
++    @available(macOS 14, *)
++    private static func snapshot(_ window: SCWindow, frame: CGRect) async throws -> CGImage {
++        let config = SCStreamConfiguration()
++        config.width = max(16, Int(frame.width * 2)); config.height = max(16, Int(frame.height * 2))
++        config.showsCursor = false; config.capturesAudio = false
++        return try await SCScreenshotManager.captureImage(contentFilter: SCContentFilter(desktopIndependentWindow: window), configuration: config)
 +    }
 +    func hideIntoPanel() {
 +        guard isOrganizing, !isCollapsed, !moving else { return }
@@ -962,24 +972,37 @@
 +        work = Task { @MainActor [weak self] in
 +            guard #available(macOS 14, *) else { return }
 +            do {
++                let started = ContinuousClock.now
 +                let shareable = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false)
-+                var captured: [ShelfIcon] = []
-+                for target in targets {
-+                    try Task.checkCancellation()
-+                    guard let window = shareable.windows.first(where: { $0.windowID == target.id }) else { throw Failure.message("有图标无法读取，本次不隐藏") }
-+                    let config = SCStreamConfiguration()
-+                    config.width = max(16, Int(target.frame.width * 2)); config.height = max(16, Int(target.frame.height * 2))
-+                    config.showsCursor = false; config.capturesAudio = false
-+                    let image = try await SCScreenshotManager.captureImage(contentFilter: SCContentFilter(desktopIndependentWindow: window), configuration: config)
-+                    captured.append(ShelfIcon(id: target.id, frame: target.frame, image: image))
++                let windows = Dictionary(shareable.windows.map { ($0.windowID, $0) }, uniquingKeysWith: { first, _ in first })
++                let matches = try targets.map { target -> SCWindow in
++                    guard let window = windows[target.id] else { throw Failure.message("有图标无法读取，本次不隐藏") }
++                    return window
++                }
++                var images = [CGImage?](repeating: nil, count: targets.count)
++                try await withThrowingTaskGroup(of: (Int, CGImage).self) { group in
++                    func add(_ index: Int) {
++                        group.addTask {
++                            try Task.checkCancellation()
++                            return (index, try await Self.snapshot(matches[index], frame: targets[index].frame))
++                        }
++                    }
++                    for index in 0..<min(4, matches.count) { add(index) }
++                    for index in 4..<matches.count {
++                        guard let (done, image) = try await group.next() else { throw Failure.message("图标采集提前结束") }
++                        images[done] = image
++                        add(index)
++                    }
++                    while let (done, image) = try await group.next() { images[done] = image }
++                }
++                let captured = try targets.enumerated().map { index, target -> ShelfIcon in
++                    guard let image = images[index] else { throw Failure.message("图标采集不完整") }
++                    return ShelfIcon(id: target.id, frame: target.frame, image: image)
 +                }
 +                var outsideCaptured: [ShelfIcon] = []
 +                for target in outside {
-+                    guard let window = shareable.windows.first(where: { $0.windowID == target.id }) else { continue }
-+                    let config = SCStreamConfiguration()
-+                    config.width = max(16, Int(target.frame.width * 2)); config.height = max(16, Int(target.frame.height * 2))
-+                    config.showsCursor = false; config.capturesAudio = false
-+                    if let image = try? await SCScreenshotManager.captureImage(contentFilter: SCContentFilter(desktopIndependentWindow: window), configuration: config) {
++                    guard let window = windows[target.id] else { continue }
++                    if let image = try? await Self.snapshot(window, frame: target.frame) {
 +                        outsideCaptured.append(ShelfIcon(id: target.id, frame: target.frame, image: image))
 +                    }
 +                }
@@ -999,7 +1022,10 @@
 +                          now.control.maxX <= now.screen.maxX else {
 +                        self.expand(); self.status = "收纳按钮会被一起隐藏，已自动撤销。请 ⌘-拖动按钮到分隔符右侧。"; return
 +                    }
-+                    self.isCollapsed = true; self.status = "已收纳 \(captured.count) 个图标；展开后按住 ⌘ 可重新排列。"
++                    let elapsed = started.duration(to: ContinuousClock.now)
++                    let seconds = Double(elapsed.components.seconds) + Double(elapsed.components.attoseconds) / 1e18
++                    self.isCollapsed = true
++                    self.status = "已收纳 \(captured.count) 个图标（\(String(format: "%.1f", seconds)) 秒）；展开后可重新排列。"
 +                    self.showCachedPanel()
 +                }
 +            } catch {
@@ -1019,14 +1045,14 @@
 +            onClick: { [weak self] id in self?.activateIcon(id) },
 +            onOpenToolbox: { [weak self] in self?.openToolbox() }))
 +        let width = min(geometry.screen.width - 24, max(380, min(660, CGFloat(max(icons.count, visibleIcons.count)) * 46 + 40)))
-+        let panel = NSPanel(contentRect: CGRect(x: 0, y: 0, width: width, height: 238),
-+                            styleMask: [.titled, .closable, .nonactivatingPanel], backing: .buffered, defer: false)
++        let panel = NSPanel(contentRect: CGRect(x: 0, y: 0, width: width, height: 258),
++                            styleMask: [.titled, .closable], backing: .buffered, defer: false)
 +        panel.title = "收纳的菜单栏图标"
 +        panel.level = .statusBar; panel.isFloatingPanel = true; panel.hidesOnDeactivate = false
 +        panel.isReleasedWhenClosed = false; panel.contentView = view
 +        let x = max(geometry.screen.minX, min(geometry.control.maxX - panel.frame.width, geometry.screen.maxX - panel.frame.width))
 +        panel.setFrameOrigin(CGPoint(x: x, y: geometry.control.minY - panel.frame.height - 5))
-+        panel.orderFrontRegardless(); shelfPanel = panel
++        panel.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true); shelfPanel = panel
 +    }
 +    private func openToolbox() {
 +        closePanel()
@@ -1070,6 +1096,8 @@
 +
 +private struct ShelfPanelView: View {
 +    @ObservedObject var plugin: MenuBarOrganizerPlugin
++    @State private var hiddenDropTarget = false
++    @State private var visibleDropTarget = false
 +    let icons: [ShelfIcon]
 +    let outside: [ShelfIcon]
 +    let onExpand: () -> Void
@@ -1090,9 +1118,10 @@
 +                    .buttonStyle(.plain)
 +                    .accessibilityLabel("\(hidden ? "收纳" : "可见")图标 \(index + 1)")
 +                    .help(hidden ? "点击原生图标；拖到可见区可移出" : "点击移入收纳区；也可拖动")
++                    .contextMenu { Button(hidden ? "移出收纳区" : "移入收纳区") { onMove(icon.id, !hidden) } }
 +                    .onDrag { NSItemProvider(object: String(icon.id) as NSString) }
 +                    .onDrop(of: [UTType.text], isTargeted: nil) { providers in
-+                        guard let provider = providers.first else { return false }
++                        guard let provider = providers.first, provider.canLoadObject(ofClass: NSString.self) else { return false }
 +                        _ = provider.loadObject(ofClass: NSString.self) { value, _ in
 +                            guard let text = value as? String, let id = CGWindowID(text) else { return }
 +                            DispatchQueue.main.async {
@@ -1106,8 +1135,10 @@
 +            }
 +        }
 +        .frame(height: 43)
-+        .onDrop(of: [UTType.text], isTargeted: nil) { providers in
-+            guard let provider = providers.first else { return false }
++        .background((hidden ? hiddenDropTarget : visibleDropTarget) ? Color.primary.opacity(0.08) : Color.clear,
++                    in: RoundedRectangle(cornerRadius: 8))
++        .onDrop(of: [UTType.text], isTargeted: hidden ? $hiddenDropTarget : $visibleDropTarget) { providers in
++            guard let provider = providers.first, provider.canLoadObject(ofClass: NSString.self) else { return false }
 +            _ = provider.loadObject(ofClass: NSString.self) { value, _ in
 +                guard let text = value as? String, let id = CGWindowID(text) else { return }
 +                DispatchQueue.main.async { onMove(id, hidden) }
@@ -1120,13 +1151,14 @@
 +            HStack {
 +                Text("已收纳 \(icons.count) 个图标").font(.headline)
 +                Spacer()
-+                Text("点击打开 · 拖动调整").font(.caption).foregroundStyle(.secondary)
++                Text(AXIsProcessTrusted() ? "点击打开 · 拖动调整" : "拖放需辅助功能权限")
++                    .font(.caption).foregroundStyle(.secondary)
 +            }
 +            Text("收纳区").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
 +            row(icons, hidden: true)
 +            Text("可见区 · 拖到上排移入").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
 +            row(outside, hidden: false)
-+            Text(plugin.status).font(.caption).foregroundStyle(.secondary).lineLimit(1)
++            Text(plugin.status).font(.caption).foregroundStyle(.secondary).lineLimit(2)
 +            HStack {
 +                Button("打开工具箱") { onOpenToolbox() }
 +                Spacer()
@@ -1170,8 +1202,10 @@
 +                Text(plugin.status).font(.callout).textSelection(.enabled)
 +                    .fixedSize(horizontal: false, vertical: true)
 +                HStack {
-+                    Button("屏幕录制权限") { plugin.requestPermission() }
-+                    Button("辅助功能权限") { plugin.requestAccessibilityPermission() }
++                    Menu("权限与帮助") {
++                        Button("屏幕录制权限") { plugin.requestPermission() }
++                        Button("辅助功能权限") { plugin.requestAccessibilityPermission() }
++                    }
 +                    Spacer()
 +                    Text("紧急展开 ⌃⌥⌘R").foregroundStyle(.secondary)
 +                }.font(.caption)
@@ -1859,7 +1893,7 @@
 +}
 --- /dev/null
 +++ b/UI/ContentView.swift
-@@ -0,0 +1,121 @@
+@@ -0,0 +1,122 @@
 +import SwiftUI
 +
 +struct ContentView: View {
@@ -1878,7 +1912,7 @@
 +            VStack(alignment: .leading, spacing: 0) {
 +                Label("Mac 工具箱", systemImage: "wrench.and.screwdriver.fill")
 +                    .font(.system(size: 17, weight: .semibold))
-+                    .padding(.horizontal, 16).padding(.top, 20).padding(.bottom, 12)
++                    .padding(.horizontal, 16).padding(.top, 16).padding(.bottom, 10)
 +                Text("工具")
 +                    .font(.caption.weight(.semibold)).foregroundStyle(.secondary)
 +                    .padding(.horizontal, 18).padding(.bottom, 6)
@@ -1887,19 +1921,19 @@
 +                        Label(plugin.info.title, systemImage: plugin.info.symbol)
 +                            .tag(plugin.info.id)
 +                    }
-+                }.listStyle(.sidebar)
++                }.listStyle(.sidebar).scrollContentBackground(.hidden)
 +                Text("\(registry.enabledPlugins.count) 个工具已启用")
 +                    .font(.caption).foregroundStyle(.secondary)
 +                    .padding(16)
 +            }
 +            .frame(width: 208)
-+            .background(Color(nsColor: .underPageBackgroundColor))
++            .background(.regularMaterial)
 +            Divider()
 +            VStack(spacing: 0) {
 +                HStack(spacing: 12) {
 +                    VStack(alignment: .leading, spacing: 3) {
 +                        Text(selectedPlugin?.info.title ?? "工具箱")
-+                            .font(.system(size: 23, weight: .semibold))
++                            .font(.system(size: 21, weight: .semibold))
 +                        Text(selectedPlugin?.info.detail ?? "在左侧选择工具")
 +                            .font(.caption).foregroundStyle(.secondary).lineLimit(1)
 +                    }
@@ -1919,7 +1953,7 @@
 +                        }
 +                    Button { model.toggleWindow?() } label: { Image(systemName: "rectangle.compress.vertical") }
 +                        .help("收起到托盘").accessibilityLabel("收起到托盘")
-+                }.padding(.horizontal, 22).padding(.vertical, 16)
++                }.padding(.horizontal, 22).padding(.vertical, 12).background(.regularMaterial)
 +                Divider()
 +                ScrollView {
 +                    if let selectedPlugin {
@@ -1938,9 +1972,10 @@
 +                    Image(systemName: "checkmark.circle").foregroundStyle(.secondary)
 +                    Text(model.message).lineLimit(1).frame(maxWidth: .infinity, alignment: .leading)
 +                    Text("自动保存").foregroundStyle(.secondary)
-+                }.font(.caption).padding(.horizontal, 22).padding(.vertical, 10)
++                }.font(.caption).padding(.horizontal, 22).padding(.vertical, 10).background(.regularMaterial)
 +            }
 +        }.frame(minWidth: 900, minHeight: 640).background(Color(nsColor: .windowBackgroundColor))
++            .groupBoxStyle(SystemCardStyle())
 +            .onChange(of: registry.enabledIDs) { ids in
 +                if let selectedPluginID, !ids.contains(selectedPluginID) {
 +                    self.selectedPluginID = registry.enabledPlugins.first?.info.id
@@ -1983,9 +2018,19 @@
 +}
 --- /dev/null
 +++ b/UI/SharedControls.swift
-@@ -0,0 +1,54 @@
+@@ -0,0 +1,64 @@
 +import SwiftUI
 +import Carbon
++
++struct SystemCardStyle: GroupBoxStyle {
++    func makeBody(configuration: Configuration) -> some View {
++        configuration.content
++            .padding(16)
++            .frame(maxWidth: .infinity, alignment: .leading)
++            .background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
++            .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(Color.primary.opacity(0.06)))
++    }
++}
 +
 +struct ShortcutEditor: View {
 +    @Binding var shortcut: KeyChord

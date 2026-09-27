@@ -1,20 +1,8 @@
 import XCTest
 import CoreGraphics
-import UniformTypeIdentifiers
 @testable import MacTools
 
 final class MenuBarOrganizerTests: XCTestCase {
-    func testShelfDragPayloadLoadsAsWindowID() {
-        let provider = NSItemProvider(object: "1001" as NSString)
-        XCTAssertTrue(provider.hasItemConformingToTypeIdentifier(UTType.text.identifier))
-        let loaded = expectation(description: "window ID")
-        _ = provider.loadObject(ofClass: NSString.self) { value, error in
-            XCTAssertNil(error)
-            XCTAssertEqual(CGWindowID(value as? String ?? ""), 1001)
-            loaded.fulfill()
-        }
-        wait(for: [loaded], timeout: 2)
-    }
     func testStatusItemSlotsStayVisibleAndOrdered() {
         XCTAssertTrue(MenuBarOrganizerPlugin.sanePositions(control: 250, divider: 290))
         XCTAssertFalse(MenuBarOrganizerPlugin.sanePositions(control: nil, divider: 290))

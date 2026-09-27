@@ -199,11 +199,10 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
         visibleLimit = min(30, max(1, value))
         if let data = try? JSONEncoder().encode(visibleLimit) { context.settings.set(data, forKey: "visibleLimit") }
     }
-    private func accessibilityReady(prompt: Bool = false) -> Bool {
+    private func accessibilityReady() -> Bool {
         let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
-        let trusted = prompt ? AXIsProcessTrustedWithOptions(options) : AXIsProcessTrusted()
-        guard trusted else {
-            status = "辅助功能未授权；未移动图标。可在原生菜单栏按住 ⌘ 手动拖动。"
+        guard AXIsProcessTrustedWithOptions(options) else {
+            status = "请在系统设置 → 隐私与安全性 → 辅助功能中授权本应用，然后重试；未移动任何图标。"
             return false
         }
         return true
@@ -237,9 +236,8 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
         status = "正在移动图标…"
         Task { @MainActor [weak self] in
             guard let self else { return }
-            let moved = await self.moveExpandedIcon(id, intoShelf: intoShelf)
-            self.moving = false
-            if moved { self.hideIntoPanel() }
+            defer { self.moving = false }
+            _ = await self.moveExpandedIcon(id, intoShelf: intoShelf)
         }
     }
     private func moveExpandedIcon(_ id: CGWindowID, intoShelf: Bool) async -> Bool {
@@ -323,7 +321,6 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
             guard self.token == moveToken, let after = self.statusFrame(id), let targetAfter = self.statusFrame(targetID) else { return }
             let ordered = destination.after ? after.midX > targetAfter.midX : after.midX < targetAfter.midX
             self.status = ordered ? "已调整原生图标顺序；菜单栏保持展开。" : "系统未接受顺序调整；可手动 ⌘ 拖动。"
-            if ordered { self.moving = false; self.hideIntoPanel() }
         }
     }
     private func closePanel() { shelfPanel?.contentView = nil; shelfPanel?.close(); shelfPanel = nil }
@@ -342,18 +339,11 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
                                      y: frame.minY - panel.frame.height - 5))
         panel.orderFrontRegardless(); shelfPanel = panel
     }
-    func requestAccessibilityPermission() { _ = accessibilityReady(prompt: true) }
+    func requestAccessibilityPermission() { _ = accessibilityReady() }
     func requestPermission() {
         guard active else { return }
         if CGPreflightScreenCaptureAccess() || CGRequestScreenCaptureAccess() { status = "已授权，点击收纳图标打开第二排。" }
         else { status = "请在系统设置 → 隐私与安全性 → 屏幕录制中授权本应用，然后重启。" }
-    }
-    @available(macOS 14, *)
-    private static func snapshot(_ window: SCWindow, frame: CGRect) async throws -> CGImage {
-        let config = SCStreamConfiguration()
-        config.width = max(16, Int(frame.width * 2)); config.height = max(16, Int(frame.height * 2))
-        config.showsCursor = false; config.capturesAudio = false
-        return try await SCScreenshotManager.captureImage(contentFilter: SCContentFilter(desktopIndependentWindow: window), configuration: config)
     }
     func hideIntoPanel() {
         guard isOrganizing, !isCollapsed, !moving else { return }
@@ -382,37 +372,24 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
         work = Task { @MainActor [weak self] in
             guard #available(macOS 14, *) else { return }
             do {
-                let started = ContinuousClock.now
                 let shareable = try await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: false)
-                let windows = Dictionary(shareable.windows.map { ($0.windowID, $0) }, uniquingKeysWith: { first, _ in first })
-                let matches = try targets.map { target -> SCWindow in
-                    guard let window = windows[target.id] else { throw Failure.message("有图标无法读取，本次不隐藏") }
-                    return window
-                }
-                var images = [CGImage?](repeating: nil, count: targets.count)
-                try await withThrowingTaskGroup(of: (Int, CGImage).self) { group in
-                    func add(_ index: Int) {
-                        group.addTask {
-                            try Task.checkCancellation()
-                            return (index, try await Self.snapshot(matches[index], frame: targets[index].frame))
-                        }
-                    }
-                    for index in 0..<min(4, matches.count) { add(index) }
-                    for index in 4..<matches.count {
-                        guard let (done, image) = try await group.next() else { throw Failure.message("图标采集提前结束") }
-                        images[done] = image
-                        add(index)
-                    }
-                    while let (done, image) = try await group.next() { images[done] = image }
-                }
-                let captured = try targets.enumerated().map { index, target -> ShelfIcon in
-                    guard let image = images[index] else { throw Failure.message("图标采集不完整") }
-                    return ShelfIcon(id: target.id, frame: target.frame, image: image)
+                var captured: [ShelfIcon] = []
+                for target in targets {
+                    try Task.checkCancellation()
+                    guard let window = shareable.windows.first(where: { $0.windowID == target.id }) else { throw Failure.message("有图标无法读取，本次不隐藏") }
+                    let config = SCStreamConfiguration()
+                    config.width = max(16, Int(target.frame.width * 2)); config.height = max(16, Int(target.frame.height * 2))
+                    config.showsCursor = false; config.capturesAudio = false
+                    let image = try await SCScreenshotManager.captureImage(contentFilter: SCContentFilter(desktopIndependentWindow: window), configuration: config)
+                    captured.append(ShelfIcon(id: target.id, frame: target.frame, image: image))
                 }
                 var outsideCaptured: [ShelfIcon] = []
                 for target in outside {
-                    guard let window = windows[target.id] else { continue }
-                    if let image = try? await Self.snapshot(window, frame: target.frame) {
+                    guard let window = shareable.windows.first(where: { $0.windowID == target.id }) else { continue }
+                    let config = SCStreamConfiguration()
+                    config.width = max(16, Int(target.frame.width * 2)); config.height = max(16, Int(target.frame.height * 2))
+                    config.showsCursor = false; config.capturesAudio = false
+                    if let image = try? await SCScreenshotManager.captureImage(contentFilter: SCContentFilter(desktopIndependentWindow: window), configuration: config) {
                         outsideCaptured.append(ShelfIcon(id: target.id, frame: target.frame, image: image))
                     }
                 }
@@ -432,10 +409,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
                           now.control.maxX <= now.screen.maxX else {
                         self.expand(); self.status = "收纳按钮会被一起隐藏，已自动撤销。请 ⌘-拖动按钮到分隔符右侧。"; return
                     }
-                    let elapsed = started.duration(to: ContinuousClock.now)
-                    let seconds = Double(elapsed.components.seconds) + Double(elapsed.components.attoseconds) / 1e18
-                    self.isCollapsed = true
-                    self.status = "已收纳 \(captured.count) 个图标（\(String(format: "%.1f", seconds)) 秒）；展开后可重新排列。"
+                    self.isCollapsed = true; self.status = "已收纳 \(captured.count) 个图标；展开后按住 ⌘ 可重新排列。"
                     self.showCachedPanel()
                 }
             } catch {
@@ -455,14 +429,14 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
             onClick: { [weak self] id in self?.activateIcon(id) },
             onOpenToolbox: { [weak self] in self?.openToolbox() }))
         let width = min(geometry.screen.width - 24, max(380, min(660, CGFloat(max(icons.count, visibleIcons.count)) * 46 + 40)))
-        let panel = NSPanel(contentRect: CGRect(x: 0, y: 0, width: width, height: 258),
-                            styleMask: [.titled, .closable], backing: .buffered, defer: false)
+        let panel = NSPanel(contentRect: CGRect(x: 0, y: 0, width: width, height: 238),
+                            styleMask: [.titled, .closable, .nonactivatingPanel], backing: .buffered, defer: false)
         panel.title = "收纳的菜单栏图标"
         panel.level = .statusBar; panel.isFloatingPanel = true; panel.hidesOnDeactivate = false
         panel.isReleasedWhenClosed = false; panel.contentView = view
         let x = max(geometry.screen.minX, min(geometry.control.maxX - panel.frame.width, geometry.screen.maxX - panel.frame.width))
         panel.setFrameOrigin(CGPoint(x: x, y: geometry.control.minY - panel.frame.height - 5))
-        panel.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true); shelfPanel = panel
+        panel.orderFrontRegardless(); shelfPanel = panel
     }
     private func openToolbox() {
         closePanel()
@@ -506,8 +480,6 @@ private struct OrganizerHelpView: View {
 
 private struct ShelfPanelView: View {
     @ObservedObject var plugin: MenuBarOrganizerPlugin
-    @State private var hiddenDropTarget = false
-    @State private var visibleDropTarget = false
     let icons: [ShelfIcon]
     let outside: [ShelfIcon]
     let onExpand: () -> Void
@@ -528,10 +500,9 @@ private struct ShelfPanelView: View {
                     .buttonStyle(.plain)
                     .accessibilityLabel("\(hidden ? "收纳" : "可见")图标 \(index + 1)")
                     .help(hidden ? "点击原生图标；拖到可见区可移出" : "点击移入收纳区；也可拖动")
-                    .contextMenu { Button(hidden ? "移出收纳区" : "移入收纳区") { onMove(icon.id, !hidden) } }
                     .onDrag { NSItemProvider(object: String(icon.id) as NSString) }
                     .onDrop(of: [UTType.text], isTargeted: nil) { providers in
-                        guard let provider = providers.first, provider.canLoadObject(ofClass: NSString.self) else { return false }
+                        guard let provider = providers.first else { return false }
                         _ = provider.loadObject(ofClass: NSString.self) { value, _ in
                             guard let text = value as? String, let id = CGWindowID(text) else { return }
                             DispatchQueue.main.async {
@@ -545,10 +516,8 @@ private struct ShelfPanelView: View {
             }
         }
         .frame(height: 43)
-        .background((hidden ? hiddenDropTarget : visibleDropTarget) ? Color.primary.opacity(0.08) : Color.clear,
-                    in: RoundedRectangle(cornerRadius: 8))
-        .onDrop(of: [UTType.text], isTargeted: hidden ? $hiddenDropTarget : $visibleDropTarget) { providers in
-            guard let provider = providers.first, provider.canLoadObject(ofClass: NSString.self) else { return false }
+        .onDrop(of: [UTType.text], isTargeted: nil) { providers in
+            guard let provider = providers.first else { return false }
             _ = provider.loadObject(ofClass: NSString.self) { value, _ in
                 guard let text = value as? String, let id = CGWindowID(text) else { return }
                 DispatchQueue.main.async { onMove(id, hidden) }
@@ -561,14 +530,13 @@ private struct ShelfPanelView: View {
             HStack {
                 Text("已收纳 \(icons.count) 个图标").font(.headline)
                 Spacer()
-                Text(AXIsProcessTrusted() ? "点击打开 · 拖动调整" : "拖放需辅助功能权限")
-                    .font(.caption).foregroundStyle(.secondary)
+                Text("点击打开 · 拖动调整").font(.caption).foregroundStyle(.secondary)
             }
             Text("收纳区").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
             row(icons, hidden: true)
             Text("可见区 · 拖到上排移入").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
             row(outside, hidden: false)
-            Text(plugin.status).font(.caption).foregroundStyle(.secondary).lineLimit(2)
+            Text(plugin.status).font(.caption).foregroundStyle(.secondary).lineLimit(1)
             HStack {
                 Button("打开工具箱") { onOpenToolbox() }
                 Spacer()
@@ -612,10 +580,8 @@ private struct MenuBarOrganizerView: View {
                 Text(plugin.status).font(.callout).textSelection(.enabled)
                     .fixedSize(horizontal: false, vertical: true)
                 HStack {
-                    Menu("权限与帮助") {
-                        Button("屏幕录制权限") { plugin.requestPermission() }
-                        Button("辅助功能权限") { plugin.requestAccessibilityPermission() }
-                    }
+                    Button("屏幕录制权限") { plugin.requestPermission() }
+                    Button("辅助功能权限") { plugin.requestAccessibilityPermission() }
                     Spacer()
                     Text("紧急展开 ⌃⌥⌘R").foregroundStyle(.secondary)
                 }.font(.caption)
