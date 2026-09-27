@@ -516,19 +516,16 @@ private struct ShelfPanelView: View {
     let onReorder: (CGWindowID, CGWindowID) -> Void
     let onClick: (CGWindowID) -> Void
     let onOpenToolbox: () -> Void
-    private func thumbnail(_ icon: ShelfIcon) -> some View {
-        Image(decorative: icon.image, scale: 2)
-            .renderingMode(.template)
-            .resizable().aspectRatio(contentMode: .fit)
-            .foregroundStyle(.primary)
-            .frame(width: 30, height: 27).padding(6)
-    }
     private func row(_ items: [ShelfIcon], hidden: Bool) -> some View {
         ScrollView(.horizontal) {
             HStack(spacing: 5) {
                 ForEach(items.indices, id: \.self) { index in
                     let icon = items[index]
-                    Button { if hidden { onClick(icon.id) } else { onMove(icon.id, true) } } label: { thumbnail(icon) }
+                    Button { if hidden { onClick(icon.id) } else { onMove(icon.id, true) } } label: {
+                        Image(decorative: icon.image, scale: 2).resizable().aspectRatio(contentMode: .fit)
+                            .frame(width: 30, height: 27).padding(6)
+                            .background(Color.primary.opacity(0.52), in: RoundedRectangle(cornerRadius: 8))
+                    }
                     .buttonStyle(.plain)
                     .accessibilityLabel("\(hidden ? "收纳" : "可见")图标 \(index + 1)")
                     .help(hidden ? "点击原生图标；拖到可见区可移出" : "点击移入收纳区；也可拖动")
