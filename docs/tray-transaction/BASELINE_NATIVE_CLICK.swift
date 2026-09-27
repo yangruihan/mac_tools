@@ -227,38 +227,6 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
         return true
     }
     private func statusFrame(_ id: CGWindowID) -> CGRect? { statusWindows().first { $0.id == id }?.frame }
-    private func pressStatusItem(_ id: CGWindowID) -> AXError? {
-        guard let windows = CGWindowListCopyWindowInfo(.optionAll, kCGNullWindowID) as? [[String: Any]],
-              let window = windows.first(where: { ($0[kCGWindowNumber as String] as? NSNumber)?.uint32Value == id }),
-              let pid = (window[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value,
-              let frame = statusFrame(id) else { return nil }
-        let application = AXUIElementCreateApplication(pid)
-        var topLevelValue: CFTypeRef?
-        guard AXUIElementCopyAttributeValue(application, kAXChildrenAttribute as CFString, &topLevelValue) == .success,
-              let topLevel = topLevelValue as? [AXUIElement] else { return nil }
-        for menuBar in topLevel {
-            var role: CFTypeRef?
-            guard AXUIElementCopyAttributeValue(menuBar, kAXRoleAttribute as CFString, &role) == .success,
-                  (role as? String) == kAXMenuBarRole as String else { continue }
-            var childrenValue: CFTypeRef?
-            guard AXUIElementCopyAttributeValue(menuBar, kAXChildrenAttribute as CFString, &childrenValue) == .success,
-                  let children = childrenValue as? [AXUIElement] else { continue }
-            for child in children {
-                var positionValue: CFTypeRef?
-                var sizeValue: CFTypeRef?
-                guard AXUIElementCopyAttributeValue(child, kAXPositionAttribute as CFString, &positionValue) == .success,
-                      AXUIElementCopyAttributeValue(child, kAXSizeAttribute as CFString, &sizeValue) == .success,
-                      let positionValue, let sizeValue else { continue }
-                var position = CGPoint.zero
-                var size = CGSize.zero
-                guard AXValueGetValue(positionValue as! AXValue, .cgPoint, &position),
-                      AXValueGetValue(sizeValue as! AXValue, .cgSize, &size),
-                      abs(position.x + size.width / 2 - frame.midX) < 8 else { continue }
-                return AXUIElementPerformAction(child, kAXPressAction as CFString)
-            }
-        }
-        return nil
-    }
     private func postDrag(from source: CGPoint, to destination: CGPoint, token moveToken: UUID) async -> Bool {
         let original = CGEvent(source: nil)?.location
         func post(_ type: CGEventType, _ point: CGPoint) {
@@ -509,8 +477,8 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
             onReorder: { [weak self] id, target in self?.reorderIcon(id, nextTo: target) },
             onClick: { [weak self] id in self?.activateIcon(id) },
             onOpenToolbox: { [weak self] in self?.openToolbox() }))
-        let width = min(geometry.screen.width - 24, max(420, min(720, CGFloat(max(icons.count, visibleIcons.count)) * 58 + 40)))
-        let panel = NSWindow(contentRect: CGRect(x: 0, y: 0, width: width, height: 282),
+        let width = min(geometry.screen.width - 24, max(380, min(660, CGFloat(max(icons.count, visibleIcons.count)) * 46 + 40)))
+        let panel = NSWindow(contentRect: CGRect(x: 0, y: 0, width: width, height: 258),
                              styleMask: [.titled, .closable], backing: .buffered, defer: false)
         panel.title = "收纳的菜单栏图标"
         panel.level = .statusBar; panel.hidesOnDeactivate = false
@@ -524,14 +492,19 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin {
         if let delegate = NSApp.delegate as? AppDelegate { delegate.showWindow(model: delegate.model) }
     }
     func activateIcon(_ id: CGWindowID) {
-        guard isCollapsed, accessibilityReady(), icons.contains(where: { $0.id == id }) else { return }
+        guard isCollapsed, accessibilityReady(), let frame = icons.first(where: { $0.id == id })?.frame else { return }
         expand()
         let clickToken = token
         Task { @MainActor [weak self] in
             try? await Task.sleep(nanoseconds: 350_000_000)
-            guard let self, self.token == clickToken, self.isOrganizing else { return }
-            let result = self.pressStatusItem(id)
-            self.status = result == .success ? "已调用原生图标；菜单栏保持展开。" : "macOS 无法代点此图标（\(result?.rawValue ?? -1)）；请先移到可见区再点击。"
+            guard let self, self.token == clickToken, self.isOrganizing,
+                  let current = self.statusFrame(id), abs(current.midX - frame.midX) < 50 else {
+                self?.status = "图标位置已变化，未代替点击；菜单栏已展开。"; return
+            }
+            let point = CGPoint(x: current.midX, y: current.midY)
+            CGEvent(mouseEventSource: nil, mouseType: .leftMouseDown, mouseCursorPosition: point, mouseButton: .left)?.post(tap: .cghidEventTap)
+            CGEvent(mouseEventSource: nil, mouseType: .leftMouseUp, mouseCursorPosition: point, mouseButton: .left)?.post(tap: .cghidEventTap)
+            self.status = "已点击原生图标；菜单栏保持展开。"
         }
     }
     func makeView() -> AnyView { AnyView(MenuBarOrganizerView(plugin: self)) }
@@ -585,7 +558,7 @@ private struct ShelfPanelView: View {
             .renderingMode(.template)
             .resizable().aspectRatio(contentMode: .fit)
             .foregroundStyle(.primary)
-            .frame(width: 40, height: 36).padding(7)
+            .frame(width: 30, height: 27).padding(6)
     }
     private func finishDrag(_ id: CGWindowID, at point: CGPoint) {
         draggedID = nil; dragPoint = nil
@@ -600,7 +573,7 @@ private struct ShelfPanelView: View {
     }
     private func row(_ items: [ShelfIcon], hidden: Bool) -> some View {
         ScrollView(.horizontal) {
-            HStack(spacing: 4) {
+            HStack(spacing: 5) {
                 ForEach(items.indices, id: \.self) { index in
                     let icon = items[index]
                     Button { if hidden { onClick(icon.id) } else { onMove(icon.id, true) } } label: { thumbnail(icon) }
@@ -611,7 +584,7 @@ private struct ShelfPanelView: View {
                                                value: [icon.id: proxy.frame(in: .named("shelf"))])
                     })
                     .accessibilityLabel("\(hidden ? "收纳" : "可见")图标 \(index + 1)")
-                    .help(hidden ? "点击尝试打开；不支持时可拖到可见区点击" : "点击移入收纳区；也可拖动")
+                    .help(hidden ? "点击原生图标；拖到可见区可移出" : "点击移入收纳区；也可拖动")
                     .contextMenu { Button(hidden ? "移出收纳区" : "移入收纳区") { onMove(icon.id, !hidden) } }
                     .highPriorityGesture(DragGesture(minimumDistance: 5, coordinateSpace: .named("shelf"))
                         .onChanged { value in draggedID = icon.id; dragPoint = value.location }
@@ -619,7 +592,7 @@ private struct ShelfPanelView: View {
                 }
             }
         }
-        .frame(height: 56)
+        .frame(height: 43)
         .background(GeometryReader { proxy in
             Color.clear.preference(key: ShelfRowFramesKey.self,
                                    value: [hidden: proxy.frame(in: .named("shelf"))])
@@ -632,7 +605,7 @@ private struct ShelfPanelView: View {
             HStack {
                 Text("已收纳 \(icons.count) 个图标").font(.headline)
                 Spacer()
-                Text(AXIsProcessTrusted() ? "点击尝试打开 · 拖动调整" : "当前版本无法拖放")
+                Text(AXIsProcessTrusted() ? "点击打开 · 拖动调整" : "当前版本无法拖放")
                     .font(.caption).foregroundStyle(.secondary)
             }
             Text("收纳区").font(.caption.weight(.semibold)).foregroundStyle(.secondary)

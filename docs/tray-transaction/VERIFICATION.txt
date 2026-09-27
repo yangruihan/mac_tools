@@ -2369,3 +2369,280 @@ After swift test (19 tests), native layout check and ./scripts/build-app.sh (all
 
 2026-09-27 direct gesture production installation and acceptance:
 Installed /Applications/MacTools.app from the Apple Development signed build after full swift test (20 passed), layout check, and codesign --verify --strict all exited 0. Built and installed binary SHA256=73e5e168639f95a8c5f22660a8a5f34eacf6c7e710fd155b0d4efd94b51b; process PID 87724. Prior app and preferences backed up at /Users/yangruihan/Library/Application Support/MacTools/Backups/20260927-172300-direct-gesture-upgrade. Quick-control preset bytes remained 502, SHA256=3dccd8efb199eee96c23dac0457f28b03085b5436c47fb8eb825ce72f42ce8ea before and after. AX trust and Screen Recording were both observed available in the new process; panel opened as a standard window. A disposable StatusFixture icon (window 116981, originally x1447) was identified as visible item 4. CUA dragged it from the visible row into the hidden row; AX hidden count changed 16 -> 17 and the panel reopened. After identifying the same fixture as hidden item 16, CUA dragged it back to the visible row; count changed 17 -> 16 and the panel reopened. The panel was expanded, fixture process PID 87884 terminated, and its window count verified 0. No permanent third-party icon was moved, no audio/brightness action was invoked. Idle snapshot after 3m24s: 0.0% CPU, RSS 125376 KiB. One unrelated earlier context-menu move-out attempt failed, so this successful fixture round-trip is not a universal reliability guarantee.
+
+2026-09-27 native shelf icon layout and click verification
+TARGET=/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
+CHANGED_SYMBOLS=ShelfPanelView.thumbnail,row; MenuBarOrganizerPlugin.showCachedPanel,pressStatusItem,activateIcon
+BASELINE_SHA256=0cc766c503e4ac2098b3fab5f38c628fa0511988f36e6ed3b6ff464195768cac
+MODIFIED_SHA256=66436da8a68f4d93bb64d1f2f72868a1b6ef691ca722ed015b1889b2441c0a11
+ROLLBACK_SHA256=0cc766c503e4ac2098b3fab5f38c628fa0511988f36e6ed3b6ff464195768cac
+INSTALL_BINARY_SHA256=ab1ab74341a5abca46ff8301aff32467c34f2dae9c1b03760836fb9ab4386f72
+
+[BASELINE] command=swift test --filter MenuBarOrganizerTests
+exit=0
+stdout<<EOF
+Test Suite 'Selected tests' started at 2026-09-27 17:30:37.566.
+Test Suite 'MacToolsPackageTests.xctest' started at 2026-09-27 17:30:37.567.
+Test Suite 'MenuBarOrganizerTests' started at 2026-09-27 17:30:37.567.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testShelfDragRoutesAcrossRowsAndReordersWithinRow]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testShelfDragRoutesAcrossRowsAndReordersWithinRow]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' passed (0.001 seconds).
+Test Suite 'MenuBarOrganizerTests' passed at 2026-09-27 17:30:37.574.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.007 (0.007) seconds
+Test Suite 'MacToolsPackageTests.xctest' passed at 2026-09-27 17:30:37.574.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.007 (0.007) seconds
+Test Suite 'Selected tests' passed at 2026-09-27 17:30:37.574.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.007 (0.008) seconds
+MENU BAR: load/stop inert until user opts in; no status icons created
+MENU BAR: only candidate status windows left of separator; recovery control geometry fail-closed
+◇ Test run started.
+↳ Testing Library Version: 1501
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+EOF
+stderr<<EOF
+[0/1] Planning build
+Building for debugging...
+[0/4] Write swift-version--58304C5D6DBC2206.txt
+Build complete! (0.12s)
+EOF
+
+[MODIFIED] command=swift test
+exit=0
+stdout<<EOF
+Test Suite 'All tests' started at 2026-09-27 17:46:43.225.
+Test Suite 'MacToolsPackageTests.xctest' started at 2026-09-27 17:46:43.226.
+Test Suite 'Checks' started at 2026-09-27 17:46:43.226.
+Test Case '-[MacToolsTests.Checks testAppearanceSwitchAndPersistence]' started.
+Test Case '-[MacToolsTests.Checks testAppearanceSwitchAndPersistence]' passed (0.039 seconds).
+Test Case '-[MacToolsTests.Checks testBuiltinsAndWindowShortcutPersistence]' started.
+Test Case '-[MacToolsTests.Checks testBuiltinsAndWindowShortcutPersistence]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.Checks testCrossPluginShortcutConflictsAndRelease]' started.
+Test Case '-[MacToolsTests.Checks testCrossPluginShortcutConflictsAndRelease]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' started.
+Test Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.Checks testLegacyMigrationAndSettingsIsolation]' started.
+Test Case '-[MacToolsTests.Checks testLegacyMigrationAndSettingsIsolation]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.Checks testLocksProtectionAndDisableCleanup]' started.
+Test Case '-[MacToolsTests.Checks testLocksProtectionAndDisableCleanup]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.Checks testPluginDiscoveryLifecyclePersistenceAndDuplicateGuard]' started.
+Test Case '-[MacToolsTests.Checks testPluginDiscoveryLifecyclePersistenceAndDuplicateGuard]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' started.
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.Checks testTrackpadDisableRestoresAndFailureRetainsRegistryState]' started.
+Test Case '-[MacToolsTests.Checks testTrackpadDisableRestoresAndFailureRetainsRegistryState]' passed (0.001 seconds).
+Test Suite 'Checks' passed at 2026-09-27 17:46:43.280.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.054 (0.055) seconds
+Test Suite 'FloatingPreviewTests' started at 2026-09-27 17:46:43.280.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' passed (0.079 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testHiddenWindowPausesAndRestoresWithoutLosingFrame]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testHiddenWindowPausesAndRestoresWithoutLosingFrame]' passed (2.234 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' passed (0.071 seconds).
+Test Suite 'FloatingPreviewTests' passed at 2026-09-27 17:46:45.664.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 2.383 (2.383) seconds
+Test Suite 'MenuBarOrganizerTests' started at 2026-09-27 17:46:45.664.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testShelfDragRoutesAcrossRowsAndReordersWithinRow]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testShelfDragRoutesAcrossRowsAndReordersWithinRow]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' passed (0.002 seconds).
+Test Suite 'MenuBarOrganizerTests' passed at 2026-09-27 17:46:45.670.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.006 (0.007) seconds
+Test Suite 'MacToolsPackageTests.xctest' passed at 2026-09-27 17:46:45.670.
+	 Executed 20 tests, with 0 failures (0 unexpected) in 2.443 (2.445) seconds
+Test Suite 'All tests' passed at 2026-09-27 17:46:45.671.
+	 Executed 20 tests, with 0 failures (0 unexpected) in 2.443 (2.446) seconds
+HOTKEYS: cross-owner conflict surfaced; removing owner/disabled plugin releases chord
+AWAKE: native assertions ON -> released on stop/deinit; no audio writes
+MIGRATION: preset IDs/lock/key preserved; legacy bytes unchanged; namespaced settings isolated
+QUICK CONTROLS: cap/restore/unlock preserved; stop clears locks/timer; stopped actions do not write
+PLUGIN HOST: new plugin views/menu/lifecycle need no host branch; disable persists; invalid IDs rejected
+PREVIEW: floating + resizable; landscape/portrait sizes verified; disabling plugin clears panel and pixels
+PREVIEW PAUSE: frame retained while hidden; automatically resumed after source reappeared
+PREVIEW: cancelled in-flight frame discarded; source failure clears stale pixels
+MENU BAR: load/stop inert until user opts in; no status icons created
+MENU BAR: only candidate status windows left of separator; recovery control geometry fail-closed
+◇ Test run started.
+↳ Testing Library Version: 1501
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+EOF
+stderr<<EOF
+[0/1] Planning build
+Building for debugging...
+[0/5] Write sources
+[1/5] Write swift-version--58304C5D6DBC2206.txt
+[3/7] Compiling MacTools MenuBarOrganizerPlugin.swift
+[4/7] Emitting module MacTools
+[4/9] Write Objects.LinkFileList
+[5/9] Linking MacTools
+[6/9] Applying MacTools
+[8/10] Emitting module MacToolsTests
+[8/10] Write Objects.LinkFileList
+[9/10] Linking MacToolsPackageTests
+Build complete! (3.29s)
+EOF
+
+[ROLLBACK] command=cd /tmp/mactools-native-final-rollback.rbbAXt && swift test --filter MenuBarOrganizerTests
+exit=0
+stdout<<EOF
+Test Suite 'Selected tests' started at 2026-09-27 17:47:38.874.
+Test Suite 'MacToolsPackageTests.xctest' started at 2026-09-27 17:47:38.876.
+Test Suite 'MenuBarOrganizerTests' started at 2026-09-27 17:47:38.876.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testShelfDragRoutesAcrossRowsAndReordersWithinRow]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testShelfDragRoutesAcrossRowsAndReordersWithinRow]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' passed (0.001 seconds).
+Test Suite 'MenuBarOrganizerTests' passed at 2026-09-27 17:47:38.882.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.006 (0.007) seconds
+Test Suite 'MacToolsPackageTests.xctest' passed at 2026-09-27 17:47:38.882.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.006 (0.007) seconds
+Test Suite 'Selected tests' passed at 2026-09-27 17:47:38.882.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.006 (0.008) seconds
+MENU BAR: load/stop inert until user opts in; no status icons created
+MENU BAR: only candidate status windows left of separator; recovery control geometry fail-closed
+◇ Test run started.
+↳ Testing Library Version: 1501
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+EOF
+stderr<<EOF
+Building for debugging...
+[0/11] /private/tmp/mactools-native-final-rollback.rbbAXt/.build/arm64-apple-macosx/debug/MacToolsPackageTests.derived/runner.swift
+[1/11] Write sources
+[3/11] Write MacTools-entitlement.plist
+[5/11] Write swift-version--58304C5D6DBC2206.txt
+[7/25] Compiling MacTools WindowPreviewPlugin.swift
+[8/25] Compiling MacTools TrackpadPlugin.swift
+[9/25] Compiling MacTools ContentView.swift
+[10/25] Compiling MacTools QuickControlsPlugin.swift
+[11/25] Compiling MacTools QuickControlsView.swift
+[12/25] Compiling MacTools FloatingPreview.swift
+[13/26] Compiling MacTools Hardware.swift
+[14/26] Compiling MacTools HotKeyService.swift
+[15/26] Compiling MacTools AppModel.swift
+[16/26] Compiling MacTools MacTools.swift
+[17/26] Compiling MacTools KeepAwakePlugin.swift
+[18/26] Compiling MacTools ToolPlugin.swift
+[19/26] Compiling MacTools MenuBarOrganizerPlugin.swift
+[20/26] Emitting module MacTools
+[21/26] Compiling MacTools SharedControls.swift
+[21/26] Write Objects.LinkFileList
+[22/26] Linking MacTools
+[23/26] Applying MacTools
+[25/30] Emitting module MacToolsTests
+[26/30] Compiling MacToolsTests Checks.swift
+[27/30] Compiling MacToolsTests MenuBarOrganizerTests.swift
+[28/30] Compiling MacToolsTests FloatingPreviewTests.swift
+[29/32] Emitting module MacToolsPackageTests
+[30/32] Compiling MacToolsPackageTests runner.swift
+[30/32] Write Objects.LinkFileList
+[31/32] Linking MacToolsPackageTests
+Build complete! (16.37s)
+EOF
+
+[LAYOUT] command=./scripts/check-ui-layout.sh Sources/MacTools
+exit=0
+stdout<<EOF
+custom-decorative-palette=False
+manual-appearance-selection=True
+plugin-host=True
+window-preview-plugin=True
+menu-bar-organizer-plugin=True
+preview-auto-resume=True
+window=980x740; list=771x640; height-share=86%
+window=900x640; list=691x540; height-share=84%
+appearance=NSAppearanceNameAqua; window-background-red=0.925
+appearance=NSAppearanceNameDarkAqua; window-background-red=0.196
+hardware-writes=0; live-user-defaults=untouched
+EOF
+stderr<<EOF
+EOF
+
+[SIGNED_BUILD] command=MAC_TOOLS_SIGN_IDENTITY=722852A9656BC9126B2C4585713B724D58F60DB6 ./scripts/build-app.sh
+exit=0
+stdout<<EOF
+[0/1] Planning build
+Building for production...
+[0/3] Write sources
+[1/3] Write swift-version--58304C5D6DBC2206.txt
+[3/4] Compiling MacTools AppModel.swift
+[3/5] Write Objects.LinkFileList
+[4/5] Linking MacTools
+Build complete! (5.55s)
+/Users/yangruihan/Workspace/mac_tools/build/MacTools.app/Contents/Info.plist: OK
+/Users/yangruihan/Workspace/mac_tools/build/MacTools.app
+EOF
+stderr<<EOF
+/Users/yangruihan/Workspace/mac_tools/build/MacTools.app: replacing existing signature
+EOF
+
+[REAPPLY] command=patch -p1 -d /tmp/mactools-native-final-reapply.JG0kAQ/Sources -i docs/tray-transaction/DIFF.patch
+exit=0
+stdout<<EOF
+patching file AppModel.swift
+patching file 'Core/HotKeyService.swift'
+patching file 'Core/ToolPlugin.swift'
+patching file MacTools.swift
+patching file 'Plugins/KeepAwake/KeepAwakePlugin.swift'
+patching file 'Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift'
+patching file 'Plugins/QuickControls/Hardware.swift'
+patching file 'Plugins/QuickControls/QuickControlsPlugin.swift'
+patching file 'Plugins/QuickControls/QuickControlsView.swift'
+patching file 'Plugins/Trackpad/TrackpadPlugin.swift'
+patching file 'Plugins/WindowPreview/FloatingPreview.swift'
+patching file 'Plugins/WindowPreview/WindowPreviewPlugin.swift'
+patching file 'UI/ContentView.swift'
+patching file 'UI/SharedControls.swift'
+patching file 'Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift'
+EOF
+stderr<<EOF
+EOF
+
+[ROLLBACK_SCRIPT] command=docs/tray-transaction/ROLLBACK.sh --native-icon-click /tmp/mactools-native-final-rollback.rbbAXt
+exit=0
+stdout<<EOF
+EOF
+stderr<<EOF
+EOF
+
+[LIVE_UI] input=temporary AppKit NSStatusItem testtube.2, no audio or brightness control invoked
+BASELINE observed: status claimed "已点击原生图标" but fixture callback log absent.
+MODIFIED observed: 720x282 pt native-style shelf, 40x36 pt captured status glyphs, two scrollable rows; light mode screenshot showed legible dark glyphs.
+AXPress observed: first fixture callback logged once at 2026-09-27 09:36:13 UTC; repeated clicks with a strongly retained fixture target returned -25206 and did not invoke callback. Direct CGEvent-to-pid also did not invoke callback. The click action is therefore not verified reliable for all status items; UI reports failure instead of claiming success.
+ROLLBACK observed: baseline copy hash matched original and same filtered test command exited 0 (7 tests).
+FINAL state: /Applications/MacTools.app signed verification exit 0; build/installed binary hashes equal; fixture process terminated and status window absent; menu bar expanded; preset counts observed 2 brightness and 2 audio on launch.
