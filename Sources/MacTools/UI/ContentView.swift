@@ -4,55 +4,86 @@ struct ContentView: View {
     @ObservedObject var model: AppModel
     @ObservedObject private var registry: PluginRegistry
     @State private var showShortcuts = false
+    @State private var selectedPluginID: String? = QuickControlsPlugin.id
     init(model: AppModel) { self.model = model; self.registry = model.plugins }
 
-    var body: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 12) {
-                Image(systemName: "wrench.and.screwdriver.fill").font(.system(size: 25)).foregroundStyle(.secondary).frame(width: 38, height: 46)
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("Mac 工具箱").font(.system(size: 22, weight: .semibold))
-                    Text("\(registry.enabledPlugins.count) 个插件已启用").font(.caption).foregroundStyle(.secondary)
-                }
-                Spacer()
-                PluginMenu(registry: registry).fixedSize()
-                Picker("外观", selection: Binding(get: { model.appearanceMode }, set: model.setAppearance)) {
-                    ForEach(AppearanceMode.allCases, id: \.self) { Text($0.title).tag($0) }
-                }.pickerStyle(.menu).frame(width: 142)
-                Button { showShortcuts.toggle() } label: { Label("窗口快捷键", systemImage: "keyboard") }
-                    .popover(isPresented: $showShortcuts) {
-                        VStack(alignment: .leading, spacing: 12) {
-                            Text("显示界面 / 收起到托盘").font(.headline)
-                            ShortcutEditor(shortcut: $model.windowShortcut, hotkeys: model.hotkeys, owner: "app.window", bindingID: "toggle", save: model.saveWindowShortcut)
-                            Text("各工具的快捷键在对应插件内设置。").font(.caption).foregroundStyle(.secondary)
-                        }.padding(20).frame(width: 360)
-                    }
-                Button { model.toggleWindow?() } label: { Image(systemName: "rectangle.compress.vertical") }
-                    .accessibilityLabel("收起到托盘")
-            }.padding(.horizontal, 24).padding(.top, 20).padding(.bottom, 16)
+    private var selectedPlugin: (any ToolPlugin)? {
+        registry.enabledPlugins.first(where: { $0.info.id == selectedPluginID }) ?? registry.enabledPlugins.first
+    }
 
+    var body: some View {
+        HStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                Label("Mac 工具箱", systemImage: "wrench.and.screwdriver.fill")
+                    .font(.system(size: 17, weight: .semibold))
+                    .padding(.horizontal, 16).padding(.top, 20).padding(.bottom, 12)
+                Text("工具")
+                    .font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+                    .padding(.horizontal, 18).padding(.bottom, 6)
+                List(selection: $selectedPluginID) {
+                    ForEach(registry.enabledPlugins, id: \.info.id) { plugin in
+                        Label(plugin.info.title, systemImage: plugin.info.symbol)
+                            .tag(plugin.info.id)
+                    }
+                }.listStyle(.sidebar)
+                Text("\(registry.enabledPlugins.count) 个工具已启用")
+                    .font(.caption).foregroundStyle(.secondary)
+                    .padding(16)
+            }
+            .frame(width: 208)
+            .background(Color(nsColor: .underPageBackgroundColor))
             Divider()
-            ScrollView {
-                VStack(alignment: .leading, spacing: 28) {
-                    if registry.enabledPlugins.contains(where: { $0.info.placement == .utility }) {
-                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 340), spacing: 12)], spacing: 12) {
-                            ForEach(registry.enabledPlugins.filter { $0.info.placement == .utility }, id: \.info.id) { $0.makeView() }
+            VStack(spacing: 0) {
+                HStack(spacing: 12) {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(selectedPlugin?.info.title ?? "工具箱")
+                            .font(.system(size: 23, weight: .semibold))
+                        Text(selectedPlugin?.info.detail ?? "在左侧选择工具")
+                            .font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                    }
+                    Spacer(minLength: 8)
+                    PluginMenu(registry: registry).fixedSize()
+                    Picker("外观", selection: Binding(get: { model.appearanceMode }, set: model.setAppearance)) {
+                        ForEach(AppearanceMode.allCases, id: \.self) { Text($0.title).tag($0) }
+                    }.pickerStyle(.menu).frame(width: 126)
+                    Button { showShortcuts.toggle() } label: { Image(systemName: "keyboard") }
+                        .help("窗口快捷键").accessibilityLabel("窗口快捷键")
+                        .popover(isPresented: $showShortcuts) {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("显示界面 / 收起到托盘").font(.headline)
+                                ShortcutEditor(shortcut: $model.windowShortcut, hotkeys: model.hotkeys, owner: "app.window", bindingID: "toggle", save: model.saveWindowShortcut)
+                                Text("各工具的快捷键在对应页面设置。").font(.caption).foregroundStyle(.secondary)
+                            }.padding(20).frame(width: 360)
                         }
+                    Button { model.toggleWindow?() } label: { Image(systemName: "rectangle.compress.vertical") }
+                        .help("收起到托盘").accessibilityLabel("收起到托盘")
+                }.padding(.horizontal, 22).padding(.vertical, 16)
+                Divider()
+                ScrollView {
+                    if let selectedPlugin {
+                        selectedPlugin.makeView()
+                            .frame(maxWidth: .infinity, alignment: .topLeading)
+                            .padding(22)
+                    } else {
+                        Text("暂无启用的工具，可在「插件」中启用。")
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity).padding(32)
                     }
-                    ForEach(registry.enabledPlugins.filter { $0.info.placement == .content }, id: \.info.id) { $0.makeView() }
-                    if !registry.enabledPlugins.contains(where: { $0.info.placement == .content }) {
-                        Text("暂无启用的工具面板，可在「插件」菜单中启用。").foregroundStyle(.secondary).frame(maxWidth: .infinity).padding(32)
-                    }
-                }.padding(24)
-            }.frame(maxWidth: .infinity, minHeight: 350, maxHeight: .infinity)
-                .accessibilityIdentifier("preset-list").layoutPriority(1)
-            Divider()
-            HStack(alignment: .top, spacing: 10) {
-                Image(systemName: "info.circle").foregroundStyle(.secondary)
-                Text(model.message).font(.callout).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
-                Text("配置自动保存").font(.caption).foregroundStyle(.secondary)
-            }.padding(.horizontal, 24).padding(.vertical, 12)
+                }.frame(maxWidth: .infinity, minHeight: 350, maxHeight: .infinity)
+                    .accessibilityIdentifier("preset-list").layoutPriority(1)
+                Divider()
+                HStack(spacing: 8) {
+                    Image(systemName: "checkmark.circle").foregroundStyle(.secondary)
+                    Text(model.message).lineLimit(1).frame(maxWidth: .infinity, alignment: .leading)
+                    Text("自动保存").foregroundStyle(.secondary)
+                }.font(.caption).padding(.horizontal, 22).padding(.vertical, 10)
+            }
         }.frame(minWidth: 900, minHeight: 640).background(Color(nsColor: .windowBackgroundColor))
+            .onChange(of: registry.enabledIDs) { ids in
+                if let selectedPluginID, !ids.contains(selectedPluginID) {
+                    self.selectedPluginID = registry.enabledPlugins.first?.info.id
+                }
+            }
     }
 }
 

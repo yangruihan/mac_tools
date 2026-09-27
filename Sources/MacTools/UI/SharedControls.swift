@@ -43,12 +43,12 @@ struct NativeToggleCard: View {
                 HStack(spacing: 9) {
                     Image(systemName: icon).foregroundStyle(.secondary).font(.title3).frame(width: 24)
                     VStack(alignment: .leading, spacing: 3) {
-                        Text(title).font(.system(size: 12, weight: .semibold))
-                        Text(detail).font(.system(size: 10)).foregroundStyle(.secondary)
+                        Text(title).font(.system(size: 14, weight: .semibold))
+                        Text(detail).font(.system(size: 12)).foregroundStyle(.secondary)
                     }
                 }
             }.toggleStyle(.switch).controlSize(.small).accessibilityLabel(title)
-                .padding(6).frame(maxWidth: .infinity)
+                .padding(10).frame(maxWidth: .infinity)
         }
     }
 }
