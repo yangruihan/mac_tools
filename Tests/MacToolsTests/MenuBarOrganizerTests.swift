@@ -22,6 +22,8 @@ final class MenuBarOrganizerTests: XCTestCase {
         moved[0] = (1, CGRect(x: 680, y: 0, width: 28, height: 24))
         moved[1] = (2, CGRect(x: 640, y: 0, width: 28, height: 24))
         XCTAssertNotEqual(MenuBarOrganizerPlugin.hiddenWindows(moved, leftOf: 710, in: screen, statusBarY: 0).map(\.id), first)
+        let visible = MenuBarOrganizerPlugin.visibleWindows(windows, rightOf: 750, in: screen, statusBarY: 0).map(\.id)
+        XCTAssertEqual(visible, [3])
         print("MENU BAR: only candidate status windows left of separator; recovery control geometry fail-closed")
     }
     func testActivationIsOptInAndDoesNotTouchSystemAtStartup() throws {
@@ -39,5 +41,31 @@ final class MenuBarOrganizerTests: XCTestCase {
         XCTAssertNil(defaults.data(forKey: "plugin.menu-bar-organizer.optedIn"))
         XCTAssertNil(service.error(owner: plugin.info.id, id: "emergency-reveal"))
         print("MENU BAR: load/stop inert until user opts in; no status icons created")
+    }
+    func testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem() {
+        let name = "MenuOrganizerTests.\(UUID())"; let defaults = UserDefaults(suiteName: name)!
+        defer { defaults.removePersistentDomain(forName: name) }
+        let context = PluginContext(settings: PluginSettings(id: MenuBarOrganizerPlugin.id, defaults: defaults),
+                                    hotkeys: HotKeyService(), report: { _ in })
+        let plugin = MenuBarOrganizerPlugin(context: context)
+        plugin.setVisibleLimit(0)
+        XCTAssertEqual(plugin.visibleLimit, 1)
+        plugin.setVisibleLimit(500)
+        XCTAssertEqual(plugin.visibleLimit, 30)
+        let reopened = MenuBarOrganizerPlugin(context: context)
+        reopened.start()
+        XCTAssertEqual(reopened.visibleLimit, 30)
+        XCTAssertFalse(reopened.isOrganizing)
+        reopened.stop()
+    }
+    func testReorderStaysInsideItsLane() {
+        let screen = CGRect(x: 0, y: 0, width: 1200, height: 800)
+        let a = CGRect(x: 400, y: 0, width: 28, height: 24)
+        let b = CGRect(x: 460, y: 0, width: 28, height: 24)
+        let hidden = MenuBarOrganizerPlugin.reorderTarget(source: a, target: b, dividerX: 600, controlX: 650, screen: screen)
+        XCTAssertEqual(hidden?.x, 496)
+        XCTAssertEqual(hidden?.after, true)
+        XCTAssertNil(MenuBarOrganizerPlugin.reorderTarget(source: a, target: CGRect(x: 700, y: 0, width: 28, height: 24),
+                                                          dividerX: 600, controlX: 650, screen: screen))
     }
 }
