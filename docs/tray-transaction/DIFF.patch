@@ -2302,3 +2302,232 @@
 +                        Text("\(rate) 帧/秒").tag(rate)
 +                    }
 +                }.pickerStyle(.segmented)
+--- a/Plugins/WindowPreview/FloatingPreview.swift
++++ b/Plugins/WindowPreview/FloatingPreview.swift
+@@ -1,0 +2,3 @@
++import ScreenCaptureKit
++import CoreImage
++import CoreMedia
+@@ -6,0 +10,28 @@
++// Keep at most one frame waiting for the UI; stream callbacks never queue a backlog.
++private final class PreviewStreamSink: NSObject, SCStreamOutput, SCStreamDelegate {
++    private let context = CIContext(options: [.cacheIntermediates: false])
++    private let lock = NSLock()
++    private var delivering = false
++    let onFrame: (CGImage, PreviewStreamSink) -> Void
++    let onError: (Error) -> Void
++
++    init(onFrame: @escaping (CGImage, PreviewStreamSink) -> Void, onError: @escaping (Error) -> Void) {
++        self.onFrame = onFrame; self.onError = onError
++    }
++    func stream(_ stream: SCStream, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, of type: SCStreamOutputType) {
++        guard type == .screen, sampleBuffer.isValid,
++              let attachments = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer, createIfNecessary: false) as? [[SCStreamFrameInfo: Any]],
++              let raw = attachments.first?[.status] as? Int,
++              SCFrameStatus(rawValue: raw) == .complete,
++              let buffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
++        lock.lock()
++        guard !delivering else { lock.unlock(); return }
++        delivering = true; lock.unlock()
++        let image = CIImage(cvPixelBuffer: buffer)
++        guard let frame = context.createCGImage(image, from: image.extent) else { finished(); return }
++        onFrame(frame, self)
++    }
++    func stream(_ stream: SCStream, didStopWithError error: Error) { onError(error) }
++    func finished() { lock.lock(); delivering = false; lock.unlock() }
++}
++
+@@ -13,0 +45 @@
++    @Published private(set) var actualFPS = 0
+@@ -15,0 +48,3 @@
++    private var streamTask: Task<Void, Never>?
++    private var stream: SCStream?
++    private var streamSink: PreviewStreamSink?
+@@ -17 +52,3 @@
+-    static let frameRates = [1, 2, 5]
++    private var frameCount = 0
++    private var frameCountStarted = ContinuousClock.now
++    static let frameRates = [1, 2, 5, 30, 60]
+@@ -31,0 +69,13 @@
++    @available(macOS 14.0, *)
++    static func streamConfiguration(size: CGSize, frameRate: Int) -> SCStreamConfiguration {
++        let pixels = pixelSize(for: size)
++        let config = SCStreamConfiguration()
++        config.width = Int(pixels.width); config.height = Int(pixels.height)
++        config.minimumFrameInterval = CMTime(value: 1, timescale: CMTimeScale(frameRate))
++        config.queueDepth = 3
++        config.showsCursor = false; config.capturesAudio = false
++        config.scalesToFit = true; config.preservesAspectRatio = true
++        config.ignoreShadowsSingleWindow = true
++        return config
++    }
++
+@@ -33,18 +83,2 @@
+-        stop()
+-        let token = generation
+-        status = "等待画面…"; isRunning = true; isPaused = false
+-        let panel = NSPanel(contentRect: NSRect(x: 0, y: 0, width: 640, height: 420),
+-                            styleMask: [.titled, .closable, .resizable, .nonactivatingPanel], backing: .buffered, defer: false)
+-        panel.title = "悬浮预览 · \(title)"
+-        panel.level = .floating
+-        panel.isFloatingPanel = true
+-        panel.hidesOnDeactivate = false
+-        panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+-        panel.contentMinSize = NSSize(width: 240, height: 160)
+-        panel.isReleasedWhenClosed = false
+-        panel.delegate = self
+-        panel.contentView = NSHostingView(rootView: FloatingPreviewView(preview: self))
+-        panel.center()
+-        self.panel = panel
+-        if showPanel { panel.orderFrontRegardless() }
+-        // ponytail: screenshot preview capped at 5 fps / 1600px; use SCStream if smooth video is needed.
++        let token = openPanel(title: title, showPanel: showPanel)
++        // ponytail: low-rate screenshots avoid a stream; high rates use SCStream below.
+@@ -79,0 +114,91 @@
++    @available(macOS 14.0, *)
++    func beginStream(title: String, window: SCWindow, showPanel: Bool = true,
++                     visible: @escaping () async throws -> Bool) {
++        let token = openPanel(title: title, showPanel: showPanel)
++        let config = Self.streamConfiguration(size: window.frame.size, frameRate: frameRate)
++        let sink = PreviewStreamSink(onFrame: { [weak self] frame, sink in
++            Task { @MainActor [weak self] in
++                defer { sink.finished() }
++                guard let self, self.generation == token, self.isRunning, !self.isPaused else { return }
++                let firstFrame = self.image == nil
++                self.image = frame
++                if firstFrame { self.status = "只读预览 · 上限 \(self.frameRate) FPS" }
++                self.frameCount += 1
++                let now = ContinuousClock.now
++                let elapsed = self.frameCountStarted.duration(to: now)
++                if elapsed >= .seconds(1) {
++                    let seconds = Double(elapsed.components.seconds) + Double(elapsed.components.attoseconds) / 1e18
++                    self.actualFPS = Int((Double(self.frameCount) / seconds).rounded())
++                    self.frameCount = 0; self.frameCountStarted = now
++                    self.status = "只读预览 · 实际 \(self.actualFPS) FPS（上限 \(self.frameRate)）"
++                }
++            }
++        }, onError: { [weak self] error in
++            Task { @MainActor [weak self] in self?.streamFailed(error, token: token) }
++        })
++        let stream = SCStream(filter: SCContentFilter(desktopIndependentWindow: window), configuration: config, delegate: sink)
++        self.stream = stream; streamSink = sink
++        streamTask = Task { @MainActor [weak self] in
++            var capturing = false
++            defer { if capturing { Task { try? await stream.stopCapture() } } }
++            do {
++                try stream.addStreamOutput(sink, type: .screen, sampleHandlerQueue: DispatchQueue(label: "mactools.preview.frames"))
++                try await stream.startCapture()
++                capturing = true
++                while !Task.isCancelled {
++                    guard let self, self.generation == token else { return }
++                    let onScreen = try await visible()
++                    guard !Task.isCancelled, self.generation == token else { return }
++                    let wasPaused = self.isPaused
++                    self.isPaused = !onScreen
++                    if !onScreen {
++                        self.status = "预览已暂停：源窗口暂不可见，恢复后自动继续"
++                        self.actualFPS = 0; self.frameCount = 0; self.frameCountStarted = .now
++                        if capturing { try await stream.stopCapture(); capturing = false }
++                    } else if !capturing {
++                        self.status = "源窗口已恢复 · 等待新画面"
++                        self.frameCount = 0; self.frameCountStarted = .now
++                        try await stream.startCapture(); capturing = true
++                    } else if wasPaused {
++                        self.status = "源窗口已恢复 · 等待新画面"
++                    }
++                    try await Task.sleep(for: .seconds(1))
++                }
++            } catch {
++                guard !Task.isCancelled, let self, self.generation == token else { return }
++                self.streamFailed(error, token: token)
++            }
++        }
++    }
++
++    private func openPanel(title: String, showPanel: Bool) -> UUID {
++        stop()
++        let token = generation
++        status = "等待画面…"; isRunning = true; isPaused = false
++        actualFPS = 0; frameCount = 0; frameCountStarted = .now
++        let panel = NSPanel(contentRect: NSRect(x: 0, y: 0, width: 640, height: 420),
++                            styleMask: [.titled, .closable, .resizable, .nonactivatingPanel], backing: .buffered, defer: false)
++        panel.title = "悬浮预览 · \(title)"
++        panel.level = .floating
++        panel.isFloatingPanel = true
++        panel.hidesOnDeactivate = false
++        panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
++        panel.contentMinSize = NSSize(width: 240, height: 160)
++        panel.isReleasedWhenClosed = false
++        panel.delegate = self
++        panel.contentView = NSHostingView(rootView: FloatingPreviewView(preview: self))
++        panel.center()
++        self.panel = panel
++        if showPanel { panel.orderFrontRegardless() }
++        return token
++    }
++
++    private func streamFailed(_ error: Error, token: UUID) {
++        guard generation == token, isRunning else { return }
++        streamTask?.cancel(); streamTask = nil
++        stream = nil; streamSink = nil
++        image = nil; isPaused = false; isRunning = false
++        actualFPS = 0
++        status = "预览已停止：\(error.localizedDescription)"
++    }
++
+@@ -83 +208,3 @@
+-        image = nil; isRunning = false; isPaused = false; status = "尚未开始预览"
++        streamTask?.cancel(); streamTask = nil
++        stream = nil; streamSink = nil
++        image = nil; isRunning = false; isPaused = false; actualFPS = 0; status = "尚未开始预览"
+@@ -89 +216 @@
+-    deinit { captureTask?.cancel() }
++    deinit { captureTask?.cancel(); streamTask?.cancel() }
+--- a/Plugins/WindowPreview/WindowPreviewPlugin.swift
++++ b/Plugins/WindowPreview/WindowPreviewPlugin.swift
+@@ -16,0 +17 @@
++    private var activeWindow: SCWindow?
+@@ -25,0 +27 @@
++        let frame = preview.isRunning ? preview.panel?.frame : nil
+@@ -27,0 +30,4 @@
++        if #available(macOS 14.0, *), let activeWindow, let frame {
++            startPreview(window: activeWindow)
++            preview.panel?.setFrame(frame, display: true)
++        }
+@@ -32,0 +39 @@
++        activeWindow = nil
+@@ -77,2 +84,2 @@
+-        let title = Self.label(window)
+-        preview.begin(title: title) { try await Self.capture(window) }
++        activeWindow = window
++        startPreview(window: window)
+@@ -82,0 +90,10 @@
++    @available(macOS 14.0, *)
++    private func startPreview(window: SCWindow) {
++        let title = Self.label(window)
++        if preview.frameRate > 5 {
++            preview.beginStream(title: title, window: window) { try await Self.isVisible(window) }
++        } else {
++            preview.begin(title: title) { try await Self.capture(window) }
++        }
++    }
++
+@@ -88,3 +105,5 @@
+-        let records = CGWindowListCopyWindowInfo(.optionIncludingWindow, window.windowID) as? [[String: Any]] ?? []
+-        if let record = records.first(where: { ( $0[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value == app.processID }),
+-           (record[kCGWindowIsOnscreen as String] as? Bool) == true { return .visible(record) }
++        let records = CGWindowListCopyWindowInfo(.optionOnScreenOnly, kCGNullWindowID) as? [[String: Any]] ?? []
++        if let record = records.first(where: {
++            ($0[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value == app.processID &&
++            ($0[kCGWindowNumber as String] as? NSNumber)?.uint32Value == window.windowID
++        }) { return .visible(record) }
+@@ -96,0 +116,9 @@
++    private static func isVisible(_ window: SCWindow) async throws -> Bool {
++        switch try await visibility(of: window) {
++        case .visible: return true
++        case .paused: return false
++        case .closed: throw Failure.message("源窗口已关闭，请重新选择")
++        }
++    }
++
++    @available(macOS 14.0, *)

@@ -14,7 +14,6 @@ final class WindowPreviewPlugin: ObservableObject, ToolPlugin {
     private var refreshTask: Task<Void, Never>?
     private var refreshID = UUID()
     private var chooser: NSWindow?
-    private var activeWindow: SCWindow?
 
     init(context: PluginContext) { self.context = context }
     func start() {
@@ -24,19 +23,13 @@ final class WindowPreviewPlugin: ObservableObject, ToolPlugin {
     }
     func setFrameRate(_ value: Int) {
         guard FloatingPreview.frameRates.contains(value) else { return }
-        let frame = preview.isRunning ? preview.panel?.frame : nil
         preview.setFrameRate(value)
         if let data = try? JSONEncoder().encode(value) { context.settings.set(data, forKey: "frameRate") }
-        if #available(macOS 14.0, *), let activeWindow, let frame {
-            startPreview(window: activeWindow)
-            preview.panel?.setFrame(frame, display: true)
-        }
     }
     func stop() {
         active = false; refreshID = UUID()
         refreshTask?.cancel(); refreshTask = nil; isLoading = false
         preview.stop(); windows = []; selectedID = nil
-        activeWindow = nil
         chooser?.contentView = nil; chooser?.close(); chooser = nil
     }
     deinit { refreshTask?.cancel(); preview.stop() }
@@ -81,20 +74,10 @@ final class WindowPreviewPlugin: ObservableObject, ToolPlugin {
         guard active, let window = windows.first(where: { $0.windowID == selectedID }) else { return }
         guard #available(macOS 14.0, *) else { return }
         guard CGPreflightScreenCaptureAccess() else { message = "屏幕录制权限不可用，请重新授权。"; return }
-        activeWindow = window
-        startPreview(window: window)
+        let title = Self.label(window)
+        preview.begin(title: title) { try await Self.capture(window) }
         message = "已打开悬浮预览；可拖动边缘缩放，关闭小窗即可停止。"
         context.report(message)
-    }
-
-    @available(macOS 14.0, *)
-    private func startPreview(window: SCWindow) {
-        let title = Self.label(window)
-        if preview.frameRate > 5 {
-            preview.beginStream(title: title, window: window) { try await Self.isVisible(window) }
-        } else {
-            preview.begin(title: title) { try await Self.capture(window) }
-        }
     }
 
     private enum Visibility { case visible([String: Any]), paused, closed }
@@ -102,23 +85,12 @@ final class WindowPreviewPlugin: ObservableObject, ToolPlugin {
     @available(macOS 14.0, *)
     private static func visibility(of window: SCWindow) async throws -> Visibility {
         guard let app = window.owningApplication else { return .closed }
-        let records = CGWindowListCopyWindowInfo(.optionOnScreenOnly, kCGNullWindowID) as? [[String: Any]] ?? []
-        if let record = records.first(where: {
-            ($0[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value == app.processID &&
-            ($0[kCGWindowNumber as String] as? NSNumber)?.uint32Value == window.windowID
-        }) { return .visible(record) }
+        let records = CGWindowListCopyWindowInfo(.optionIncludingWindow, window.windowID) as? [[String: Any]] ?? []
+        if let record = records.first(where: { ( $0[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value == app.processID }),
+           (record[kCGWindowIsOnscreen as String] as? Bool) == true { return .visible(record) }
         // A minimized window disappears from CGWindowList, but remains in ScreenCaptureKit's all-window list.
         let all = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: false)
         return all.windows.contains(where: { $0.windowID == window.windowID && $0.owningApplication?.processID == app.processID }) ? .paused : .closed
-    }
-
-    @available(macOS 14.0, *)
-    private static func isVisible(_ window: SCWindow) async throws -> Bool {
-        switch try await visibility(of: window) {
-        case .visible: return true
-        case .paused: return false
-        case .closed: throw Failure.message("源窗口已关闭，请重新选择")
-        }
     }
 
     @available(macOS 14.0, *)

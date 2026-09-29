@@ -1,0 +1,23 @@
+--- a/Tests/MacToolsTests/FloatingPreviewTests.swift
++++ b/Tests/MacToolsTests/FloatingPreviewTests.swift
+@@ -2,0 +3 @@
++import CoreMedia
+@@ -30 +31,5 @@
+-        XCTAssertEqual(plugin.preview.frameRate, 2)
++        XCTAssertEqual(plugin.preview.frameRate, 30)
++        plugin.setFrameRate(60)
++        XCTAssertEqual(plugin.preview.frameRate, 60)
++        plugin.setFrameRate(120)
++        XCTAssertEqual(plugin.preview.frameRate, 60)
+@@ -33 +38 @@
+-        XCTAssertEqual(restored.preview.frameRate, 2)
++        XCTAssertEqual(restored.preview.frameRate, 60)
+@@ -34,0 +40,8 @@
++        if #available(macOS 14.0, *) {
++            for rate in [30, 60] {
++                let config = FloatingPreview.streamConfiguration(size: CGSize(width: 400, height: 200), frameRate: rate)
++                XCTAssertEqual(CMTimeGetSeconds(config.minimumFrameInterval), 1 / Double(rate), accuracy: 0.0001)
++                XCTAssertEqual(config.queueDepth, 3)
++                XCTAssertFalse(config.capturesAudio)
++            }
++        }

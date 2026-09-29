@@ -1,6 +1,5 @@
 import XCTest
 import SwiftUI
-import CoreMedia
 @testable import MacTools
 
 final class FloatingPreviewTests: XCTestCase {
@@ -28,23 +27,11 @@ final class FloatingPreviewTests: XCTestCase {
         XCTAssertEqual(plugin.preview.frameRate, 2)
         XCTAssertEqual(FloatingPreview.frameInterval(for: plugin.preview.frameRate), .milliseconds(500))
         plugin.setFrameRate(30)
-        XCTAssertEqual(plugin.preview.frameRate, 30)
-        plugin.setFrameRate(60)
-        XCTAssertEqual(plugin.preview.frameRate, 60)
-        plugin.setFrameRate(120)
-        XCTAssertEqual(plugin.preview.frameRate, 60)
+        XCTAssertEqual(plugin.preview.frameRate, 2)
         let restored = WindowPreviewPlugin(context: context)
         restored.start()
-        XCTAssertEqual(restored.preview.frameRate, 60)
+        XCTAssertEqual(restored.preview.frameRate, 2)
         XCTAssertEqual(FloatingPreview.frameInterval(for: 5), .milliseconds(200))
-        if #available(macOS 14.0, *) {
-            for rate in [30, 60] {
-                let config = FloatingPreview.streamConfiguration(size: CGSize(width: 400, height: 200), frameRate: rate)
-                XCTAssertEqual(CMTimeGetSeconds(config.minimumFrameInterval), 1 / Double(rate), accuracy: 0.0001)
-                XCTAssertEqual(config.queueDepth, 3)
-                XCTAssertFalse(config.capturesAudio)
-            }
-        }
     }
     @MainActor
     func testSelectedFrameRateThrottlesCaptures() async throws {
