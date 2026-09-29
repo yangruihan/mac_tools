@@ -70,7 +70,17 @@ elif [ "$#" -eq 2 ] && [ "$1" = '--native-icon-click' ]; then
         echo 'Expected a copied MacTools project' >&2; exit 2;
     }
     cp "$HERE/BASELINE_NATIVE_CLICK.swift" "$TARGET/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift"
+elif [ "$#" -eq 2 ] && [ "$1" = '--preview-fps' ]; then
+    TARGET=${2%/}
+    [ -f "$TARGET/Sources/MacTools/Plugins/WindowPreview/FloatingPreview.swift" ] &&
+    [ -f "$TARGET/Sources/MacTools/Plugins/WindowPreview/WindowPreviewPlugin.swift" ] &&
+    [ -f "$TARGET/Tests/MacToolsTests/FloatingPreviewTests.swift" ] || {
+        echo 'Expected a copied MacTools project' >&2; exit 2;
+    }
+    cp "$HERE/BASELINE_FPS_FLOATING.swift" "$TARGET/Sources/MacTools/Plugins/WindowPreview/FloatingPreview.swift"
+    cp "$HERE/BASELINE_FPS_PLUGIN.swift" "$TARGET/Sources/MacTools/Plugins/WindowPreview/WindowPreviewPlugin.swift"
+    cp "$HERE/BASELINE_FPS_TESTS.swift" "$TARGET/Tests/MacToolsTests/FloatingPreviewTests.swift"
 else
-    [ "$#" -eq 1 ] || { echo 'usage: ROLLBACK.sh TARGET_FILE_COPY | --sources DIR | --menu-bar PROJECT | --crowded-menu-bar PROJECT | --ux PROJECT | --style-drag PROJECT | --signing-ux PROJECT | --icon-style PROJECT | --direct-gesture PROJECT | --native-icon-click PROJECT' >&2; exit 2; }
+    [ "$#" -eq 1 ] || { echo 'usage: ROLLBACK.sh TARGET_FILE_COPY | --sources DIR | --menu-bar PROJECT | --crowded-menu-bar PROJECT | --ux PROJECT | --style-drag PROJECT | --signing-ux PROJECT | --icon-style PROJECT | --direct-gesture PROJECT | --native-icon-click PROJECT | --preview-fps PROJECT' >&2; exit 2; }
     cp "$HERE/BASELINE.swift" "$1"
 fi

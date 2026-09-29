@@ -10,18 +10,9 @@ final class FloatingPreview: NSObject, ObservableObject, NSWindowDelegate {
     @Published private(set) var status = "尚未开始预览"
     @Published private(set) var isRunning = false
     @Published private(set) var isPaused = false
-    @Published private(set) var frameRate = 5
     private(set) var panel: NSPanel?
     private var captureTask: Task<Void, Never>?
     private var generation = UUID()
-    static let frameRates = [1, 2, 5]
-
-    func setFrameRate(_ value: Int) {
-        guard Self.frameRates.contains(value) else { return }
-        frameRate = value
-    }
-
-    static func frameInterval(for value: Int) -> Duration { .nanoseconds(1_000_000_000 / max(1, value)) }
 
     static func pixelSize(for size: CGSize) -> CGSize {
         guard size.width.isFinite, size.height.isFinite, size.width > 0, size.height > 0 else { return CGSize(width: 640, height: 400) }
@@ -47,16 +38,15 @@ final class FloatingPreview: NSObject, ObservableObject, NSWindowDelegate {
         panel.center()
         self.panel = panel
         if showPanel { panel.orderFrontRegardless() }
-        // ponytail: screenshot preview capped at 5 fps / 1600px; use SCStream if smooth video is needed.
+        // ponytail: monitoring preview at up to 5 fps / 1600px; use SCStream if smooth video is needed.
         captureTask = Task { @MainActor [weak self] in
             while !Task.isCancelled {
                 do {
-                    let started = ContinuousClock.now
                     let frame = try await capture()
                     guard !Task.isCancelled, let self, self.generation == token else { return }
                     self.image = frame; self.isPaused = false
                     self.status = "只读预览 · 拖动边框调整大小"
-                    try await Task.sleep(until: started.advanced(by: Self.frameInterval(for: self.frameRate)), clock: .continuous)
+                    try await Task.sleep(nanoseconds: 200_000_000)
                 } catch {
                     guard !Task.isCancelled, let self, self.generation == token else { return }
                     if error is PreviewPaused {

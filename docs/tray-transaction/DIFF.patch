@@ -2257,3 +2257,48 @@
                      .font(.caption).foregroundStyle(.secondary)
              }
              Text("收纳区").font(.caption.weight(.semibold)).foregroundStyle(.secondary)
+--- a/Plugins/WindowPreview/FloatingPreview.swift
++++ b/Plugins/WindowPreview/FloatingPreview.swift
+@@ -12,0 +13 @@
++    @Published private(set) var frameRate = 5
+@@ -15,0 +17 @@
++    static let frameRates = [1, 2, 5]
+@@ -16,0 +19,7 @@
++    func setFrameRate(_ value: Int) {
++        guard Self.frameRates.contains(value) else { return }
++        frameRate = value
++    }
++
++    static func frameInterval(for value: Int) -> Duration { .nanoseconds(1_000_000_000 / max(1, value)) }
++
+@@ -41 +50 @@
+-        // ponytail: monitoring preview at up to 5 fps / 1600px; use SCStream if smooth video is needed.
++        // ponytail: screenshot preview capped at 5 fps / 1600px; use SCStream if smooth video is needed.
+@@ -44,0 +54 @@
++                    let started = ContinuousClock.now
+@@ -49 +59 @@
+-                    try await Task.sleep(nanoseconds: 200_000_000)
++                    try await Task.sleep(until: started.advanced(by: Self.frameInterval(for: self.frameRate)), clock: .continuous)
+--- a/Plugins/WindowPreview/WindowPreviewPlugin.swift
++++ b/Plugins/WindowPreview/WindowPreviewPlugin.swift
+@@ -19 +19,10 @@
+-    func start() { active = true }
++    func start() {
++        active = true
++        if let data = context.settings.data(forKey: "frameRate"),
++           let value = try? JSONDecoder().decode(Int.self, from: data) { preview.setFrameRate(value) }
++    }
++    func setFrameRate(_ value: Int) {
++        guard FloatingPreview.frameRates.contains(value) else { return }
++        preview.setFrameRate(value)
++        if let data = try? JSONEncoder().encode(value) { context.settings.set(data, forKey: "frameRate") }
++    }
+@@ -133 +142 @@
+-                Text("只读 · 最多约 5 帧/秒 · 拖动悬浮窗边缘调整大小").font(.caption).foregroundStyle(.secondary)
++                Text("只读 · 帧率可选 · 拖动悬浮窗边缘调整大小").font(.caption).foregroundStyle(.secondary)
+@@ -145,0 +155,5 @@
++                Picker("帧率", selection: Binding(get: { preview.frameRate }, set: { plugin.setFrameRate($0) })) {
++                    ForEach(FloatingPreview.frameRates, id: \.self) { rate in
++                        Text("\(rate) 帧/秒").tag(rate)
++                    }
++                }.pickerStyle(.segmented)

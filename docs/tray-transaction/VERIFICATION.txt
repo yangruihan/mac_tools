@@ -2650,3 +2650,328 @@ FINAL state: /Applications/MacTools.app signed verification exit 0; build/instal
 2026-09-27 post-install real-app check and final restoration:
 Input: click collected ChatGPT status icon 8 in the installed shelf. AXPress returned -25204 (action unsupported); no original popover/action was verified. A candidate coordinate fallback was tested once: it reported event posting but no new ChatGPT popover/window was observed, so the fallback was discarded and the committed safe-failure implementation was restored. No audio/brightness control was touched.
 Final installed build from committed source: MAC_TOOLS_SIGN_IDENTITY=722852A9656BC9126B2C4585713B724D58F60DB6 ./scripts/build-app.sh exit 0; codesign --verify --strict /Applications/MacTools.app exit 0; build and installed executable SHA256 cf45513c41afb2ecfd2a66c9454341566b165857445cb9010b5f9d9db7bfd662. Source hash remains 66436da8a68f4d93bb64d1f2f72868a1b6ef691ca722ed015b1889b2441c0a11. This supersedes the earlier installed binary hash only; BASELINE, MODIFIED, ROLLBACK, and patch results above remain valid.
+
+2026-09-29 floating-preview frame-rate selection transaction
+Changed symbols: FloatingPreview.frameRate, setFrameRate, frameInterval, begin capture cadence; WindowPreviewPlugin.start, setFrameRate; WindowPreviewControls Picker.
+MODIFIED FloatingPreview.swift /Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/WindowPreview/FloatingPreview.swift SHA256=bc2ecb7b3a8cee592cf62483b7f722da41184f8001290ac994fc6badee6c0229
+MODIFIED WindowPreviewPlugin.swift /Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/WindowPreview/WindowPreviewPlugin.swift SHA256=9a82370da55cc09414836fc47686802daec01f30d56bb9cb298a92a1ee50ded1
+MODIFIED FloatingPreviewTests.swift /Users/yangruihan/Workspace/mac_tools/Tests/MacToolsTests/FloatingPreviewTests.swift SHA256=09c06b7089469255a551a262cf556f1325dc7b9122fb620afc8ab207ce24230f
+BASELINE/ROLLBACK FloatingPreview.swift /Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/BASELINE_FPS_FLOATING.swift SHA256=04f5f88c35ca5a4838415fc348042fd09ad73d06abe33aee3afe3bd517dce5cc
+BASELINE/ROLLBACK WindowPreviewPlugin.swift /Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/BASELINE_FPS_PLUGIN.swift SHA256=e692bd86324691e8e7c96caf21540549362cbdf92ffc5328493b71804c7f0391
+BASELINE/ROLLBACK FloatingPreviewTests.swift /Users/yangruihan/Workspace/mac_tools/docs/tray-transaction/BASELINE_FPS_TESTS.swift SHA256=d36566ff8b30f76d5fd10713a0f3c50be50070598a4f7f17181377c1d9b5bc92
+
+[BASELINE] command=swift test --filter FloatingPreviewTests
+exit=0
+stdout<<EOF
+Test Suite 'Selected tests' started at 2026-09-29 10:45:50.989.
+Test Suite 'MacToolsPackageTests.xctest' started at 2026-09-29 10:45:50.990.
+Test Suite 'FloatingPreviewTests' started at 2026-09-29 10:45:50.990.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' passed (0.169 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testHiddenWindowPausesAndRestoresWithoutLosingFrame]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testHiddenWindowPausesAndRestoresWithoutLosingFrame]' passed (2.252 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' passed (0.069 seconds).
+Test Suite 'FloatingPreviewTests' passed at 2026-09-29 10:45:53.480.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 2.490 (2.490) seconds
+Test Suite 'MacToolsPackageTests.xctest' passed at 2026-09-29 10:45:53.480.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 2.490 (2.490) seconds
+Test Suite 'Selected tests' passed at 2026-09-29 10:45:53.480.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 2.490 (2.491) seconds
+PREVIEW: floating + resizable; landscape/portrait sizes verified; disabling plugin clears panel and pixels
+PREVIEW PAUSE: frame retained while hidden; automatically resumed after source reappeared
+PREVIEW: cancelled in-flight frame discarded; source failure clears stale pixels
+◇ Test run started.
+↳ Testing Library Version: 1501
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+EOF
+stderr<<EOF
+[0/1] Planning build
+Building for debugging...
+[0/5] Write sources
+[1/5] Write swift-version--58304C5D6DBC2206.txt
+[3/7] Emitting module MacTools
+[4/7] Compiling MacTools MenuBarOrganizerPlugin.swift
+[4/9] Write Objects.LinkFileList
+[5/9] Linking MacTools
+[6/9] Applying MacTools
+[8/10] Emitting module MacToolsTests
+[8/10] Write Objects.LinkFileList
+[9/10] Linking MacToolsPackageTests
+Build complete! (5.10s)
+EOF
+
+[MODIFIED] command=swift test --filter FloatingPreviewTests
+exit=0
+stdout<<EOF
+Test Suite 'Selected tests' started at 2026-09-29 10:49:12.847.
+Test Suite 'MacToolsPackageTests.xctest' started at 2026-09-29 10:49:12.848.
+Test Suite 'FloatingPreviewTests' started at 2026-09-29 10:49:12.848.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' passed (0.146 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testFrameRateSelectionPersistsAndBoundsCaptureCadence]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFrameRateSelectionPersistsAndBoundsCaptureCadence]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testHiddenWindowPausesAndRestoresWithoutLosingFrame]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testHiddenWindowPausesAndRestoresWithoutLosingFrame]' passed (2.269 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testSelectedFrameRateThrottlesCaptures]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testSelectedFrameRateThrottlesCaptures]' passed (0.528 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' passed (0.075 seconds).
+Test Suite 'FloatingPreviewTests' passed at 2026-09-29 10:49:15.871.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 3.021 (3.022) seconds
+Test Suite 'MacToolsPackageTests.xctest' passed at 2026-09-29 10:49:15.871.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 3.021 (3.022) seconds
+Test Suite 'Selected tests' passed at 2026-09-29 10:49:15.871.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 3.021 (3.023) seconds
+PREVIEW: floating + resizable; landscape/portrait sizes verified; disabling plugin clears panel and pixels
+PREVIEW PAUSE: frame retained while hidden; automatically resumed after source reappeared
+PREVIEW: cancelled in-flight frame discarded; source failure clears stale pixels
+◇ Test run started.
+↳ Testing Library Version: 1501
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+EOF
+stderr<<EOF
+Building for debugging...
+[0/6] Write sources
+[2/6] Write swift-version--58304C5D6DBC2206.txt
+[4/8] Emitting module MacTools
+[5/8] Compiling MacTools FloatingPreview.swift
+[5/10] Write Objects.LinkFileList
+[6/10] Linking MacTools
+[7/10] Applying MacTools
+[9/12] Compiling MacToolsTests FloatingPreviewTests.swift
+[10/12] Emitting module MacToolsTests
+[10/12] Write Objects.LinkFileList
+[11/12] Linking MacToolsPackageTests
+Build complete! (3.39s)
+EOF
+
+[ROLLBACK] command=cd /tmp/mactools-fps-rollback.aZ9Qd1 && swift test --filter FloatingPreviewTests
+exit=0
+stdout<<EOF
+Test Suite 'Selected tests' started at 2026-09-29 10:49:52.664.
+Test Suite 'MacToolsPackageTests.xctest' started at 2026-09-29 10:49:52.665.
+Test Suite 'FloatingPreviewTests' started at 2026-09-29 10:49:52.665.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' passed (0.163 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testHiddenWindowPausesAndRestoresWithoutLosingFrame]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testHiddenWindowPausesAndRestoresWithoutLosingFrame]' passed (2.247 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' passed (0.074 seconds).
+Test Suite 'FloatingPreviewTests' passed at 2026-09-29 10:49:55.150.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 2.485 (2.485) seconds
+Test Suite 'MacToolsPackageTests.xctest' passed at 2026-09-29 10:49:55.150.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 2.485 (2.485) seconds
+Test Suite 'Selected tests' passed at 2026-09-29 10:49:55.150.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 2.485 (2.486) seconds
+PREVIEW: floating + resizable; landscape/portrait sizes verified; disabling plugin clears panel and pixels
+PREVIEW PAUSE: frame retained while hidden; automatically resumed after source reappeared
+PREVIEW: cancelled in-flight frame discarded; source failure clears stale pixels
+◇ Test run started.
+↳ Testing Library Version: 1501
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+EOF
+stderr<<EOF
+Building for debugging...
+[0/11] /private/tmp/mactools-fps-rollback.aZ9Qd1/.build/arm64-apple-macosx/debug/MacToolsPackageTests.derived/runner.swift
+[1/11] Write sources
+[4/11] Write MacTools-entitlement.plist
+[5/11] Write swift-version--58304C5D6DBC2206.txt
+[7/25] Compiling MacTools TrackpadPlugin.swift
+[8/25] Compiling MacTools FloatingPreview.swift
+[9/25] Compiling MacTools ContentView.swift
+[10/25] Compiling MacTools QuickControlsView.swift
+[11/25] Compiling MacTools QuickControlsPlugin.swift
+[12/25] Compiling MacTools Hardware.swift
+[13/25] Compiling MacTools WindowPreviewPlugin.swift
+[14/26] Compiling MacTools KeepAwakePlugin.swift
+[15/26] Emitting module MacTools
+[16/26] Compiling MacTools HotKeyService.swift
+[17/26] Compiling MacTools MacTools.swift
+[18/26] Compiling MacTools AppModel.swift
+[19/26] Compiling MacTools MenuBarOrganizerPlugin.swift
+[20/26] Compiling MacTools ToolPlugin.swift
+[21/26] Compiling MacTools SharedControls.swift
+[21/26] Write Objects.LinkFileList
+[22/26] Linking MacTools
+[23/26] Applying MacTools
+[25/30] Compiling MacToolsTests MenuBarOrganizerTests.swift
+[26/30] Compiling MacToolsTests Checks.swift
+[27/30] Emitting module MacToolsTests
+[28/30] Compiling MacToolsTests FloatingPreviewTests.swift
+[29/32] Emitting module MacToolsPackageTests
+[30/32] Compiling MacToolsPackageTests runner.swift
+[30/32] Write Objects.LinkFileList
+[31/32] Linking MacToolsPackageTests
+Build complete! (25.94s)
+EOF
+
+[FULL_SUITE] command=swift test
+exit=0
+stdout<<EOF
+Test Suite 'All tests' started at 2026-09-29 10:50:10.771.
+Test Suite 'MacToolsPackageTests.xctest' started at 2026-09-29 10:50:10.772.
+Test Suite 'Checks' started at 2026-09-29 10:50:10.772.
+Test Case '-[MacToolsTests.Checks testAppearanceSwitchAndPersistence]' started.
+Test Case '-[MacToolsTests.Checks testAppearanceSwitchAndPersistence]' passed (0.054 seconds).
+Test Case '-[MacToolsTests.Checks testBuiltinsAndWindowShortcutPersistence]' started.
+Test Case '-[MacToolsTests.Checks testBuiltinsAndWindowShortcutPersistence]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.Checks testCrossPluginShortcutConflictsAndRelease]' started.
+Test Case '-[MacToolsTests.Checks testCrossPluginShortcutConflictsAndRelease]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' started.
+Test Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.Checks testLegacyMigrationAndSettingsIsolation]' started.
+Test Case '-[MacToolsTests.Checks testLegacyMigrationAndSettingsIsolation]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.Checks testLocksProtectionAndDisableCleanup]' started.
+Test Case '-[MacToolsTests.Checks testLocksProtectionAndDisableCleanup]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.Checks testPluginDiscoveryLifecyclePersistenceAndDuplicateGuard]' started.
+Test Case '-[MacToolsTests.Checks testPluginDiscoveryLifecyclePersistenceAndDuplicateGuard]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' started.
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.Checks testTrackpadDisableRestoresAndFailureRetainsRegistryState]' started.
+Test Case '-[MacToolsTests.Checks testTrackpadDisableRestoresAndFailureRetainsRegistryState]' passed (0.002 seconds).
+Test Suite 'Checks' passed at 2026-09-29 10:50:10.850.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.077 (0.077) seconds
+Test Suite 'FloatingPreviewTests' started at 2026-09-29 10:50:10.850.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' passed (0.099 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testFrameRateSelectionPersistsAndBoundsCaptureCadence]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFrameRateSelectionPersistsAndBoundsCaptureCadence]' passed (0.005 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testHiddenWindowPausesAndRestoresWithoutLosingFrame]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testHiddenWindowPausesAndRestoresWithoutLosingFrame]' passed (2.253 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testSelectedFrameRateThrottlesCaptures]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testSelectedFrameRateThrottlesCaptures]' passed (0.533 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' passed (0.085 seconds).
+Test Suite 'FloatingPreviewTests' passed at 2026-09-29 10:50:13.827.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 2.975 (2.977) seconds
+Test Suite 'MenuBarOrganizerTests' started at 2026-09-29 10:50:13.827.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testShelfDragRoutesAcrossRowsAndReordersWithinRow]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testShelfDragRoutesAcrossRowsAndReordersWithinRow]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' passed (0.003 seconds).
+Test Suite 'MenuBarOrganizerTests' passed at 2026-09-29 10:50:13.837.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.009 (0.010) seconds
+Test Suite 'MacToolsPackageTests.xctest' passed at 2026-09-29 10:50:13.837.
+	 Executed 22 tests, with 0 failures (0 unexpected) in 3.061 (3.064) seconds
+Test Suite 'All tests' passed at 2026-09-29 10:50:13.837.
+	 Executed 22 tests, with 0 failures (0 unexpected) in 3.061 (3.065) seconds
+HOTKEYS: cross-owner conflict surfaced; removing owner/disabled plugin releases chord
+AWAKE: native assertions ON -> released on stop/deinit; no audio writes
+MIGRATION: preset IDs/lock/key preserved; legacy bytes unchanged; namespaced settings isolated
+QUICK CONTROLS: cap/restore/unlock preserved; stop clears locks/timer; stopped actions do not write
+PLUGIN HOST: new plugin views/menu/lifecycle need no host branch; disable persists; invalid IDs rejected
+PREVIEW: floating + resizable; landscape/portrait sizes verified; disabling plugin clears panel and pixels
+PREVIEW PAUSE: frame retained while hidden; automatically resumed after source reappeared
+PREVIEW: cancelled in-flight frame discarded; source failure clears stale pixels
+MENU BAR: load/stop inert until user opts in; no status icons created
+MENU BAR: only candidate status windows left of separator; recovery control geometry fail-closed
+◇ Test run started.
+↳ Testing Library Version: 1501
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.
+EOF
+stderr<<EOF
+Building for debugging...
+[0/4] Write swift-version--58304C5D6DBC2206.txt
+Build complete! (0.12s)
+EOF
+
+[LAYOUT] command=./scripts/check-ui-layout.sh Sources/MacTools
+exit=0
+stdout<<EOF
+custom-decorative-palette=False
+manual-appearance-selection=True
+plugin-host=True
+window-preview-plugin=True
+menu-bar-organizer-plugin=True
+preview-auto-resume=True
+window=980x740; list=771x640; height-share=86%
+window=900x640; list=691x540; height-share=84%
+appearance=NSAppearanceNameAqua; window-background-red=0.925
+appearance=NSAppearanceNameDarkAqua; window-background-red=0.196
+hardware-writes=0; live-user-defaults=untouched
+EOF
+stderr<<EOF
+EOF
+
+[SIGNED_BUILD] command=MAC_TOOLS_SIGN_IDENTITY=722852A9656BC9126B2C4585713B724D58F60DB6 ./scripts/build-app.sh
+exit=0
+stdout<<EOF
+[0/1] Planning build
+Building for production...
+[0/3] Write sources
+[1/3] Write swift-version--58304C5D6DBC2206.txt
+[3/4] Compiling MacTools AppModel.swift
+[3/5] Write Objects.LinkFileList
+[4/5] Linking MacTools
+Build complete! (6.89s)
+/Users/yangruihan/Workspace/mac_tools/build/MacTools.app/Contents/Info.plist: OK
+/Users/yangruihan/Workspace/mac_tools/build/MacTools.app
+EOF
+stderr<<EOF
+/Users/yangruihan/Workspace/mac_tools/build/MacTools.app: replacing existing signature
+EOF
+
+[SOURCE_REAPPLY] command=patch -p1 -d /tmp/mactools-fps-reapply/Sources -i docs/tray-transaction/DIFF.patch
+exit=0
+stdout<<EOF
+patching file AppModel.swift
+patching file 'Core/HotKeyService.swift'
+patching file 'Core/ToolPlugin.swift'
+patching file MacTools.swift
+patching file 'Plugins/KeepAwake/KeepAwakePlugin.swift'
+patching file 'Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift'
+patching file 'Plugins/QuickControls/Hardware.swift'
+patching file 'Plugins/QuickControls/QuickControlsPlugin.swift'
+patching file 'Plugins/QuickControls/QuickControlsView.swift'
+patching file 'Plugins/Trackpad/TrackpadPlugin.swift'
+patching file 'Plugins/WindowPreview/FloatingPreview.swift'
+patching file 'Plugins/WindowPreview/WindowPreviewPlugin.swift'
+patching file 'UI/ContentView.swift'
+patching file 'UI/SharedControls.swift'
+patching file 'Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift'
+patching file 'Plugins/WindowPreview/FloatingPreview.swift'
+patching file 'Plugins/WindowPreview/WindowPreviewPlugin.swift'
+EOF
+stderr<<EOF
+EOF
+
+[TEST_REAPPLY] command=patch -p1 -d /tmp/mactools-fps-testpatch -i docs/tray-transaction/FPS_TESTS.patch
+exit=0
+stdout<<EOF
+patching file 'Tests/MacToolsTests/FloatingPreviewTests.swift'
+EOF
+stderr<<EOF
+EOF
+
+[ROLLBACK_SCRIPT] command=docs/tray-transaction/ROLLBACK.sh --preview-fps /tmp/mactools-fps-rollback.aZ9Qd1
+exit=0
+stdout<<EOF
+EOF
+stderr<<EOF
+EOF
+ROLLBACK hashes equal the original three baseline files; source reapply and test reapply both matched all modified bytes.
+UI observed on signed /Applications/MacTools.app: frame-rate radio options 1, 2, 5 fps; 5 selected initially, 2 selected after click, 5 restored after click. Persisted UserDefaults key plugin.window-preview.frameRate read as one-byte Data 0x35 (JSON 5). Synthetic capture test verified selected 2 fps yields >=450 ms between captures. No live third-party window capture or hardware audio/brightness write was performed.
+INSTALL: codesign --verify --strict /Applications/MacTools.app exit=0; build and installed executable SHA256=ae9efbfb70642b8cbb896666d629755b133e7e3eea35d59581aa5c9a58d088a4; app process 7597 observed running after open.

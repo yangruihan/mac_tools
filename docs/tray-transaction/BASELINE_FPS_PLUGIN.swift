@@ -16,16 +16,7 @@ final class WindowPreviewPlugin: ObservableObject, ToolPlugin {
     private var chooser: NSWindow?
 
     init(context: PluginContext) { self.context = context }
-    func start() {
-        active = true
-        if let data = context.settings.data(forKey: "frameRate"),
-           let value = try? JSONDecoder().decode(Int.self, from: data) { preview.setFrameRate(value) }
-    }
-    func setFrameRate(_ value: Int) {
-        guard FloatingPreview.frameRates.contains(value) else { return }
-        preview.setFrameRate(value)
-        if let data = try? JSONEncoder().encode(value) { context.settings.set(data, forKey: "frameRate") }
-    }
+    func start() { active = true }
     func stop() {
         active = false; refreshID = UUID()
         refreshTask?.cancel(); refreshTask = nil; isLoading = false
@@ -139,7 +130,7 @@ private struct WindowPreviewControls: View {
         GroupBox {
             VStack(alignment: .leading, spacing: 12) {
                 Label("窗口悬浮预览", systemImage: "pin").font(.headline)
-                Text("只读 · 帧率可选 · 拖动悬浮窗边缘调整大小").font(.caption).foregroundStyle(.secondary)
+                Text("只读 · 最多约 5 帧/秒 · 拖动悬浮窗边缘调整大小").font(.caption).foregroundStyle(.secondary)
                 HStack {
                     Button("授权屏幕录制") { plugin.requestPermission() }
                     Button(plugin.isLoading ? "刷新中…" : "刷新窗口列表") { plugin.refreshWindows() }.disabled(plugin.isLoading)
@@ -152,11 +143,6 @@ private struct WindowPreviewControls: View {
                         Text(WindowPreviewPlugin.label(window)).tag(Optional(window.windowID))
                     }
                 }.frame(maxWidth: .infinity)
-                Picker("帧率", selection: Binding(get: { preview.frameRate }, set: { plugin.setFrameRate($0) })) {
-                    ForEach(FloatingPreview.frameRates, id: \.self) { rate in
-                        Text("\(rate) 帧/秒").tag(rate)
-                    }
-                }.pickerStyle(.segmented)
                 HStack {
                     Text(plugin.message).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                     Spacer()

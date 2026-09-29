@@ -1,0 +1,37 @@
+--- a/Tests/MacToolsTests/FloatingPreviewTests.swift
++++ b/Tests/MacToolsTests/FloatingPreviewTests.swift
+@@ -18,0 +19,34 @@
++    func testFrameRateSelectionPersistsAndBoundsCaptureCadence() throws {
++        let suite = "PreviewFrameRateTests.\(UUID())"; let defaults = UserDefaults(suiteName: suite)!
++        defer { defaults.removePersistentDomain(forName: suite) }
++        let context = PluginContext(settings: PluginSettings(id: WindowPreviewPlugin.id, defaults: defaults), hotkeys: HotKeyService(), report: { _ in })
++        let plugin = WindowPreviewPlugin(context: context)
++        plugin.start()
++        XCTAssertEqual(plugin.preview.frameRate, 5)
++        plugin.setFrameRate(2)
++        XCTAssertEqual(plugin.preview.frameRate, 2)
++        XCTAssertEqual(FloatingPreview.frameInterval(for: plugin.preview.frameRate), .milliseconds(500))
++        plugin.setFrameRate(30)
++        XCTAssertEqual(plugin.preview.frameRate, 2)
++        let restored = WindowPreviewPlugin(context: context)
++        restored.start()
++        XCTAssertEqual(restored.preview.frameRate, 2)
++        XCTAssertEqual(FloatingPreview.frameInterval(for: 5), .milliseconds(200))
++    }
++    @MainActor
++    func testSelectedFrameRateThrottlesCaptures() async throws {
++        _ = NSApplication.shared
++        let preview = FloatingPreview()
++        preview.setFrameRate(2)
++        let image = frame()
++        var times: [ContinuousClock.Instant] = []
++        preview.begin(title: "rate fixture", showPanel: false) {
++            times.append(.now)
++            return image
++        }
++        defer { preview.stop() }
++        for _ in 0..<150 where times.count < 2 { try await Task.sleep(nanoseconds: 10_000_000) }
++        XCTAssertGreaterThanOrEqual(times.count, 2)
++        if times.count >= 2 { XCTAssertGreaterThanOrEqual(times[0].duration(to: times[1]), .milliseconds(450)) }
++    }
++    @MainActor
