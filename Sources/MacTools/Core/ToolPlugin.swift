@@ -41,6 +41,7 @@ struct PluginContext {
     let settings: PluginSettings
     let hotkeys: HotKeyService
     let report: (String) -> Void
+    var openToolbox: () -> Void = {}
 }
 
 final class PluginRegistry: ObservableObject {

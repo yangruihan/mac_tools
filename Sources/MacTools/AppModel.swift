@@ -23,6 +23,8 @@ final class AppModel: ObservableObject {
     @Published var windowShortcut = KeyChord(key: "M")
     @Published var message = "工具箱已就绪"
     var toggleWindow: (() -> Void)?
+    var showToolbox: (() -> Void)?
+    @Published var selectedPluginID: String? = QuickControlsPlugin.id
     let hotkeys = HotKeyService()
     private let defaults: UserDefaults
     private var running = false
@@ -51,7 +53,11 @@ final class AppModel: ObservableObject {
     }
     private func context(for id: String) -> PluginContext {
         PluginContext(settings: PluginSettings(id: id, defaults: defaults), hotkeys: hotkeys,
-                      report: { [weak self] in self?.message = $0 })
+                      report: { [weak self] in self?.message = $0 },
+                      openToolbox: { [weak self] in
+                          self?.selectedPluginID = id
+                          self?.showToolbox?()
+                      })
     }
     func setAppearance(_ mode: AppearanceMode) {
         appearanceMode = mode; defaults.set(mode.rawValue, forKey: "appearanceMode")

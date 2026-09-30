@@ -4,11 +4,10 @@ struct ContentView: View {
     @ObservedObject var model: AppModel
     @ObservedObject private var registry: PluginRegistry
     @State private var showShortcuts = false
-    @State private var selectedPluginID: String? = QuickControlsPlugin.id
     init(model: AppModel) { self.model = model; self.registry = model.plugins }
 
     private var selectedPlugin: (any ToolPlugin)? {
-        registry.enabledPlugins.first(where: { $0.info.id == selectedPluginID }) ?? registry.enabledPlugins.first
+        registry.enabledPlugins.first(where: { $0.info.id == model.selectedPluginID }) ?? registry.enabledPlugins.first
     }
 
     var body: some View {
@@ -20,7 +19,7 @@ struct ContentView: View {
                 Text("工具")
                     .font(.caption.weight(.semibold)).foregroundStyle(.secondary)
                     .padding(.horizontal, 18).padding(.bottom, 6)
-                List(selection: $selectedPluginID) {
+                List(selection: $model.selectedPluginID) {
                     ForEach(registry.enabledPlugins, id: \.info.id) { plugin in
                         Label(plugin.info.title, systemImage: plugin.info.symbol)
                             .tag(plugin.info.id)
@@ -81,8 +80,8 @@ struct ContentView: View {
         }.frame(minWidth: 900, minHeight: 640).background(Color(nsColor: .windowBackgroundColor))
             .groupBoxStyle(SystemCardStyle())
             .onChange(of: registry.enabledIDs) { ids in
-                if let selectedPluginID, !ids.contains(selectedPluginID) {
-                    self.selectedPluginID = registry.enabledPlugins.first?.info.id
+                if let selectedPluginID = model.selectedPluginID, !ids.contains(selectedPluginID) {
+                    model.selectedPluginID = registry.enabledPlugins.first?.info.id
                 }
             }
     }

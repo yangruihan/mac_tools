@@ -14,7 +14,7 @@
 - `Core/HotKeyService.swift`：唯一 Carbon 监听器；跨插件冲突检测、按 owner 释放与重试。
 - `UI/`：只迭代注册表的通用宿主 UI，以及复用的原生控件。
 - `Plugins/QuickControls/`：亮度、音量、配置增删改、耳机保护、解锁快捷键、200ms 锁定与硬件接口。
-- `Plugins/KeepAwake/`：电源断言，启用后防闲置熄屏/休眠，不保证防锁屏。
+- `Plugins/KeepAwake/`：电源断言，`plugin.keep-awake.enabled` 保存用户开关并在应用启动、插件启用时恢复；退出或停用只释放本次运行的断言，不覆盖用户选择。只有屏幕及系统闲置休眠两条断言均有效才显示生效；失败、部分创建/释放与失效状态独立提示并允许重试。防闲置熄屏/休眠，不保证防锁屏、手动睡眠、合盖或低电量保护；会增加电源消耗，不添加开机登录项、不改系统睡眠配置。
 - `Plugins/Trackpad/`：系统触控板开关与恢复；辅助功能权限只在用户操作时申请。
 - `Plugins/WindowPreview/`：屏幕录制授权、窗口选择、只读可缩放悬浮窗。macOS 14+；使用 ScreenCaptureKit 周期快照，非动态视频录制。
 
@@ -36,6 +36,8 @@
 所有生命周期、状态和 UI 入口都在主线程调用。耗时工作应由插件自行移到后台，UI 更新回主线程；不在 `makeView()` 或 `makeMenuItems()` 中产生副作用。插件不得持有强引用的宿主回调形成循环。
 
 `PluginContext` 提供：
+
+- `openToolbox`：由宿主连接到窗口控制器的回调，并选择发起请求的插件。插件无需访问或强转 `NSApp.delegate`；SwiftUI 的代理适配不能保证该对象是自定义 AppDelegate。
 
 - `settings`：该插件自己的 `plugin.<id>.<key>` 配置；不能修改别的插件/宿主的 key。
 - `hotkeys`：以 `info.id` 为 owner 注册/移除快捷键；action ID 在 owner 内唯一，闭包弱引用插件。
@@ -115,4 +117,6 @@ UI_DARK=1 EXPECT_NATIVE=1 EXPECT_MODERN=1 scripts/check-ui-layout.sh Sources/Mac
 
 窗口预览把不可见窗口视为可恢复暂停态（含最小化、隐藏、其他桌面）；当系统不再列出源窗口或截图权限出错时结束。某些 App 关闭窗口后仍保留其系统窗口对象，此时只能显示暂停并等待用户关闭预览，不能假装已经准确检测到关闭。
 
-- `Plugins/MenuBarOrganizer/`：用户主动启用后注册收纳控制图标及分隔符；点击可打开第二排或权限说明，支持主动数量整理及在弹框中请求原生图标点击/跨区拖放/同区排序。停用会展开并移除自家状态图标。macOS 14–26，具体权限与边界见 [菜单栏收纳说明](MENUBAR_ORGANIZER.md)。
+- `Plugins/MenuBarOrganizer/`：用户主动启用后注册收纳控制图标及分隔符；`MenuBarVisibility` 管理展开/确认收起/收起/停用，普通原生点击不进入 AX、截图或合成拖动路径。可选面板由 `MenuBarGallerySession` 持有单次内存画面，`MenuBarCapture` 最多四路有序采集；取消通过 generation 丢弃迟到结果。高级布局编辑仅由显式操作进入。停用会展开、清空画面并移除自家状态图标。macOS 14–26，具体权限与边界见 [菜单栏收纳说明](MENUBAR_ORGANIZER.md)。
+
+保持唤醒的 API 范围参考 [Apple QA1340](https://developer.apple.com/library/archive/qa/qa1340/_index.html)：电源断言用于闲置休眠，不能阻止用户或系统触发的强制休眠。

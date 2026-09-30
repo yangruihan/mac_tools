@@ -6,8 +6,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
-        model.start()
         model.toggleWindow = { [weak self] in self?.toggleWindow() }
+        model.showToolbox = { [weak self] in guard let self else { return }; self.showWindow(model: self.model) }
+        model.start()
         showWindow(model: model)
     }
 
