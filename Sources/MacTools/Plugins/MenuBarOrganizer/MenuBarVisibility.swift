@@ -65,6 +65,10 @@ struct MenuBarGallerySession {
         generation = UUID(); isCapturing = false
         icons = []; visibleIcons = []
     }
+    mutating func invalidateTargets() {
+        generation = UUID()
+        if isCapturing { isCapturing = false; icons = []; visibleIcons = [] }
+    }
     mutating func beginCapture() -> UUID {
         clear(); isCapturing = true
         return generation

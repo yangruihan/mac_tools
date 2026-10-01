@@ -5,6 +5,7 @@ struct MenuBarStatusTarget {
     let pid: Int32
     let frame: CGRect
     let onScreen: Bool
+    var application: MenuBarApplicationIdentity? = nil
 }
 
 enum MenuBarIconActivation {
@@ -26,7 +27,7 @@ enum MenuBarIconActivation {
             && abs(frame.midY - window.midY) < 4
     }
     static func unchanged(_ first: MenuBarStatusTarget, _ second: MenuBarStatusTarget) -> Bool {
-        first.id == second.id && first.pid == second.pid && first.onScreen && second.onScreen
+        first.id == second.id && first.pid == second.pid && first.application == second.application && first.onScreen && second.onScreen
             && abs(first.frame.minX - second.frame.minX) < 1 && abs(first.frame.minY - second.frame.minY) < 1
             && abs(first.frame.width - second.frame.width) < 1 && abs(first.frame.height - second.frame.height) < 1
     }
