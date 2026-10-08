@@ -1,0 +1,14 @@
+{
+  "contract" : "isolatedOwnedQuietV1",
+  "hostBackend" : "isolatedSignedWorker",
+  "inputPolicy" : "iceMouseTracking",
+  "installedHostIntegration" : true,
+  "journalPending" : false,
+  "mousePosts" : 0,
+  "permissionRequests" : 0,
+  "scope" : "ownedTNProductEntry",
+  "strictANYRequired" : false,
+  "thirdPartyMovementEnabled" : false,
+  "windowsOpened" : 0,
+  "workerRevision" : "isolated-Ice-0.11.12-baseline-v3.7.1-authorized-host-binding"
+}

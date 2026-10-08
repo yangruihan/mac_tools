@@ -1,6 +1,6 @@
 import CoreGraphics
 
-struct MenuBarStatusTarget {
+struct MenuBarStatusTarget: Equatable {
     let id: CGWindowID
     let pid: Int32
     let frame: CGRect

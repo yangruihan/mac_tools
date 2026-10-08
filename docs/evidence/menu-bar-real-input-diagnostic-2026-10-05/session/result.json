@@ -1,0 +1,2720 @@
+{
+  "actionConsumed" : false,
+  "AXActions" : 0,
+  "backendEnabled" : false,
+  "controllerPID" : 54073,
+  "diagnosticHandoffPassed" : true,
+  "localAuthorization" : {
+    "atUptimeNanoseconds" : 1534532844251708,
+    "binding" : {
+      "controllerLaunch" : 1791159664.2432561,
+      "controllerPID" : 54073,
+      "controllerSHA256" : "5331206c695c9c7b3587b4c0274c48818256c6f96a1baea9488faab3641fcdae",
+      "nonce" : "5B92F1FA-B1C5-45CB-9A91-A8CBBF37C478",
+      "targetPID" : 54073
+    },
+    "capturedStart" : {
+      "flags" : 0,
+      "number" : -20895,
+      "point" : [
+        864,
+        354
+      ],
+      "sourcePID" : 54081,
+      "sourceState" : 2129137682,
+      "timestamp" : 1534529736514416,
+      "type" : 2
+    },
+    "diagnostics" : {
+      "listenPermission" : true,
+      "mainThread" : true,
+      "monitoringHealthy" : false,
+      "native" : true,
+      "observedEventCount" : 2,
+      "portValid" : false,
+      "sampleCount" : 149,
+      "startupStage" : "started",
+      "state" : "validatedRealInput",
+      "tapEnabled" : false,
+      "tapLocation" : 2
+    },
+    "handedOff" : true,
+    "handoffAttempt" : {
+      "continuity" : "89903E6D-D746-415F-978A-05BF25B3251F",
+      "externalEpoch" : "A47E2306-B4F4-4802-9916-023817700594",
+      "gesture" : "CBCF2637-D3EA-42B6-902F-15857869EA86"
+    },
+    "input" : {
+      "continuity" : "9EA0A24D-0DED-4241-86E2-E1AA332E420C",
+      "finalSampleSequence" : 137,
+      "nodes" : [
+        {
+          "epoch" : 2,
+          "kind" : "sample",
+          "observedAt" : 1534529705358083,
+          "sample" : {
+            "age" : 0.0091108749999999992,
+            "began" : 1534529705316791,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529705358083,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 9,
+          "tapCount" : 1
+        },
+        {
+          "epoch" : 3,
+          "kind" : "ownUp",
+          "observedAt" : 1534529736741291,
+          "packet" : {
+            "flags" : 0,
+            "number" : -20895,
+            "point" : [
+              864,
+              354
+            ],
+            "sourcePID" : 54081,
+            "sourceState" : 2129137682,
+            "timestamp" : 1534529736514416,
+            "type" : 2
+          },
+          "sequence" : 10,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534529736770708,
+          "sample" : {
+            "age" : 0.040536750000000003,
+            "began" : 1534529736744625,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529736770708,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 11,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534529745678250,
+          "sample" : {
+            "age" : 0.049437874999999999,
+            "began" : 1534529745640875,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529745678250,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 12,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534529752682791,
+          "sample" : {
+            "age" : 0.056443,
+            "began" : 1534529752645416,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529752682791,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 13,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534529755304666,
+          "sample" : {
+            "age" : 0.059070375000000001,
+            "began" : 1534529755132833,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529755304666,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 14,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534529757647083,
+          "sample" : {
+            "age" : 0.06141025,
+            "began" : 1534529757604416,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529757647083,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 15,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534529764449375,
+          "sample" : {
+            "age" : 0.068217166999999995,
+            "began" : 1534529764422041,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529764449375,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 16,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534529766684875,
+          "sample" : {
+            "age" : 0.070450417000000001,
+            "began" : 1534529766656166,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529766684875,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 17,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534529862534125,
+          "sample" : {
+            "age" : 0.16629350000000001,
+            "began" : 1534529862491958,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529862534125,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 18,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534529865807583,
+          "sample" : {
+            "age" : 0.16956037500000001,
+            "began" : 1534529864826541,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529865807583,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 19,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534529872549916,
+          "sample" : {
+            "age" : 0.17630670800000001,
+            "began" : 1534529872502708,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529872549916,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 20,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534529874695666,
+          "sample" : {
+            "age" : 0.17846100000000001,
+            "began" : 1534529874664458,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529874695666,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 21,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534529962796083,
+          "sample" : {
+            "age" : 0.26653833300000002,
+            "began" : 1534529962715333,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529962796083,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 22,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534529964988833,
+          "sample" : {
+            "age" : 0.26873999999999998,
+            "began" : 1534529964923750,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529964988833,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 23,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534529972551250,
+          "sample" : {
+            "age" : 0.27630975000000002,
+            "began" : 1534529972005416,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529972551250,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 24,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534529974987750,
+          "sample" : {
+            "age" : 0.27873679200000001,
+            "began" : 1534529974892000,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534529974987750,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 25,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530063040416,
+          "sample" : {
+            "age" : 0.36678725000000001,
+            "began" : 1534530062978083,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530063040416,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 26,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530065364958,
+          "sample" : {
+            "age" : 0.36913062499999999,
+            "began" : 1534530065335916,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530065364958,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 27,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530072368625,
+          "sample" : {
+            "age" : 0.376121292,
+            "began" : 1534530072314375,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530072368625,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 28,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530074774708,
+          "sample" : {
+            "age" : 0.378520458,
+            "began" : 1534530074696708,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530074774708,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 29,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530162549416,
+          "sample" : {
+            "age" : 0.46629008300000002,
+            "began" : 1534530162477458,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530162549416,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 30,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530164869750,
+          "sample" : {
+            "age" : 0.46861950000000002,
+            "began" : 1534530164811000,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530164869750,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 31,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530172140625,
+          "sample" : {
+            "age" : 0.47586574999999998,
+            "began" : 1534530172045916,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530172140625,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 32,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530174410833,
+          "sample" : {
+            "age" : 0.47815924999999998,
+            "began" : 1534530174350500,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530174410833,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 33,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530262555541,
+          "sample" : {
+            "age" : 0.566301583,
+            "began" : 1534530262483583,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530262555541,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 34,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530268780583,
+          "sample" : {
+            "age" : 0.57115974999999997,
+            "began" : 1534530264863291,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530268780583,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 35,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530277640958,
+          "sample" : {
+            "age" : 0.58137954199999997,
+            "began" : 1534530275538833,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530277640958,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 36,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530281505000,
+          "sample" : {
+            "age" : 0.585248875,
+            "began" : 1534530279972416,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530281505000,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 37,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530362572666,
+          "sample" : {
+            "age" : 0.66631362500000002,
+            "began" : 1534530362492708,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530362572666,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 38,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530364923750,
+          "sample" : {
+            "age" : 0.668677042,
+            "began" : 1534530364863125,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530364923750,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 39,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530376898625,
+          "sample" : {
+            "age" : 0.67830891699999996,
+            "began" : 1534530371680333,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530376898625,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 40,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530379223791,
+          "sample" : {
+            "age" : 0.68297129199999995,
+            "began" : 1534530379162083,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530379223791,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 41,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530462255250,
+          "sample" : {
+            "age" : 0.765990583,
+            "began" : 1534530462162833,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530462255250,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 42,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530464681583,
+          "sample" : {
+            "age" : 0.76842341700000005,
+            "began" : 1534530464612833,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530464681583,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 43,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530473371875,
+          "sample" : {
+            "age" : 0.77708729200000004,
+            "began" : 1534530471639250,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530473371875,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 44,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530475615916,
+          "sample" : {
+            "age" : 0.77937149999999999,
+            "began" : 1534530475558291,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530475615916,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 45,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530563740541,
+          "sample" : {
+            "age" : 0.86749687499999995,
+            "began" : 1534530561854791,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530563740541,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 46,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530566094708,
+          "sample" : {
+            "age" : 0.86984495799999995,
+            "began" : 1534530566028125,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530566094708,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 47,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530572876958,
+          "sample" : {
+            "age" : 0.87662870800000003,
+            "began" : 1534530572817875,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530572876958,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 48,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530575045958,
+          "sample" : {
+            "age" : 0.87880049999999998,
+            "began" : 1534530574988750,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530575045958,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 49,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530662153791,
+          "sample" : {
+            "age" : 0.96589741699999998,
+            "began" : 1534530662073916,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530662153791,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 50,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530666869708,
+          "sample" : {
+            "age" : 0.97061949999999997,
+            "began" : 1534530664217083,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530666869708,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 51,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530675068375,
+          "sample" : {
+            "age" : 0.97881995799999999,
+            "began" : 1534530675004958,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530675068375,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 52,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530679394416,
+          "sample" : {
+            "age" : 0.98312037500000005,
+            "began" : 1534530677359916,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530679394416,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 53,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530762130208,
+          "sample" : {
+            "age" : 1.0658487919999999,
+            "began" : 1534530762014750,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530762130208,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 54,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530764764416,
+          "sample" : {
+            "age" : 1.0685267919999999,
+            "began" : 1534530764331916,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530764764416,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 55,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530772994875,
+          "sample" : {
+            "age" : 1.0767478749999999,
+            "began" : 1534530771855000,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530772994875,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 56,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530775419666,
+          "sample" : {
+            "age" : 1.0791627079999999,
+            "began" : 1534530775336625,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530775419666,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 57,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530862254666,
+          "sample" : {
+            "age" : 1.1659949999999999,
+            "began" : 1534530862171000,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530862254666,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 58,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530867329166,
+          "sample" : {
+            "age" : 1.1701305420000001,
+            "began" : 1534530864545625,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530867329166,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 59,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530875551958,
+          "sample" : {
+            "age" : 1.1793127080000001,
+            "began" : 1534530875511500,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530875551958,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 60,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530877925791,
+          "sample" : {
+            "age" : 1.1816831670000001,
+            "began" : 1534530877870375,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530877925791,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 61,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530962376708,
+          "sample" : {
+            "age" : 1.266114333,
+            "began" : 1534530962298791,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530962376708,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 62,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530966680458,
+          "sample" : {
+            "age" : 1.2704414580000001,
+            "began" : 1534530964676250,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530966680458,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 63,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530973489458,
+          "sample" : {
+            "age" : 1.2772474170000001,
+            "began" : 1534530973435041,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530973489458,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 64,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534530975834125,
+          "sample" : {
+            "age" : 1.279590542,
+            "began" : 1534530975786916,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534530975834125,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 65,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531061832416,
+          "sample" : {
+            "age" : 1.365576583,
+            "began" : 1534531061761208,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531061832416,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 66,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531064490208,
+          "sample" : {
+            "age" : 1.3682429169999999,
+            "began" : 1534531064125250,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531064490208,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 67,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531070912416,
+          "sample" : {
+            "age" : 1.374663333,
+            "began" : 1534531070834833,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531070912416,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 68,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531073268500,
+          "sample" : {
+            "age" : 1.3770207919999999,
+            "began" : 1534531073192833,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531073268500,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 69,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531162588000,
+          "sample" : {
+            "age" : 1.4663279579999999,
+            "began" : 1534531162508125,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531162588000,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 70,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531166286333,
+          "sample" : {
+            "age" : 1.470036833,
+            "began" : 1534531164908833,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531166286333,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 71,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531174327125,
+          "sample" : {
+            "age" : 1.47806675,
+            "began" : 1534531174251916,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531174327125,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 72,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531176724541,
+          "sample" : {
+            "age" : 1.4804680830000001,
+            "began" : 1534531176633500,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531176724541,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 73,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531262629500,
+          "sample" : {
+            "age" : 1.566359042,
+            "began" : 1534531262529750,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531262629500,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 74,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531268082833,
+          "sample" : {
+            "age" : 1.5718364579999999,
+            "began" : 1534531264971666,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531268082833,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 75,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531275837541,
+          "sample" : {
+            "age" : 1.5795846250000001,
+            "began" : 1534531275768625,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531275837541,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 76,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531278218041,
+          "sample" : {
+            "age" : 1.581958625,
+            "began" : 1534531278138750,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531278218041,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 77,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531362350708,
+          "sample" : {
+            "age" : 1.6660877080000001,
+            "began" : 1534531362270333,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531362350708,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 78,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531364845250,
+          "sample" : {
+            "age" : 1.6685905830000001,
+            "began" : 1534531364641583,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531364845250,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 79,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531373370166,
+          "sample" : {
+            "age" : 1.677120333,
+            "began" : 1534531371619625,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531373370166,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 80,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531375726125,
+          "sample" : {
+            "age" : 1.6794756669999999,
+            "began" : 1534531375659041,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531375726125,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 81,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531463184083,
+          "sample" : {
+            "age" : 1.766917708,
+            "began" : 1534531462856708,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531463184083,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 82,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531465437208,
+          "sample" : {
+            "age" : 1.769189417,
+            "began" : 1534531465377666,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531465437208,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 83,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531472753250,
+          "sample" : {
+            "age" : 1.776498208,
+            "began" : 1534531472377875,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531472753250,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 84,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531475060250,
+          "sample" : {
+            "age" : 1.778808583,
+            "began" : 1534531474995916,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531475060250,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 85,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531562243375,
+          "sample" : {
+            "age" : 1.8659698330000001,
+            "began" : 1534531562133458,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531562243375,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 86,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531567526458,
+          "sample" : {
+            "age" : 1.8712829580000001,
+            "began" : 1534531564600583,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531567526458,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 87,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531578721291,
+          "sample" : {
+            "age" : 1.8824564580000001,
+            "began" : 1534531576505333,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531578721291,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 88,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531581610083,
+          "sample" : {
+            "age" : 1.885361083,
+            "began" : 1534531581002125,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531581610083,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 89,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531662202083,
+          "sample" : {
+            "age" : 1.9659329999999999,
+            "began" : 1534531662106000,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531662202083,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 90,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531664521416,
+          "sample" : {
+            "age" : 1.968258667,
+            "began" : 1534531664449708,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531664521416,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 91,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531673029333,
+          "sample" : {
+            "age" : 1.9767625,
+            "began" : 1534531672933875,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531673029333,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 92,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531675240375,
+          "sample" : {
+            "age" : 1.9789806670000001,
+            "began" : 1534531675158208,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531675240375,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 93,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531765915250,
+          "sample" : {
+            "age" : 2.0696586250000002,
+            "began" : 1534531763220666,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531765915250,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 94,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531768313541,
+          "sample" : {
+            "age" : 2.072043458,
+            "began" : 1534531768221333,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531768313541,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 95,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531775396208,
+          "sample" : {
+            "age" : 2.0791412079999998,
+            "began" : 1534531775322208,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531775396208,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 96,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531777640750,
+          "sample" : {
+            "age" : 2.0813818749999999,
+            "began" : 1534531777558041,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531777640750,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 97,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531862914791,
+          "sample" : {
+            "age" : 2.166640583,
+            "began" : 1534531862795541,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531862914791,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 98,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531865293375,
+          "sample" : {
+            "age" : 2.169033958,
+            "began" : 1534531865217208,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531865293375,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 99,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531876852916,
+          "sample" : {
+            "age" : 2.1794834170000001,
+            "began" : 1534531872165708,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531876852916,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 100,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531879275666,
+          "sample" : {
+            "age" : 2.1830105419999999,
+            "began" : 1534531879172625,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531879275666,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 101,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531962438416,
+          "sample" : {
+            "age" : 2.2661632919999999,
+            "began" : 1534531962333625,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531962438416,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 102,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531968149958,
+          "sample" : {
+            "age" : 2.2719012080000001,
+            "began" : 1534531964751208,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531968149958,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 103,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531974933125,
+          "sample" : {
+            "age" : 2.278682125,
+            "began" : 1534531974874833,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531974933125,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 104,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534531977312708,
+          "sample" : {
+            "age" : 2.281055125,
+            "began" : 1534531977233708,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534531977312708,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 105,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532063252833,
+          "sample" : {
+            "age" : 2.3669955420000002,
+            "began" : 1534532062778250,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532063252833,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 106,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532065553916,
+          "sample" : {
+            "age" : 2.3693045000000001,
+            "began" : 1534532065490500,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532065553916,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 107,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532075686333,
+          "sample" : {
+            "age" : 2.3794304999999998,
+            "began" : 1534532072417541,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532075686333,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 108,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532078039125,
+          "sample" : {
+            "age" : 2.381794083,
+            "began" : 1534532077985041,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532078039125,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 109,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532163166125,
+          "sample" : {
+            "age" : 2.4669046250000002,
+            "began" : 1534532163079500,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532163166125,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 110,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532165400625,
+          "sample" : {
+            "age" : 2.4691269999999998,
+            "began" : 1534532165293791,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532165400625,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 111,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532173911958,
+          "sample" : {
+            "age" : 2.4776365,
+            "began" : 1534532172632166,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532173911958,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 112,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532176292666,
+          "sample" : {
+            "age" : 2.480035,
+            "began" : 1534532176210625,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532176292666,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 113,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532262605791,
+          "sample" : {
+            "age" : 2.5663391670000002,
+            "began" : 1534532262513416,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532262605791,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 114,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532264959083,
+          "sample" : {
+            "age" : 2.5687108749999998,
+            "began" : 1534532264898916,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532264959083,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 115,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532273778875,
+          "sample" : {
+            "age" : 2.5775064169999999,
+            "began" : 1534532273674291,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532273778875,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 116,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532276124041,
+          "sample" : {
+            "age" : 2.5798765829999999,
+            "began" : 1534532276067000,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532276124041,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 117,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532362282083,
+          "sample" : {
+            "age" : 2.666025667,
+            "began" : 1534532362029833,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532362282083,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 118,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532364678916,
+          "sample" : {
+            "age" : 2.6684226670000002,
+            "began" : 1534532364621041,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532364678916,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 119,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532371885791,
+          "sample" : {
+            "age" : 2.6756241670000001,
+            "began" : 1534532371801833,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532371885791,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 120,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532374175250,
+          "sample" : {
+            "age" : 2.677916958,
+            "began" : 1534532374086583,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532374175250,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 121,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532462384375,
+          "sample" : {
+            "age" : 2.7661068329999998,
+            "began" : 1534532462278958,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532462384375,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 122,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532464814583,
+          "sample" : {
+            "age" : 2.7685187920000001,
+            "began" : 1534532464649625,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532464814583,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 123,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532472205208,
+          "sample" : {
+            "age" : 2.7759175420000002,
+            "began" : 1534532472090458,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532472205208,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 124,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532474641958,
+          "sample" : {
+            "age" : 2.7783774999999999,
+            "began" : 1534532474554375,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532474641958,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 125,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532563173833,
+          "sample" : {
+            "age" : 2.866919792,
+            "began" : 1534532563096125,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532563173833,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 126,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532565440250,
+          "sample" : {
+            "age" : 2.8691853749999998,
+            "began" : 1534532565373250,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532565440250,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 127,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532572531708,
+          "sample" : {
+            "age" : 2.8762933749999999,
+            "began" : 1534532572490041,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532572531708,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 128,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532574918666,
+          "sample" : {
+            "age" : 2.8786554999999998,
+            "began" : 1534532574837291,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532574918666,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 129,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532662651208,
+          "sample" : {
+            "age" : 2.966375958,
+            "began" : 1534532662532541,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532662651208,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 130,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532665002833,
+          "sample" : {
+            "age" : 2.9687215419999999,
+            "began" : 1534532664900833,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532665002833,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 131,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532673818875,
+          "sample" : {
+            "age" : 2.9775605000000001,
+            "began" : 1534532673745541,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532673818875,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 132,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532676460083,
+          "sample" : {
+            "age" : 2.9802101670000001,
+            "began" : 1534532675927833,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532676460083,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 133,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532763254583,
+          "sample" : {
+            "age" : 3.0670079170000002,
+            "began" : 1534532762066333,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532763254583,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 134,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532765625583,
+          "sample" : {
+            "age" : 3.0693699169999999,
+            "began" : 1534532765557458,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532765625583,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 135,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532765691000,
+          "sample" : {
+            "age" : 3.0694413329999999,
+            "began" : 1534532765629916,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532765691000,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 136,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532769186041,
+          "sample" : {
+            "age" : 3.0729353330000002,
+            "began" : 1534532767995291,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532769186041,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 137,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532779377958,
+          "sample" : {
+            "age" : 3.0831243330000002,
+            "began" : 1534532776311083,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532779377958,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 138,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532781709833,
+          "sample" : {
+            "age" : 3.085464,
+            "began" : 1534532781666291,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532781709833,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 139,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532784459750,
+          "sample" : {
+            "age" : 3.0882295000000002,
+            "began" : 1534532783818166,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532784459750,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 140,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532786784625,
+          "sample" : {
+            "age" : 3.090552958,
+            "began" : 1534532786757916,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532786784625,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 141,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532794119083,
+          "sample" : {
+            "age" : 3.0978818330000002,
+            "began" : 1534532793481958,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532794119083,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 142,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532796481875,
+          "sample" : {
+            "age" : 3.1002430419999998,
+            "began" : 1534532796441000,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532796481875,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 143,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532804537791,
+          "sample" : {
+            "age" : 3.1082881250000001,
+            "began" : 1534532804469916,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532804537791,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 144,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532806900500,
+          "sample" : {
+            "age" : 3.1106492499999998,
+            "began" : 1534532806835500,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532806900500,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 145,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532814334666,
+          "sample" : {
+            "age" : 3.118096333,
+            "began" : 1534532814296791,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532814334666,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 146,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532816482041,
+          "sample" : {
+            "age" : 3.1202279169999998,
+            "began" : 1534532816410875,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532816482041,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 147,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532823563833,
+          "sample" : {
+            "age" : 3.1273160830000002,
+            "began" : 1534532823512958,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532823563833,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 148,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532826798375,
+          "sample" : {
+            "age" : 3.1305587500000001,
+            "began" : 1534532825882541,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532826798375,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 149,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532833736166,
+          "sample" : {
+            "age" : 3.137492833,
+            "began" : 1534532833683875,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532833736166,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 150,
+          "tapCount" : 2
+        },
+        {
+          "epoch" : 3,
+          "kind" : "sample",
+          "observedAt" : 1534532836110375,
+          "sample" : {
+            "age" : 3.1398563749999999,
+            "began" : 1534532836039791,
+            "buttons" : 0,
+            "counterAfter" : 29326098,
+            "counterBefore" : 29326098,
+            "ended" : 1534532836110375,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 151,
+          "tapCount" : 2
+        }
+      ],
+      "proof" : {
+        "anchorSequence" : 9,
+        "continuity" : "9EA0A24D-0DED-4241-86E2-E1AA332E420C",
+        "deadline" : 1534532752688000,
+        "hidActivityUpperBound" : 1534529705358083,
+        "hidCounter" : 29326098,
+        "matchedAt" : 1534529752688000,
+        "matchSequence" : 13,
+        "packet" : {
+          "flags" : 0,
+          "number" : -20895,
+          "point" : [
+            864,
+            354
+          ],
+          "sourcePID" : 54081,
+          "sourceState" : 2129137682,
+          "timestamp" : 1534529736514416,
+          "type" : 2
+        },
+        "pid" : 54073,
+        "receipt" : "92987A06-45F6-4B25-8D2E-49F4B9AAB8B1",
+        "session" : "5B92F1FA-B1C5-45CB-9A91-A8CBBF37C478",
+        "upSequence" : 10,
+        "window" : 325200
+      },
+      "scope" : "nativeRealStartReadObservations",
+      "state" : "validatedRealInput"
+    },
+    "lastObservedSourceFence" : {
+      "continuity" : "89903E6D-D746-415F-978A-05BF25B3251F",
+      "epoch" : "A47E2306-B4F4-4802-9916-023817700594",
+      "eventCount" : 2
+    },
+    "matchedStartCount" : 1,
+    "matchFacts" : {
+      "bound" : true
+    },
+    "permitIssued" : true,
+    "sourceFence" : {
+      "continuity" : "89903E6D-D746-415F-978A-05BF25B3251F",
+      "epoch" : "A47E2306-B4F4-4802-9916-023817700594",
+      "eventCount" : 2
+    },
+    "validationCount" : 1
+  },
+  "modelScope" : "injectedDiagnosticInventoryNotLiveStatusItems",
+  "mousePIDPosts" : 0,
+  "mouseSessionPosts" : 0,
+  "nativeDispatchEnabled" : false,
+  "nonce" : "5B92F1FA-B1C5-45CB-9A91-A8CBBF37C478",
+  "pendingRecovery" : false,
+  "permissionRequests" : 0,
+  "privateReadAttempts" : 0,
+  "realMoveValidated" : false,
+  "scope" : "realAuthorizationDiagnostic",
+  "senderCapability" : "absent",
+  "sessionBeforeStop" : {
+    "activityDuringReadCount" : 0,
+    "created" : true,
+    "disabledByUserCallbacks" : 0,
+    "listenPermission" : true,
+    "mainThread" : true,
+    "observedEventCount" : 2,
+    "originCounts" : {
+      "otherSourceReported" : 2
+    },
+    "overflowCount" : 0,
+    "portPresent" : true,
+    "portValid" : true,
+    "privateSourceState" : 1295932146,
+    "queuedEventCount" : 0,
+    "quietRefusalCount" : 2,
+    "readCause" : "ready",
+    "readCount" : 37,
+    "readyCount" : 35,
+    "tapEnabled" : true,
+    "tapLocation" : 1,
+    "timeoutCallbacks" : 0
+  },
+  "stageCount" : 9,
+  "stageEvidencePoisoned" : false,
+  "stageHeadSHA256" : "38e12f852f315ffcff6a8d305be1ebb61417d590ccf2f9e979d0703e2f8961da",
+  "terminal" : true,
+  "terminalBackupWritten" : true,
+  "terminalSummary" : {
+    "controllerPID" : 54073,
+    "nodeCount" : 143,
+    "nonce" : "5B92F1FA-B1C5-45CB-9A91-A8CBBF37C478",
+    "scope" : "nativeRealStartReadObservations",
+    "startupStage" : "started",
+    "state" : "validatedRealInput"
+  }
+}

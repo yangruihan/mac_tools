@@ -64,7 +64,7 @@ UI_DARK=1 EXPECT_NATIVE=1 EXPECT_MODERN=1 scripts/check-ui-layout.sh Sources/Mac
 
 ## 开源协议
 
-[MIT License](LICENSE)，Copyright (c) 2026 Ryan.AI。仓库自有源码、文档和图标中可授权的权利按 MIT 提供；Apple 框架和系统符号不属于本项目的授权范围。图标由 OpenAI 图像工具生成，不承诺图案独占性或商标权。
+[MIT License](LICENSE)，Copyright (c) 2026 Ryan.AI，继续适用于原有 MacTools 自有代码。本分支另含固定 Ice 0.11.12 的 GPLv3 来源和适配文件，不能按 MIT 授权；范围、修改及组合应用分发义务见 [第三方声明](THIRD_PARTY_NOTICES.md) 和 [GPLv3 全文](COPYING.GPL-3.0)。原 MIT 声明保留，不表示历史作者或 Ice 作者改授权。Apple 框架和系统符号不属于本项目的授权范围。图标由 OpenAI 图像工具生成，不承诺图案独占性或商标权。
 
 [开源检查报告](docs/OPEN-SOURCE-REVIEW.md) 为 2026-09-09 的检查记录，不代表所有后续改动都已完成重新审查。
 

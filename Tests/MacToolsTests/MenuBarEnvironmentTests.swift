@@ -88,12 +88,13 @@ final class MenuBarEnvironmentTests: XCTestCase {
         workspace.post(name: NSWorkspace.didWakeNotification, object: nil)
         workspace.post(name: NSWorkspace.didLaunchApplicationNotification, object: nil)
         workspace.post(name: NSWorkspace.didTerminateApplicationNotification, object: nil)
-        XCTAssertEqual(events, [.displaysChanged, .willSleep, .didWake, .applicationsChanged, .applicationsChanged])
+        workspace.post(name: NSWorkspace.didActivateApplicationNotification, object: nil)
+        XCTAssertEqual(events, [.displaysChanged, .willSleep, .didWake, .applicationsChanged, .applicationsChanged, .frontApplicationChanged])
         screen.post(name: NSWorkspace.didWakeNotification, object: nil)
-        XCTAssertEqual(events.count, 5)
+        XCTAssertEqual(events.count, 6)
         monitor.stop()
         screen.post(name: NSApplication.didChangeScreenParametersNotification, object: nil)
         workspace.post(name: NSWorkspace.didWakeNotification, object: nil)
-        XCTAssertEqual(events.count, 5)
+        XCTAssertEqual(events.count, 6)
     }
 }

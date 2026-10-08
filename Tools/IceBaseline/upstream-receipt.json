@@ -1,0 +1,24 @@
+{
+  "commit": "d567f1ecac68936a090d6b47d6f0b882c489c6f4",
+  "files": {
+    "Ice/Events/EventTap.swift": "7817b7c85fe4c4a5b71ec50761fb402471ecad60b940d43935edcd9d3ef98bb1",
+    "Ice/Utilities/MouseCursor.swift": "952cc7d0473766da5a7628692304c70aa6ad1b27963e6e55ee0088f42b7b4d7e",
+    "Ice/MenuBar/ItemManagement/MenuBarItemManager.swift": "342068fef33c0c7cb4cee2c57368e647c4d5d9c2e4c8e0ac6f0fcca13bd9f5a8",
+    "Ice/ControlItem/ControlItem.swift": "1f95563c0d9a163070f8dd9bfe29ebaa737104b4b0c0534104c162f3a3b16705"
+  },
+  "copiedFileChange": "GPL/source header only; no semantic edits",
+  "archive": {
+    "url": "https://codeload.github.com/jordanbaird/Ice/zip/d567f1ecac68936a090d6b47d6f0b882c489c6f4",
+    "sha256": "bf89817849565885eeeb71a54a60cba76e71b695366fc41a276c8c463dc8ace0",
+    "bytes": 16808580,
+    "commit": "d567f1ecac68936a090d6b47d6f0b882c489c6f4",
+    "selected": [
+      "Ice-d567f1ecac68936a090d6b47d6f0b882c489c6f4/Ice/Events/EventManager.swift",
+      "Ice-d567f1ecac68936a090d6b47d6f0b882c489c6f4/Ice/Events/EventTap.swift",
+      "Ice-d567f1ecac68936a090d6b47d6f0b882c489c6f4/Ice/Extensions/Task/Task+timeout.swift",
+      "Ice-d567f1ecac68936a090d6b47d6f0b882c489c6f4/Ice/MenuBar/ItemManagement/MenuBarItem.swift",
+      "Ice-d567f1ecac68936a090d6b47d6f0b882c489c6f4/Ice/Utilities/MouseCursor.swift"
+    ]
+  },
+  "fixturePositionScope": "Ice visible control item preferredPosition=0 applied only to fresh owned H key in test domain; T/N/formal keys are not explicitly rewritten"
+}

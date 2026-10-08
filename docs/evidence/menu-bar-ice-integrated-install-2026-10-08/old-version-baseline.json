@@ -1,0 +1,23 @@
+{
+  "atUTC": "2026-10-08T05:18:49.545655+00:00",
+  "path": "/Applications/MacTools.app",
+  "version": "0.2.0",
+  "build": "4",
+  "bundleIdentifier": "com.ryanai.mactools",
+  "displayName": "MacTools AX-only Preview",
+  "binarySHA256": "51e82865043c50b09fdee6883eb0a74096db8b865f393bf1d6b408cbe14b7c81",
+  "signature": "Executable=/Applications/MacTools.app/Contents/MacOS/MacTools\nIdentifier=com.ryanai.mactools\nFormat=app bundle with Mach-O thin (arm64)\nCodeDirectory v=20500 size=16159 flags=0x10000(runtime) hashes=498+3 location=embedded\nHash type=sha256 size=32\nCandidateCDHash sha256=08af9d593f8da2279b71b7302e6329106d0dcd14\nCandidateCDHashFull sha256=08af9d593f8da2279b71b7302e6329106d0dcd14bce25c997ed4ec6f124d5fa8\nHash choices=sha256\nCMSDigest=08af9d593f8da2279b71b7302e6329106d0dcd14bce25c997ed4ec6f124d5fa8\nCMSDigestType=2\nCDHash=08af9d593f8da2279b71b7302e6329106d0dcd14\nSignature size=4788\nAuthority=Apple Development: yangruihan@vip.qq.com (8TX76VGXAE)\nAuthority=Apple Worldwide Developer Relations Certification Authority\nAuthority=Apple Root CA\nSigned Time=Oct 2, 2026 at 11:29:51\nInfo.plist entries=10\nTeamIdentifier=58TJ64422P\nRuntime Version=26.2.0\nSealed Resources version=2 rules=13 files=1\nInternal requirements count=1 size=192\n",
+  "sourceBranch": "feat/menu-bar-reliable-activation",
+  "workspaceHEAD": "167771fe00e26d8688bfa4fe372fe10baf09de95",
+  "installedSourceCommit": "unknown; old bundle has no source revision metadata",
+  "rollbackApp": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-integrated-install-2026-10-08/rollback/MacTools-0.2.0-build4.app",
+  "preferencesBackup": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-integrated-install-2026-10-08/rollback/com.ryanai.mactools.plist",
+  "preferencesSHA256": "ac61457038a0b94320ca91f7e67b183b32ba7d3376d7dd9e37aaa9860490c053",
+  "appFileHashes": {
+    "Contents/Info.plist": "443882235cd5ccfb31c69cae39ca78773fbd0b70a5f578e91bfa98f0c17077ab",
+    "Contents/_CodeSignature/CodeResources": "607535ab3a3066fdeea18d88b026e931b95cbf6dde1e7a7936009304af494475",
+    "Contents/MacOS/MacTools": "51e82865043c50b09fdee6883eb0a74096db8b865f393bf1d6b408cbe14b7c81",
+    "Contents/Resources/AppIcon.icns": "9cb8ea0b56d8a26cd89c2cbb18349bdad254003ec0f3a869ae128a24adf8ea34"
+  },
+  "backupVerified": true
+}

@@ -1,0 +1,180 @@
+{
+  "actionConsumed" : false,
+  "AXActions" : 0,
+  "backendEnabled" : false,
+  "controllerPID" : 16745,
+  "fixtureAbsentAfter" : true,
+  "listenerFinal" : {
+    "activityDuringReadCount" : 0,
+    "created" : true,
+    "disabledByUserCallbacks" : 0,
+    "listenPermission" : true,
+    "mainThread" : true,
+    "observedEventCount" : 4,
+    "originCounts" : {
+      "hidStateReported" : 2,
+      "otherSourceReported" : 2
+    },
+    "overflowCount" : 0,
+    "portPresent" : true,
+    "portValid" : true,
+    "privateSourceState" : 1612381976,
+    "queuedEventCount" : 2,
+    "quietRefusalCount" : 3,
+    "readCause" : "warmupOrRecentActivity",
+    "readCount" : 5,
+    "readyCount" : 2,
+    "tapEnabled" : true,
+    "tapLocation" : 2,
+    "timeoutCallbacks" : 0
+  },
+  "matchedStartCount" : 0,
+  "mode" : "nativeLocalNoMove",
+  "mousePIDPosts" : 0,
+  "mouseSessionPosts" : 0,
+  "nativeDispatchEnabled" : false,
+  "nonce" : "DC103F10-BEA1-493C-AACA-78770EFBD118",
+  "normalQuitRequested" : true,
+  "passed" : false,
+  "pendingRecovery" : false,
+  "permissionRequests" : 0,
+  "pid" : 16737,
+  "privateReadAttempts" : 0,
+  "realMoveValidated" : false,
+  "startEntry" : {
+    "appKitWindow" : 322838,
+    "configuredWindow" : 322838,
+    "eventNumber" : -20895,
+    "insideStartButton" : true,
+    "locationInWindow" : {
+      "x" : 280,
+      "y" : 217
+    },
+    "sameWindowObject" : true,
+    "timestampFinite" : true,
+    "timestampSeconds" : 1513635.9948296249,
+    "type" : 2,
+    "virtual" : false
+  },
+  "startMatchFacts" : {
+    "consumed" : false,
+    "flagsEqual" : true,
+    "freshWithin250ms" : true,
+    "noLaterTapEvent" : true,
+    "numberEqual" : true,
+    "pointEqual" : true,
+    "sourcePIDEqual" : true,
+    "sourceStateEqual" : true,
+    "tapCandidatePresent" : true,
+    "timestampEqual" : true,
+    "typeEqual" : true,
+    "virtual" : false
+  },
+  "startReceiptMatched" : false,
+  "startReceiptTraces" : [
+    {
+      "appKitObservedAt" : 1513636001,
+      "appKitRunLoopMode" : "none",
+      "callbackCountAfterRead" : 3,
+      "callbackCountBeforeRead" : 3,
+      "captureAfterRead" : {
+        "leftUpCallbacks" : 0,
+        "missingWindowCallbacks" : 0,
+        "otherWindowCallbacks" : 0,
+        "ownWindowCallbacks" : 0
+      },
+      "captureBeforeRead" : {
+        "leftUpCallbacks" : 0,
+        "missingWindowCallbacks" : 0,
+        "otherWindowCallbacks" : 0,
+        "ownWindowCallbacks" : 0
+      },
+      "claimAt" : 1513636002,
+      "comparison" : {
+        "appKitPacket" : {
+          "flags" : 0,
+          "number" : -20895,
+          "point" : [
+            864,
+            355
+          ],
+          "sourcePID" : 16756,
+          "sourceState" : 1690226100,
+          "timestamp" : 1513635994829625,
+          "type" : 2
+        },
+        "claimObservedAt" : 1513636002,
+        "currentEventCount" : 3
+      },
+      "configuredWindow" : 322838,
+      "publicActivityDeltaMilliseconds" : -41.92362492904067,
+      "tapLocation" : 2
+    },
+    {
+      "appKitObservedAt" : 1513636001,
+      "appKitRunLoopMode" : "none",
+      "callbackCountAfterRead" : 4,
+      "callbackCountBeforeRead" : 4,
+      "callbackRunLoopMode" : "default",
+      "captureAfterRead" : {
+        "lastHandlingRelation" : "own",
+        "lastLeftUpAt" : 1513636002,
+        "lastOwnUpAt" : 1513636002,
+        "lastPointerRelation" : "own",
+        "leftUpCallbacks" : 1,
+        "missingWindowCallbacks" : 0,
+        "otherWindowCallbacks" : 0,
+        "ownWindowCallbacks" : 1
+      },
+      "captureBeforeRead" : {
+        "lastHandlingRelation" : "own",
+        "lastLeftUpAt" : 1513636002,
+        "lastOwnUpAt" : 1513636002,
+        "lastPointerRelation" : "own",
+        "leftUpCallbacks" : 1,
+        "missingWindowCallbacks" : 0,
+        "otherWindowCallbacks" : 0,
+        "ownWindowCallbacks" : 1
+      },
+      "claimAt" : 1513636074,
+      "comparison" : {
+        "appKitPacket" : {
+          "flags" : 0,
+          "number" : -20895,
+          "point" : [
+            864,
+            355
+          ],
+          "sourcePID" : 16756,
+          "sourceState" : 1690226100,
+          "timestamp" : 1513635994829625,
+          "type" : 2
+        },
+        "claimObservedAt" : 1513636074,
+        "currentEventCount" : 4,
+        "tapEventCount" : 4,
+        "tapObservedAt" : 1513636002,
+        "tapPacket" : {
+          "flags" : 0,
+          "number" : -20895,
+          "point" : [
+            864,
+            355
+          ],
+          "sourcePID" : 16756,
+          "sourceState" : 1690226100,
+          "timestamp" : 1513635994829625,
+          "type" : 2
+        }
+      },
+      "configuredWindow" : 322838,
+      "publicActivityDeltaMilliseconds" : -41.923083364963531,
+      "tapLocation" : 2
+    }
+  ],
+  "startReceiptVirtual" : false,
+  "terminal" : true,
+  "terminalReason" : "开始关联失败：noExactStartReceipt",
+  "triggerProposalCount" : 0,
+  "virtualScenario" : "none"
+}

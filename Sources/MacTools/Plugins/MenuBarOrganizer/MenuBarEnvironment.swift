@@ -44,7 +44,7 @@ struct MenuBarDisplay: Equatable {
 }
 
 struct MenuBarEnvironment {
-    enum Change: Equatable { case displaysChanged, willSleep, didWake, applicationsChanged }
+    enum Change: Equatable { case displaysChanged, willSleep, didWake, applicationsChanged, frontApplicationChanged }
     private(set) var generation = UUID()
     private(set) var sleeping = false
     mutating func receive(_ change: Change) {
@@ -74,6 +74,10 @@ final class MenuBarEnvironmentMonitor {
             (workspaceCenter, NSWorkspace.didWakeNotification, .didWake),
             (workspaceCenter, NSWorkspace.didLaunchApplicationNotification, .applicationsChanged),
             (workspaceCenter, NSWorkspace.didTerminateApplicationNotification, .applicationsChanged)]
+        let activation = workspaceCenter.addObserver(forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.receive(.frontApplicationChanged)
+        }
+        observers.append((workspaceCenter, activation))
         for (center, name, change) in names {
             observers.append((center, center.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in self?.receive(change) }))
         }

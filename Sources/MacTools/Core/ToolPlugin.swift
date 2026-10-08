@@ -16,11 +16,13 @@ protocol ToolPlugin: AnyObject {
     func stop() throws
     func makeView() -> AnyView
     func makeMenuItems() -> AnyView
+    func toolboxWillClose()
 }
 
 extension ToolPlugin {
     func start() throws {}
     func stop() throws {}
+    func toolboxWillClose() {}
 }
 
 struct PluginSettings {
@@ -105,6 +107,9 @@ final class PluginRegistry: ObservableObject {
             do { try plugin.stop(); startedIDs.remove(plugin.info.id) }
             catch { report("\(plugin.info.title)清理失败：\(error.localizedDescription)") }
         }
+    }
+    func toolboxWillClose() {
+        for plugin in plugins where startedIDs.contains(plugin.info.id) { plugin.toolboxWillClose() }
     }
 }
 

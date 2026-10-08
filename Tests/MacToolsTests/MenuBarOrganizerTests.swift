@@ -3,6 +3,58 @@ import CoreGraphics
 @testable import MacTools
 
 final class MenuBarOrganizerTests: XCTestCase {
+    @MainActor
+    func testRepeatedManualEntriesAndModeSwitchesPreserveOptOutAndLegacyConfiguration() throws {
+        let name = "MenuOrganizerManualEntries.\(UUID())"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: name))
+        defer { defaults.removePersistentDomain(forName: name) }
+        let settings = PluginSettings(id: MenuBarOrganizerPlugin.id, defaults: defaults)
+        let optedOut = try JSONEncoder().encode(false), limit = try JSONEncoder().encode(9)
+        settings.set(optedOut, forKey: "optedIn")
+        settings.set(limit, forKey: "visibleLimit")
+        defaults.set(648.0, forKey: "NSStatusItem Preferred Position Item-0")
+        let context = PluginContext(settings: settings, hotkeys: HotKeyService(), report: { _ in })
+        let plugin = MenuBarOrganizerPlugin(context: context)
+        plugin.start()
+        for _ in 0..<20 {
+            for mode in OrganizerPresentationMode.allCases {
+                plugin.setPresentationMode(mode)
+                plugin.arrangeNativeIcons()
+                plugin.toggleNative()
+                plugin.openShelf()
+                plugin.expand()
+                XCTAssertFalse(plugin.isOrganizing, "Manual entries must not silently opt in or create status items")
+                XCTAssertFalse(plugin.isCapturing)
+                XCTAssertFalse(plugin.allowsPanelEditing)
+                XCTAssertTrue(plugin.icons.isEmpty && plugin.visibleIcons.isEmpty)
+                XCTAssertEqual(settings.data(forKey: "optedIn"), optedOut)
+                XCTAssertEqual(settings.data(forKey: "visibleLimit"), limit)
+                XCTAssertEqual(defaults.double(forKey: "NSStatusItem Preferred Position Item-0"), 648)
+                XCTAssertEqual(MenuBarOrganizerPlugin(context: context).presentationMode, mode)
+            }
+        }
+        plugin.stop()
+        XCTAssertEqual(settings.data(forKey: "optedIn"), optedOut)
+        XCTAssertEqual(settings.data(forKey: "visibleLimit"), limit)
+    }
+
+    @MainActor
+    func testFormerAutomaticEditingEntriesAreInertAndPreserveSettings() async {
+        let name = "MenuOrganizerAXOnly.\(UUID())", defaults = UserDefaults(suiteName: name)!
+        defer { defaults.removePersistentDomain(forName: name) }
+        let settings = PluginSettings(id: MenuBarOrganizerPlugin.id, defaults: defaults)
+        settings.set(try! JSONEncoder().encode(7), forKey: "visibleLimit")
+        let plugin = MenuBarOrganizerPlugin(context: PluginContext(settings: settings, hotkeys: HotKeyService(), report: { _ in }))
+        let before = defaults.dictionaryRepresentation(), generation = plugin.gallery.generation
+        plugin.beginPanelEditing(); plugin.moveIcon(1, intoShelf: true); plugin.reorderIcon(1, nextTo: 2); plugin.applyVisibleLimit()
+        let moved = await plugin.postDrag(from: CGPoint(x: 500, y: 20), to: CGPoint(x: 600, y: 20), token: generation)
+        XCTAssertFalse(moved)
+        XCTAssertFalse(plugin.allowsPanelEditing)
+        XCTAssertFalse(plugin.isOrganizing)
+        XCTAssertEqual(plugin.gallery.generation, generation)
+        XCTAssertEqual(defaults.dictionaryRepresentation() as NSDictionary, before as NSDictionary)
+        XCTAssertEqual(plugin.status, MenuBarOperationFailure.movementUnavailable.message)
+    }
     func testResidentPartitionIncludesAllSevenAppsBetweenDividerAndControl() {
         let screen = CGRect(x: 0, y: 0, width: 2056, height: 1329)
         let divider = CGRect(x: 1314, y: 0, width: 24, height: 43)

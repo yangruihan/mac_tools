@@ -1,0 +1,19 @@
+{
+  "atUTC": "2026-10-08T05:38:45.451924+00:00",
+  "installedPath": "/Applications/MacTools.app",
+  "version": "0.2.1",
+  "build": "5",
+  "binarySHA256": "515c9640ea01039d0157a57cae81893547cfac04b404b6ce41086461bfbce9a2",
+  "bundleIdentifier": "com.ryanai.mactools",
+  "team": "58TJ64422P",
+  "sourceRevision": "167771fe00e26d8688bfa4fe372fe10baf09de95",
+  "uncommittedSource": true,
+  "pid": 74193,
+  "normalLaunch": true,
+  "newMousePosts": 0,
+  "newOwnedSessions": 0,
+  "newPermissionRequests": 0,
+  "ordinaryMovementEnabled": false,
+  "rollbackApp": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-integrated-install-2026-10-08/rollback/MacTools-0.2.0-build4.app",
+  "preferencesBackup": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-integrated-install-2026-10-08/rollback/com.ryanai.mactools.plist"
+}

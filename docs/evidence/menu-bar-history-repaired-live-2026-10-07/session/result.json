@@ -1,0 +1,763 @@
+{
+  "atUTC" : "2026-10-07T02:33:26Z",
+  "authority" : "nativeRealWorker",
+  "AXActions" : 0,
+  "backendEnabled" : false,
+  "buildRevision" : "controller-real-local-v13-request-quiet",
+  "controllerPID" : 57165,
+  "destinationAdmission" : {
+    "activeSpace" : 4634,
+    "atUnix" : 1791340406.8044419,
+    "rightSafe" : {
+      "height" : 32,
+      "width" : 772,
+      "x" : 956,
+      "y" : 0
+    },
+    "rows" : [
+      {
+        "applicationPath" : "\/Applications\/MacTools.app",
+        "axQueried" : true,
+        "diagnosticQualified" : false,
+        "expectedAX" : [
+          {
+            "centerInsideStatus" : false,
+            "frame" : {
+              "height" : 24,
+              "width" : 39.5,
+              "x" : 1473,
+              "y" : 6.5
+            },
+            "fullyInsideRightSafe" : true
+          }
+        ],
+        "formalPathMatches" : true,
+        "frame" : {
+          "height" : 37,
+          "width" : 24,
+          "x" : 1450,
+          "y" : 0
+        },
+        "jointAXMatch" : false,
+        "listedOnScreen" : true,
+        "onScreenField" : "ordered",
+        "pid" : 29904,
+        "selectedByNativePredicate" : false,
+        "widthLessThan64" : true,
+        "windowID" : 314680
+      },
+      {
+        "applicationPath" : "\/Applications\/MacTools.app",
+        "axQueried" : true,
+        "diagnosticQualified" : true,
+        "expectedAX" : [
+          {
+            "centerInsideStatus" : true,
+            "frame" : {
+              "height" : 24,
+              "width" : 39.5,
+              "x" : 1473,
+              "y" : 6.5
+            },
+            "fullyInsideRightSafe" : true
+          }
+        ],
+        "formalPathMatches" : true,
+        "frame" : {
+          "height" : 37,
+          "width" : 38,
+          "x" : 1474,
+          "y" : 0
+        },
+        "jointAXMatch" : true,
+        "listedOnScreen" : true,
+        "onScreenField" : "ordered",
+        "pid" : 29904,
+        "selectedByNativePredicate" : true,
+        "widthLessThan64" : true,
+        "windowID" : 314679
+      }
+    ],
+    "selectedWindowID" : 314679,
+    "targetFrame" : {
+      "height" : 37,
+      "width" : 29,
+      "x" : 665,
+      "y" : 0
+    },
+    "targetPID" : 57141,
+    "targetWindowID" : 327029
+  },
+  "destinationFailedFields" : [
+    "AXCenterInsideStatus",
+    "none"
+  ],
+  "emergencyReleases" : 0,
+  "failure" : "stopped(HiddenMoveController.MenuBarLocalContinuityLedger.Cause.hidActivityUnproven)",
+  "initialFailure" : "stopped(HiddenMoveController.MenuBarLocalContinuityLedger.Cause.hidActivityUnproven)",
+  "listenerBeforeStop" : {
+    "activityDuringReadCount" : 1,
+    "created" : true,
+    "disabledByUserCallbacks" : 0,
+    "listenPermission" : true,
+    "mainThread" : true,
+    "observedEventCount" : 1155,
+    "originCounts" : {
+      "combinedStateReported" : 1,
+      "hidStateReported" : 1154
+    },
+    "overflowCount" : 577,
+    "portPresent" : true,
+    "portValid" : true,
+    "privateSourceState" : 782433444,
+    "queuedEventCount" : 1089,
+    "quietRefusalCount" : 0,
+    "readCause" : "activityDuringRead",
+    "readCount" : 1,
+    "readyCount" : 0,
+    "tapEnabled" : true,
+    "tapLocation" : 1,
+    "terminalCause" : "queueOverflow",
+    "timeoutCallbacks" : 0
+  },
+  "listenerFinal" : {
+    "activityDuringReadCount" : 1,
+    "created" : true,
+    "disabledByUserCallbacks" : 0,
+    "listenPermission" : true,
+    "mainThread" : true,
+    "observedEventCount" : 1155,
+    "originCounts" : {
+      "combinedStateReported" : 1,
+      "hidStateReported" : 1154
+    },
+    "overflowCount" : 577,
+    "portPresent" : false,
+    "portValid" : false,
+    "privateSourceState" : 782433444,
+    "queuedEventCount" : 1089,
+    "quietRefusalCount" : 0,
+    "readCause" : "activityDuringRead",
+    "readCount" : 1,
+    "readyCount" : 0,
+    "tapEnabled" : false,
+    "tapLocation" : 1,
+    "terminalCause" : "queueOverflow",
+    "timeoutCallbacks" : 0
+  },
+  "localStartHandedOff" : false,
+  "localStartRequired" : true,
+  "localStartSummary" : {
+    "controllerPID" : 57165,
+    "failure" : "stopped(HiddenMoveController.MenuBarLocalContinuityLedger.Cause.hidActivityUnproven)",
+    "firstFailure" : {
+      "attemptedObservationAt" : 1668271220942625,
+      "cause" : "hidActivityUnproven",
+      "lastObservedAt" : 1668271220942625,
+      "lastSequence" : 2393,
+      "line" : 215,
+      "operation" : "claimRequest(_:up:span:at:)",
+      "previousState" : "awaitingReceipt",
+      "sourceFile" : "HiddenMoveController\/MenuBarLocalContinuityLedger.swift"
+    },
+    "nodeCount" : 36,
+    "nonce" : "C8F1E081-C079-4E05-9983-6356E8C50DC0",
+    "scope" : "nativeRealStartReadObservations",
+    "startupStage" : "started",
+    "state" : "stopped(HiddenMoveController.MenuBarLocalContinuityLedger.Cause.hidActivityUnproven)"
+  },
+  "localStartTerminal" : {
+    "atUptimeNanoseconds" : 1668271221126333,
+    "authority" : "nativeRealWorker",
+    "binding" : {
+      "controllerLaunch" : 1791340406.1482329,
+      "controllerPID" : 57165,
+      "controllerSHA256" : "ad24fbd66bd9ec704de3d9a8fe476a54328a1481c7cc0180a596b6873eced751",
+      "nonce" : "C8F1E081-C079-4E05-9983-6356E8C50DC0",
+      "targetPID" : 57141
+    },
+    "capturedStart" : {
+      "flags" : 0,
+      "number" : -27478,
+      "point" : [
+        860.890625,
+        370.3515625
+      ],
+      "sourcePID" : 0,
+      "sourceState" : 1,
+      "timestamp" : 1668271211508666,
+      "type" : 2
+    },
+    "diagnostics" : {
+      "listenPermission" : true,
+      "mainThread" : true,
+      "monitoringHealthy" : true,
+      "native" : true,
+      "observedEventCount" : 1083,
+      "portValid" : true,
+      "sampleCount" : 1310,
+      "startupStage" : "started",
+      "state" : "stopped(HiddenMoveController.MenuBarLocalContinuityLedger.Cause.hidActivityUnproven)",
+      "tapEnabled" : true,
+      "tapLocation" : 2
+    },
+    "failure" : "stopped(HiddenMoveController.MenuBarLocalContinuityLedger.Cause.hidActivityUnproven)",
+    "handedOff" : false,
+    "input" : {
+      "continuity" : "9C5DAA65-AE0B-4B03-8BA0-3592D984FE62",
+      "firstFailure" : {
+        "attemptedObservationAt" : 1668271220942625,
+        "cause" : "hidActivityUnproven",
+        "lastObservedAt" : 1668271220942625,
+        "lastSequence" : 2393,
+        "line" : 215,
+        "operation" : "claimRequest(_:up:span:at:)",
+        "previousState" : "awaitingReceipt",
+        "sourceFile" : "HiddenMoveController\/MenuBarLocalContinuityLedger.swift"
+      },
+      "nodes" : [
+        {
+          "epoch" : 2055,
+          "kind" : "activity",
+          "observedAt" : 1668270979027875,
+          "sequence" : 2358,
+          "tapCount" : 1069
+        },
+        {
+          "epoch" : 2056,
+          "kind" : "sample",
+          "observedAt" : 1668270979133541,
+          "sample" : {
+            "age" : 0.00038783399999999999,
+            "began" : 1668270979050208,
+            "buttons" : 0,
+            "counterAfter" : 29564162,
+            "counterBefore" : 29564162,
+            "ended" : 1668270979133541,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2359,
+          "tapCount" : 1069
+        },
+        {
+          "epoch" : 2057,
+          "kind" : "activity",
+          "observedAt" : 1668270987051125,
+          "sequence" : 2360,
+          "tapCount" : 1070
+        },
+        {
+          "epoch" : 2058,
+          "kind" : "sample",
+          "observedAt" : 1668270987172166,
+          "sample" : {
+            "age" : 0.00049820799999999998,
+            "began" : 1668270987074583,
+            "buttons" : 0,
+            "counterAfter" : 29564163,
+            "counterBefore" : 29564163,
+            "ended" : 1668270987172166,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2361,
+          "tapCount" : 1070
+        },
+        {
+          "epoch" : 2059,
+          "kind" : "sample",
+          "observedAt" : 1668270999346000,
+          "sample" : {
+            "age" : 0.00026737499999999998,
+            "began" : 1668270995408833,
+            "buttons" : 0,
+            "counterAfter" : 29564164,
+            "counterBefore" : 29564164,
+            "ended" : 1668270999346000,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2362,
+          "tapCount" : 1070
+        },
+        {
+          "epoch" : 2060,
+          "kind" : "activity",
+          "observedAt" : 1668270999438875,
+          "sequence" : 2363,
+          "tapCount" : 1071
+        },
+        {
+          "epoch" : 2060,
+          "kind" : "sample",
+          "observedAt" : 1668270999497250,
+          "sample" : {
+            "age" : 0.0016670420000000001,
+            "began" : 1668270999445708,
+            "buttons" : 0,
+            "counterAfter" : 29564164,
+            "counterBefore" : 29564164,
+            "ended" : 1668270999497250,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2364,
+          "tapCount" : 1071
+        },
+        {
+          "epoch" : 2060,
+          "kind" : "sample",
+          "observedAt" : 1668270999591500,
+          "sample" : {
+            "age" : 0.001765834,
+            "began" : 1668270999546458,
+            "buttons" : 0,
+            "counterAfter" : 29564164,
+            "counterBefore" : 29564164,
+            "ended" : 1668270999591500,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2365,
+          "tapCount" : 1071
+        },
+        {
+          "epoch" : 2061,
+          "kind" : "activity",
+          "observedAt" : 1668271001620583,
+          "sequence" : 2366,
+          "tapCount" : 1072
+        },
+        {
+          "epoch" : 2062,
+          "kind" : "sample",
+          "observedAt" : 1668271003679250,
+          "sample" : {
+            "age" : 0.002241542,
+            "began" : 1668271001630041,
+            "buttons" : 0,
+            "counterAfter" : 29564165,
+            "counterBefore" : 29564165,
+            "ended" : 1668271003679250,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2367,
+          "tapCount" : 1072
+        },
+        {
+          "epoch" : 2063,
+          "kind" : "activity",
+          "observedAt" : 1668271009831458,
+          "sequence" : 2368,
+          "tapCount" : 1073
+        },
+        {
+          "epoch" : 2064,
+          "kind" : "sample",
+          "observedAt" : 1668271009887458,
+          "sample" : {
+            "age" : 0.000239958,
+            "began" : 1668271009844916,
+            "buttons" : 0,
+            "counterAfter" : 29564166,
+            "counterBefore" : 29564166,
+            "ended" : 1668271009887458,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2369,
+          "tapCount" : 1073
+        },
+        {
+          "epoch" : 2065,
+          "kind" : "activity",
+          "observedAt" : 1668271017145875,
+          "sequence" : 2370,
+          "tapCount" : 1074
+        },
+        {
+          "epoch" : 2066,
+          "kind" : "sample",
+          "observedAt" : 1668271017219708,
+          "sample" : {
+            "age" : 0.00029804199999999999,
+            "began" : 1668271017155125,
+            "buttons" : 0,
+            "counterAfter" : 29564167,
+            "counterBefore" : 29564167,
+            "ended" : 1668271017219708,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2371,
+          "tapCount" : 1074
+        },
+        {
+          "epoch" : 2067,
+          "kind" : "activity",
+          "observedAt" : 1668271023768416,
+          "sequence" : 2372,
+          "tapCount" : 1075
+        },
+        {
+          "epoch" : 2068,
+          "kind" : "sample",
+          "observedAt" : 1668271023853500,
+          "sample" : {
+            "age" : 0.00033533400000000001,
+            "began" : 1668271023784625,
+            "buttons" : 0,
+            "counterAfter" : 29564168,
+            "counterBefore" : 29564168,
+            "ended" : 1668271023853500,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2373,
+          "tapCount" : 1075
+        },
+        {
+          "epoch" : 2069,
+          "kind" : "activity",
+          "observedAt" : 1668271030785916,
+          "sequence" : 2374,
+          "tapCount" : 1076
+        },
+        {
+          "epoch" : 2070,
+          "kind" : "sample",
+          "observedAt" : 1668271030864375,
+          "sample" : {
+            "age" : 0.00029329200000000001,
+            "began" : 1668271030797708,
+            "buttons" : 0,
+            "counterAfter" : 29564169,
+            "counterBefore" : 29564169,
+            "ended" : 1668271030864375,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2375,
+          "tapCount" : 1076
+        },
+        {
+          "epoch" : 2071,
+          "kind" : "activity",
+          "observedAt" : 1668271038788291,
+          "sequence" : 2376,
+          "tapCount" : 1077
+        },
+        {
+          "epoch" : 2072,
+          "kind" : "sample",
+          "observedAt" : 1668271038872458,
+          "sample" : {
+            "age" : 0.00033825000000000001,
+            "began" : 1668271038801416,
+            "buttons" : 0,
+            "counterAfter" : 29564170,
+            "counterBefore" : 29564170,
+            "ended" : 1668271038872458,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2377,
+          "tapCount" : 1077
+        },
+        {
+          "epoch" : 2073,
+          "kind" : "activity",
+          "observedAt" : 1668271046751375,
+          "sequence" : 2378,
+          "tapCount" : 1078
+        },
+        {
+          "epoch" : 2074,
+          "kind" : "sample",
+          "observedAt" : 1668271046832416,
+          "sample" : {
+            "age" : 0.000329625,
+            "began" : 1668271046769291,
+            "buttons" : 0,
+            "counterAfter" : 29564171,
+            "counterBefore" : 29564171,
+            "ended" : 1668271046832416,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2379,
+          "tapCount" : 1078
+        },
+        {
+          "epoch" : 2075,
+          "kind" : "activity",
+          "observedAt" : 1668271054327416,
+          "sequence" : 2380,
+          "tapCount" : 1079
+        },
+        {
+          "epoch" : 2076,
+          "kind" : "sample",
+          "observedAt" : 1668271054407166,
+          "sample" : {
+            "age" : 0.00033149999999999998,
+            "began" : 1668271054338958,
+            "buttons" : 0,
+            "counterAfter" : 29564172,
+            "counterBefore" : 29564172,
+            "ended" : 1668271054407166,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2381,
+          "tapCount" : 1079
+        },
+        {
+          "epoch" : 2077,
+          "kind" : "activity",
+          "observedAt" : 1668271075645291,
+          "sequence" : 2382,
+          "tapCount" : 1080
+        },
+        {
+          "epoch" : 2078,
+          "kind" : "sample",
+          "observedAt" : 1668271077101333,
+          "sample" : {
+            "age" : 0.00156475,
+            "began" : 1668271075658625,
+            "buttons" : 0,
+            "counterAfter" : 29564174,
+            "counterBefore" : 29564174,
+            "ended" : 1668271077101333,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2383,
+          "tapCount" : 1080
+        },
+        {
+          "epoch" : 2079,
+          "kind" : "activity",
+          "observedAt" : 1668271079045750,
+          "sequence" : 2384,
+          "tapCount" : 1081
+        },
+        {
+          "epoch" : 2079,
+          "kind" : "sample",
+          "observedAt" : 1668271079121333,
+          "sample" : {
+            "age" : 0.0036110420000000001,
+            "began" : 1668271079054416,
+            "buttons" : 0,
+            "counterAfter" : 29564174,
+            "counterBefore" : 29564174,
+            "ended" : 1668271079121333,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2385,
+          "tapCount" : 1081
+        },
+        {
+          "epoch" : 2079,
+          "kind" : "sample",
+          "observedAt" : 1668271097697208,
+          "sample" : {
+            "age" : 0.021618917000000001,
+            "began" : 1668271095173875,
+            "buttons" : 0,
+            "counterAfter" : 29564174,
+            "counterBefore" : 29564174,
+            "ended" : 1668271097697208,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2386,
+          "tapCount" : 1081
+        },
+        {
+          "epoch" : 2079,
+          "kind" : "sample",
+          "observedAt" : 1668271100176375,
+          "sample" : {
+            "age" : 0.024687750000000001,
+            "began" : 1668271099997291,
+            "buttons" : 0,
+            "counterAfter" : 29564174,
+            "counterBefore" : 29564174,
+            "ended" : 1668271100176375,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2387,
+          "tapCount" : 1081
+        },
+        {
+          "epoch" : 2080,
+          "kind" : "activity",
+          "observedAt" : 1668271122501625,
+          "sequence" : 2388,
+          "tapCount" : 1082
+        },
+        {
+          "epoch" : 2081,
+          "kind" : "sample",
+          "observedAt" : 1668271122590250,
+          "sample" : {
+            "age" : 0.00047150000000000002,
+            "began" : 1668271122522625,
+            "buttons" : 1,
+            "counterAfter" : 29564176,
+            "counterBefore" : 29564176,
+            "ended" : 1668271122590250,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2389,
+          "tapCount" : 1082
+        },
+        {
+          "epoch" : 2082,
+          "kind" : "ownUp",
+          "observedAt" : 1668271211728833,
+          "packet" : {
+            "flags" : 0,
+            "number" : -27478,
+            "point" : [
+              860.890625,
+              370.3515625
+            ],
+            "sourcePID" : 0,
+            "sourceState" : 1,
+            "timestamp" : 1668271211508666,
+            "type" : 2
+          },
+          "sequence" : 2390,
+          "tapCount" : 1083
+        },
+        {
+          "epoch" : 2083,
+          "kind" : "sample",
+          "observedAt" : 1668271211809000,
+          "sample" : {
+            "age" : 0.00025900000000000001,
+            "began" : 1668271211742958,
+            "buttons" : 0,
+            "counterAfter" : 29564178,
+            "counterBefore" : 29564178,
+            "ended" : 1668271211809000,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2391,
+          "tapCount" : 1083
+        },
+        {
+          "epoch" : 2083,
+          "kind" : "sample",
+          "observedAt" : 1668271216343958,
+          "sample" : {
+            "age" : 0.0047931249999999996,
+            "began" : 1668271216263541,
+            "buttons" : 0,
+            "counterAfter" : 29564178,
+            "counterBefore" : 29564178,
+            "ended" : 1668271216343958,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2392,
+          "tapCount" : 1083
+        },
+        {
+          "epoch" : 2083,
+          "kind" : "sample",
+          "observedAt" : 1668271220942625,
+          "sample" : {
+            "age" : 0.0090589169999999997,
+            "began" : 1668271218627333,
+            "buttons" : 0,
+            "counterAfter" : 29564178,
+            "counterBefore" : 29564178,
+            "ended" : 1668271220942625,
+            "healthyAfter" : true,
+            "healthyBefore" : true,
+            "modifiers" : 0
+          },
+          "sequence" : 2393,
+          "tapCount" : 1083
+        }
+      ],
+      "scope" : "nativeRealStartReadObservations",
+      "startHistoryBoundary" : {
+        "earliestRequiredAt" : 1668270961508666,
+        "retainedFromSequence" : 2358,
+        "retiredNodeCount" : 478,
+        "retiredThroughSequence" : 2357
+      },
+      "startPolicy" : "requestQuietReal",
+      "state" : "stopped(HiddenMoveController.MenuBarLocalContinuityLedger.Cause.hidActivityUnproven)"
+    },
+    "matchedStartCount" : 0,
+    "matchFacts" : {
+      "consumed" : false,
+      "flagsEqual" : true,
+      "freshWithin250ms" : true,
+      "noLaterTapEvent" : true,
+      "numberEqual" : true,
+      "pointEqual" : true,
+      "sourcePIDEqual" : true,
+      "sourceStateEqual" : true,
+      "tapCandidatePresent" : true,
+      "timestampEqual" : true,
+      "typeEqual" : true,
+      "virtual" : false
+    },
+    "permitIssued" : false,
+    "stoppedCause" : "hidActivityUnproven",
+    "validationCount" : 0
+  },
+  "localStartTerminalBackupWritten" : true,
+  "mousePIDPosts" : 0,
+  "mouseSessionPosts" : 0,
+  "moveMenuRestorePassed" : false,
+  "nonce" : "C8F1E081-C079-4E05-9983-6356E8C50DC0",
+  "passed" : false,
+  "pendingRecovery" : false,
+  "permissionRequests" : 0,
+  "pid" : 57141,
+  "privateReadAttempts" : 122,
+  "refusalCategory" : "realLocalStartRejected",
+  "remoteStartAccepted" : false,
+  "requestIsActionAuthorization" : false,
+  "stageCount" : 8,
+  "stageEvidencePoisoned" : false,
+  "stageHeadSHA256" : "6cfb5725ff646273b3054d8d3a95e73471d26580b7d11a78bea9cf2c2f53b18f",
+  "startPolicy" : "requestQuietReal",
+  "terminal" : true,
+  "workerMode" : "--local-real-once"
+}

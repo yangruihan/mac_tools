@@ -1,0 +1,71 @@
+{
+  "atUTC": "2026-10-08T05:42:14.982479+00:00",
+  "frozenRootsVerified": {
+    "menu-bar-shared-stop-hardening-2026-10-07": 182,
+    "menu-bar-ice-baseline-candidate-2026-10-07": 24,
+    "menu-bar-ice-baseline-live-2026-10-07": 1214,
+    "menu-bar-ice-fixture-layout-fix-2026-10-07": 45,
+    "menu-bar-ice-v2-live-2026-10-07": 1230,
+    "menu-bar-implementation-options-review-2026-10-07": 4,
+    "menu-bar-ice-baseline-reorder-2026-10-07": 4,
+    "menu-bar-ice-session-lifetime-fix-2026-10-07": 55,
+    "menu-bar-ice-v3-live-2026-10-07": 234,
+    "menu-bar-ice-route-preparation-fix-2026-10-07": 49,
+    "menu-bar-ice-v3_2-live-resumed-2026-10-07": 480,
+    "menu-bar-ice-return-observation-fix-2026-10-07": 69,
+    "menu-bar-ice-v3_3-final-verification-2026-10-07": 1427,
+    "menu-bar-ice-v3_3-cancel-verification-2026-10-07": 953,
+    "menu-bar-ice-owned-cancel-2026-10-07": 302,
+    "menu-bar-ice-cancel-startup-2026-10-07": 356,
+    "menu-bar-ice-deliverable-candidate-2026-10-07": 79,
+    "menu-bar-ice-async-adapter-2026-10-07": 100,
+    "menu-bar-ice-v3_5-normal-live-2026-10-07": 418,
+    "menu-bar-ice-v3_5-wait-cancel-live-2026-10-07": 265,
+    "menu-bar-ice-production-bridge-2026-10-07": 129,
+    "menu-bar-ice-v3_6-native-entry-2026-10-07": 1482,
+    "menu-bar-ice-v3_6-native-normal-2026-10-08": 718,
+    "menu-bar-native-any-counter-diagnosis-2026-10-08": 7,
+    "menu-bar-ice-v3_7-ice-aligned-live-2026-10-08": 431,
+    "menu-bar-ice-v3_7-exit-reflow-analysis-2026-10-08": 4,
+    "menu-bar-ice-product-entry-2026-10-08": 90
+  },
+  "frozenFilesVerified": 10351,
+  "baselineFilesUnchanged": 141,
+  "baselineFilesIntentionallyChanged": {
+    "Sources/MacTools/MacTools.swift": {
+      "before": "3fb26a5927e3b33e49cafdaf632d90c26ddecdbc1b9b1d38498194130c597bee",
+      "after": "2f5835070fe200effa47cd469cd86dd2771e2da2d057808e21dd1a5bc13e07a8"
+    },
+    "Sources/MacTools/AppModel.swift": {
+      "before": "f3b27a1b51ded89aa85c28ac59f88673fa83ae5142a82fb3874f609252da8f68",
+      "after": "9e9517739f81589a0c550327573ab1c7d625da1bb6e4c06c8bbd48970d28c76c"
+    },
+    "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": {
+      "before": "063fcaadc18b37cfdac1e15c45d385b5c343db91470dfa4f992bf6aba2ddea10",
+      "after": "e375b05b6a15a472dd8c46b30b501d9015ce9cb2b85403fd2a5c20e26e7193a2"
+    }
+  },
+  "policyFilesUnchanged": 6,
+  "committed": false,
+  "installed": true,
+  "version": "0.2.1",
+  "build": "5",
+  "formalSHA256": "515c9640ea01039d0157a57cae81893547cfac04b404b6ce41086461bfbce9a2",
+  "workerSourceFilesUnchanged": 39,
+  "workerSourceFilesIntentionallyChanged": {
+    "/Users/yangruihan/Workspace/mac_tools/Tools/menu-bar-ice-baseline-session.py": {
+      "before": "2c189159c8a4c124a25d91edbcf24a8c4554cfd02d9db555042b6136f1ac8ca6",
+      "after": "feb58ffb2f8ff668c997154466c01b024ae5fb979fd858cf95ca73262ce03161"
+    },
+    "/Users/yangruihan/Workspace/mac_tools/scripts/build-ice-baseline-candidate.sh": {
+      "before": "3c5544edda40c4ba79ab42b2871047ed17b77b9099dde58157584736f5bf691d",
+      "after": "6f773a14618cd770ff6b905d3edf7cb165551b1c6b301298de9e4e19ea0c1963"
+    }
+  },
+  "workerBinariesUnchanged": true,
+  "preferencesUnchanged": true,
+  "newMousePosts": 0,
+  "newOwnedSessions": 0,
+  "newPermissionsRequested": 0,
+  "ordinaryMovementEnabled": false
+}

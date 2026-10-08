@@ -1,0 +1,132 @@
+{
+  "provenance": "Historical failed session own publication: models/CG rows only; phase and timestamp never reused as current authentication.",
+  "pid": 56324,
+  "models": [
+    {
+      "buttonBounds": {
+        "height": 22,
+        "width": 29,
+        "x": 0,
+        "y": 0
+      },
+      "buttonHidden": false,
+      "buttonHiddenOrAncestor": false,
+      "buttonPresent": true,
+      "buttonScreenAppKit": {
+        "height": 22,
+        "width": 29,
+        "x": 630,
+        "y": 1087.5
+      },
+      "buttonScreenQuartz": {
+        "height": 22,
+        "width": 29,
+        "x": 630,
+        "y": 7.5
+      },
+      "itemInstance": "77827470-C880-487B-AB79-8E97337072E8",
+      "itemKey": "mactools_native_acceptance_T",
+      "itemLength": -1,
+      "itemVisible": true,
+      "screenDisplayID": 1,
+      "screenFrameAppKit": {
+        "height": 1117,
+        "width": 1728,
+        "x": 0,
+        "y": 0
+      },
+      "title": "T",
+      "windowAlpha": 1,
+      "windowFrameAppKit": {
+        "height": 37,
+        "width": 29,
+        "x": 630,
+        "y": 1080
+      },
+      "windowLevel": 25,
+      "windowNumber": 321920,
+      "windowOcclusionState": 8192,
+      "windowOcclusionVisible": false,
+      "windowOnActiveSpace": true,
+      "windowPresent": true,
+      "windowVisible": true
+    },
+    {
+      "buttonBounds": {
+        "height": 22,
+        "width": 30,
+        "x": 0,
+        "y": 0
+      },
+      "buttonHidden": false,
+      "buttonHiddenOrAncestor": false,
+      "buttonPresent": true,
+      "buttonScreenAppKit": {
+        "height": 22,
+        "width": 30,
+        "x": 659,
+        "y": 1087.5
+      },
+      "buttonScreenQuartz": {
+        "height": 22,
+        "width": 30,
+        "x": 659,
+        "y": 7.5
+      },
+      "itemInstance": "CB1B4B6D-A8C4-46FD-9284-A745DC2CEA7C",
+      "itemKey": "mactools_native_acceptance_N",
+      "itemLength": -1,
+      "itemVisible": true,
+      "screenDisplayID": 1,
+      "screenFrameAppKit": {
+        "height": 1117,
+        "width": 1728,
+        "x": 0,
+        "y": 0
+      },
+      "title": "N",
+      "windowAlpha": 1,
+      "windowFrameAppKit": {
+        "height": 37,
+        "width": 30,
+        "x": 659,
+        "y": 1080
+      },
+      "windowLevel": 25,
+      "windowNumber": 321921,
+      "windowOcclusionState": 8192,
+      "windowOcclusionVisible": false,
+      "windowOnActiveSpace": true,
+      "windowPresent": true,
+      "windowVisible": true
+    }
+  ],
+  "publicRows": [
+    {
+      "kCGWindowAlpha": 1,
+      "kCGWindowBounds": {
+        "Height": 37,
+        "Width": 30,
+        "X": 659,
+        "Y": 0
+      },
+      "kCGWindowLayer": 25,
+      "kCGWindowNumber": 321921,
+      "kCGWindowOwnerPID": 56324
+    },
+    {
+      "kCGWindowAlpha": 1,
+      "kCGWindowBounds": {
+        "Height": 37,
+        "Width": 29,
+        "X": 630,
+        "Y": 0
+      },
+      "kCGWindowLayer": 25,
+      "kCGWindowNumber": 321920,
+      "kCGWindowOwnerPID": 56324
+    }
+  ],
+  "screenTop": 1117,
+  "destination": null
+}

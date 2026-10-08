@@ -1,0 +1,18 @@
+[
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIconActivation.swift",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIconIdentity.swift",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarRecoveryJournal.swift",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarMoveInterference.swift",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarInputAttribution.swift",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarHiddenInterferenceSource.swift",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarListenOnlyInterferenceSource.swift",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarHiddenMoveModel.swift",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarDispatchWitness.swift",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarMoveStageRecorder.swift",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarRealLocalAuthorization.swift",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalDiagnosticReceipt.swift",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalContinuityLedger.swift",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalNoMoveInput.swift",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalAcceptanceGate.swift",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalStartReceipt.swift"
+]

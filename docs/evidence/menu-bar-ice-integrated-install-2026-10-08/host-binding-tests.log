@@ -1,0 +1,8 @@
+test_changed_host_digest_rejected_without_rebase (__main__.HostBindingTests.test_changed_host_digest_rejected_without_rebase) ... ok
+test_same_digest_wrong_version_rejected (__main__.HostBindingTests.test_same_digest_wrong_version_rejected) ... ok
+test_wrong_explicit_release_digest_rejected_before_binding (__main__.HostBindingTests.test_wrong_explicit_release_digest_rejected_before_binding) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.057s
+
+OK

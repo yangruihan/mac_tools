@@ -16,6 +16,15 @@ final class Checks: XCTestCase {
     private func context(_ id: String, defaults: UserDefaults, hotkeys: HotKeyService = HotKeyService()) -> PluginContext {
         PluginContext(settings: PluginSettings(id: id, defaults: defaults), hotkeys: hotkeys, report: { _ in })
     }
+    func testToolboxCloseHookOnlyReachesStartedPluginsAndIsIdempotentForHost() throws {
+        let first = ProbePlugin("first"), disabled = ProbePlugin("disabled"), prefs = defaults()
+        prefs.set(["disabled"], forKey: "disabledPluginIDs")
+        let registry = try PluginRegistry(plugins: [first, disabled], defaults: prefs, report: { _ in })
+        registry.toolboxWillClose(); XCTAssertEqual(first.closes, 0)
+        registry.startAll(); registry.toolboxWillClose(); registry.toolboxWillClose()
+        XCTAssertEqual(first.closes, 2); XCTAssertEqual(disabled.closes, 0)
+        registry.stopAll(); registry.toolboxWillClose(); XCTAssertEqual(first.closes, 2)
+    }
 
     func testAppearanceSwitchAndPersistence() {
         _ = NSApplication.shared
@@ -181,10 +190,11 @@ final class Checks: XCTestCase {
 
 private final class ProbePlugin: ToolPlugin {
     let info: PluginInfo
-    var starts = 0; var stops = 0; var failStart = false; var failStop = false
+    var starts = 0; var stops = 0; var closes = 0; var failStart = false; var failStop = false
     init(_ id: String) { info = PluginInfo(id: id, title: id, symbol: "puzzlepiece", detail: "Test plugin", placement: .content) }
     func start() throws { starts += 1; if failStart { throw Failure.message("test start failure") } }
     func stop() throws { stops += 1; if failStop { throw Failure.message("test cleanup failure") } }
     func makeView() -> AnyView { AnyView(Text(info.title)) }
     func makeMenuItems() -> AnyView { AnyView(Text(info.title)) }
+    func toolboxWillClose() { closes += 1 }
 }

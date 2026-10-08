@@ -1,0 +1,92 @@
+Building for debugging...
+[0/5] Write sources
+[1/5] Write swift-version--58304C5D6DBC2206.txt
+[3/8] Compiling MacTools MacTools.swift
+[4/8] Emitting module MacTools
+[5/8] Compiling MacTools MenuBarOrganizerPlugin.swift
+[5/9] Write Objects.LinkFileList
+[6/9] Linking MacTools
+[7/9] Applying MacTools
+[9/10] Emitting module MacToolsTests
+[9/11] Write Objects.LinkFileList
+[10/11] Linking MacToolsPackageTests
+Build complete! (4.58s)
+Test Suite 'Selected tests' started at 2026-10-08 13:27:55.748.
+Test Suite 'MacToolsPackageTests.xctest' started at 2026-10-08 13:27:55.749.
+Test Suite 'Checks' started at 2026-10-08 13:27:55.749.
+Test Case '-[MacToolsTests.Checks testCrossPluginShortcutConflictsAndRelease]' started.
+Test Case '-[MacToolsTests.Checks testCrossPluginShortcutConflictsAndRelease]' passed (0.040 seconds).
+Test Case '-[MacToolsTests.Checks testPluginDiscoveryLifecyclePersistenceAndDuplicateGuard]' started.
+Test Case '-[MacToolsTests.Checks testPluginDiscoveryLifecyclePersistenceAndDuplicateGuard]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.Checks testToolboxCloseHookOnlyReachesStartedPluginsAndIsIdempotentForHost]' started.
+Test Case '-[MacToolsTests.Checks testToolboxCloseHookOnlyReachesStartedPluginsAndIsIdempotentForHost]' passed (0.002 seconds).
+Test Suite 'Checks' passed at 2026-10-08 13:27:55.796.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.046 (0.046) seconds
+Test Suite 'FloatingPreviewTests' started at 2026-10-08 13:27:55.796.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' passed (0.096 seconds).
+Test Suite 'FloatingPreviewTests' passed at 2026-10-08 13:27:55.891.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.096 (0.096) seconds
+Test Suite 'MenuBarEnvironmentTests' started at 2026-10-08 13:27:55.891.
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testEnvironmentChangesAreInertWhenPluginHasNotOptedIn]' started.
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testEnvironmentChangesAreInertWhenPluginHasNotOptedIn]' passed (0.002 seconds).
+Test Suite 'MenuBarEnvironmentTests' passed at 2026-10-08 13:27:55.893.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'MenuBarIceSelectedTargetTests' started at 2026-10-08 13:27:55.893.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testExactBindingAllowsMovementButRejectsRestartPIDAndSignatureChange]' started.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testExactBindingAllowsMovementButRejectsRestartPIDAndSignatureChange]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testExistingPopupAndCancellationCannotBeRearmed]' started.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testExistingPopupAndCancellationCannotBeRearmed]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testNeverSeenMenuCannotAuthorizeReturnAndOneAbsentSampleIsUnknown]' started.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testNeverSeenMenuCannotAuthorizeReturnAndOneAbsentSampleIsUnknown]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testNoSiblingRematchingDuplicateWindowOrSpaceChange]' started.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testNoSiblingRematchingDuplicateWindowOrSpaceChange]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testOtherOwnerPopupDoesNotProveSelectedMenuOpened]' started.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testOtherOwnerPopupDoesNotProveSelectedMenuOpened]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testReopeningResetsCloseConfirmation]' started.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testReopeningResetsCloseConfirmation]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testUnknownOwnerOrScopeAndUnhealthyObservationPermanentlyStop]' started.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testUnknownOwnerOrScopeAndUnhealthyObservationPermanentlyStop]' passed (0.000 seconds).
+Test Suite 'MenuBarIceSelectedTargetTests' passed at 2026-10-08 13:27:55.895.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'MenuBarItemDirectoryTests' started at 2026-10-08 13:27:55.895.
+Test Case '-[MacToolsTests.MenuBarItemDirectoryTests testDirectoryEntryDoesNotEnableOptedOutPluginOrMutateConfiguration]' started.
+Test Case '-[MacToolsTests.MenuBarItemDirectoryTests testDirectoryEntryDoesNotEnableOptedOutPluginOrMutateConfiguration]' passed (0.002 seconds).
+Test Suite 'MenuBarItemDirectoryTests' passed at 2026-10-08 13:27:55.897.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'MenuBarOrganizerTests' started at 2026-10-08 13:27:55.897.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFormerAutomaticEditingEntriesAreInertAndPreserveSettings]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFormerAutomaticEditingEntriesAreInertAndPreserveSettings]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testRepeatedManualEntriesAndModeSwitchesPreserveOptOutAndLegacyConfiguration]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testRepeatedManualEntriesAndModeSwitchesPreserveOptOutAndLegacyConfiguration]' passed (0.009 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testResidentPartitionIncludesAllSevenAppsBetweenDividerAndControl]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testResidentPartitionIncludesAllSevenAppsBetweenDividerAndControl]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testShelfDragRoutesAcrossRowsAndReordersWithinRow]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testShelfDragRoutesAcrossRowsAndReordersWithinRow]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' passed (0.001 seconds).
+Test Suite 'MenuBarOrganizerTests' passed at 2026-10-08 13:27:55.914.
+	 Executed 10 tests, with 0 failures (0 unexpected) in 0.017 (0.018) seconds
+Test Suite 'MacToolsPackageTests.xctest' passed at 2026-10-08 13:27:55.914.
+	 Executed 23 tests, with 0 failures (0 unexpected) in 0.163 (0.165) seconds
+Test Suite 'Selected tests' passed at 2026-10-08 13:27:55.914.
+	 Executed 23 tests, with 0 failures (0 unexpected) in 0.163 (0.166) seconds
+HOTKEYS: cross-owner conflict surfaced; removing owner/disabled plugin releases chord
+PLUGIN HOST: new plugin views/menu/lifecycle need no host branch; disable persists; invalid IDs rejected
+PREVIEW: floating + resizable; landscape/portrait sizes verified; disabling plugin clears panel and pixels
+MENU BAR: load/stop inert until user opts in; no status icons created
+MENU BAR: only candidate status windows left of separator; recovery control geometry fail-closed
+◇ Test run started.
+↳ Testing Library Version: 1501
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.

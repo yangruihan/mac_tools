@@ -1,0 +1,30 @@
+{
+  "project": "Ice",
+  "tag": "0.11.12",
+  "commit": "d567f1ecac68936a090d6b47d6f0b882c489c6f4",
+  "url": "https://github.com/jordanbaird/Ice",
+  "license": "GNU GPL version 3",
+  "files": [
+    {
+      "path": "LICENSE",
+      "sha256": "a22c5d2fd0877cf9b7069bb011c50e496732c03c93ec62f4b66620e13966b264"
+    },
+    {
+      "path": "Ice/Bridging/Shims/Private.swift",
+      "sha256": "358105771423c419ba7f507e2cf12029adfa53a6eb344f939c9ff1f3662e7a69"
+    },
+    {
+      "path": "Ice/Bridging/Bridging.swift",
+      "sha256": "8bfd3f2935b68cb6a235f1a18053ac080dad6a868ecee77a6270e5fe252cb78f"
+    },
+    {
+      "path": "Ice/Utilities/WindowInfo.swift",
+      "sha256": "de221efab47e6ea58a26137f95dfa724e7c9c7755e4d18d62d325972db83236c"
+    },
+    {
+      "path": "Ice/MenuBar/ItemManagement/MenuBarItemManager.swift",
+      "sha256": "342068fef33c0c7cb4cee2c57368e647c4d5d9c2e4c8e0ac6f0fcca13bd9f5a8"
+    }
+  ],
+  "scope": "private read-only membership/frame/Space, exhaustive status/carrier classification, and isolated mouse packet factory adapted from fixed upstream; no Ice UI, suppression/null tap, event retries or production wiring"
+}

@@ -1,0 +1,1202 @@
+{
+  "atUTC" : "2026-10-02T16:07:27Z",
+  "AXTrusted" : true,
+  "candidateCount" : 1,
+  "frontMenuFrames" : [
+    {
+      "height" : 43,
+      "width" : 34,
+      "x" : 10,
+      "y" : 0
+    },
+    {
+      "height" : 43,
+      "width" : 109,
+      "x" : 44,
+      "y" : 0
+    },
+    {
+      "height" : 43,
+      "width" : 46,
+      "x" : 153,
+      "y" : 0
+    },
+    {
+      "height" : 43,
+      "width" : 46,
+      "x" : 199,
+      "y" : 0
+    },
+    {
+      "height" : 43,
+      "width" : 46,
+      "x" : 245,
+      "y" : 0
+    },
+    {
+      "height" : 43,
+      "width" : 46,
+      "x" : 291,
+      "y" : 0
+    },
+    {
+      "height" : 43,
+      "width" : 46,
+      "x" : 337,
+      "y" : 0
+    }
+  ],
+  "frontPID" : 28723,
+  "mode" : "press",
+  "ownExtras" : [
+    {
+      "description" : "",
+      "frame" : {
+        "height" : 24,
+        "width" : 34.5,
+        "x" : 1623,
+        "y" : 9.5
+      },
+      "title" : "编辑"
+    },
+    {
+      "description" : "显示隐藏的菜单栏图标",
+      "frame" : {
+        "height" : 24,
+        "width" : 69,
+        "x" : 1548,
+        "y" : 9.5
+      },
+      "title" : ""
+    },
+    {
+      "description" : "",
+      "frame" : {
+        "height" : 24,
+        "width" : 26,
+        "x" : 1194,
+        "y" : 9.5
+      },
+      "title" : "│"
+    }
+  ],
+  "ownUI" : [
+    {
+      "enabled" : false,
+      "labels" : [
+        "Mac 工具箱"
+      ],
+      "role" : "AXWindow"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "Mac 工具箱"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "菜单栏收纳"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "插件",
+        "puzzlepiece.extension"
+      ],
+      "role" : "AXPopUpButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "外观"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "跟随系统"
+      ],
+      "role" : "AXPopUpButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "窗口快捷键"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "收起到托盘"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "点击展开或收起原生图标；图标面板可选"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "工具"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "Sidebar"
+      ],
+      "role" : "AXOutline"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "快捷控制"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "保持唤醒"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "屏蔽内置触控板"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "窗口悬浮预览"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "菜单栏收纳"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "ListColumn"
+      ],
+      "role" : "AXColumn"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "preset-list"
+      ],
+      "role" : "AXScrollArea"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "菜单栏收纳"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "已展开"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "普通点击"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "原生展开（推荐）"
+      ],
+      "role" : "AXRadioButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "图标面板"
+      ],
+      "role" : "AXRadioButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "原生展开无需录屏或辅助功能权限；点击后直接操作真实图标。刘海或菜单栏拥挤时，展开也可能显示不全。"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "打开 \/ 关闭图标面板"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "编辑布局…",
+        "menu-bar-edit-native-layout"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "刘海图标…",
+        "menu-bar-open-notch-directory"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "关闭功能"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "已读取 27 个图标位置，无需截图；选择图标可尝试辅助功能打开。"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "手动编辑布局"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "先点击「编辑布局…」，再到屏幕顶部按住 ⌘ 拖动真实图标。"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "分隔符左侧为收纳区，右侧为常驻区"
+      ],
+      "role" : "AXUnknown"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "跨分隔符改变收纳归属；同侧拖动改变左右顺序。控制图标应留在分隔符右侧。"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "完成并收起",
+        "menu-bar-finish-native-layout"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "排列由你手动完成，松开 ⌘ 即保留位置；收起只改变可见性。图标面板中的缩略图用于打开图标。"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "临时露出 · 预览验收"
+      ],
+      "role" : "AXHeading"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "正在核实目标、可见空间和恢复入口…"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "只调整自有间隔宽度；核实完整露出后，可在顶部按住 ⌘ 手动排列。完成或取消恢复宽度，保留手动顺序。最多30秒；此期间先完成，再打开图标菜单。"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "完成露出编辑",
+        "menu-bar-finish-native-reveal"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "取消露出",
+        "menu-bar-cancel-native-reveal"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "核实恢复宽度",
+        "menu-bar-recover-native-reveal"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "刘海与收纳图标 · 无需截图"
+      ],
+      "role" : "AXDisclosureTriangle"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "重新读取"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "同时显示原生栏位置"
+      ],
+      "role" : "AXCheckBox"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "MacTools Native Acceptance Targets · 图标 1"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "刘海区域"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "通过辅助功能打开 MacTools Native Acceptance Targets · 图标 1"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "核实并露出 MacTools Native Acceptance Targets · 图标 1 以手动排列"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "MacTools Native Acceptance Targets · 图标 2"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "刘海区域"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "通过辅助功能打开 MacTools Native Acceptance Targets · 图标 2"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "核实并露出 MacTools Native Acceptance Targets · 图标 2 以手动排列"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "搜狗输入法"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "刘海区域"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "通过辅助功能打开 搜狗输入法"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "核实并露出 搜狗输入法 以手动排列"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "Windows App"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "刘海区域"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "通过辅助功能打开 Windows App"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "核实并露出 Windows App 以手动排列"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "ChatGPT"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "刘海区域"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "通过辅助功能打开 ChatGPT"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "核实并露出 ChatGPT 以手动排列"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "百度网盘"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "刘海区域"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "通过辅助功能打开 百度网盘"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "核实并露出 百度网盘 以手动排列"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "TextInputMenuAgent"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "刘海区域"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "通过辅助功能打开 TextInputMenuAgent"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : false,
+      "labels" : [
+        "核实并露出 TextInputMenuAgent 以手动排列"
+      ],
+      "role" : "AXButton"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "目录按窗口位置分类，不保证原图标可见。打开使用原图标的辅助功能动作，无需录屏；不支持时不会补点。拖动整理仍需原图标进入可见区。"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "高级 · 图标面板"
+      ],
+      "role" : "AXDisclosureTriangle"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "展开 \/ 收起 ⌃⌥⌘H"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "紧急展开 ⌃⌥⌘R"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "5 个工具已启用"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "已选择",
+        "checkmark.circle"
+      ],
+      "role" : "AXImage"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "工具箱已就绪"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "自动保存"
+      ],
+      "role" : "AXStaticText"
+    },
+    {
+      "enabled" : true,
+      "labels" : [
+        "Mac 工具箱"
+      ],
+      "role" : "AXStaticText"
+    }
+  ],
+  "path" : "\/private\/tmp\/mac-tools-native-live-candidate-task7\/MacTools Native Reveal Preview.app",
+  "permissionRequests" : 0,
+  "pid" : 10596,
+  "pressedLabel" : "核实并露出 MacTools Native Acceptance Targets · 图标 2 以手动排列",
+  "pressResult" : 0,
+  "safeAreas" : [
+    {
+      "frame" : {
+        "height" : 1329,
+        "width" : 2056,
+        "x" : 0,
+        "y" : 0
+      },
+      "left" : {
+        "height" : 38,
+        "width" : 918,
+        "x" : 0,
+        "y" : 1291
+      },
+      "right" : {
+        "height" : 38,
+        "width" : 918,
+        "x" : 1138,
+        "y" : 1291
+      }
+    }
+  ],
+  "selfTargetAXFrames" : [
+    {
+      "height" : 24,
+      "width" : 31,
+      "x" : 868,
+      "y" : 9.5
+    },
+    {
+      "height" : 24,
+      "width" : 32,
+      "x" : 838,
+      "y" : 9.5
+    }
+  ],
+  "selfTargetBefore" : {
+    "height" : 43,
+    "width" : 29,
+    "x" : 914,
+    "y" : 0
+  },
+  "selfTargetPID" : 10629,
+  "selfTargetWindow" : 307723,
+  "statusWindows" : [
+    {
+      "appPath" : "\/private\/tmp\/mac-tools-native-live-candidate-task7\/MacTools Native Acceptance Targets.app",
+      "bundle" : "com.ryanai.mactools.nativetargets",
+      "frame" : {
+        "height" : 43,
+        "width" : 30,
+        "x" : 839,
+        "y" : 0
+      },
+      "id" : 307724,
+      "launchDate" : "2026-10-02T16:03:35Z",
+      "onScreen" : false,
+      "pid" : 10629
+    },
+    {
+      "appPath" : "\/private\/tmp\/mac-tools-native-live-candidate-task7\/MacTools Native Acceptance Targets.app",
+      "bundle" : "com.ryanai.mactools.nativetargets",
+      "frame" : {
+        "height" : 43,
+        "width" : 29,
+        "x" : 869,
+        "y" : 0
+      },
+      "id" : 307723,
+      "launchDate" : "2026-10-02T16:03:35Z",
+      "onScreen" : false,
+      "pid" : 10629
+    },
+    {
+      "appPath" : "\/private\/tmp\/mac-tools-native-live-candidate-task7\/MacTools Native Reveal Preview.app",
+      "bundle" : "com.ryanai.mactools",
+      "frame" : {
+        "height" : 43,
+        "width" : 83,
+        "x" : 1541,
+        "y" : 0
+      },
+      "id" : 307719,
+      "launchDate" : "2026-10-02T16:03:34Z",
+      "onScreen" : true,
+      "pid" : 10596
+    },
+    {
+      "appPath" : "\/private\/tmp\/mac-tools-native-live-candidate-task7\/MacTools Native Reveal Preview.app",
+      "bundle" : "com.ryanai.mactools",
+      "frame" : {
+        "height" : 43,
+        "width" : 33,
+        "x" : 1624,
+        "y" : 0
+      },
+      "id" : 307718,
+      "launchDate" : "2026-10-02T16:03:34Z",
+      "onScreen" : true,
+      "pid" : 10596
+    },
+    {
+      "appPath" : "\/Users\/yangruihan\/.codex\/computer-use\/Codex Computer Use.app",
+      "bundle" : "com.openai.sky.CUAService",
+      "frame" : {
+        "height" : 43,
+        "width" : 48,
+        "x" : 0,
+        "y" : 0
+      },
+      "id" : 304292,
+      "launchDate" : "",
+      "onScreen" : false,
+      "pid" : 98535
+    },
+    {
+      "appPath" : "\/Applications\/WeChat.app",
+      "bundle" : "com.tencent.xinWeChat",
+      "frame" : {
+        "height" : 43,
+        "width" : 56,
+        "x" : 1409,
+        "y" : 0
+      },
+      "id" : 300620,
+      "launchDate" : "2026-10-01T15:30:50Z",
+      "onScreen" : true,
+      "pid" : 29750
+    },
+    {
+      "appPath" : "\/Applications\/Quota Pace.app",
+      "bundle" : "com.ryanai.quotapace",
+      "frame" : {
+        "height" : 43,
+        "width" : 34,
+        "x" : 1465,
+        "y" : 0
+      },
+      "id" : 303807,
+      "launchDate" : "2026-10-02T03:55:43Z",
+      "onScreen" : true,
+      "pid" : 20668
+    },
+    {
+      "appPath" : "\/Applications\/Windows App.app",
+      "bundle" : "com.microsoft.rdc.macos",
+      "frame" : {
+        "height" : 43,
+        "width" : 38,
+        "x" : 939,
+        "y" : 0
+      },
+      "id" : 300577,
+      "launchDate" : "2026-10-01T15:30:09Z",
+      "onScreen" : false,
+      "pid" : 28723
+    },
+    {
+      "appPath" : "\/Applications\/云磁盘.app",
+      "bundle" : "com.tencent.itfs",
+      "frame" : {
+        "height" : 43,
+        "width" : 100,
+        "x" : 1095,
+        "y" : 0
+      },
+      "id" : 300501,
+      "launchDate" : "2026-10-01T15:21:54Z",
+      "onScreen" : false,
+      "pid" : 20699
+    },
+    {
+      "appPath" : "\/Applications\/QQMusic.app",
+      "bundle" : "com.tencent.QQMusicMac",
+      "frame" : {
+        "height" : 43,
+        "width" : 38,
+        "x" : 1219,
+        "y" : 0
+      },
+      "id" : 298643,
+      "launchDate" : "2026-10-01T07:40:02Z",
+      "onScreen" : true,
+      "pid" : 78727
+    },
+    {
+      "appPath" : "\/Applications\/With.app",
+      "bundle" : "com.tencent.with",
+      "frame" : {
+        "height" : 43,
+        "width" : 38,
+        "x" : 1257,
+        "y" : 0
+      },
+      "id" : 167701,
+      "launchDate" : "2026-09-29T02:43:02Z",
+      "onScreen" : true,
+      "pid" : 57235
+    },
+    {
+      "appPath" : "\/Library\/Input Methods\/SogouInput.app",
+      "bundle" : "com.sogou.inputmethod.sogou",
+      "frame" : {
+        "height" : 43,
+        "width" : 41,
+        "x" : 898,
+        "y" : 0
+      },
+      "id" : 289056,
+      "launchDate" : "2026-09-30T14:23:50Z",
+      "onScreen" : false,
+      "pid" : 98495
+    },
+    {
+      "appPath" : "\/Applications\/QQ.app",
+      "bundle" : "com.tencent.qq",
+      "frame" : {
+        "height" : 43,
+        "width" : 32,
+        "x" : 1377,
+        "y" : 0
+      },
+      "id" : 151162,
+      "launchDate" : "2026-09-28T10:40:30Z",
+      "onScreen" : true,
+      "pid" : 68222
+    },
+    {
+      "appPath" : "\/Applications\/DingTalk.app",
+      "bundle" : "com.alibaba.DingTalkMac",
+      "frame" : {
+        "height" : 0,
+        "width" : 0,
+        "x" : 864,
+        "y" : 1268
+      },
+      "id" : 125889,
+      "launchDate" : "2026-09-27T13:00:50Z",
+      "onScreen" : false,
+      "pid" : 42072
+    },
+    {
+      "appPath" : "\/Applications\/DingTalk.app",
+      "bundle" : "com.alibaba.DingTalkMac",
+      "frame" : {
+        "height" : 43,
+        "width" : 47,
+        "x" : 1295,
+        "y" : 0
+      },
+      "id" : 125881,
+      "launchDate" : "2026-09-27T13:00:50Z",
+      "onScreen" : true,
+      "pid" : 42072
+    },
+    {
+      "appPath" : "\/Applications\/iOA\/iOA.app",
+      "bundle" : "com.tencent.iOA",
+      "frame" : {
+        "height" : 43,
+        "width" : 33,
+        "x" : 1657,
+        "y" : 0
+      },
+      "id" : 273,
+      "launchDate" : "",
+      "onScreen" : true,
+      "pid" : 16118
+    },
+    {
+      "appPath" : "\/System\/Library\/PrivateFrameworks\/CoreFollowUp.framework\/Versions\/A\/Resources\/FollowUpUI.app",
+      "bundle" : "com.apple.FollowUpUI",
+      "frame" : {
+        "height" : 363,
+        "width" : 480,
+        "x" : 624,
+        "y" : 588
+      },
+      "id" : 2915,
+      "launchDate" : "",
+      "onScreen" : false,
+      "pid" : 69992
+    },
+    {
+      "appPath" : "\/Library\/Input Methods\/SogouInput.app",
+      "bundle" : "com.sogou.inputmethod.sogou",
+      "frame" : {
+        "height" : 144,
+        "width" : 96,
+        "x" : 0,
+        "y" : 1185
+      },
+      "id" : 299807,
+      "launchDate" : "2026-09-30T14:23:50Z",
+      "onScreen" : false,
+      "pid" : 98495
+    },
+    {
+      "appPath" : "\/System\/Library\/CoreServices\/Spotlight.app",
+      "bundle" : "com.apple.Spotlight",
+      "frame" : {
+        "height" : 43,
+        "width" : 32,
+        "x" : 1841,
+        "y" : 0
+      },
+      "id" : 39,
+      "launchDate" : "",
+      "onScreen" : true,
+      "pid" : 758
+    },
+    {
+      "appPath" : "\/Applications\/ChatGPT.app",
+      "bundle" : "com.openai.codex",
+      "frame" : {
+        "height" : 43,
+        "width" : 38,
+        "x" : 977,
+        "y" : 0
+      },
+      "id" : 304288,
+      "launchDate" : "2026-10-02T12:57:57Z",
+      "onScreen" : false,
+      "pid" : 97798
+    },
+    {
+      "appPath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+      "bundle" : "com.apple.controlcenter",
+      "frame" : {
+        "height" : 43,
+        "width" : 48,
+        "x" : 1257,
+        "y" : 0
+      },
+      "id" : 6863,
+      "launchDate" : "",
+      "onScreen" : false,
+      "pid" : 635
+    },
+    {
+      "appPath" : "\/Applications\/腾讯电脑管家.app\/Contents\/Library\/LoginItems\/AEMonitor.app",
+      "bundle" : "com.tencent.aegis.monitor",
+      "frame" : {
+        "height" : 570,
+        "width" : 320,
+        "x" : 1438,
+        "y" : 37
+      },
+      "id" : 2687,
+      "launchDate" : "",
+      "onScreen" : false,
+      "pid" : 7432
+    },
+    {
+      "appPath" : "\/private\/tmp\/mac-tools-native-live-candidate-task7\/MacTools Native Reveal Preview.app",
+      "bundle" : "com.ryanai.mactools",
+      "frame" : {
+        "height" : 43,
+        "width" : 24,
+        "x" : 1195,
+        "y" : 0
+      },
+      "id" : 307720,
+      "launchDate" : "2026-10-02T16:03:34Z",
+      "onScreen" : true,
+      "pid" : 10596
+    },
+    {
+      "appPath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+      "bundle" : "com.apple.controlcenter",
+      "frame" : {
+        "height" : 43,
+        "width" : 33,
+        "x" : 1728,
+        "y" : 0
+      },
+      "id" : 986,
+      "launchDate" : "",
+      "onScreen" : true,
+      "pid" : 635
+    },
+    {
+      "appPath" : "\/Applications\/Parallels Desktop.app",
+      "bundle" : "com.parallels.desktop.console",
+      "frame" : {
+        "height" : 43,
+        "width" : 38,
+        "x" : 0,
+        "y" : 0
+      },
+      "id" : 575,
+      "launchDate" : "2026-09-16T08:58:57Z",
+      "onScreen" : false,
+      "pid" : 91669
+    },
+    {
+      "appPath" : "\/Applications\/UURemote.app",
+      "bundle" : "com.netease.uuremote",
+      "frame" : {
+        "height" : 43,
+        "width" : 35,
+        "x" : 1342,
+        "y" : 0
+      },
+      "id" : 73,
+      "launchDate" : "2026-09-16T05:45:26Z",
+      "onScreen" : true,
+      "pid" : 960
+    },
+    {
+      "appPath" : "\/System\/Library\/CoreServices\/TextInputMenuAgent.app",
+      "bundle" : "com.apple.TextInputMenuAgent",
+      "frame" : {
+        "height" : 43,
+        "width" : 44,
+        "x" : 1051,
+        "y" : 0
+      },
+      "id" : 67,
+      "launchDate" : "",
+      "onScreen" : false,
+      "pid" : 951
+    },
+    {
+      "appPath" : "\/Applications\/BaiduNetdisk_mac.app",
+      "bundle" : "com.baidu.BaiduNetdisk-mac",
+      "frame" : {
+        "height" : 43,
+        "width" : 36,
+        "x" : 1015,
+        "y" : 0
+      },
+      "id" : 61,
+      "launchDate" : "2026-09-16T05:45:22Z",
+      "onScreen" : false,
+      "pid" : 737
+    },
+    {
+      "appPath" : "\/Applications\/腾讯电脑管家.app\/Contents\/Library\/LoginItems\/AEMonitor.app",
+      "bundle" : "com.tencent.aegis.monitor",
+      "frame" : {
+        "height" : 43,
+        "width" : 42,
+        "x" : 1499,
+        "y" : 0
+      },
+      "id" : 144,
+      "launchDate" : "",
+      "onScreen" : true,
+      "pid" : 7432
+    },
+    {
+      "appPath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+      "bundle" : "com.apple.controlcenter",
+      "frame" : {
+        "height" : 43,
+        "width" : 38,
+        "x" : 1351,
+        "y" : 0
+      },
+      "id" : 19,
+      "launchDate" : "",
+      "onScreen" : false,
+      "pid" : 635
+    },
+    {
+      "appPath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+      "bundle" : "com.apple.controlcenter",
+      "frame" : {
+        "height" : 43,
+        "width" : 38,
+        "x" : 1803,
+        "y" : 0
+      },
+      "id" : 18,
+      "launchDate" : "",
+      "onScreen" : true,
+      "pid" : 635
+    },
+    {
+      "appPath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+      "bundle" : "com.apple.controlcenter",
+      "frame" : {
+        "height" : 43,
+        "width" : 42,
+        "x" : 1761,
+        "y" : 0
+      },
+      "id" : 17,
+      "launchDate" : "",
+      "onScreen" : true,
+      "pid" : 635
+    },
+    {
+      "appPath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+      "bundle" : "com.apple.controlcenter",
+      "frame" : {
+        "height" : 43,
+        "width" : 38,
+        "x" : 1690,
+        "y" : 0
+      },
+      "id" : 15,
+      "launchDate" : "",
+      "onScreen" : true,
+      "pid" : 635
+    },
+    {
+      "appPath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+      "bundle" : "com.apple.controlcenter",
+      "frame" : {
+        "height" : 43,
+        "width" : 34,
+        "x" : 1873,
+        "y" : 0
+      },
+      "id" : 14,
+      "launchDate" : "",
+      "onScreen" : true,
+      "pid" : 635
+    },
+    {
+      "appPath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+      "bundle" : "com.apple.controlcenter",
+      "frame" : {
+        "height" : 43,
+        "width" : 151,
+        "x" : 1907,
+        "y" : 0
+      },
+      "id" : 13,
+      "launchDate" : "",
+      "onScreen" : true,
+      "pid" : 635
+    }
+  ],
+  "syntheticInput" : 0
+}

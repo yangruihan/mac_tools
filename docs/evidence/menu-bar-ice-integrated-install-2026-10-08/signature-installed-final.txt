@@ -1,0 +1,21 @@
+Executable=/Applications/MacTools.app/Contents/MacOS/MacTools
+Identifier=com.ryanai.mactools
+Format=app bundle with Mach-O thin (arm64)
+CodeDirectory v=20500 size=35007 flags=0x10000(runtime) hashes=1087+3 location=embedded
+Hash type=sha256 size=32
+CandidateCDHash sha256=b624977716833e1a1fe19cbf1a12407bef619e2f
+CandidateCDHashFull sha256=b624977716833e1a1fe19cbf1a12407bef619e2f24980bf6e8994211dae28e53
+Hash choices=sha256
+CMSDigest=b624977716833e1a1fe19cbf1a12407bef619e2f24980bf6e8994211dae28e53
+CMSDigestType=2
+CDHash=b624977716833e1a1fe19cbf1a12407bef619e2f
+Signature size=4788
+Authority=Apple Development: yangruihan@vip.qq.com (8TX76VGXAE)
+Authority=Apple Worldwide Developer Relations Certification Authority
+Authority=Apple Root CA
+Signed Time=Oct 8, 2026 at 13:37:15
+Info.plist entries=13
+TeamIdentifier=58TJ64422P
+Runtime Version=26.2.0
+Sealed Resources version=2 rules=13 files=52
+Internal requirements count=1 size=192

@@ -1,0 +1,833 @@
+{
+  "droppedEntries" : 0,
+  "entries" : [
+    {
+      "at" : "2026-10-03T08:29:21Z",
+      "backingFrame" : [
+        [
+          1258,
+          0
+        ],
+        [
+          38,
+          37
+        ]
+      ],
+      "elapsedMilliseconds" : 6.205125013366342,
+      "event" : "width",
+      "length" : -1,
+      "sequence" : 1,
+      "stage" : "before.first.width",
+      "state" : "preparing"
+    },
+    {
+      "at" : "2026-10-03T08:29:22Z",
+      "elapsedMilliseconds" : 20.972375059500337,
+      "event" : "cg-before-ax",
+      "sample" : {
+        "frontApplication" : {
+          "bundleID" : "com.ryanai.mactools",
+          "bundlePath" : "\/tmp\/mac-tools-native-attempt-gate-candidate-task7\/MacTools Native Attempt Gate Preview.app",
+          "launch" : 1791015809.175769
+        },
+        "frontPID" : 74637,
+        "generation" : "4F44880A-522C-4919-A729-C851140E66E6",
+        "menuAX" : [
+
+        ],
+        "orderedWindowIDs" : [
+
+        ],
+        "overlays" : [
+
+        ],
+        "recoveryAX" : [
+
+        ],
+        "safeAreas" : [
+          [
+            [
+              0,
+              0
+            ],
+            [
+              771,
+              32
+            ]
+          ],
+          [
+            [
+              956,
+              0
+            ],
+            [
+              772,
+              32
+            ]
+          ]
+        ],
+        "targetAX" : [
+
+        ],
+        "unprovenPixelWindowIDs" : [
+          309778
+        ],
+        "windows" : [
+          {
+            "application" : {
+              "bundleID" : "com.ryanai.mactools",
+              "bundlePath" : "\/tmp\/mac-tools-native-attempt-gate-candidate-task7\/MacTools Native Attempt Gate Preview.app",
+              "launch" : 1791015809.175769
+            },
+            "frame" : [
+              [
+                1258,
+                0
+              ],
+              [
+                38,
+                37
+              ]
+            ],
+            "id" : 309756,
+            "onScreen" : true,
+            "pid" : 74637
+          },
+          {
+            "application" : {
+              "bundleID" : "com.ryanai.mactools",
+              "bundlePath" : "\/tmp\/mac-tools-native-attempt-gate-candidate-task7\/MacTools Native Attempt Gate Preview.app",
+              "launch" : 1791015809.175769
+            },
+            "frame" : [
+              [
+                1296,
+                0
+              ],
+              [
+                33,
+                37
+              ]
+            ],
+            "id" : 309755,
+            "onScreen" : true,
+            "pid" : 74637
+          },
+          {
+            "application" : {
+              "bundleID" : "com.ryanai.mactools.nativetargets",
+              "bundlePath" : "\/tmp\/mac-tools-native-live-candidate-task7\/MacTools Native Acceptance Targets.app",
+              "launch" : 1791015809.22041
+            },
+            "frame" : [
+              [
+                588,
+                0
+              ],
+              [
+                30,
+                37
+              ]
+            ],
+            "id" : 309754,
+            "onScreen" : false,
+            "pid" : 74640
+          },
+          {
+            "application" : {
+              "bundleID" : "com.ryanai.mactools.nativetargets",
+              "bundlePath" : "\/tmp\/mac-tools-native-live-candidate-task7\/MacTools Native Acceptance Targets.app",
+              "launch" : 1791015809.22041
+            },
+            "frame" : [
+              [
+                618,
+                0
+              ],
+              [
+                29,
+                37
+              ]
+            ],
+            "id" : 309749,
+            "onScreen" : false,
+            "pid" : 74640
+          },
+          {
+            "application" : {
+              "bundleID" : "com.openai.sky.CUAService",
+              "bundlePath" : "\/Users\/yangruihan\/.codex\/computer-use\/Codex Computer Use.app",
+              "launch" : 1790945894.034853
+            },
+            "frame" : [
+              [
+                0,
+                0
+              ],
+              [
+                48,
+                37
+              ]
+            ],
+            "id" : 304292,
+            "onScreen" : false,
+            "pid" : 98535
+          },
+          {
+            "application" : {
+              "bundleID" : "com.tencent.xinWeChat",
+              "bundlePath" : "\/Applications\/WeChat.app",
+              "launch" : 1790868650.383794
+            },
+            "frame" : [
+              [
+                1128,
+                0
+              ],
+              [
+                54,
+                37
+              ]
+            ],
+            "id" : 300620,
+            "onScreen" : true,
+            "pid" : 29750
+          },
+          {
+            "application" : {
+              "bundleID" : "com.ryanai.quotapace",
+              "bundlePath" : "\/Applications\/Quota Pace.app",
+              "launch" : 1790913343.428571
+            },
+            "frame" : [
+              [
+                1182,
+                0
+              ],
+              [
+                34,
+                37
+              ]
+            ],
+            "id" : 303807,
+            "onScreen" : true,
+            "pid" : 20668
+          },
+          {
+            "application" : {
+              "bundleID" : "com.microsoft.rdc.macos",
+              "bundlePath" : "\/Applications\/Windows App.app",
+              "launch" : 1790868609.791859
+            },
+            "frame" : [
+              [
+                688,
+                0
+              ],
+              [
+                38,
+                37
+              ]
+            ],
+            "id" : 300577,
+            "onScreen" : false,
+            "pid" : 28723
+          },
+          {
+            "application" : {
+              "bundleID" : "com.tencent.itfs",
+              "bundlePath" : "\/Applications\/云磁盘.app",
+              "launch" : 1790868114.231493
+            },
+            "frame" : [
+              [
+                844,
+                0
+              ],
+              [
+                100,
+                37
+              ]
+            ],
+            "id" : 300501,
+            "onScreen" : false,
+            "pid" : 20699
+          },
+          {
+            "application" : {
+              "bundleID" : "com.apple.LinkedNotesUIService",
+              "bundlePath" : "\/System\/Library\/PrivateFrameworks\/PaperKit.framework\/Contents\/LinkedNotesUIService.app",
+              "launch" : 1791016131.023384
+            },
+            "frame" : [
+              [
+                1474,
+                863
+              ],
+              [
+                254,
+                254
+              ]
+            ],
+            "id" : 309777,
+            "onScreen" : false,
+            "pid" : 77751
+          },
+          {
+            "application" : {
+              "bundleID" : "com.tencent.with",
+              "bundlePath" : "\/Applications\/With.app",
+              "launch" : 1790649782.034919
+            },
+            "frame" : [
+              [
+                968,
+                0
+              ],
+              [
+                38,
+                37
+              ]
+            ],
+            "id" : 167701,
+            "onScreen" : false,
+            "pid" : 57235
+          },
+          {
+            "application" : {
+              "bundleID" : "com.apple.LinkedNotesUIService",
+              "bundlePath" : "\/System\/Library\/PrivateFrameworks\/PaperKit.framework\/Contents\/LinkedNotesUIService.app",
+              "launch" : 1791016131.023384
+            },
+            "frame" : [
+              [
+                10000,
+                0
+              ],
+              [
+                300,
+                300
+              ]
+            ],
+            "id" : 309778,
+            "onScreen" : false,
+            "pid" : 77751
+          },
+          {
+            "application" : {
+              "bundleID" : "com.sogou.inputmethod.sogou",
+              "bundlePath" : "\/Library\/Input Methods\/SogouInput.app",
+              "launch" : 1790778230.716088
+            },
+            "frame" : [
+              [
+                647,
+                0
+              ],
+              [
+                41,
+                37
+              ]
+            ],
+            "id" : 289056,
+            "onScreen" : false,
+            "pid" : 98495
+          },
+          {
+            "application" : {
+              "bundleID" : "com.tencent.qq",
+              "bundlePath" : "\/Applications\/QQ.app",
+              "launch" : 1790592030.191027
+            },
+            "frame" : [
+              [
+                1096,
+                0
+              ],
+              [
+                32,
+                37
+              ]
+            ],
+            "id" : 151162,
+            "onScreen" : true,
+            "pid" : 68222
+          },
+          {
+            "application" : {
+              "bundleID" : "com.alibaba.DingTalkMac",
+              "bundlePath" : "\/Applications\/DingTalk.app",
+              "launch" : 1790514050.627453
+            },
+            "frame" : [
+              [
+                864,
+                1056
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "id" : 125889,
+            "onScreen" : false,
+            "pid" : 42072
+          },
+          {
+            "application" : {
+              "bundleID" : "com.alibaba.DingTalkMac",
+              "bundlePath" : "\/Applications\/DingTalk.app",
+              "launch" : 1790514050.627453
+            },
+            "frame" : [
+              [
+                1006,
+                0
+              ],
+              [
+                55,
+                37
+              ]
+            ],
+            "id" : 125881,
+            "onScreen" : true,
+            "pid" : 42072
+          },
+          {
+            "application" : {
+              "bundleID" : "com.tencent.iOA",
+              "bundlePath" : "\/Applications\/iOA\/iOA.app",
+              "launch" : 1789540647.968737
+            },
+            "frame" : [
+              [
+                1329,
+                0
+              ],
+              [
+                33,
+                37
+              ]
+            ],
+            "id" : 273,
+            "onScreen" : true,
+            "pid" : 16118
+          },
+          {
+            "application" : {
+              "bundleID" : "com.apple.FollowUpUI",
+              "bundlePath" : "\/System\/Library\/PrivateFrameworks\/CoreFollowUp.framework\/Versions\/A\/Resources\/FollowUpUI.app",
+              "launch" : 1789581021.592969
+            },
+            "frame" : [
+              [
+                624,
+                376
+              ],
+              [
+                480,
+                363
+              ]
+            ],
+            "id" : 2915,
+            "onScreen" : false,
+            "pid" : 69992
+          },
+          {
+            "application" : {
+              "bundleID" : "com.ryanai.mactools",
+              "bundlePath" : "\/tmp\/mac-tools-native-attempt-gate-candidate-task7\/MacTools Native Attempt Gate Preview.app",
+              "launch" : 1791015809.175769
+            },
+            "frame" : [
+              [
+                944,
+                0
+              ],
+              [
+                24,
+                37
+              ]
+            ],
+            "id" : 309757,
+            "onScreen" : false,
+            "pid" : 74637
+          },
+          {
+            "application" : {
+              "bundleID" : "com.sogou.inputmethod.sogou",
+              "bundlePath" : "\/Library\/Input Methods\/SogouInput.app",
+              "launch" : 1790778230.716088
+            },
+            "frame" : [
+              [
+                0,
+                973
+              ],
+              [
+                96,
+                144
+              ]
+            ],
+            "id" : 299807,
+            "onScreen" : false,
+            "pid" : 98495
+          },
+          {
+            "application" : {
+              "bundleID" : "com.apple.Spotlight",
+              "bundlePath" : "\/System\/Library\/CoreServices\/Spotlight.app",
+              "launch" : 1789537523.009709
+            },
+            "frame" : [
+              [
+                1513,
+                0
+              ],
+              [
+                32,
+                37
+              ]
+            ],
+            "id" : 39,
+            "onScreen" : true,
+            "pid" : 758
+          },
+          {
+            "application" : {
+              "bundleID" : "com.openai.codex",
+              "bundlePath" : "\/Applications\/ChatGPT.app",
+              "launch" : 1790945877.594245
+            },
+            "frame" : [
+              [
+                726,
+                0
+              ],
+              [
+                38,
+                37
+              ]
+            ],
+            "id" : 304288,
+            "onScreen" : false,
+            "pid" : 97798
+          },
+          {
+            "application" : {
+              "bundleID" : "com.apple.controlcenter",
+              "bundlePath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+              "launch" : 1789537521.160191
+            },
+            "frame" : [
+              [
+                1013,
+                0
+              ],
+              [
+                48,
+                37
+              ]
+            ],
+            "id" : 6863,
+            "onScreen" : false,
+            "pid" : 635
+          },
+          {
+            "application" : {
+              "bundleID" : "com.tencent.aegis.monitor",
+              "bundlePath" : "\/Applications\/腾讯电脑管家.app\/Contents\/Library\/LoginItems\/AEMonitor.app",
+              "launch" : 1789539762.751366
+            },
+            "frame" : [
+              [
+                1077,
+                34
+              ],
+              [
+                320,
+                570
+              ]
+            ],
+            "id" : 2687,
+            "onScreen" : false,
+            "pid" : 7432
+          },
+          {
+            "application" : {
+              "bundleID" : "com.apple.controlcenter",
+              "bundlePath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+              "launch" : 1789537521.160191
+            },
+            "frame" : [
+              [
+                1400,
+                0
+              ],
+              [
+                33,
+                37
+              ]
+            ],
+            "id" : 986,
+            "onScreen" : true,
+            "pid" : 635
+          },
+          {
+            "application" : {
+              "bundleID" : "com.parallels.desktop.console",
+              "bundlePath" : "\/Applications\/Parallels Desktop.app",
+              "launch" : 1789549137.231684
+            },
+            "frame" : [
+              [
+                0,
+                0
+              ],
+              [
+                38,
+                37
+              ]
+            ],
+            "id" : 575,
+            "onScreen" : false,
+            "pid" : 91669
+          },
+          {
+            "application" : {
+              "bundleID" : "com.netease.uuremote",
+              "bundlePath" : "\/Applications\/UURemote.app",
+              "launch" : 1789537526.626023
+            },
+            "frame" : [
+              [
+                1061,
+                0
+              ],
+              [
+                35,
+                37
+              ]
+            ],
+            "id" : 73,
+            "onScreen" : true,
+            "pid" : 960
+          },
+          {
+            "application" : {
+              "bundleID" : "com.apple.TextInputMenuAgent",
+              "bundlePath" : "\/System\/Library\/CoreServices\/TextInputMenuAgent.app",
+              "launch" : 1789537526.51655
+            },
+            "frame" : [
+              [
+                800,
+                0
+              ],
+              [
+                44,
+                37
+              ]
+            ],
+            "id" : 67,
+            "onScreen" : false,
+            "pid" : 951
+          },
+          {
+            "application" : {
+              "bundleID" : "com.baidu.BaiduNetdisk-mac",
+              "bundlePath" : "\/Applications\/BaiduNetdisk_mac.app",
+              "launch" : 1789537522.662004
+            },
+            "frame" : [
+              [
+                764,
+                0
+              ],
+              [
+                36,
+                37
+              ]
+            ],
+            "id" : 61,
+            "onScreen" : false,
+            "pid" : 737
+          },
+          {
+            "application" : {
+              "bundleID" : "com.tencent.aegis.monitor",
+              "bundlePath" : "\/Applications\/腾讯电脑管家.app\/Contents\/Library\/LoginItems\/AEMonitor.app",
+              "launch" : 1789539762.751366
+            },
+            "frame" : [
+              [
+                1216,
+                0
+              ],
+              [
+                42,
+                37
+              ]
+            ],
+            "id" : 144,
+            "onScreen" : true,
+            "pid" : 7432
+          },
+          {
+            "application" : {
+              "bundleID" : "com.apple.controlcenter",
+              "bundlePath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+              "launch" : 1789537521.160191
+            },
+            "frame" : [
+              [
+                1351,
+                0
+              ],
+              [
+                38,
+                37
+              ]
+            ],
+            "id" : 19,
+            "onScreen" : false,
+            "pid" : 635
+          },
+          {
+            "application" : {
+              "bundleID" : "com.apple.controlcenter",
+              "bundlePath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+              "launch" : 1789537521.160191
+            },
+            "frame" : [
+              [
+                1475,
+                0
+              ],
+              [
+                38,
+                37
+              ]
+            ],
+            "id" : 18,
+            "onScreen" : true,
+            "pid" : 635
+          },
+          {
+            "application" : {
+              "bundleID" : "com.apple.controlcenter",
+              "bundlePath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+              "launch" : 1789537521.160191
+            },
+            "frame" : [
+              [
+                1433,
+                0
+              ],
+              [
+                42,
+                37
+              ]
+            ],
+            "id" : 17,
+            "onScreen" : true,
+            "pid" : 635
+          },
+          {
+            "application" : {
+              "bundleID" : "com.apple.controlcenter",
+              "bundlePath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+              "launch" : 1789537521.160191
+            },
+            "frame" : [
+              [
+                1362,
+                0
+              ],
+              [
+                38,
+                37
+              ]
+            ],
+            "id" : 15,
+            "onScreen" : true,
+            "pid" : 635
+          },
+          {
+            "application" : {
+              "bundleID" : "com.apple.controlcenter",
+              "bundlePath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+              "launch" : 1789537521.160191
+            },
+            "frame" : [
+              [
+                1545,
+                0
+              ],
+              [
+                34,
+                37
+              ]
+            ],
+            "id" : 14,
+            "onScreen" : true,
+            "pid" : 635
+          },
+          {
+            "application" : {
+              "bundleID" : "com.apple.controlcenter",
+              "bundlePath" : "\/System\/Library\/CoreServices\/ControlCenter.app",
+              "launch" : 1789537521.160191
+            },
+            "frame" : [
+              [
+                1579,
+                0
+              ],
+              [
+                151,
+                37
+              ]
+            ],
+            "id" : 13,
+            "onScreen" : true,
+            "pid" : 635
+          }
+        ]
+      },
+      "sequence" : 2,
+      "stage" : "before.first.observe",
+      "state" : "preparing"
+    },
+    {
+      "at" : "2026-10-03T08:29:22Z",
+      "elapsedMilliseconds" : 65.7653333619237,
+      "errorCode" : "observation.menu",
+      "event" : "failure",
+      "sequence" : 3,
+      "stage" : "before.first.observe",
+      "state" : "preparing"
+    },
+    {
+      "at" : "2026-10-03T08:29:22Z",
+      "elapsedMilliseconds" : 65.80720818601549,
+      "event" : "refused",
+      "sequence" : 4,
+      "stage" : "before.first.observe",
+      "state" : "idle"
+    }
+  ],
+  "firstFailure" : {
+    "at" : "2026-10-03T08:29:22Z",
+    "elapsedMilliseconds" : 65.7653333619237,
+    "errorCode" : "observation.menu",
+    "event" : "failure",
+    "sequence" : 3,
+    "stage" : "before.first.observe",
+    "state" : "preparing"
+  },
+  "schemaVersion" : 1,
+  "targetPID" : 74640,
+  "targetWindowID" : 309749,
+  "transaction" : "6D50D9C9-798E-4138-8BF3-F23324BED68D"
+}

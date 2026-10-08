@@ -3,7 +3,7 @@ import Darwin
 import CoreGraphics
 
 // In-memory only. PID and CGWindowID are hints within one launch, never durable identities.
-struct MenuBarApplicationIdentity: Equatable {
+struct MenuBarApplicationIdentity: Equatable, Codable {
     let bundleID: String
     let bundlePath: String
     let launch: TimeInterval
@@ -31,6 +31,27 @@ struct MenuBarIconIdentity {
     init(capturing target: MenuBarStatusTarget, peersOnDisplay: [MenuBarStatusTarget]) {
         windowID = target.id; pid = target.pid; application = target.application
         singletonAtCapture = peersOnDisplay.filter { $0.pid == target.pid }.count == 1
+    }
+    // Identity-only resolution for semantic AX actions. Visibility stays in
+    // resolve(), so this never weakens the existing coordinate-click contract.
+    static func identify(_ identity: Self, windows: [MenuBarStatusTarget], preferredDisplay: CGRect? = nil) -> MenuBarIconResolution {
+        guard let original = identity.application, original.launch.isFinite else { return .failed(.unverifiedIdentity) }
+        let owned = windows.filter { $0.application.map { original.sameApplication($0) && $0.launch.isFinite } == true }
+        // An exact window in the same process launch remains identifiable even
+        // when a separator has parked it outside its display's visible bounds.
+        let exact = owned.filter { $0.id == identity.windowID && $0.pid == identity.pid && $0.application?.launch == original.launch }
+        let candidate: MenuBarStatusTarget
+        if exact.count == 1 { candidate = exact[0] }
+        else {
+            let local = owned.filter { candidate in
+                preferredDisplay.map { $0.contains(CGPoint(x: candidate.frame.midX, y: candidate.frame.midY)) } ?? true
+            }
+            guard !local.isEmpty else { return .failed(.missing) }
+            guard identity.singletonAtCapture, local.count == 1 else { return .failed(.ambiguous) }
+            candidate = local[0]
+        }
+        guard validFrame(candidate.frame) else { return .failed(.invalidGeometry) }
+        return .matched(candidate)
     }
     static func resolve(_ identity: Self, windows: [MenuBarStatusTarget], safeAreas: [CGRect], preferredDisplay: CGRect? = nil) -> MenuBarIconResolution {
         guard let original = identity.application, original.launch.isFinite else { return .failed(.unverifiedIdentity) }
@@ -64,8 +85,9 @@ struct MenuBarIconIdentity {
 }
 
 enum MenuBarIconResolution {
-    enum Failure: Equatable {
+    enum Failure: Error, LocalizedError, Equatable {
         case unverifiedIdentity, missing, ambiguous, offScreen, occluded, overlapped, invalidGeometry
+        var errorDescription: String? { message }
         var message: String {
             switch self {
             case .unverifiedIdentity: return "无法核实图标所属应用，未发送点击；请重试采集或直接操作原生图标。"
