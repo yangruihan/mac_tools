@@ -1,0 +1,17 @@
+{
+  "activeObject": "/Users/yangruihan/Workspace/mac_tools",
+  "lastConfirmedResult": "build8 official quiet QQ normal entry native return14 clear; 500 tests",
+  "nextExecutableAction": "verify offscreen metadata entry on a fresh exact target through ordinary GUI; CUA -3812 must resolve first",
+  "inputPaths": [
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/completion.json",
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/ui-acceptance.txt",
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/session-4964488B-B13F-4FED-A0C8-422276EB3AD7"
+  ],
+  "acceptanceEvent": "new actual offscreen target session ready-hidden + owner interface observed + returned original edge + cleanup clear",
+  "unfinished": [
+    "offscreen GUI acceptance",
+    "thumbnail GUI acceptance",
+    "full-screen/multidisplay cases; existing single-display scope unchanged"
+  ],
+  "doNotResumeNonce": "0A81E3AD-5B0E-458C-BF2C-5F5A6A30D198"
+}

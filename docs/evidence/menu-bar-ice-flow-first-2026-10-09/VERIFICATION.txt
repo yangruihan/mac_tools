@@ -5213,3 +5213,150 @@ completion.json
   "stderr": "[0/1] Planning build\nBuilding for debugging...\n[0/5] Write sources\n[1/5] Write swift-version--58304C5D6DBC2206.txt\n[3/7] Emitting module MacTools\n[4/7] Compiling MacTools MenuBarOrganizerPlugin.swift\n[4/9] Write Objects.LinkFileList\n[5/9] Linking MacTools\n[6/9] Applying MacTools\n[8/10] Emitting module MacToolsTests\n[8/10] Write Objects.LinkFileList\n[9/10] Linking MacToolsPackageTests\nBuild complete! (4.85s)\n"
 }
 Initial build exit1: pending recovery: keep current worker. Correction performs GUI-only host build and keeps original signed worker tree identical; raw cancelled journal untouched. Actual native UI BASELINE trial primary/original settings folded; MODIFIED native organizer primary/developer diagnostics off; ROLLBACK restored originalc2 app hash and same UI-render command exit0. Native edit button clicked; no real Command-drag performed. Source2file rollback pristine and patch reapply exact. First delivery audit Python stdin line3 exit1 matched its own ps full command text as a worker; corrected ps pid,comm uses exact executable suffix, one formal app/no worker. Frontmost/user-changed CUA error corrected by fresh query before action. No install settings or recovery record deletion.
+
+PRODUCTION ENTRY 2026-10-10 source transaction
+Changed branches: activateIdentity ICE_MENU_BAR_INTEGRATED; bridge validateReady production; worker --production-session
+BASELINE command: /Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/baseline.app/Contents/MacOS/MacTools --ice-interface-bridge-tests /Users/yangruihan/Workspace/mac_tools/Tools/IceInterfaceProduct/Fixtures/accepted-ordinary-window.json
+exit=0
+stdout:
+{"assertions":24,"mousePosts":0,"passed":true,"permissionRequests":0,"realResultReplayedAsDataOnly":true,"windowsOpened":0}
+stderr:
+MODIFIED command: /Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/modified.app/Contents/MacOS/MacTools --ice-interface-bridge-tests /Users/yangruihan/Workspace/mac_tools/Tools/IceInterfaceProduct/Fixtures/accepted-ordinary-window.json
+exit=0
+stdout:
+{"assertions":33,"mousePosts":0,"passed":true,"permissionRequests":0,"realResultReplayedAsDataOnly":true,"windowsOpened":0}
+stderr:
+ROLLBACK command: /Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/rollback.app/Contents/MacOS/MacTools --ice-interface-bridge-tests /Users/yangruihan/Workspace/mac_tools/Tools/IceInterfaceProduct/Fixtures/accepted-ordinary-window.json
+exit=0
+stdout:
+{"assertions":24,"mousePosts":0,"passed":true,"permissionRequests":0,"realResultReplayedAsDataOnly":true,"windowsOpened":0}
+stderr:
+Restored source hashes match baseline for all seven files; restored executable bytes match baseline. App rollback here is a binary test copy, not an installed-app rollback.
+Preserved administrative recovery receipt:
+{
+  "activeJournalPending" : false,
+  "disposition" : "userConfirmedQQNeighborObservedAfterCancellation",
+  "final" : {
+    "atUptime" : 1881163.2093715419,
+    "combinedLeftDown" : false,
+    "commandShiftControlOptionFnDown" : false,
+    "controllerGone" : true,
+    "hidLeftDown" : false,
+    "nativePosts" : 0,
+    "neighborFrame" : "{{1116, 0}, {38, 37}}",
+    "neighborID" : 354357,
+    "noVisibleOwnerInterface" : true,
+    "noVisibleOwnerPopup" : true,
+    "originalNeighborSameSide" : true,
+    "physicalReleaseProven" : false,
+    "pressedMouseButtons" : 0,
+    "sameIdentityAndScope" : true,
+    "targetFrame" : "{{1084, 0}, {32, 37}}",
+    "targetID" : 351689
+  },
+  "nativePosts" : 0,
+  "nativeReturnProven" : false,
+  "originalArchive" : "\/Users\/yangruihan\/Library\/Application Support\/MacTools\/IceInterfaceCandidate\/selected-relative-recovery-v2\/qq-cancelled-manual-return-original-68B39A65-0A5B-4898-A241-D6EFB487B7F0.json",
+  "physicalReleaseProven" : false,
+  "receipt" : "\/Users\/yangruihan\/Library\/Application Support\/MacTools\/IceInterfaceCandidate\/selected-relative-recovery-v2\/qq-cancelled-manual-return-receipt-68B39A65-0A5B-4898-A241-D6EFB487B7F0.json",
+  "receiptSHA256" : "4be98c39c2b629cb0244b5d7e6ca17b429083e0d09a98c3e3cc883c20e1220ef",
+  "reconciled" : true
+}
+
+Recovery errors before completion: compile missing Bridge; observe menu; scope actual10246 expected4634. No native posts.
+
+PRODUCTION ENTRY native installed acceptance
+{
+  "installedPath": "/Applications/MacTools.app",
+  "version": "0.2.2",
+  "build": "8",
+  "sha256": "330bf603325a7bea95b0d71f3c68b2457edc804aefd7b4368a81e4fe23308682",
+  "commitBeforeContinuation": "d514edba",
+  "sourceRevisionInBuild": "d514edbafdcf8a98b1e214489f9049254a9ade61",
+  "sourceManifest": "/Applications/MacTools.app/Contents/Resources/Source",
+  "quietSession": "/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/session-4964488B-B13F-4FED-A0C8-422276EB3AD7",
+  "nonce": "4964488B-B13F-4FED-A0C8-422276EB3AD7",
+  "controllerVisible": false,
+  "automaticStart": true,
+  "posts": 14,
+  "returned": true,
+  "pendingRecovery": false,
+  "target": "QQ native-bar position; not offscreen",
+  "stateTransitions": [
+    "normal metadata Open QQ",
+    "quiet signed worker ready",
+    "native QQ ordinaryWindow tracked active",
+    "inactive15s",
+    "returned original neighbor edge",
+    "worker exited and cleanup no journal"
+  ],
+  "firstFailedPrepare": {
+    "stderr": "selected candidate: incomplete",
+    "nativePosts": 0,
+    "sessionCreated": false,
+    "automaticRetry": false
+  },
+  "offscreenAcceptance": "not verified; CUA SCStreamError -3812 before second target; no new session created"
+}
+/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/session-4964488B-B13F-4FED-A0C8-422276EB3AD7/ready.json
+{
+  "automaticStart" : true,
+  "fixturePID" : null,
+  "frontPID" : 902,
+  "hitTestRequired" : false,
+  "nativePosts" : 0,
+  "nonce" : "4964488B-B13F-4FED-A0C8-422276EB3AD7",
+  "pid" : 90309,
+  "productionMode" : true,
+  "strictANYRequired" : false,
+  "windowKey" : false,
+  "windowNumber" : 363050,
+  "windowVisible" : false
+}
+/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/session-4964488B-B13F-4FED-A0C8-422276EB3AD7/product-launch.json
+{
+  "automaticStart" : true,
+  "launchMethod" : "NSWorkspace.openApplication",
+  "nonce" : "4964488B-B13F-4FED-A0C8-422276EB3AD7",
+  "permissionRequests" : 0,
+  "pid" : 90309,
+  "productionMode" : true
+}
+/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/session-4964488B-B13F-4FED-A0C8-422276EB3AD7/cleanup.json
+{
+  "atUnix" : 1791567174.165359,
+  "fixtureExited" : true,
+  "installedSHA256" : "330bf603325a7bea95b0d71f3c68b2457edc804aefd7b4368a81e4fe23308682",
+  "journalPending" : false
+}
+Full signed app rollback initial exit1: resource fork/Finder information from copied app. xattr -cr did not remove FinderInfo; corrected xattr -dr com.apple.FinderInfo on backup only. Strict signatures then passed; portable rollback exit0, same input tests stdout:
+{"assertions":24,"mousePosts":0,"passed":true,"permissionRequests":0,"realResultReplayedAsDataOnly":true,"windowsOpened":0}
+stderr:
+restoredSHA=bcd0d5d4ab7c8c95425a8dd9c805c9f3ec909ed97fd8e6c553e8f8ede0bb70a2
+swift test exit0: Executed500, failures0. build-app.sh exit0; source worker offline63/510, delay15, dispatch11/55, bridge33.
+Final provenance: changed runtime Sources and controller source bytes equal installed signed snapshots; installed host330bf603325a7bea95b0d71f3c68b2457edc804aefd7b4368a81e4fe23308682, build8. Tools duplicate guard preserved for standalone use. No permissions requested, no push.
+{
+  "selectedPluginSettingsEqual": true,
+  "beforeKeys": [
+    "plugin.keep-awake.enabled",
+    "plugin.menu-bar-organizer.optedIn",
+    "plugin.menu-bar-organizer.presentationMode",
+    "plugin.menu-bar-organizer.priorMainPosition",
+    "plugin.menu-bar-organizer.visibleLimit",
+    "plugin.quick-controls.presets",
+    "plugin.quick-controls.unlockShortcut",
+    "plugin.window-preview.frameRate",
+    "windowShortcut"
+  ],
+  "afterKeys": [
+    "plugin.keep-awake.enabled",
+    "plugin.menu-bar-organizer.optedIn",
+    "plugin.menu-bar-organizer.presentationMode",
+    "plugin.menu-bar-organizer.priorMainPosition",
+    "plugin.menu-bar-organizer.visibleLimit",
+    "plugin.quick-controls.presets",
+    "plugin.quick-controls.unlockShortcut",
+    "plugin.window-preview.frameRate",
+    "windowShortcut"
+  ]
+}

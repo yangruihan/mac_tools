@@ -3,6 +3,7 @@ import AppKit
 
 @MainActor final class IceSelectedController: NSObject, NSApplicationDelegate, NSWindowDelegate {
     let directory: URL, prepared: IceSelectedSession.Prepared
+    var production: Bool { CommandLine.arguments.contains("--production-session") }
     let autoOwned: Bool
     var window: NSWindow!, status: NSTextField!, start: NSButton!, cancelButton: NSButton!
     let journal: IceSelectedJournal
@@ -52,14 +53,14 @@ import AppKit
     }
     func applicationDidFinishLaunching(_ notification:Notification) {
         window=NSWindow(contentRect:NSRect(x:0,y:0,width:600,height:230),styleMask:[.titled,.closable],backing:.buffered,defer:false)
-        window.title="MacTools · Ice 快速功能验证";window.center();window.delegate=self
+        window.title=production ? "MacTools · 菜单栏图标恢复" : "MacTools · Ice 快速功能验证";window.center();window.delegate=self
         let label=NSTextField(wrappingLabelWithString: prepared.selfOwned ? "仅操作自建 T。按 Ice 流程搬出、打开菜单、关闭及归位。\n会短暂影响焦点和光标；正式版保持不变。" : "仅操作预先选定的一个图标。搬出并打开界面后，请关闭该界面或切换至其他应用。\n等待15秒后归位；取消会停止后续操作。")
         label.frame=NSRect(x:20,y:130,width:560,height:80);window.contentView?.addSubview(label)
         status=NSTextField(wrappingLabelWithString:"正在准备自有锚点与目标身份…")
         status.frame=NSRect(x:20,y:65,width:560,height:60);window.contentView?.addSubview(status)
         start=NSButton(title:"开始单轮",target:self,action:#selector(begin));start.frame=NSRect(x:20,y:20,width:180,height:32);start.isEnabled=false;window.contentView?.addSubview(start)
         let cancel=NSButton(title:"取消并关闭",target:self,action:#selector(stop));cancel.frame=NSRect(x:220,y:20,width:180,height:32);window.contentView?.addSubview(cancel);cancelButton=cancel
-        window.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true)
+        if !production { window.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true) }
         watchdog=Timer(timeInterval:0.25,repeats:true){[weak self] _ in MainActor.assumeIsolated {
             guard let self,!self.quitting else{return}
             if !self.used,ProcessInfo.processInfo.systemUptime>=self.readyDeadline {self.stop()}
@@ -75,9 +76,9 @@ import AppKit
             if prepared.selfOwned {try await launchFixture()}
             try Task.checkCancellation();guard !cancelled,!quitting else{throw IceBaselineError.cancelled}
             try mark("ready");start.isEnabled=true;status.stringValue="已就绪；只运行一次，按 Ice 邻居边缘归位；完整队列仅诊断。"
-            try save("ready.json",["nonce":prepared.nonce.uuidString,"pid":ProcessInfo.processInfo.processIdentifier,"fixturePID":fixturePID as Any? ?? NSNull(),"strictANYRequired":false,"hitTestRequired":false,"nativePosts":0,"windowNumber":window.windowNumber,"windowVisible":window.isVisible,"windowKey":window.isKeyWindow,"frontPID":NSWorkspace.shared.frontmostApplication?.processIdentifier ?? -1])
+            try save("ready.json",["nonce":prepared.nonce.uuidString,"pid":ProcessInfo.processInfo.processIdentifier,"fixturePID":fixturePID as Any? ?? NSNull(),"strictANYRequired":false,"hitTestRequired":false,"nativePosts":0,"windowNumber":window.windowNumber,"windowVisible":window.isVisible,"productionMode":production,"automaticStart":production,"windowKey":window.isKeyWindow,"frontPID":NSWorkspace.shared.frontmostApplication?.processIdentifier ?? -1])
             if CommandLine.arguments.contains("--owned-entry-cancel-check") {cancelButton.performClick(nil)}
-            else if autoOwned {begin()}
+            else if autoOwned || production {begin()}
         } catch {await finish(["realClosedLoopVerified":false,"posts":0,"stage":stage,"failure":String(describing:error)])}}
     }
     func owner() throws -> [String:Any] {
@@ -218,6 +219,7 @@ import AppKit
             } else {
                 start.title="确认人工归位";start.action=#selector(verifyManualRecovery);start.isEnabled = !record.needsRelease
             }
+            if production { window.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true) }
             return
         }
         quitting=true
@@ -311,9 +313,10 @@ import AppKit
             let autoOwned=args.count==2 && ["--self-owned-run","--self-owned-receiver-lag-run","--self-owned-window-run"].contains(args[1])
             let directory:URL
             if autoOwned {directory=try IceSelectedSession.prepare(windowID:nil)}
-            else if (args.count==3 || (args.count==4 && ["--owned-entry-cancel-check","--owned-window-session"].contains(args[3]))),args[1]=="--session" {directory=URL(fileURLWithPath:args[2])}
+            else if (args.count==3 || (args.count==4 && ["--owned-entry-cancel-check","--owned-window-session","--production-session"].contains(args[3]))),args[1]=="--session" {directory=URL(fileURLWithPath:args[2])}
             else{throw IceSelectedFailure.policy}
             let prepared=try IceSelectedSession.load(directory)
+            guard !args.contains("--production-session") || (!prepared.selfOwned && prepared.selected != nil) else{throw IceSelectedFailure.policy}
             guard !autoOwned || prepared.selfOwned else{throw IceSelectedFailure.policy}
             guard !args.contains("--owned-window-session") || prepared.selfOwned else{throw IceSelectedFailure.policy}
             if args.contains("--owned-entry-cancel-check"),!prepared.selfOwned {
@@ -323,7 +326,7 @@ import AppKit
                       target.owner.sha256==m["productTargetSHA256"] as? String else{throw IceSelectedFailure.policy}
             }
             try emit(["session":directory.path,"selfOwned":prepared.selfOwned,"autoStart":autoOwned])
-            let app=NSApplication.shared;app.setActivationPolicy(.regular)
+            let app=NSApplication.shared;app.setActivationPolicy(args.contains("--production-session") ? .accessory : .regular)
             let delegate=IceSelectedController(directory:directory,prepared:prepared,autoOwned:autoOwned);app.delegate=delegate
             withExtendedLifetime(delegate){app.run()}
         }catch{fputs("selected candidate: \(error)\n",stderr);exit(1)}

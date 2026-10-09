@@ -1,0 +1,13 @@
+{
+  "atUptime" : 1881443.6154595835,
+  "nonce" : "4964488B-B13F-4FED-A0C8-422276EB3AD7",
+  "preparedDisplay" : 1,
+  "preparedSpace" : 4634,
+  "screens" : [
+    {
+      "display" : 1,
+      "frame" : "{{0, 0}, {1728, 1117}}"
+    }
+  ],
+  "stage" : "plan"
+}

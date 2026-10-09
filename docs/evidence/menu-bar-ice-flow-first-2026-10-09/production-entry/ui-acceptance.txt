@@ -1,0 +1,6 @@
+Normal entry: 收纳图标… -> 同时显示原生栏位置 -> 打开 QQ
+Developer diagnostic disclosure remained off. No target picker/Start used.
+Final AX text: 图标已打开并回到原邻边；可以继续使用。
+Native return: target351689 QQ left of neighbor354357 WeChat; controller exited; journalPending=false.
+GUI tool failed during focus handoff: native pipe closed; native lease observed inactive and return completed; CUA reset and final AX reopened successfully.
+Offscreen QQ Music button attempt: ScreenCaptureKit -3812; no new worker session; not accepted.

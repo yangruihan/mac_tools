@@ -1,0 +1,406 @@
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
+@@ -48,6 +48,10 @@
+     private var popoverMonitors: [Any] = []
+     private var popoverDeactivateObserver: NSObjectProtocol?
+     private var work: Task<Void, Never>?
++    #if ICE_MENU_BAR_INTEGRATED
++    private var iceActivation: Task<Void, Never>?
++    private var iceLaunch: MenuBarIceInterfaceProductBridge.Launch?
++    #endif
+     private var environment = MenuBarEnvironment()
+     private var environmentMonitor: MenuBarEnvironmentMonitor?
+     private var environmentWork: Task<Void, Never>?
+@@ -168,6 +172,13 @@
+         }
+     }
+     func deactivate() {
++        #if ICE_MENU_BAR_INTEGRATED
++        iceActivation?.cancel()
++        if let launch = iceLaunch, launch.isRunning,
++           (try? MenuBarProcessSignature.read(launch.proof.pid)) == launch.proof {
++            launch.application.terminate()
++        }
++        #endif
+         MainActor.assumeIsolated { nativeRevealController?.shutdown() }
+         nativeRevealWork?.cancel(); nativeRevealWork = nil
+         nativeRevealSubscriptions = []; nativeRevealController = nil; nativeRevealState = .idle
+@@ -420,7 +431,7 @@
+             displayID: display.id, excludingPID: ProcessInfo.processInfo.processIdentifier,
+             applicationName: { NSRunningApplication(processIdentifier: $0)?.localizedName })
+         showsNotchDirectory = true
+-        status = "已读取 \(directoryItems.count) 个图标位置，无需截图；选择图标可尝试辅助功能打开。"
++        status = "已读取 \(directoryItems.count) 个图标位置，无需截图；选择“打开”可临时露出图标；界面不再占用15秒后归位。"
+     }
+     func activateDirectoryItem(_ id: CGWindowID) {
+         guard !nativeRevealBlocksLayout else { status = "请先完成或取消临时露出，再打开图标菜单。"; return }
+@@ -723,6 +734,10 @@
+         activateIdentity(identity, presentFailurePopover: true)
+     }
+     private func activateIdentity(_ identity: MenuBarIconIdentity, presentFailurePopover: Bool) {
++        #if ICE_MENU_BAR_INTEGRATED
++        activateIceIdentity(identity)
++        return
++        #else
+         // Both thumbnail and metadata entries use the same semantic-only driver.
+         closePanel()
+         _ = visibility.dismissPopover()
+@@ -755,7 +770,75 @@
+                 if coordinator.state == .idle { return }
+             }
+         }
+-    }
++        #endif
++    }
++    #if ICE_MENU_BAR_INTEGRATED
++    private func activateIceIdentity(_ identity: MenuBarIconIdentity) {
++        guard iceActivation == nil, iceLaunch?.isRunning != true else {
++            status = "上一项打开或恢复尚未结束；未重复操作。"; return
++        }
++        closePanel(); _ = visibility.dismissPopover()
++        status = "正在核实原图标并打开…"
++        iceActivation = Task { @MainActor [weak self] in
++            guard let self else { return }
++            defer { self.iceActivation = nil }
++            do {
++                try await Task.sleep(nanoseconds: 350_000_000)
++                guard self.isOrganizing, let original = identity.application,
++                      MenuBarApplicationIdentity.current(pid: identity.pid) == original else {
++                    throw MenuBarIceSelectedTarget.Failure.identity
++                }
++                let directory = try MenuBarIceSelectedTarget.readDirectory()
++                let rows = directory.rows.filter { $0.id == identity.windowID && $0.pid == identity.pid }
++                guard rows.count == 1 else { throw MenuBarIceSelectedTarget.Failure.missing }
++                let target = try MenuBarIceSelectedTarget.capture(rows[0], from: directory)
++                guard target.owner.launch == original.launch, target.owner.identifier == original.bundleID,
++                      MenuBarApplicationIdentity.current(pid: identity.pid) == original else {
++                    throw MenuBarIceSelectedTarget.Failure.identity
++                }
++                let session = try MenuBarIceInterfaceProductBridge.prepare(target)
++                try Task.checkCancellation()
++                let launch = try await MenuBarIceInterfaceProductBridge.launch(session, target: target, production: true)
++                self.iceLaunch = launch
++                do {
++                    while !FileManager.default.fileExists(atPath: session.appendingPathComponent("result.json").path) {
++                        guard launch.isRunning else { throw MenuBarIceInterfaceProductBridge.Failure.unknown(session) }
++                        try await Task.sleep(nanoseconds: 100_000_000)
++                    }
++                    let data = try Data(contentsOf: session.appendingPathComponent("result.json"))
++                    guard data.count < 2_000_000,
++                          let value = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
++                        throw MenuBarIceInterfaceProductBridge.Failure.invalid
++                    }
++                    guard let nonce = UUID(uuidString: String(session.lastPathComponent.dropFirst(8))) else {
++                        throw MenuBarIceInterfaceProductBridge.Failure.invalid
++                    }
++                    let result = try MenuBarIceInterfaceProductBridge.result(value, nonce: nonce)
++                    if result.passed {
++                        while launch.isRunning { try await Task.sleep(nanoseconds: 100_000_000) }
++                        guard let data = try? Data(contentsOf: session.appendingPathComponent("cleanup.json")),
++                              let cleanup = try JSONSerialization.jsonObject(with: data) as? [String: Any],
++                              cleanup["journalPending"] as? Bool == false else {
++                            throw MenuBarIceInterfaceProductBridge.Failure.unknown(session)
++                        }
++                        self.iceLaunch = nil
++                        self.status = "图标已打开并回到原邻边；可以继续使用。"
++                    } else {
++                        self.status = "打开流程已停止；请查看恢复窗口。原始记录保留，不会自动重试。"
++                    }
++                } catch {
++                    if Task.isCancelled, launch.isRunning,
++                       (try? MenuBarProcessSignature.read(launch.proof.pid)) == launch.proof {
++                        launch.application.terminate()
++                    }
++                    throw error
++                }
++            } catch {
++                self.status = "图标打开未完成：\(error.localizedDescription)。不会自动重试。"
++            }
++        }
++    }
++    #endif
+     var toggleShortcutError: String? { context.hotkeys.error(owner: info.id, id: "toggle-native") }
+     func makeView() -> AnyView {
+         #if ICE_MENU_BAR_CANDIDATE
+@@ -844,7 +927,7 @@
+                         .padding(3).background(.regularMaterial, in: Circle()).allowsHitTesting(false)
+                 }
+             }
+-            .help("尝试辅助功能打开；不支持时请展开原生图标手动操作。")
++            .help("打开原图标；界面不再占用15秒后回到原邻边。")
+     }
+     private func pageControls(count: Int, page: Int, columns: Int, hidden: Bool) -> some View {
+         let pages = max(1, (count + columns * 2 - 1) / (columns * 2))
+@@ -886,7 +969,7 @@
+                 Text("常驻图标 · \(outside.count)").font(.caption2).foregroundStyle(.secondary)
+                 row(outside, hidden: false)
+             }
+-            Text("仅自动打开支持辅助功能的图标；不支持的项请在原生栏操作。自动搬移、归位和模拟点击未启用。")
++            Text("打开会临时露出原图标；界面不再占用15秒后回到原邻边。排列请用原生 ⌘ 拖拽。")
+                 .font(.caption2).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+             Divider()
+             HStack {
+@@ -924,7 +1007,7 @@
+                         Button("编辑布局…") { plugin.arrangeNativeIcons() }
+                             .accessibilityIdentifier("menu-bar-edit-native-layout")
+                             .disabled(plugin.nativeRevealBlocksLayout)
+-                        Button("刘海图标…") { plugin.refreshNotchDirectory() }
++                        Button("收纳图标…") { plugin.refreshNotchDirectory() }
+                             .accessibilityIdentifier("menu-bar-open-notch-directory")
+                         Spacer()
+                         Button("关闭功能") { plugin.turnOff() }
+@@ -977,7 +1060,7 @@
+                                                 }
+                                                 Spacer()
+                                                 Button("打开") { plugin.activateDirectoryItem(item.id) }
+-                                                    .accessibilityLabel("通过辅助功能打开 \(item.title)")
++                                                    .accessibilityLabel("打开 \(item.title)")
+                                                     .disabled(plugin.nativeRevealBlocksLayout)
+                                                 if plugin.nativeRevealPreviewEnabled {
+                                                     Button("露出以编辑") { plugin.beginNativeReveal(item.id) }
+@@ -989,14 +1072,14 @@
+                                     }
+                                 }.frame(maxHeight: 220)
+                             }
+-                            Text("目录按窗口位置分类，不保证原图标可见。打开使用原图标的辅助功能动作，无需录屏；不支持时不会补点。拖动整理仍需原图标进入可见区。")
++                            Text("目录按窗口位置分类，不保证原图标可见。打开会按 Ice 流程临时露出原图标，无需录屏；界面不再占用15秒后归位。拖动整理仍需原图标进入可见区。")
+                                 .font(.caption).foregroundStyle(.secondary)
+                         }.padding(.top, 8)
+                     }
+                 }
+                 DisclosureGroup("高级 · 图标面板", isExpanded: $plugin.showsAdvancedOptions) {
+                     VStack(alignment: .leading, spacing: 12) {
+-                        Text("图标面板采集需要屏幕录制权限；仅使用辅助功能打开支持的图标，不模拟点击、不自动搬移或归位。外点 / Esc 清除浮窗缓存，原生收纳保持。")
++                        Text("图标面板采集需要屏幕录制权限；打开时临时露出原图标，界面不再占用15秒后归位。外点 / Esc 清除浮窗缓存，原生收纳保持。")
+                             .font(.caption).foregroundStyle(.secondary)
+                         HStack {
+                             Button(plugin.isCapturing ? "取消图标采集" : "打开 / 关闭图标面板") { plugin.openShelf() }.disabled(!plugin.isOrganizing)
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductBridge.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductBridge.swift
+@@ -121,12 +121,20 @@
+               selected.display == target.display, selected.space == target.space,
+               selected.originalFrame == target.originalFrame else { throw Failure.targetChanged }
+     }
+-    static func validateReady(_ value: [String: Any], nonce: UUID, pid: Int32) throws {
++    static func validateReady(_ value: [String: Any], nonce: UUID, pid: Int32, production: Bool = false) throws {
+         guard value["nonce"] as? String == nonce.uuidString, value["pid"] as? Int32 == pid,
+-              value["windowVisible"] as? Bool == true, value["nativePosts"] as? Int == 0,
+-              let number = value["windowNumber"] as? Int, number > 0 else { throw Failure.invalid }
+-    }
+-    static func launch(_ directory: URL, target: MenuBarIceSelectedTarget? = nil, ownedWindow: Bool = false, ownedCancelCheck: Bool = false) async throws -> Launch {
++              value["nativePosts"] as? Int == 0 else { throw Failure.invalid }
++        if production {
++            guard value["productionMode"] as? Bool == true, value["automaticStart"] as? Bool == true,
++                  value["windowVisible"] as? Bool == false else { throw Failure.invalid }
++        } else {
++            guard value["productionMode"] as? Bool != true, value["automaticStart"] as? Bool != true,
++                  value["windowVisible"] as? Bool == true,
++                  let number = value["windowNumber"] as? Int, number > 0 else { throw Failure.invalid }
++        }
++    }
++    static func launch(_ directory: URL, target: MenuBarIceSelectedTarget? = nil, ownedWindow: Bool = false, ownedCancelCheck: Bool = false, production: Bool = false) async throws -> Launch {
++        guard !production || (target != nil && !ownedWindow && !ownedCancelCheck) else { throw Failure.invalid }
+         let manifest = try manifest()
+         guard directory.resolvingSymlinksInPath() == directory,
+               !FileManager.default.fileExists(atPath: directory.appendingPathComponent("action-consumed.json").path),
+@@ -151,6 +159,9 @@
+         let configuration = NSWorkspace.OpenConfiguration()
+         configuration.createsNewApplicationInstance = true
+         configuration.arguments = ["--session", directory.path]
++        configuration.activates = !production
++        if production { configuration.arguments.append("--production-session") }
++        try Task.checkCancellation()
+         if ownedCancelCheck { configuration.arguments.append("--owned-entry-cancel-check") }
+         else if ownedWindow { configuration.arguments.append("--owned-window-session") }
+         let application: NSRunningApplication = try await withCheckedThrowingContinuation { continuation in
+@@ -165,13 +176,13 @@
+                   proof.sha256 == sha, proof.launch != nil, !application.isTerminated else { throw Failure.invalid }
+             let launch = Launch(application: application, proof: proof)
+             try JSONSerialization.data(withJSONObject: ["nonce": prepared.nonce.uuidString, "pid": proof.pid,
+-                "launchMethod": "NSWorkspace.openApplication", "automaticStart": false, "permissionRequests": 0], options: [.prettyPrinted, .sortedKeys])
++                "launchMethod": "NSWorkspace.openApplication", "automaticStart": production, "productionMode": production, "permissionRequests": 0], options: [.prettyPrinted, .sortedKeys])
+                 .write(to: directory.appendingPathComponent("product-launch.json"), options: .atomic)
+             let until = ProcessInfo.processInfo.systemUptime + 20
+             while ProcessInfo.processInfo.systemUptime < until {
+                 if let bytes = try? Data(contentsOf: directory.appendingPathComponent("ready.json")), bytes.count < 65_536,
+                    let value = try? JSONSerialization.jsonObject(with: bytes) as? [String: Any] {
+-                    try validateReady(value, nonce: prepared.nonce, pid: proof.pid)
++                    try validateReady(value, nonce: prepared.nonce, pid: proof.pid, production: production)
+                     if !ownedCancelCheck {
+                         guard launch.isRunning else { throw Failure.invalid }
+                         guard try MenuBarProcessSignature.read(proof.pid) == proof else { throw Failure.invalid }
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductChecks.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductChecks.swift
+@@ -66,6 +66,18 @@
+         try reject { try Bridge.validateReady(badReady, nonce: nonce, pid: 77) }
+         badReady = ready; badReady["nativePosts"] = 1
+         try reject { try Bridge.validateReady(badReady, nonce: nonce, pid: 77) }
++        let quiet: [String: Any] = ["nonce": nonce.uuidString, "pid": Int32(77),
++            "windowVisible": false, "nativePosts": 0, "windowNumber": -1,
++            "productionMode": true, "automaticStart": true]
++        try Bridge.validateReady(quiet, nonce: nonce, pid: 77, production: true); assertions += 1
++        try reject { try Bridge.validateReady(quiet, nonce: nonce, pid: 77) }
++        try reject { try Bridge.validateReady(ready, nonce: nonce, pid: 77, production: true) }
++        for field in ["nonce", "pid", "windowVisible", "nativePosts", "productionMode", "automaticStart"] {
++            var invalid = quiet
++            invalid[field] = ["nonce": UUID().uuidString, "pid": Int32(78), "windowVisible": true,
++                              "nativePosts": 1, "productionMode": false, "automaticStart": false][field]
++            try reject { try Bridge.validateReady(invalid, nonce: nonce, pid: 77, production: true) }
++        }
+         return ["passed": true, "assertions": assertions, "mousePosts": 0, "windowsOpened": 0,
+                 "permissionRequests": 0, "realResultReplayedAsDataOnly": true]
+     }
+--- a/Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift
++++ b/Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift
+@@ -120,12 +120,20 @@
+               selected.display == target.display, selected.space == target.space,
+               selected.originalFrame == target.originalFrame else { throw Failure.targetChanged }
+     }
+-    static func validateReady(_ value: [String: Any], nonce: UUID, pid: Int32) throws {
++    static func validateReady(_ value: [String: Any], nonce: UUID, pid: Int32, production: Bool = false) throws {
+         guard value["nonce"] as? String == nonce.uuidString, value["pid"] as? Int32 == pid,
+-              value["windowVisible"] as? Bool == true, value["nativePosts"] as? Int == 0,
+-              let number = value["windowNumber"] as? Int, number > 0 else { throw Failure.invalid }
+-    }
+-    static func launch(_ directory: URL, target: MenuBarIceSelectedTarget? = nil, ownedWindow: Bool = false, ownedCancelCheck: Bool = false) async throws -> Launch {
++              value["nativePosts"] as? Int == 0 else { throw Failure.invalid }
++        if production {
++            guard value["productionMode"] as? Bool == true, value["automaticStart"] as? Bool == true,
++                  value["windowVisible"] as? Bool == false else { throw Failure.invalid }
++        } else {
++            guard value["productionMode"] as? Bool != true, value["automaticStart"] as? Bool != true,
++                  value["windowVisible"] as? Bool == true,
++                  let number = value["windowNumber"] as? Int, number > 0 else { throw Failure.invalid }
++        }
++    }
++    static func launch(_ directory: URL, target: MenuBarIceSelectedTarget? = nil, ownedWindow: Bool = false, ownedCancelCheck: Bool = false, production: Bool = false) async throws -> Launch {
++        guard !production || (target != nil && !ownedWindow && !ownedCancelCheck) else { throw Failure.invalid }
+         let manifest = try manifest()
+         guard directory.resolvingSymlinksInPath() == directory,
+               !FileManager.default.fileExists(atPath: directory.appendingPathComponent("action-consumed.json").path),
+@@ -150,6 +158,9 @@
+         let configuration = NSWorkspace.OpenConfiguration()
+         configuration.createsNewApplicationInstance = true
+         configuration.arguments = ["--session", directory.path]
++        configuration.activates = !production
++        if production { configuration.arguments.append("--production-session") }
++        try Task.checkCancellation()
+         if ownedCancelCheck { configuration.arguments.append("--owned-entry-cancel-check") }
+         else if ownedWindow { configuration.arguments.append("--owned-window-session") }
+         let application: NSRunningApplication = try await withCheckedThrowingContinuation { continuation in
+@@ -164,13 +175,13 @@
+                   proof.sha256 == sha, proof.launch != nil, !application.isTerminated else { throw Failure.invalid }
+             let launch = Launch(application: application, proof: proof)
+             try JSONSerialization.data(withJSONObject: ["nonce": prepared.nonce.uuidString, "pid": proof.pid,
+-                "launchMethod": "NSWorkspace.openApplication", "automaticStart": false, "permissionRequests": 0], options: [.prettyPrinted, .sortedKeys])
++                "launchMethod": "NSWorkspace.openApplication", "automaticStart": production, "productionMode": production, "permissionRequests": 0], options: [.prettyPrinted, .sortedKeys])
+                 .write(to: directory.appendingPathComponent("product-launch.json"), options: .atomic)
+             let until = ProcessInfo.processInfo.systemUptime + 20
+             while ProcessInfo.processInfo.systemUptime < until {
+                 if let bytes = try? Data(contentsOf: directory.appendingPathComponent("ready.json")), bytes.count < 65_536,
+                    let value = try? JSONSerialization.jsonObject(with: bytes) as? [String: Any] {
+-                    try validateReady(value, nonce: prepared.nonce, pid: proof.pid)
++                    try validateReady(value, nonce: prepared.nonce, pid: proof.pid, production: production)
+                     if !ownedCancelCheck {
+                         guard launch.isRunning else { throw Failure.invalid }
+                         guard try MenuBarProcessSignature.read(proof.pid) == proof else { throw Failure.invalid }
+--- a/Tools/IceInterfaceProduct/MenuBarIceInterfaceProductChecks.swift
++++ b/Tools/IceInterfaceProduct/MenuBarIceInterfaceProductChecks.swift
+@@ -65,6 +65,18 @@
+         try reject { try Bridge.validateReady(badReady, nonce: nonce, pid: 77) }
+         badReady = ready; badReady["nativePosts"] = 1
+         try reject { try Bridge.validateReady(badReady, nonce: nonce, pid: 77) }
++        let quiet: [String: Any] = ["nonce": nonce.uuidString, "pid": Int32(77),
++            "windowVisible": false, "nativePosts": 0, "windowNumber": -1,
++            "productionMode": true, "automaticStart": true]
++        try Bridge.validateReady(quiet, nonce: nonce, pid: 77, production: true); assertions += 1
++        try reject { try Bridge.validateReady(quiet, nonce: nonce, pid: 77) }
++        try reject { try Bridge.validateReady(ready, nonce: nonce, pid: 77, production: true) }
++        for field in ["nonce", "pid", "windowVisible", "nativePosts", "productionMode", "automaticStart"] {
++            var invalid = quiet
++            invalid[field] = ["nonce": UUID().uuidString, "pid": Int32(78), "windowVisible": true,
++                              "nativePosts": 1, "productionMode": false, "automaticStart": false][field]
++            try reject { try Bridge.validateReady(invalid, nonce: nonce, pid: 77, production: true) }
++        }
+         return ["passed": true, "assertions": assertions, "mousePosts": 0, "windowsOpened": 0,
+                 "permissionRequests": 0, "realResultReplayedAsDataOnly": true]
+     }
+--- a/Tools/IceInterfaceProductWorker/IceSelectedController.swift
++++ b/Tools/IceInterfaceProductWorker/IceSelectedController.swift
+@@ -3,6 +3,7 @@
+ 
+ @MainActor final class IceSelectedController: NSObject, NSApplicationDelegate, NSWindowDelegate {
+     let directory: URL, prepared: IceSelectedSession.Prepared
++    var production: Bool { CommandLine.arguments.contains("--production-session") }
+     let autoOwned: Bool
+     var window: NSWindow!, status: NSTextField!, start: NSButton!, cancelButton: NSButton!
+     let journal: IceSelectedJournal
+@@ -52,14 +53,14 @@
+     }
+     func applicationDidFinishLaunching(_ notification:Notification) {
+         window=NSWindow(contentRect:NSRect(x:0,y:0,width:600,height:230),styleMask:[.titled,.closable],backing:.buffered,defer:false)
+-        window.title="MacTools · Ice 快速功能验证";window.center();window.delegate=self
++        window.title=production ? "MacTools · 菜单栏图标恢复" : "MacTools · Ice 快速功能验证";window.center();window.delegate=self
+         let label=NSTextField(wrappingLabelWithString: prepared.selfOwned ? "仅操作自建 T。按 Ice 流程搬出、打开菜单、关闭及归位。\n会短暂影响焦点和光标；正式版保持不变。" : "仅操作预先选定的一个图标。搬出并打开界面后，请关闭该界面或切换至其他应用。\n等待15秒后归位；取消会停止后续操作。")
+         label.frame=NSRect(x:20,y:130,width:560,height:80);window.contentView?.addSubview(label)
+         status=NSTextField(wrappingLabelWithString:"正在准备自有锚点与目标身份…")
+         status.frame=NSRect(x:20,y:65,width:560,height:60);window.contentView?.addSubview(status)
+         start=NSButton(title:"开始单轮",target:self,action:#selector(begin));start.frame=NSRect(x:20,y:20,width:180,height:32);start.isEnabled=false;window.contentView?.addSubview(start)
+         let cancel=NSButton(title:"取消并关闭",target:self,action:#selector(stop));cancel.frame=NSRect(x:220,y:20,width:180,height:32);window.contentView?.addSubview(cancel);cancelButton=cancel
+-        window.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true)
++        if !production { window.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true) }
+         watchdog=Timer(timeInterval:0.25,repeats:true){[weak self] _ in MainActor.assumeIsolated {
+             guard let self,!self.quitting else{return}
+             if !self.used,ProcessInfo.processInfo.systemUptime>=self.readyDeadline {self.stop()}
+@@ -75,9 +76,9 @@
+             if prepared.selfOwned {try await launchFixture()}
+             try Task.checkCancellation();guard !cancelled,!quitting else{throw IceBaselineError.cancelled}
+             try mark("ready");start.isEnabled=true;status.stringValue="已就绪；只运行一次，按 Ice 邻居边缘归位；完整队列仅诊断。"
+-            try save("ready.json",["nonce":prepared.nonce.uuidString,"pid":ProcessInfo.processInfo.processIdentifier,"fixturePID":fixturePID as Any? ?? NSNull(),"strictANYRequired":false,"hitTestRequired":false,"nativePosts":0,"windowNumber":window.windowNumber,"windowVisible":window.isVisible,"windowKey":window.isKeyWindow,"frontPID":NSWorkspace.shared.frontmostApplication?.processIdentifier ?? -1])
++            try save("ready.json",["nonce":prepared.nonce.uuidString,"pid":ProcessInfo.processInfo.processIdentifier,"fixturePID":fixturePID as Any? ?? NSNull(),"strictANYRequired":false,"hitTestRequired":false,"nativePosts":0,"windowNumber":window.windowNumber,"windowVisible":window.isVisible,"productionMode":production,"automaticStart":production,"windowKey":window.isKeyWindow,"frontPID":NSWorkspace.shared.frontmostApplication?.processIdentifier ?? -1])
+             if CommandLine.arguments.contains("--owned-entry-cancel-check") {cancelButton.performClick(nil)}
+-            else if autoOwned {begin()}
++            else if autoOwned || production {begin()}
+         } catch {await finish(["realClosedLoopVerified":false,"posts":0,"stage":stage,"failure":String(describing:error)])}}
+     }
+     func owner() throws -> [String:Any] {
+@@ -218,6 +219,7 @@
+             } else {
+                 start.title="确认人工归位";start.action=#selector(verifyManualRecovery);start.isEnabled = !record.needsRelease
+             }
++            if production { window.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true) }
+             return
+         }
+         quitting=true
+@@ -311,9 +313,10 @@
+             let autoOwned=args.count==2 && ["--self-owned-run","--self-owned-receiver-lag-run","--self-owned-window-run"].contains(args[1])
+             let directory:URL
+             if autoOwned {directory=try IceSelectedSession.prepare(windowID:nil)}
+-            else if (args.count==3 || (args.count==4 && ["--owned-entry-cancel-check","--owned-window-session"].contains(args[3]))),args[1]=="--session" {directory=URL(fileURLWithPath:args[2])}
++            else if (args.count==3 || (args.count==4 && ["--owned-entry-cancel-check","--owned-window-session","--production-session"].contains(args[3]))),args[1]=="--session" {directory=URL(fileURLWithPath:args[2])}
+             else{throw IceSelectedFailure.policy}
+             let prepared=try IceSelectedSession.load(directory)
++            guard !args.contains("--production-session") || (!prepared.selfOwned && prepared.selected != nil) else{throw IceSelectedFailure.policy}
+             guard !autoOwned || prepared.selfOwned else{throw IceSelectedFailure.policy}
+             guard !args.contains("--owned-window-session") || prepared.selfOwned else{throw IceSelectedFailure.policy}
+             if args.contains("--owned-entry-cancel-check"),!prepared.selfOwned {
+@@ -323,7 +326,7 @@
+                       target.owner.sha256==m["productTargetSHA256"] as? String else{throw IceSelectedFailure.policy}
+             }
+             try emit(["session":directory.path,"selfOwned":prepared.selfOwned,"autoStart":autoOwned])
+-            let app=NSApplication.shared;app.setActivationPolicy(.regular)
++            let app=NSApplication.shared;app.setActivationPolicy(args.contains("--production-session") ? .accessory : .regular)
+             let delegate=IceSelectedController(directory:directory,prepared:prepared,autoOwned:autoOwned);app.delegate=delegate
+             withExtendedLifetime(delegate){app.run()}
+         }catch{fputs("selected candidate: \(error)\n",stderr);exit(1)}
+--- a/scripts/build-ice-interface-product-candidate.sh
++++ b/scripts/build-ice-interface-product-candidate.sh
+@@ -34,7 +34,7 @@
+ for p in [repo/'COPYING.GPL-3.0',repo/'THIRD_PARTY_NOTICES.md',worker/'prepared-build.json']:shutil.copyfile(p,package/p.name)
+ for p in sources:
+  dest=resources/'Source'/p.relative_to(repo);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
+-(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'7' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
++(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'8' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
+ (root/'source-manifest.json').write_text(json.dumps({str(p.relative_to(repo)):sha(p) for p in sources},indent=2,sort_keys=True)+'\n')
+ PY
+ swiftc -parse-as-library -D"$FLAG" -module-name MacTools -module-cache-path "$ROOT/module-cache" $(cat "$ROOT/sources.txt") -o "$APP/Contents/MacOS/MacTools"

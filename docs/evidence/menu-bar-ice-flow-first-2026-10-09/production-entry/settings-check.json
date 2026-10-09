@@ -1,0 +1,25 @@
+{
+  "selectedPluginSettingsEqual": true,
+  "beforeKeys": [
+    "plugin.keep-awake.enabled",
+    "plugin.menu-bar-organizer.optedIn",
+    "plugin.menu-bar-organizer.presentationMode",
+    "plugin.menu-bar-organizer.priorMainPosition",
+    "plugin.menu-bar-organizer.visibleLimit",
+    "plugin.quick-controls.presets",
+    "plugin.quick-controls.unlockShortcut",
+    "plugin.window-preview.frameRate",
+    "windowShortcut"
+  ],
+  "afterKeys": [
+    "plugin.keep-awake.enabled",
+    "plugin.menu-bar-organizer.optedIn",
+    "plugin.menu-bar-organizer.presentationMode",
+    "plugin.menu-bar-organizer.priorMainPosition",
+    "plugin.menu-bar-organizer.visibleLimit",
+    "plugin.quick-controls.presets",
+    "plugin.quick-controls.unlockShortcut",
+    "plugin.window-preview.frameRate",
+    "windowShortcut"
+  ]
+}

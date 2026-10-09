@@ -54,5 +54,49 @@
   "productionHomeCompletion": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/completion.json",
   "productionHomePatch": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/source.patch",
   "productionHomeBaseline": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/baseline/Source",
-  "productionHomeModified": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/modified-sources"
+  "productionHomeModified": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/modified-sources",
+  "productionEntry": {
+    "baseline": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/baseline",
+    "modified": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/modified",
+    "patch": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/source.patch",
+    "rollback": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/ROLLBACK.sh",
+    "checks": [
+      "baseline24",
+      "modified33",
+      "rollback24"
+    ],
+    "acceptance": {
+      "installedPath": "/Applications/MacTools.app",
+      "version": "0.2.2",
+      "build": "8",
+      "sha256": "330bf603325a7bea95b0d71f3c68b2457edc804aefd7b4368a81e4fe23308682",
+      "commitBeforeContinuation": "d514edba",
+      "sourceRevisionInBuild": "d514edbafdcf8a98b1e214489f9049254a9ade61",
+      "sourceManifest": "/Applications/MacTools.app/Contents/Resources/Source",
+      "quietSession": "/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/session-4964488B-B13F-4FED-A0C8-422276EB3AD7",
+      "nonce": "4964488B-B13F-4FED-A0C8-422276EB3AD7",
+      "controllerVisible": false,
+      "automaticStart": true,
+      "posts": 14,
+      "returned": true,
+      "pendingRecovery": false,
+      "target": "QQ native-bar position; not offscreen",
+      "stateTransitions": [
+        "normal metadata Open QQ",
+        "quiet signed worker ready",
+        "native QQ ordinaryWindow tracked active",
+        "inactive15s",
+        "returned original neighbor edge",
+        "worker exited and cleanup no journal"
+      ],
+      "firstFailedPrepare": {
+        "stderr": "selected candidate: incomplete",
+        "nativePosts": 0,
+        "sessionCreated": false,
+        "automaticRetry": false
+      },
+      "offscreenAcceptance": "not verified; CUA SCStreamError -3812 before second target; no new session created"
+    },
+    "installedAppRollback": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/ROLLBACK_INSTALLED_APP.sh"
+  }
 }

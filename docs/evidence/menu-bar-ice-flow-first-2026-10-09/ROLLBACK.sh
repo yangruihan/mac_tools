@@ -1,5 +1,16 @@
 #!/bin/sh
 set -eu
+if [ "${1:-}" = "--production-entry-installed-app" ]; then
+ [ "$#" -eq 2 ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ exec "$DIR/production-entry/ROLLBACK_INSTALLED_APP.sh" "$2"
+fi
+if [ "${1:-}" = "--production-entry-source" ] || [ "${1:-}" = "--production-entry-app" ]; then
+ [ "$#" -eq 2 ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ MODE=source; [ "$1" != "--production-entry-app" ] || MODE=app
+ exec "$DIR/production-entry/ROLLBACK.sh" "$MODE" "$2"
+fi
 if [ "${1:-}" = "--production-home-source" ]; then
  [ "$#" -eq 2 ] && [ -d "$2" ] && [ ! -L "$2" ] || exit 2
  DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)

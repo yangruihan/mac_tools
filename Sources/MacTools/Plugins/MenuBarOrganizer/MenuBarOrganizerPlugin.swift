@@ -48,6 +48,10 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
     private var popoverMonitors: [Any] = []
     private var popoverDeactivateObserver: NSObjectProtocol?
     private var work: Task<Void, Never>?
+    #if ICE_MENU_BAR_INTEGRATED
+    private var iceActivation: Task<Void, Never>?
+    private var iceLaunch: MenuBarIceInterfaceProductBridge.Launch?
+    #endif
     private var environment = MenuBarEnvironment()
     private var environmentMonitor: MenuBarEnvironmentMonitor?
     private var environmentWork: Task<Void, Never>?
@@ -168,6 +172,13 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         }
     }
     func deactivate() {
+        #if ICE_MENU_BAR_INTEGRATED
+        iceActivation?.cancel()
+        if let launch = iceLaunch, launch.isRunning,
+           (try? MenuBarProcessSignature.read(launch.proof.pid)) == launch.proof {
+            launch.application.terminate()
+        }
+        #endif
         MainActor.assumeIsolated { nativeRevealController?.shutdown() }
         nativeRevealWork?.cancel(); nativeRevealWork = nil
         nativeRevealSubscriptions = []; nativeRevealController = nil; nativeRevealState = .idle
@@ -420,7 +431,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
             displayID: display.id, excludingPID: ProcessInfo.processInfo.processIdentifier,
             applicationName: { NSRunningApplication(processIdentifier: $0)?.localizedName })
         showsNotchDirectory = true
-        status = "已读取 \(directoryItems.count) 个图标位置，无需截图；选择图标可尝试辅助功能打开。"
+        status = "已读取 \(directoryItems.count) 个图标位置，无需截图；选择“打开”可临时露出图标；界面不再占用15秒后归位。"
     }
     func activateDirectoryItem(_ id: CGWindowID) {
         guard !nativeRevealBlocksLayout else { status = "请先完成或取消临时露出，再打开图标菜单。"; return }
@@ -723,6 +734,10 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         activateIdentity(identity, presentFailurePopover: true)
     }
     private func activateIdentity(_ identity: MenuBarIconIdentity, presentFailurePopover: Bool) {
+        #if ICE_MENU_BAR_INTEGRATED
+        activateIceIdentity(identity)
+        return
+        #else
         // Both thumbnail and metadata entries use the same semantic-only driver.
         closePanel()
         _ = visibility.dismissPopover()
@@ -755,7 +770,75 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
                 if coordinator.state == .idle { return }
             }
         }
+        #endif
     }
+    #if ICE_MENU_BAR_INTEGRATED
+    private func activateIceIdentity(_ identity: MenuBarIconIdentity) {
+        guard iceActivation == nil, iceLaunch?.isRunning != true else {
+            status = "上一项打开或恢复尚未结束；未重复操作。"; return
+        }
+        closePanel(); _ = visibility.dismissPopover()
+        status = "正在核实原图标并打开…"
+        iceActivation = Task { @MainActor [weak self] in
+            guard let self else { return }
+            defer { self.iceActivation = nil }
+            do {
+                try await Task.sleep(nanoseconds: 350_000_000)
+                guard self.isOrganizing, let original = identity.application,
+                      MenuBarApplicationIdentity.current(pid: identity.pid) == original else {
+                    throw MenuBarIceSelectedTarget.Failure.identity
+                }
+                let directory = try MenuBarIceSelectedTarget.readDirectory()
+                let rows = directory.rows.filter { $0.id == identity.windowID && $0.pid == identity.pid }
+                guard rows.count == 1 else { throw MenuBarIceSelectedTarget.Failure.missing }
+                let target = try MenuBarIceSelectedTarget.capture(rows[0], from: directory)
+                guard target.owner.launch == original.launch, target.owner.identifier == original.bundleID,
+                      MenuBarApplicationIdentity.current(pid: identity.pid) == original else {
+                    throw MenuBarIceSelectedTarget.Failure.identity
+                }
+                let session = try MenuBarIceInterfaceProductBridge.prepare(target)
+                try Task.checkCancellation()
+                let launch = try await MenuBarIceInterfaceProductBridge.launch(session, target: target, production: true)
+                self.iceLaunch = launch
+                do {
+                    while !FileManager.default.fileExists(atPath: session.appendingPathComponent("result.json").path) {
+                        guard launch.isRunning else { throw MenuBarIceInterfaceProductBridge.Failure.unknown(session) }
+                        try await Task.sleep(nanoseconds: 100_000_000)
+                    }
+                    let data = try Data(contentsOf: session.appendingPathComponent("result.json"))
+                    guard data.count < 2_000_000,
+                          let value = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+                        throw MenuBarIceInterfaceProductBridge.Failure.invalid
+                    }
+                    guard let nonce = UUID(uuidString: String(session.lastPathComponent.dropFirst(8))) else {
+                        throw MenuBarIceInterfaceProductBridge.Failure.invalid
+                    }
+                    let result = try MenuBarIceInterfaceProductBridge.result(value, nonce: nonce)
+                    if result.passed {
+                        while launch.isRunning { try await Task.sleep(nanoseconds: 100_000_000) }
+                        guard let data = try? Data(contentsOf: session.appendingPathComponent("cleanup.json")),
+                              let cleanup = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+                              cleanup["journalPending"] as? Bool == false else {
+                            throw MenuBarIceInterfaceProductBridge.Failure.unknown(session)
+                        }
+                        self.iceLaunch = nil
+                        self.status = "图标已打开并回到原邻边；可以继续使用。"
+                    } else {
+                        self.status = "打开流程已停止；请查看恢复窗口。原始记录保留，不会自动重试。"
+                    }
+                } catch {
+                    if Task.isCancelled, launch.isRunning,
+                       (try? MenuBarProcessSignature.read(launch.proof.pid)) == launch.proof {
+                        launch.application.terminate()
+                    }
+                    throw error
+                }
+            } catch {
+                self.status = "图标打开未完成：\(error.localizedDescription)。不会自动重试。"
+            }
+        }
+    }
+    #endif
     var toggleShortcutError: String? { context.hotkeys.error(owner: info.id, id: "toggle-native") }
     func makeView() -> AnyView {
         #if ICE_MENU_BAR_CANDIDATE
@@ -844,7 +927,7 @@ private struct ShelfPanelView: View {
                         .padding(3).background(.regularMaterial, in: Circle()).allowsHitTesting(false)
                 }
             }
-            .help("尝试辅助功能打开；不支持时请展开原生图标手动操作。")
+            .help("打开原图标；界面不再占用15秒后回到原邻边。")
     }
     private func pageControls(count: Int, page: Int, columns: Int, hidden: Bool) -> some View {
         let pages = max(1, (count + columns * 2 - 1) / (columns * 2))
@@ -886,7 +969,7 @@ private struct ShelfPanelView: View {
                 Text("常驻图标 · \(outside.count)").font(.caption2).foregroundStyle(.secondary)
                 row(outside, hidden: false)
             }
-            Text("仅自动打开支持辅助功能的图标；不支持的项请在原生栏操作。自动搬移、归位和模拟点击未启用。")
+            Text("打开会临时露出原图标；界面不再占用15秒后回到原邻边。排列请用原生 ⌘ 拖拽。")
                 .font(.caption2).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
             Divider()
             HStack {
@@ -924,7 +1007,7 @@ private struct MenuBarOrganizerView: View {
                         Button("编辑布局…") { plugin.arrangeNativeIcons() }
                             .accessibilityIdentifier("menu-bar-edit-native-layout")
                             .disabled(plugin.nativeRevealBlocksLayout)
-                        Button("刘海图标…") { plugin.refreshNotchDirectory() }
+                        Button("收纳图标…") { plugin.refreshNotchDirectory() }
                             .accessibilityIdentifier("menu-bar-open-notch-directory")
                         Spacer()
                         Button("关闭功能") { plugin.turnOff() }
@@ -977,7 +1060,7 @@ private struct MenuBarOrganizerView: View {
                                                 }
                                                 Spacer()
                                                 Button("打开") { plugin.activateDirectoryItem(item.id) }
-                                                    .accessibilityLabel("通过辅助功能打开 \(item.title)")
+                                                    .accessibilityLabel("打开 \(item.title)")
                                                     .disabled(plugin.nativeRevealBlocksLayout)
                                                 if plugin.nativeRevealPreviewEnabled {
                                                     Button("露出以编辑") { plugin.beginNativeReveal(item.id) }
@@ -989,14 +1072,14 @@ private struct MenuBarOrganizerView: View {
                                     }
                                 }.frame(maxHeight: 220)
                             }
-                            Text("目录按窗口位置分类，不保证原图标可见。打开使用原图标的辅助功能动作，无需录屏；不支持时不会补点。拖动整理仍需原图标进入可见区。")
+                            Text("目录按窗口位置分类，不保证原图标可见。打开会按 Ice 流程临时露出原图标，无需录屏；界面不再占用15秒后归位。拖动整理仍需原图标进入可见区。")
                                 .font(.caption).foregroundStyle(.secondary)
                         }.padding(.top, 8)
                     }
                 }
                 DisclosureGroup("高级 · 图标面板", isExpanded: $plugin.showsAdvancedOptions) {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("图标面板采集需要屏幕录制权限；仅使用辅助功能打开支持的图标，不模拟点击、不自动搬移或归位。外点 / Esc 清除浮窗缓存，原生收纳保持。")
+                        Text("图标面板采集需要屏幕录制权限；打开时临时露出原图标，界面不再占用15秒后归位。外点 / Esc 清除浮窗缓存，原生收纳保持。")
                             .font(.caption).foregroundStyle(.secondary)
                         HStack {
                             Button(plugin.isCapturing ? "取消图标采集" : "打开 / 关闭图标面板") { plugin.openShelf() }.disabled(!plugin.isOrganizing)

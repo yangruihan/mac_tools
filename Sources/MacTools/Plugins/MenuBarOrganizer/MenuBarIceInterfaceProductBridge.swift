@@ -121,12 +121,20 @@ enum MenuBarIceInterfaceProductBridge {
               selected.display == target.display, selected.space == target.space,
               selected.originalFrame == target.originalFrame else { throw Failure.targetChanged }
     }
-    static func validateReady(_ value: [String: Any], nonce: UUID, pid: Int32) throws {
+    static func validateReady(_ value: [String: Any], nonce: UUID, pid: Int32, production: Bool = false) throws {
         guard value["nonce"] as? String == nonce.uuidString, value["pid"] as? Int32 == pid,
-              value["windowVisible"] as? Bool == true, value["nativePosts"] as? Int == 0,
-              let number = value["windowNumber"] as? Int, number > 0 else { throw Failure.invalid }
+              value["nativePosts"] as? Int == 0 else { throw Failure.invalid }
+        if production {
+            guard value["productionMode"] as? Bool == true, value["automaticStart"] as? Bool == true,
+                  value["windowVisible"] as? Bool == false else { throw Failure.invalid }
+        } else {
+            guard value["productionMode"] as? Bool != true, value["automaticStart"] as? Bool != true,
+                  value["windowVisible"] as? Bool == true,
+                  let number = value["windowNumber"] as? Int, number > 0 else { throw Failure.invalid }
+        }
     }
-    static func launch(_ directory: URL, target: MenuBarIceSelectedTarget? = nil, ownedWindow: Bool = false, ownedCancelCheck: Bool = false) async throws -> Launch {
+    static func launch(_ directory: URL, target: MenuBarIceSelectedTarget? = nil, ownedWindow: Bool = false, ownedCancelCheck: Bool = false, production: Bool = false) async throws -> Launch {
+        guard !production || (target != nil && !ownedWindow && !ownedCancelCheck) else { throw Failure.invalid }
         let manifest = try manifest()
         guard directory.resolvingSymlinksInPath() == directory,
               !FileManager.default.fileExists(atPath: directory.appendingPathComponent("action-consumed.json").path),
@@ -151,6 +159,9 @@ enum MenuBarIceInterfaceProductBridge {
         let configuration = NSWorkspace.OpenConfiguration()
         configuration.createsNewApplicationInstance = true
         configuration.arguments = ["--session", directory.path]
+        configuration.activates = !production
+        if production { configuration.arguments.append("--production-session") }
+        try Task.checkCancellation()
         if ownedCancelCheck { configuration.arguments.append("--owned-entry-cancel-check") }
         else if ownedWindow { configuration.arguments.append("--owned-window-session") }
         let application: NSRunningApplication = try await withCheckedThrowingContinuation { continuation in
@@ -165,13 +176,13 @@ enum MenuBarIceInterfaceProductBridge {
                   proof.sha256 == sha, proof.launch != nil, !application.isTerminated else { throw Failure.invalid }
             let launch = Launch(application: application, proof: proof)
             try JSONSerialization.data(withJSONObject: ["nonce": prepared.nonce.uuidString, "pid": proof.pid,
-                "launchMethod": "NSWorkspace.openApplication", "automaticStart": false, "permissionRequests": 0], options: [.prettyPrinted, .sortedKeys])
+                "launchMethod": "NSWorkspace.openApplication", "automaticStart": production, "productionMode": production, "permissionRequests": 0], options: [.prettyPrinted, .sortedKeys])
                 .write(to: directory.appendingPathComponent("product-launch.json"), options: .atomic)
             let until = ProcessInfo.processInfo.systemUptime + 20
             while ProcessInfo.processInfo.systemUptime < until {
                 if let bytes = try? Data(contentsOf: directory.appendingPathComponent("ready.json")), bytes.count < 65_536,
                    let value = try? JSONSerialization.jsonObject(with: bytes) as? [String: Any] {
-                    try validateReady(value, nonce: prepared.nonce, pid: proof.pid)
+                    try validateReady(value, nonce: prepared.nonce, pid: proof.pid, production: production)
                     if !ownedCancelCheck {
                         guard launch.isRunning else { throw Failure.invalid }
                         guard try MenuBarProcessSignature.read(proof.pid) == proof else { throw Failure.invalid }

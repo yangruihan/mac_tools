@@ -1,0 +1,34 @@
+{
+  "anchorID" : 363051,
+  "screens" : [
+    {
+      "frame" : "{{0, 0}, {1728, 1117}}",
+      "right" : "{{956, 1085}, {772, 32}}"
+    }
+  ],
+  "selected" : {
+    "display" : 1,
+    "nonce" : "4964488B-B13F-4FED-A0C8-422276EB3AD7",
+    "originalFrame" : [
+      [
+        1055,
+        0
+      ],
+      [
+        32,
+        37
+      ]
+    ],
+    "owner" : {
+      "appleAnchor" : false,
+      "executable" : "\/Applications\/QQ.app\/Contents\/MacOS\/QQ",
+      "identifier" : "com.tencent.qq",
+      "launch" : 1791499568.5659599,
+      "pid" : 58349,
+      "sha256" : "35453afefbecb877a3b7c3e81111b3ea2debec75e263a0e4ac1e0338659dedbd",
+      "team" : "FN2V63AD2J"
+    },
+    "space" : 4634,
+    "windowID" : 351689
+  }
+}

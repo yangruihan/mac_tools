@@ -1,0 +1,7 @@
+Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
+Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductBridge.swift
+Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductChecks.swift
+Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift
+Tools/IceInterfaceProduct/MenuBarIceInterfaceProductChecks.swift
+Tools/IceInterfaceProductWorker/IceSelectedController.swift
+scripts/build-ice-interface-product-candidate.sh

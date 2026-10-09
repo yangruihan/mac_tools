@@ -1,0 +1,29 @@
+{
+  "activeJournalPending" : false,
+  "disposition" : "userConfirmedQQNeighborObservedAfterCancellation",
+  "final" : {
+    "atUptime" : 1881163.2093715419,
+    "combinedLeftDown" : false,
+    "commandShiftControlOptionFnDown" : false,
+    "controllerGone" : true,
+    "hidLeftDown" : false,
+    "nativePosts" : 0,
+    "neighborFrame" : "{{1116, 0}, {38, 37}}",
+    "neighborID" : 354357,
+    "noVisibleOwnerInterface" : true,
+    "noVisibleOwnerPopup" : true,
+    "originalNeighborSameSide" : true,
+    "physicalReleaseProven" : false,
+    "pressedMouseButtons" : 0,
+    "sameIdentityAndScope" : true,
+    "targetFrame" : "{{1084, 0}, {32, 37}}",
+    "targetID" : 351689
+  },
+  "nativePosts" : 0,
+  "nativeReturnProven" : false,
+  "originalArchive" : "\/Users\/yangruihan\/Library\/Application Support\/MacTools\/IceInterfaceCandidate\/selected-relative-recovery-v2\/qq-cancelled-manual-return-original-68B39A65-0A5B-4898-A241-D6EFB487B7F0.json",
+  "physicalReleaseProven" : false,
+  "receipt" : "\/Users\/yangruihan\/Library\/Application Support\/MacTools\/IceInterfaceCandidate\/selected-relative-recovery-v2\/qq-cancelled-manual-return-receipt-68B39A65-0A5B-4898-A241-D6EFB487B7F0.json",
+  "receiptSHA256" : "4be98c39c2b629cb0244b5d7e6ca17b429083e0d09a98c3e3cc883c20e1220ef",
+  "reconciled" : true
+}

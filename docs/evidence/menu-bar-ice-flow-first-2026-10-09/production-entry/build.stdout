@@ -1,0 +1,166 @@
+{
+  "assertions" : 510,
+  "cursorEffects" : 0,
+  "interfaceAssertions" : 83,
+  "interfaceScenarios" : 21,
+  "legacyAssertions" : 427,
+  "legacyScenarios" : 42,
+  "nativePosts" : 0,
+  "nativeTaps" : 0,
+  "passed" : true,
+  "provenance" : "isolatedReplayWithInjectedSenderAndTaps",
+  "receiverAssertions" : 20,
+  "scenarios" : 63
+}
+{
+  "assertions" : 15,
+  "deadlineCrossingInOccupancyCheckCovered" : true,
+  "delaySeconds" : 15,
+  "holdReports" : [
+    {
+      "elapsedSeconds" : 47.410000000000025,
+      "failure" : "policy",
+      "heldInterfaceSeconds" : 32,
+      "modeledPosts" : 14,
+      "nativeClosedLoopClaimed" : false,
+      "nativePosts" : 0,
+      "routeBudgetsPreserved" : true
+    },
+    {
+      "elapsedSeconds" : 90.005999999999233,
+      "failure" : "budget",
+      "heldInterfaceSeconds" : 76,
+      "modeledPosts" : 8,
+      "nativeClosedLoopClaimed" : false,
+      "nativePosts" : 0,
+      "routeBudgetsPreserved" : true
+    }
+  ],
+  "nativePosts" : 0,
+  "passed" : true
+}
+{
+  "assertions" : 55,
+  "nativePosts" : 0,
+  "nativeTaps" : 0,
+  "passed" : true,
+  "permissionRequests" : 0,
+  "provenance" : "injectedClockSenderIdentityAndInterface",
+  "reports" : [
+    {
+      "finalIdentityScopeChecks" : 0,
+      "modeledPosts" : 10,
+      "name" : "legacyDuplicateReads",
+      "nativeClosedLoopClaimed" : false,
+      "possibleDownRetained" : true,
+      "returnPostAdditionalScopeReads" : 3,
+      "returnPostOccupancyReads" : 3,
+      "returnPostRuntimeReads" : 6
+    },
+    {
+      "finalIdentityScopeChecks" : 14,
+      "modeledPosts" : 14,
+      "name" : "sharedPerPost",
+      "nativeClosedLoopClaimed" : false,
+      "possibleDownRetained" : false,
+      "returnPostAdditionalScopeReads" : 0,
+      "returnPostOccupancyReads" : 6,
+      "returnPostRuntimeReads" : 6
+    },
+    {
+      "finalIdentityScopeChecks" : 9,
+      "modeledPosts" : 9,
+      "name" : "identityChanged",
+      "nativeClosedLoopClaimed" : false,
+      "possibleDownRetained" : true,
+      "returnPostAdditionalScopeReads" : 0,
+      "returnPostOccupancyReads" : 1,
+      "returnPostRuntimeReads" : 2
+    },
+    {
+      "finalIdentityScopeChecks" : 9,
+      "modeledPosts" : 9,
+      "name" : "scopeChanged",
+      "nativeClosedLoopClaimed" : false,
+      "possibleDownRetained" : true,
+      "returnPostAdditionalScopeReads" : 0,
+      "returnPostOccupancyReads" : 1,
+      "returnPostRuntimeReads" : 2
+    },
+    {
+      "finalIdentityScopeChecks" : 9,
+      "modeledPosts" : 8,
+      "name" : "identityChangedWithinPost",
+      "nativeClosedLoopClaimed" : false,
+      "possibleDownRetained" : true,
+      "returnPostAdditionalScopeReads" : 0,
+      "returnPostOccupancyReads" : 1,
+      "returnPostRuntimeReads" : 1
+    },
+    {
+      "finalIdentityScopeChecks" : 9,
+      "modeledPosts" : 8,
+      "name" : "scopeChangedWithinPost",
+      "nativeClosedLoopClaimed" : false,
+      "possibleDownRetained" : true,
+      "returnPostAdditionalScopeReads" : 0,
+      "returnPostOccupancyReads" : 1,
+      "returnPostRuntimeReads" : 1
+    },
+    {
+      "finalIdentityScopeChecks" : 9,
+      "modeledPosts" : 9,
+      "name" : "interfaceReactivated",
+      "nativeClosedLoopClaimed" : false,
+      "possibleDownRetained" : true,
+      "returnPostAdditionalScopeReads" : 0,
+      "returnPostOccupancyReads" : 2,
+      "returnPostRuntimeReads" : 2
+    },
+    {
+      "finalIdentityScopeChecks" : 8,
+      "modeledPosts" : 8,
+      "name" : "cancelledDuringRead",
+      "nativeClosedLoopClaimed" : false,
+      "possibleDownRetained" : true,
+      "returnPostAdditionalScopeReads" : 0,
+      "returnPostOccupancyReads" : 0,
+      "returnPostRuntimeReads" : 1
+    },
+    {
+      "finalIdentityScopeChecks" : 10,
+      "modeledPosts" : 9,
+      "name" : "permissionRevoked",
+      "nativeClosedLoopClaimed" : false,
+      "possibleDownRetained" : true,
+      "returnPostAdditionalScopeReads" : 0,
+      "returnPostOccupancyReads" : 2,
+      "returnPostRuntimeReads" : 2
+    },
+    {
+      "finalIdentityScopeChecks" : 9,
+      "modeledPosts" : 8,
+      "name" : "singleReadPastDeadline",
+      "nativeClosedLoopClaimed" : false,
+      "possibleDownRetained" : true,
+      "returnPostAdditionalScopeReads" : 0,
+      "returnPostOccupancyReads" : 1,
+      "returnPostRuntimeReads" : 1
+    }
+  ],
+  "routeBudgetMS" : 50,
+  "scenarios" : 11
+}
+{"assertions":33,"mousePosts":0,"passed":true,"permissionRequests":0,"realResultReplayedAsDataOnly":true,"windowsOpened":0}
+{
+  "automaticStart" : false,
+  "contract" : "ordinaryIceInterfaceV9",
+  "journalPending" : false,
+  "mousePosts" : 0,
+  "ordinaryEntryConnected" : true,
+  "permissionRequests" : 0,
+  "windowsOpened" : 0,
+  "workerRevision" : "ordinary-Ice-product-stage1"
+}
+/Users/yangruihan/Workspace/mac_tools/build/ice-interface-integrated/MacTools.app
+/Users/yangruihan/Workspace/mac_tools/build/MacTools.app

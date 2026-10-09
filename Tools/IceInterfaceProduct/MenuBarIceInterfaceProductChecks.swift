@@ -65,6 +65,18 @@ enum MenuBarIceInterfaceProductChecks {
         try reject { try Bridge.validateReady(badReady, nonce: nonce, pid: 77) }
         badReady = ready; badReady["nativePosts"] = 1
         try reject { try Bridge.validateReady(badReady, nonce: nonce, pid: 77) }
+        let quiet: [String: Any] = ["nonce": nonce.uuidString, "pid": Int32(77),
+            "windowVisible": false, "nativePosts": 0, "windowNumber": -1,
+            "productionMode": true, "automaticStart": true]
+        try Bridge.validateReady(quiet, nonce: nonce, pid: 77, production: true); assertions += 1
+        try reject { try Bridge.validateReady(quiet, nonce: nonce, pid: 77) }
+        try reject { try Bridge.validateReady(ready, nonce: nonce, pid: 77, production: true) }
+        for field in ["nonce", "pid", "windowVisible", "nativePosts", "productionMode", "automaticStart"] {
+            var invalid = quiet
+            invalid[field] = ["nonce": UUID().uuidString, "pid": Int32(78), "windowVisible": true,
+                              "nativePosts": 1, "productionMode": false, "automaticStart": false][field]
+            try reject { try Bridge.validateReady(invalid, nonce: nonce, pid: 77, production: true) }
+        }
         return ["passed": true, "assertions": assertions, "mousePosts": 0, "windowsOpened": 0,
                 "permissionRequests": 0, "realResultReplayedAsDataOnly": true]
     }
