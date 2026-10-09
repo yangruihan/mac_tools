@@ -1,0 +1,34 @@
+{
+  "anchorID" : 363136,
+  "screens" : [
+    {
+      "frame" : "{{0, 0}, {1728, 1117}}",
+      "right" : "{{956, 1085}, {772, 32}}"
+    }
+  ],
+  "selected" : {
+    "display" : 1,
+    "nonce" : "C21AAC11-C095-4392-8DF9-2CDE8DCBB101",
+    "originalFrame" : [
+      [
+        -2659,
+        0
+      ],
+      [
+        38,
+        37
+      ]
+    ],
+    "owner" : {
+      "appleAnchor" : false,
+      "executable" : "\/Applications\/QQMusic.app\/Contents\/MacOS\/QQMusic",
+      "identifier" : "com.tencent.QQMusicMac",
+      "launch" : 1791024996.1844699,
+      "pid" : 35462,
+      "sha256" : "8bd28a3dda468874178e56935e44b0deda6eca72850787d68d2d6c1c4861b185",
+      "team" : "FN2V63AD2J"
+    },
+    "space" : 4634,
+    "windowID" : 310606
+  }
+}

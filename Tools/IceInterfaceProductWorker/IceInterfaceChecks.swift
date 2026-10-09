@@ -49,6 +49,33 @@ import AppKit
             try check(lease.diagnostics()["menuClosedClaimed"] as? Bool==false,"ordinary inactivity never claims menu closed")
             if name=="reactivated" {now+=0.1;try check(lease.observe(sample([window])) == .active,"reopening revokes inactive");var refused=false;do{try lease.requireInactive()}catch{refused=true};try check(refused,"reopening blocks return")}
         }
+        for name in ["existingReactivated","stillBackground","ambiguousBackground","changedLevel","changedWindowOwner"] {
+            scenarios+=1;var now=100.0,seq=0
+            let lease=IceSelectedInterfaceLease(owner:b.owner,nonce:b.nonce,display:b.display,space:b.space,clock:{now})
+            let original=W(id:200,pid:b.owner.pid,level:0,onScreen:true)
+            let second=W(id:201,pid:b.owner.pid,level:0,onScreen:true)
+            func sample(_ windows:[W],active:Bool)->IceSelectedInterfaceLease.Sample {
+                seq+=1;return .init(sequence:seq,at:now,owner:b.owner,nonce:b.nonce,display:b.display,space:b.space,healthy:true,ownerActive:active,windows:windows)
+            }
+            let baseline=name=="ambiguousBackground" ? [original,second] : [original]
+            try lease.begin(sample(baseline,active:false));now+=0.1
+            try check(lease.observe(sample(baseline,active:false)) == .unknown,"background alone cannot authorize return")
+            now+=0.1
+            let current=name=="changedLevel" ? [W(id:200,pid:b.owner.pid,level:42,onScreen:true)] :
+                name=="changedWindowOwner" ? [W(id:200,pid:99,level:0,onScreen:true)] : baseline
+            let state=lease.observe(sample(current,active:name != "stillBackground"))
+            if name=="existingReactivated" {
+                try check(state == .active,"same exact background ordinary window observed reactivated")
+                now+=0.1;try check(lease.observe(sample(current,active:false)) == .unknown,"one inactive sample still insufficient")
+                now+=0.11;try check(lease.observe(sample(current,active:false)) == .inactive,"reactivated existing window defocus permits inactivity")
+                let proof=try lease.confirmation()
+                try check(proof.windowID==200 && !proof.nativeObservation,"exact existing ID; offline is not native proof")
+            } else {
+                try check(state == .unknown,"ambiguous/unactivated/reidentified baseline cannot attach")
+                var refused=false;do{try lease.requireInactive()}catch{refused=true}
+                try check(refused,"unobserved existing interface cannot authorize return")
+            }
+        }
         for name in ["cancelObserved","cancelDelay","unknown","multiple","rebuild","reopenedDuringReturn","forgedReturn"] {try await workflow(name,b)}
         return(scenarios,assertions)
     }

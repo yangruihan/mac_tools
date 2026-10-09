@@ -1,0 +1,18 @@
+{
+  "atUptime" : 1882503.6668435833,
+  "combinedLeftDown" : false,
+  "commandShiftControlOptionFnDown" : false,
+  "controllerGone" : true,
+  "hidLeftDown" : false,
+  "nativePosts" : 0,
+  "neighborFrame" : "{{856, 0}, {38, 37}}",
+  "neighborID" : 359308,
+  "noVisibleOwnerInterface" : true,
+  "noVisibleOwnerPopup" : true,
+  "originalNeighborSameSide" : true,
+  "physicalReleaseProven" : false,
+  "pressedMouseButtons" : 0,
+  "sameIdentityAndScope" : true,
+  "targetFrame" : "{{818, 0}, {38, 37}}",
+  "targetID" : 310606
+}

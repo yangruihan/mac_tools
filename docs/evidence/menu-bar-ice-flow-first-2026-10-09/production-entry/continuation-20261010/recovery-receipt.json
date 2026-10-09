@@ -1,0 +1,29 @@
+{
+  "activeJournalPending" : false,
+  "disposition" : "userConfirmedQQMusicNeighborObservedAfterInterfaceObservationStop",
+  "final" : {
+    "atUptime" : 1882504.1554560834,
+    "combinedLeftDown" : false,
+    "commandShiftControlOptionFnDown" : false,
+    "controllerGone" : true,
+    "hidLeftDown" : false,
+    "nativePosts" : 0,
+    "neighborFrame" : "{{856, 0}, {38, 37}}",
+    "neighborID" : 359308,
+    "noVisibleOwnerInterface" : true,
+    "noVisibleOwnerPopup" : true,
+    "originalNeighborSameSide" : true,
+    "physicalReleaseProven" : false,
+    "pressedMouseButtons" : 0,
+    "sameIdentityAndScope" : true,
+    "targetFrame" : "{{818, 0}, {38, 37}}",
+    "targetID" : 310606
+  },
+  "nativePosts" : 0,
+  "nativeReturnProven" : false,
+  "originalArchive" : "\/Users\/yangruihan\/Library\/Application Support\/MacTools\/IceInterfaceCandidate\/selected-relative-recovery-v2\/qqmusic-interface-observation-manual-return-original-01463608-6572-4F7C-8914-54DE4926DF52.json",
+  "physicalReleaseProven" : false,
+  "receipt" : "\/Users\/yangruihan\/Library\/Application Support\/MacTools\/IceInterfaceCandidate\/selected-relative-recovery-v2\/qqmusic-interface-observation-manual-return-receipt-01463608-6572-4F7C-8914-54DE4926DF52.json",
+  "receiptSHA256" : "b713a89704462372e3f826f39dd1c1c8a55718e0a72321e8d7de931a61737b1c",
+  "reconciled" : true
+}

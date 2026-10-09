@@ -1,0 +1,6 @@
+Screen-off metadata directory Open QQMusic: real14 returned edge/clear on build8, nonce494B634D.
+Thumbnail baseline failure C21AAC11: existing background window310607 excluded by new-window-only filter; noInterfaceObserved; stopped(binding),8posts; human recovery verified/archived0posts. Original result/journal not rewritten.
+Build9 modified: raised existing QQMusic window via native AXRaise BEFORE session, activated own toolbox before capture; native metadata records ownerActive=false and window310607.onScreen=true.
+Opened existing thumbnail panel, actual button menu-bar-icon-310606 -> quiet automatic session19433254 -> same window310607 observed active -> own toolbox button defocus ->15s ->14posts -> target310606 left of neighbor359308, negative X ->cleanup clear and worker exit.
+Final AX: 图标已打开并回到原邻边；可以继续使用。
+No Play/Next/Purchase/Account UI actions, no new permission requests; no generic mouse injection outside native signed worker.

@@ -18,6 +18,7 @@ import AppKit
     private let clock:()->Double,reader:(()->Sample)?,trace:((String,[String:Any])->Void)?
     private(set) var state:State = .unknown,nativeObservation=false,reason="notBegun"
     private var begun=false,lost=false,sequence = -1,at = -Double.infinity
+    private var backgroundInterfaces:[Window]=[]
     private var baseline:Set<UInt32>=[],tracked:Window?,kind:Kind?,firstInactive:Double?,secondInactive:Double?
     init(owner:IceSelectedBinding.Process,nonce:UUID,display:UInt32,space:UInt,clock:@escaping()->Double,
          reader:(()->Sample)?=nil,trace:((String,[String:Any])->Void)?=nil){
@@ -82,6 +83,7 @@ import AppKit
         // Do not attach to a pre-existing active owner interface.
         guard !interfaces(s).contains(where:{$0.level==Int(CGWindowLevelForKey(.popUpMenuWindow)) || s.ownerActive}) else{throw IceBaselineError.menu}
         baseline=Set(s.windows.filter{$0.pid==owner.pid && $0.onScreen}.map(\.id))
+        backgroundInterfaces=interfaces(s).filter{$0.level==Int(CGWindowLevelForKey(.normalWindow))}
         begun=true;sequence=s.sequence;at=s.at;reason="awaitingObservedInterface";emit("baseline",s)
     }
     func beginLive()throws {guard let reader else{throw IceSelectedFailure.policy};try begin(reader())}
@@ -91,7 +93,13 @@ import AppKit
         sequence=s.sequence;at=s.at
         let added=interfaces(s).filter{!baseline.contains($0.id)}
         if tracked==nil {
-            guard let w=added.first else{state = .unknown;reason="noInterfaceObserved";return state}
+            // A click may reactivate an existing background window without creating a new ID.
+            let reactivated=s.ownerActive ? interfaces(s).filter{current in
+                backgroundInterfaces.contains{$0.id==current.id && $0.pid==current.pid && $0.level==current.level}
+            } : []
+            guard let w=added.first ?? (reactivated.count==1 ? reactivated.first : nil) else{
+                state = .unknown;reason="noInterfaceObserved";return state
+            }
             tracked=w;kind=w.level==Int(CGWindowLevelForKey(.popUpMenuWindow)) ? .standardPopup : .ordinaryWindow
         }
         let w=tracked!

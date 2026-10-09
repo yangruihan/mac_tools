@@ -1,0 +1,35 @@
+{
+  "atUptime" : 1882159.7704588335,
+  "begun" : true,
+  "escObservations" : [
+
+  ],
+  "firstInactiveAt" : 1882145.0179507502,
+  "kind" : "sample",
+  "menuClosedClaimed" : false,
+  "nativeObservation" : true,
+  "operationPhase" : "interfaceInactive",
+  "ownerActive" : false,
+  "ownerWindows" : [
+    {
+      "id" : 310607,
+      "level" : 0,
+      "onScreen" : true
+    },
+    {
+      "id" : 310606,
+      "level" : 25,
+      "onScreen" : true
+    }
+  ],
+  "reason" : "trackedInterfaceInactive",
+  "sampleDisplay" : 1,
+  "sampleHealthy" : true,
+  "sampleSpace" : 4634,
+  "secondInactiveAt" : 1882159.7704588335,
+  "sequence" : 221,
+  "state" : "inactive",
+  "stickyInvalid" : false,
+  "trackedLevel" : 0,
+  "trackedWindowID" : 310607
+}

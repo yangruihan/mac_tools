@@ -1,17 +1,19 @@
 {
   "activeObject": "/Users/yangruihan/Workspace/mac_tools",
-  "lastConfirmedResult": "build8 official quiet QQ normal entry native return14 clear; 500 tests",
-  "nextExecutableAction": "verify offscreen metadata entry on a fresh exact target through ordinary GUI; CUA -3812 must resolve first",
+  "lastConfirmedResult": "build9 installed; offscreen directory14 and existing-background-window thumbnail14 native return/clear; failureC21 preserved and human archived0; offline510/527/510",
+  "nextExecutableAction": "verify fullscreen-origin ordinary entry using recorded self-owned fullscreen fixture, bound exact ordinary target, and fresh zero-post preparation before any new movement",
   "inputPaths": [
-    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/completion.json",
-    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/ui-acceptance.txt",
-    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/session-4964488B-B13F-4FED-A0C8-422276EB3AD7"
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/continuation-20261010/completion.json",
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/continuation-20261010/ui-acceptance.txt",
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/continuation-20261010/session-19433254-4647-492A-9062-0106D45196BC"
   ],
-  "acceptanceEvent": "new actual offscreen target session ready-hidden + owner interface observed + returned original edge + cleanup clear",
+  "acceptanceEvent": "fresh fullscreen-origin normal-entry session completes14 + original neighbor return + cleanup clear, or concrete scope rejection0 without movement",
   "unfinished": [
-    "offscreen GUI acceptance",
-    "thumbnail GUI acceptance",
-    "full-screen/multidisplay cases; existing single-display scope unchanged"
+    "fullscreen-origin GUI acceptance"
   ],
-  "doNotResumeNonce": "0A81E3AD-5B0E-458C-BF2C-5F5A6A30D198"
+  "unsupported": "multidisplay; do not extend single-display scope without explicit task",
+  "doNotResumeNonces": [
+    "0A81E3AD-5B0E-458C-BF2C-5F5A6A30D198",
+    "C21AAC11-C095-4392-8DF9-2CDE8DCBB101"
+  ]
 }

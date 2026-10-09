@@ -98,5 +98,46 @@
       "offscreenAcceptance": "not verified; CUA SCStreamError -3812 before second target; no new session created"
     },
     "installedAppRollback": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/ROLLBACK_INSTALLED_APP.sh"
+  },
+  "backgroundWindowReactivation": {
+    "baseline": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/continuation-20261010/baseline",
+    "modified": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/continuation-20261010/modified",
+    "patch": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/continuation-20261010/source.patch",
+    "rollback": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/continuation-20261010/ROLLBACK.sh",
+    "installedRollback": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/continuation-20261010/ROLLBACK_INSTALLED_APP.sh",
+    "acceptance": {
+      "status": "offscreen-and-thumbnail-native-acceptance-complete",
+      "installed": "/Applications/MacTools.app",
+      "build": 9,
+      "hostSHA256": "3e7df2686b2f315818aad072f9a585b2649c043730a5c6e6570f33cc921a3429",
+      "workerSHA256": "c13cb6284e48ae944528e446cb6cdb58a2035c25e9dbcebca6c367465a42be6b",
+      "changedSymbols": [
+        "IceSelectedInterfaceLease.begin",
+        "IceSelectedInterfaceLease.observe"
+      ],
+      "field": "backgroundInterfaces",
+      "offlineBaseline": 510,
+      "offlineModified": 527,
+      "offlineRollback": 510,
+      "restoredWorkerSHA256": "b4f07c7612a4c7382157e5065e894ecb0c60f64a068823ee0c8f3eb53ddadf8d",
+      "restoredAppSHA256": "330bf603325a7bea95b0d71f3c68b2457edc804aefd7b4368a81e4fe23308682",
+      "offscreenDirectoryNonce": "494B634D-5FF8-4F32-9498-CBCB4E021CD7",
+      "offscreenOriginalX": -2630,
+      "thumbnailFailedNoncePreserved": "C21AAC11-C095-4392-8DF9-2CDE8DCBB101",
+      "thumbnailFixedNonce": "19433254-4647-492A-9062-0106D45196BC",
+      "existingBackgroundWindowBefore": 310607,
+      "existingWindowTrackedAfter": 310607,
+      "nativePosts": 14,
+      "returnOriginalNeighbor": 359308,
+      "returnOnLeft": true,
+      "returnTargetX": "{{-2671, 0}, {38, 37}}",
+      "pendingRecovery": false,
+      "guiFinalStatus": "图标已打开并回到原邻边；可以继续使用。",
+      "permissionsRequested": 0,
+      "remaining": [
+        "fullscreen GUI acceptance",
+        "multidisplay remains unsupported; no scope expansion"
+      ]
+    }
   }
 }

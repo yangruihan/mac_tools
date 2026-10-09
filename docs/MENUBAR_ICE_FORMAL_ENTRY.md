@@ -1,5 +1,5 @@
 # Ice 日常入口（2026-10-10）
-正式安装：/Applications/MacTools.app，0.2.2 build8。
+正式安装：/Applications/MacTools.app，0.2.2 build9。
 
 ## 使用
 1. 菜单栏收纳 -> 收纳图标…，无需开发诊断入口。
@@ -20,3 +20,10 @@ QQ正常入口实测nonce4964488B-B13F-4FED-A0C8-422276EB3AD7：静默启动、�
 退出MacTools和本轮组件后：
 docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh --production-entry-installed-app /Applications/MacTools.app
 恢复到本轮前build7；保留当前app副本，不改偏好与恢复记录。
+
+## 后续验收更新：build9
+屏外目录 QQ音乐 nonce494B634D：原X=-2630，14投递回到原邻边并清记录。
+缩略图原轮C21AAC11失败8投递完整保留，经用户确认、只读核实归位后0投递归档。修正begin/observe后台已有普通窗口重新激活的识别。
+新缩略图轮19433254：原普通窗口310607在后台但显示，点击缩略图后同一窗口激活，失活15秒，14投递回到ChatGPT左邻边并清记录；无开始单轮窗口。
+离线BASELINE510/MODIFIED527/ROLLBACK510，全签名应用回滚复核恢复build8的330bf603哈希。当前两种入口已实测；全屏仍待验收，多显示器范围未扩展。
+本轮回滚：ROLLBACK.sh --background-window-installed-app /Applications/MacTools.app（先退出应用和组件）。

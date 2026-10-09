@@ -1,0 +1,36 @@
+{
+  "anchor" : {
+    "frame" : {
+      "height" : 37,
+      "width" : 29,
+      "x" : 1508,
+      "y" : 0
+    },
+    "id" : 363136,
+    "process" : {
+      "executable" : "\/Applications\/MacTools.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+      "identifier" : "com.ryanai.mactools",
+      "launch" : 1791567902.1983809,
+      "pid" : 1717,
+      "sha256" : "b4f07c7612a4c7382157e5065e894ecb0c60f64a068823ee0c8f3eb53ddadf8d",
+      "team" : "58TJ64422P"
+    }
+  },
+  "target" : {
+    "frame" : {
+      "height" : 37,
+      "width" : 38,
+      "x" : -2659,
+      "y" : 0
+    },
+    "id" : 310606,
+    "process" : {
+      "executable" : "\/Applications\/QQMusic.app\/Contents\/MacOS\/QQMusic",
+      "identifier" : "com.tencent.QQMusicMac",
+      "launch" : 1791024996.1844699,
+      "pid" : 35462,
+      "sha256" : "8bd28a3dda468874178e56935e44b0deda6eca72850787d68d2d6c1c4861b185",
+      "team" : "FN2V63AD2J"
+    }
+  }
+}

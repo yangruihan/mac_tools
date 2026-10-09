@@ -1,0 +1,80 @@
+--- a/Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift
++++ b/Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift
+@@ -18,6 +18,7 @@
+     private let clock:()->Double,reader:(()->Sample)?,trace:((String,[String:Any])->Void)?
+     private(set) var state:State = .unknown,nativeObservation=false,reason="notBegun"
+     private var begun=false,lost=false,sequence = -1,at = -Double.infinity
++    private var backgroundInterfaces:[Window]=[]
+     private var baseline:Set<UInt32>=[],tracked:Window?,kind:Kind?,firstInactive:Double?,secondInactive:Double?
+     init(owner:IceSelectedBinding.Process,nonce:UUID,display:UInt32,space:UInt,clock:@escaping()->Double,
+          reader:(()->Sample)?=nil,trace:((String,[String:Any])->Void)?=nil){
+@@ -82,6 +83,7 @@
+         // Do not attach to a pre-existing active owner interface.
+         guard !interfaces(s).contains(where:{$0.level==Int(CGWindowLevelForKey(.popUpMenuWindow)) || s.ownerActive}) else{throw IceBaselineError.menu}
+         baseline=Set(s.windows.filter{$0.pid==owner.pid && $0.onScreen}.map(\.id))
++        backgroundInterfaces=interfaces(s).filter{$0.level==Int(CGWindowLevelForKey(.normalWindow))}
+         begun=true;sequence=s.sequence;at=s.at;reason="awaitingObservedInterface";emit("baseline",s)
+     }
+     func beginLive()throws {guard let reader else{throw IceSelectedFailure.policy};try begin(reader())}
+@@ -91,7 +93,13 @@
+         sequence=s.sequence;at=s.at
+         let added=interfaces(s).filter{!baseline.contains($0.id)}
+         if tracked==nil {
+-            guard let w=added.first else{state = .unknown;reason="noInterfaceObserved";return state}
++            // A click may reactivate an existing background window without creating a new ID.
++            let reactivated=s.ownerActive ? interfaces(s).filter{current in
++                backgroundInterfaces.contains{$0.id==current.id && $0.pid==current.pid && $0.level==current.level}
++            } : []
++            guard let w=added.first ?? (reactivated.count==1 ? reactivated.first : nil) else{
++                state = .unknown;reason="noInterfaceObserved";return state
++            }
+             tracked=w;kind=w.level==Int(CGWindowLevelForKey(.popUpMenuWindow)) ? .standardPopup : .ordinaryWindow
+         }
+         let w=tracked!
+--- a/Tools/IceInterfaceProductWorker/IceInterfaceChecks.swift
++++ b/Tools/IceInterfaceProductWorker/IceInterfaceChecks.swift
+@@ -49,6 +49,33 @@
+             try check(lease.diagnostics()["menuClosedClaimed"] as? Bool==false,"ordinary inactivity never claims menu closed")
+             if name=="reactivated" {now+=0.1;try check(lease.observe(sample([window])) == .active,"reopening revokes inactive");var refused=false;do{try lease.requireInactive()}catch{refused=true};try check(refused,"reopening blocks return")}
+         }
++        for name in ["existingReactivated","stillBackground","ambiguousBackground","changedLevel","changedWindowOwner"] {
++            scenarios+=1;var now=100.0,seq=0
++            let lease=IceSelectedInterfaceLease(owner:b.owner,nonce:b.nonce,display:b.display,space:b.space,clock:{now})
++            let original=W(id:200,pid:b.owner.pid,level:0,onScreen:true)
++            let second=W(id:201,pid:b.owner.pid,level:0,onScreen:true)
++            func sample(_ windows:[W],active:Bool)->IceSelectedInterfaceLease.Sample {
++                seq+=1;return .init(sequence:seq,at:now,owner:b.owner,nonce:b.nonce,display:b.display,space:b.space,healthy:true,ownerActive:active,windows:windows)
++            }
++            let baseline=name=="ambiguousBackground" ? [original,second] : [original]
++            try lease.begin(sample(baseline,active:false));now+=0.1
++            try check(lease.observe(sample(baseline,active:false)) == .unknown,"background alone cannot authorize return")
++            now+=0.1
++            let current=name=="changedLevel" ? [W(id:200,pid:b.owner.pid,level:42,onScreen:true)] :
++                name=="changedWindowOwner" ? [W(id:200,pid:99,level:0,onScreen:true)] : baseline
++            let state=lease.observe(sample(current,active:name != "stillBackground"))
++            if name=="existingReactivated" {
++                try check(state == .active,"same exact background ordinary window observed reactivated")
++                now+=0.1;try check(lease.observe(sample(current,active:false)) == .unknown,"one inactive sample still insufficient")
++                now+=0.11;try check(lease.observe(sample(current,active:false)) == .inactive,"reactivated existing window defocus permits inactivity")
++                let proof=try lease.confirmation()
++                try check(proof.windowID==200 && !proof.nativeObservation,"exact existing ID; offline is not native proof")
++            } else {
++                try check(state == .unknown,"ambiguous/unactivated/reidentified baseline cannot attach")
++                var refused=false;do{try lease.requireInactive()}catch{refused=true}
++                try check(refused,"unobserved existing interface cannot authorize return")
++            }
++        }
+         for name in ["cancelObserved","cancelDelay","unknown","multiple","rebuild","reopenedDuringReturn","forgedReturn"] {try await workflow(name,b)}
+         return(scenarios,assertions)
+     }
+--- a/scripts/build-ice-interface-product-candidate.sh
++++ b/scripts/build-ice-interface-product-candidate.sh
+@@ -34,7 +34,7 @@
+ for p in [repo/'COPYING.GPL-3.0',repo/'THIRD_PARTY_NOTICES.md',worker/'prepared-build.json']:shutil.copyfile(p,package/p.name)
+ for p in sources:
+  dest=resources/'Source'/p.relative_to(repo);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
+-(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'8' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
++(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'9' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
+ (root/'source-manifest.json').write_text(json.dumps({str(p.relative_to(repo)):sha(p) for p in sources},indent=2,sort_keys=True)+'\n')
+ PY
+ swiftc -parse-as-library -D"$FLAG" -module-name MacTools -module-cache-path "$ROOT/module-cache" $(cat "$ROOT/sources.txt") -o "$APP/Contents/MacOS/MacTools"
