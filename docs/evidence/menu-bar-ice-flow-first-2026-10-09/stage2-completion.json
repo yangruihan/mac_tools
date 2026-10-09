@@ -1,0 +1,276 @@
+{
+  "status": "complete",
+  "ACTIVE_OBJECT": "MacTools Stage2 complete product button entry",
+  "LAST_CONFIRMED_RESULT": "ordinary product QQ active52.278641s +15.011740s returned14; fullscreen background10194 settled to prepared4634, full product QQ returned14; native/owned/cancel/recovery verified; no pending",
+  "NEXT_EXECUTABLE_ACTION": "Wait for user authorization for Stage3 experience handoff; no extra native test or Stage4 installation",
+  "stage1Commit": "6ca604791159a21aa1c95d96a6fdfc6ee0d3598c",
+  "normalApp": "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app",
+  "buildIdentity": {
+    "hostSHA256": "729293d0501fdfd107b73d4b1f869c27e60e513be97138d4ec7373d5f368f171",
+    "controllerSHA256": "908ff5857c0b6d065f9a033af79c63de065f2d7ce1388f40124a677c47a071dc",
+    "fixtureSHA256": "15da9c69fbda83a441261a1d5f1b88dc2e891a21a1a6be9a971d97112a9c8cd3",
+    "sourceHEAD": "6ca604791159a21aa1c95d96a6fdfc6ee0d3598c",
+    "sourcesMatchCompiledManifestAndPackage": true,
+    "uncommittedSource": true,
+    "formalAppUnchanged": true
+  },
+  "ordinaryProductQQ": {
+    "nonce": "6FCDCCB7-73AC-4CC7-83B6-351EF995ABB7",
+    "session": "/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/session-6FCDCCB7-73AC-4CC7-83B6-351EF995ABB7",
+    "realClosedLoopVerified": true,
+    "posts": 14,
+    "activeSeconds": 52.27864108351059,
+    "inactiveWaitSeconds": 15.011740333400667,
+    "routeCount": 6,
+    "rawReceiptCount": 10,
+    "pendingRecovery": false,
+    "entry": "Product refresh / picker QQ / open control / Start / product Show Control to defocus / Check Result / Check Recovery all through CUA",
+    "returnEvidence": {
+      "atUptime": 1852878.9867109584,
+      "criterion": "iceNeighborEdgeV4",
+      "fullQueueRequired": false,
+      "neighborFrame": "{{1225, 0}, {54, 37}}",
+      "neighborID": 354357,
+      "nonce": "6FCDCCB7-73AC-4CC7-83B6-351EF995ABB7",
+      "relativeFullQueueVerified": false,
+      "returnOnLeft": true,
+      "targetFrame": "{{1193, 0}, {32, 37}}",
+      "targetID": 351689,
+      "targetPID": 58349
+    },
+    "sampleSpaces": [
+      4634
+    ]
+  },
+  "fullscreenProductQQ": {
+    "nonce": "2A12CB50-A9F6-44E5-8D15-E96A5A44D9DA",
+    "session": "/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/session-2A12CB50-A9F6-44E5-8D15-E96A5A44D9DA",
+    "origin": {
+      "focus": {
+        "active": true,
+        "atUnix": 1791537128.467354,
+        "fullscreen": true,
+        "nativePosts": 0,
+        "nonce": "0039cfbd-0a19-47fc-8b17-9a32f83cb078",
+        "pid": 58067,
+        "visible": true,
+        "windowID": 357606
+      },
+      "space": 10194,
+      "nativePosts": 0
+    },
+    "preparedSpace": 4634,
+    "sampleSpaces": [
+      4634
+    ],
+    "activeSeconds": 13.90040179155767,
+    "inactiveWaitSeconds": 15.011735583422706,
+    "posts": 14,
+    "routeCount": 6,
+    "rawReceiptCount": 10,
+    "realClosedLoopVerified": true,
+    "pendingRecovery": false,
+    "returnEvidence": {
+      "atUptime": 1853342.9474389583,
+      "criterion": "iceNeighborEdgeV4",
+      "fullQueueRequired": false,
+      "neighborFrame": "{{1241, 0}, {38, 37}}",
+      "neighborID": 354357,
+      "nonce": "2A12CB50-A9F6-44E5-8D15-E96A5A44D9DA",
+      "relativeFullQueueVerified": false,
+      "returnOnLeft": true,
+      "targetFrame": "{{1209, 0}, {32, 37}}",
+      "targetID": 351689,
+      "targetPID": 58349
+    },
+    "resultSHA256": "8713c74fc692f7910b8cd1ca7e6bc5507c68b4a79f3c1ab45f52cc590d326318",
+    "entry": "CUA product buttons only for selection, publication, Start, focus switch, result/recovery readback; no direct worker execution for this acceptance"
+  },
+  "ownedMenuNonce": "A40B3D05-5DA9-4F93-BD08-EFEF24CC5543",
+  "ownedWindowNonce": "55CB36EF-DDCC-4382-A58D-125627725058",
+  "zeroInputCancelNonce": "22A37F6A-D633-40E7-979B-27E8841611D6",
+  "nativeInterfaceChecks": {
+    "scenarios": 5,
+    "assertions": 14,
+    "nativePosts": 0,
+    "sameHarnessRolledBackSamplerAlsoPassed": true
+  },
+  "workerRegression": {
+    "scenarios": 63,
+    "assertions": 510,
+    "delayAssertions": 15,
+    "dispatchScenarios": 11,
+    "dispatchAssertions": 55,
+    "bridgeAssertions": 24
+  },
+  "SPMTests": {
+    "tests": 500,
+    "failures": 0,
+    "reuseReason": "tested earlier in same turn; runtime changes only Tools, SPM Sources unchanged"
+  },
+  "queryMeasurement": {
+    "samples": 20,
+    "metadataFieldsEqual": true,
+    "fullMeanMS": 4.12525002611801,
+    "targetedMeanMS": 0.6706749903969467,
+    "nativePosts": 0
+  },
+  "sourceTransaction": {
+    "fileCount": 6,
+    "restoredOriginalHashes": true,
+    "reappliedEqualsCurrentModifiedBytes": true,
+    "originalAndModified": {
+      "Tools/IceSelectedQuickInterface/IceSelectedFixture.swift": {
+        "original": "dc690eb2f281e4d09518aeaf2b23857d04d73b894c2776a62426b0b7eb4dca9f",
+        "modified": "fc9ef0bd66c8a1e70a63c87e3e7d4f3a327b39c12716ac5e81694dcde259f405",
+        "rollbackMode": "--stage2"
+      },
+      "Tools/IceInterfaceProduct/MenuBarIceCandidateProduct.swift": {
+        "original": "14e4d99c8d94ab478c82497db5be9aeea48a7a3c2112477e29b2103994396a2c",
+        "modified": "ef8216928a22feb817d3ac390e5c73a711ff4ba347f80804875afc5fd66cb6b0",
+        "rollbackMode": "--stage2-product"
+      },
+      "Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift": {
+        "original": "654a03caf4193c9e0f81cf48b5fd4fab5e1d478e2fd203fdb39a2816694d42f9",
+        "modified": "f26be9ffef74132bee5c085afa2e97a2c264a02d5268b07f0ec00269566c3968",
+        "rollbackMode": "--stage2-lease"
+      },
+      "Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift": {
+        "original": "03cbc31aad1dc7a67c4fc13d3cee48c48126a7c7771db4fbea8f21c45ee23420",
+        "modified": "a860fc34b9c4652edea3f5e96fc6286e6f0edee7c0cdc6f6426ef1ab73ccacc6",
+        "rollbackMode": "--stage2-workflow"
+      },
+      "Tools/IceSelectedQuickInterface/IceInterfaceNativeChecks.swift": {
+        "original": "1afdf478e921a637956358017786e7b8d186b8093d5688a84be0f096f6ec9408",
+        "modified": "4535d1b03437ae008f7b0ce1d8796e0b9b39e5fa2527cc5c5c5254995e13accd",
+        "rollbackMode": "--stage2-native-checks"
+      },
+      "docs/MENUBAR_ICE_INTERFACE_PRODUCT_CANDIDATE.md": {
+        "original": "1c3c65a640e3b801ef212cbe4ffcafe8151149cbc6c2e42f9e8225a9f4bfd3c9",
+        "modified": "8367f6d9f0e333acdef785ad737a968d0d8f42d67798355cd18e184d4c513c29",
+        "rollbackMode": "--stage2-doc"
+      }
+    },
+    "commands": [
+      {
+        "command": [
+          "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+          "--stage2",
+          "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-final-complete-source-copy/Tools/IceSelectedQuickInterface/IceSelectedFixture.swift"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+          "--stage2-product",
+          "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-final-complete-source-copy/Tools/IceInterfaceProduct/MenuBarIceCandidateProduct.swift"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+          "--stage2-lease",
+          "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-final-complete-source-copy/Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+          "--stage2-workflow",
+          "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-final-complete-source-copy/Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+          "--stage2-native-checks",
+          "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-final-complete-source-copy/Tools/IceSelectedQuickInterface/IceInterfaceNativeChecks.swift"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+          "--stage2-doc",
+          "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-final-complete-source-copy/docs/MENUBAR_ICE_INTERFACE_PRODUCT_CANDIDATE.md"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "patch",
+          "-p1",
+          "-d",
+          "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-final-complete-source-copy",
+          "-i",
+          "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-sources.patch"
+        ],
+        "exit": 0,
+        "stdout": "patching file 'Tools/IceSelectedQuickInterface/IceSelectedFixture.swift'\npatching file 'Tools/IceInterfaceProduct/MenuBarIceCandidateProduct.swift'\npatching file 'Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift'\npatching file 'Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift'\npatching file 'Tools/IceSelectedQuickInterface/IceInterfaceNativeChecks.swift'\npatching file 'docs/MENUBAR_ICE_INTERFACE_PRODUCT_CANDIDATE.md'\n",
+        "stderr": ""
+      }
+    ]
+  },
+  "manualRecovery": {
+    "activeJournalPending": false,
+    "disposition": "manualQQIceNeighborObservedAfterReturnRouteTimeout",
+    "final": {
+      "atUptime": 1850200.223591125,
+      "combinedLeftDown": false,
+      "commandShiftControlOptionFnDown": false,
+      "controllerGone": true,
+      "hidLeftDown": false,
+      "nativePosts": 0,
+      "neighborFrame": "{{1270, 0}, {38, 37}}",
+      "neighborID": 354357,
+      "noVisibleOwnerInterface": true,
+      "noVisibleOwnerPopup": true,
+      "originalNeighborSameSide": true,
+      "physicalReleaseProven": false,
+      "pressedMouseButtons": 0,
+      "sameIdentityAndScope": true,
+      "targetFrame": "{{1238, 0}, {32, 37}}",
+      "targetID": 351689
+    },
+    "nativePosts": 0,
+    "nativeReturnProven": false,
+    "originalArchive": "/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/selected-relative-recovery-v2/stage2-timeout-user-manual-return-original-983E9437-913A-434A-8995-96119FAB6B16.json",
+    "physicalReleaseProven": false,
+    "receipt": "/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/selected-relative-recovery-v2/stage2-timeout-user-manual-return-receipt-983E9437-913A-434A-8995-96119FAB6B16.json",
+    "receiptSHA256": "e55432a9b3767e2710d07713827e976bdb29555f4ab3a36f2fa97d07258da0cc",
+    "reconciled": true
+  },
+  "old10FailurePreserved": true,
+  "pendingRecovery": false,
+  "notInstalledOrPushed": true,
+  "stage2Uncommitted": true,
+  "changedSites": [
+    "IceSelectedFixture.control manifest root",
+    "MenuBarIceCandidateProductModel.activateProductWindow complete directory before capture/preparation",
+    "IceSelectedInterfaceLease.live tracked query with ownershipWindowIDs",
+    "IceSelectedWorkflow.runNative passes three bound window IDs",
+    "IceInterfaceNativeChecks package focus and accepted first-window semantics"
+  ],
+  "fourRoles": {
+    "MODIFIED_FILE": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/MODIFIED_FILE.swift",
+    "DIFF_FILE": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/DIFF_FILE.patch",
+    "VERIFICATION": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/VERIFICATION.txt",
+    "ROLLBACK": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh"
+  }
+}

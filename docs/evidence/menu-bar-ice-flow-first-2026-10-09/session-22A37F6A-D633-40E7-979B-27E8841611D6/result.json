@@ -1,0 +1,10 @@
+{
+  "diagnosticUserEscObservations" : [
+
+  ],
+  "failure" : "cancelledBeforeStart",
+  "nonce" : "22A37F6A-D633-40E7-979B-27E8841611D6",
+  "posts" : 0,
+  "realClosedLoopVerified" : false,
+  "stage" : "ready"
+}

@@ -1,0 +1,69 @@
+[
+  {
+    "label": "stage2-ROLLBACK-execute",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+      "--stage2",
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-rollback-copy/IceSelectedFixture.swift"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "label": "stage2-ROLLBACK-compile-fixture",
+    "command": [
+      "xcrun",
+      "swiftc",
+      "-parse-as-library",
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-rollback-copy/IceSelectedFixture.swift",
+      "/Users/yangruihan/Workspace/mac_tools/Tools/IceInterfaceProductWorker/FixtureDiagnostic.swift",
+      "/Users/yangruihan/Workspace/mac_tools/Tools/IceBaseline/IceBaselineSessionLifetime.swift",
+      "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarProcessSignature.swift",
+      "-o",
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-rollback-copy/MacTools Ice Interface Candidate.app/Contents/Resources/IceWorker/Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "label": "stage2-ROLLBACK-sign-fixture",
+    "command": [
+      "codesign",
+      "--force",
+      "--sign",
+      "722852A9656BC9126B2C4585713B724D58F60DB6",
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-rollback-copy/MacTools Ice Interface Candidate.app/Contents/Resources/IceWorker/Ice Selected Fixture.app"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-rollback-copy/MacTools Ice Interface Candidate.app/Contents/Resources/IceWorker/Ice Selected Fixture.app: replacing existing signature\n"
+  },
+  {
+    "label": "stage2-ROLLBACK-sign-product",
+    "command": [
+      "codesign",
+      "--force",
+      "--sign",
+      "722852A9656BC9126B2C4585713B724D58F60DB6",
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-rollback-copy/MacTools Ice Interface Candidate.app"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-rollback-copy/MacTools Ice Interface Candidate.app: replacing existing signature\n"
+  },
+  {
+    "label": "stage2-ROLLBACK-verify",
+    "command": [
+      "codesign",
+      "--verify",
+      "--deep",
+      "--strict",
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-rollback-copy/MacTools Ice Interface Candidate.app"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

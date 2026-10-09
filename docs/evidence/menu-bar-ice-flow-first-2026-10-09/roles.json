@@ -30,5 +30,16 @@
   "stage1SourceCount": 19,
   "stage1VerificationScript": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage1-verify-transaction.py",
   "stage1Completion": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage1-completion.json",
-  "stage1LongQQSummary": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage1-long-qq-success-summary.json"
+  "stage1LongQQSummary": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage1-long-qq-success-summary.json",
+  "stage2Target": "/Users/yangruihan/Workspace/mac_tools/Tools/IceSelectedQuickInterface/IceSelectedFixture.swift",
+  "stage2Baseline": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-baseline/Tools/IceSelectedQuickInterface/IceSelectedFixture.swift",
+  "stage2Modified": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-modified-sources/Tools/IceSelectedQuickInterface/IceSelectedFixture.swift",
+  "stage2Patch": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-sources.patch",
+  "stage2Binding": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-binding.json",
+  "stage2Status": "docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-status.json",
+  "stage2ModifiedDirectory": "docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-modified-sources",
+  "stage2BaselineDirectory": "docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-baseline",
+  "stage2CurrentSamplerTarget": "/Users/yangruihan/Workspace/mac_tools/Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift",
+  "stage2Completion": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-completion.json",
+  "stage2StatusValue": "complete"
 }

@@ -1,0 +1,28 @@
+{
+  "nonce": "6FCDCCB7-73AC-4CC7-83B6-351EF995ABB7",
+  "session": "/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/session-6FCDCCB7-73AC-4CC7-83B6-351EF995ABB7",
+  "realClosedLoopVerified": true,
+  "posts": 14,
+  "activeSeconds": 52.27864108351059,
+  "inactiveWaitSeconds": 15.011740333400667,
+  "routeCount": 6,
+  "rawReceiptCount": 10,
+  "pendingRecovery": false,
+  "entry": "Product refresh / picker QQ / open control / Start / product Show Control to defocus / Check Result / Check Recovery all through CUA",
+  "returnEvidence": {
+    "atUptime": 1852878.9867109584,
+    "criterion": "iceNeighborEdgeV4",
+    "fullQueueRequired": false,
+    "neighborFrame": "{{1225, 0}, {54, 37}}",
+    "neighborID": 354357,
+    "nonce": "6FCDCCB7-73AC-4CC7-83B6-351EF995ABB7",
+    "relativeFullQueueVerified": false,
+    "returnOnLeft": true,
+    "targetFrame": "{{1193, 0}, {32, 37}}",
+    "targetID": 351689,
+    "targetPID": 58349
+  },
+  "sampleSpaces": [
+    4634
+  ]
+}

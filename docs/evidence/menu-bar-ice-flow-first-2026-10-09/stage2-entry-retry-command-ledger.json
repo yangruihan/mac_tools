@@ -1,0 +1,22 @@
+[
+  {
+    "label": "stage2-MODIFIED-owned-entry-retry",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app/Contents/MacOS/MacTools",
+      "--ice-interface-owned-entry-check"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"assertions\" : 5,\n  \"cancelActionInvokedOnOwnControl\" : true,\n  \"controllerPID\" : 78303,\n  \"directoryFixturePID\" : null,\n  \"nativePosts\" : 0,\n  \"ordinarySelectionRoute\" : false,\n  \"passed\" : true,\n  \"permissionRequests\" : 0,\n  \"realMovementClosedLoopClaimed\" : false,\n  \"session\" : \"\\/Users\\/yangruihan\\/Library\\/Application Support\\/MacTools\\/IceInterfaceCandidate\\/session-1C563920-4EFE-4F28-BBE2-9969D8AD71C4\",\n  \"startPressed\" : false,\n  \"targetOwner\" : null\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "stage2-ROLLBACK-owned-entry",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-rollback-copy/MacTools Ice Interface Candidate.app/Contents/MacOS/MacTools",
+      "--ice-interface-owned-entry-check"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Owned product-entry check failed: unknown(file:///Users/yangruihan/Library/Application%20Support/MacTools/IceInterfaceCandidate/product-entry-check-462E0774-540D-4CCB-BC2A-125E9131509B)\n"
+  }
+]

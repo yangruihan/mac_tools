@@ -26,11 +26,20 @@ import AppKit
     static func live(owner:IceSelectedBinding.Process,nonce:UUID,display:UInt32,space:UInt,
                      scope:@escaping()->(UInt32,UInt),identity:@escaping()->Bool,
                      trace:((String,[String:Any])->Void)?=nil,
-                     ownership:@escaping ([[String:Any]])->Bool={_ in true})->IceSelectedInterfaceLease {
+                     ownership:@escaping ([[String:Any]])->Bool={_ in true},
+                     ownershipWindowIDs:[UInt32]=[])->IceSelectedInterfaceLease {
         var sequence=0
+        weak var liveLease:IceSelectedInterfaceLease?
         let lease=IceSelectedInterfaceLease(owner:owner,nonce:nonce,display:display,space:space,clock:{ProcessInfo.processInfo.systemUptime},reader:{
             sequence+=1;let identityValid=identity(),currentScope=scope()
-            let rows=CGWindowListCopyWindowInfo(.optionAll,kCGNullWindowID) as? [[String:Any]]
+            let rows:[[String:Any]]?
+            if let tracked=liveLease?.tracked {
+                // Ice keeps the first interface; sample it and every bound owner fresh, not unrelated windows.
+                var rawIDs=Array(Set(ownershipWindowIDs+[tracked.id])).map {UnsafeRawPointer(bitPattern:UInt($0))}
+                let ids=rawIDs.withUnsafeMutableBufferPointer {CFArrayCreate(kCFAllocatorDefault,$0.baseAddress,$0.count,nil)!}
+                rows=(CGWindowListCreateDescriptionFromArray(ids) as? [[String:Any]])
+                    ?? (CGWindowListCopyWindowInfo(.optionAll,kCGNullWindowID) as? [[String:Any]])
+            } else {rows=CGWindowListCopyWindowInfo(.optionAll,kCGNullWindowID) as? [[String:Any]]}
             let app=NSRunningApplication(processIdentifier:owner.pid)
             var malformed=false
             let windows=(rows ?? []).compactMap{r->Window? in
@@ -44,7 +53,7 @@ import AppKit
                          healthy:identityValid && app != nil && rows != nil && ownership(rows ?? []) && windows.count<=4096 && !malformed,
                          ownerActive:app?.isActive ?? false,windows:windows)
         },trace:trace)
-        lease.nativeObservation=true;return lease
+        liveLease=lease;lease.nativeObservation=true;return lease
     }
     private func valid(_ s:Sample)->Bool {
         s.owner==owner && s.nonce==nonce && s.display==display && s.space==space && s.healthy

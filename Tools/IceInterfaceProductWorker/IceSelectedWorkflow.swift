@@ -136,7 +136,7 @@ import AppKit
                         native?.note("interface-lease-"+kind,row)
                         // Persist/update UI only outside transport-critical return dispatches.
                         if coordinator.retained?.phase != .restoring {onMenuObservation?(kind,row)}
-                    },ownership:{plan.validateWindowOwnership($0)})
+                    },ownership:{plan.validateWindowOwnership($0)},ownershipWindowIDs:[b.target.id,b.neighbor.id,b.anchor.id])
                 interfaceLease=lease;return lease
             },verifyVisible:{try plan.verifyVisible()},verifyReturned:{
                 // Ice completion is the original neighbor edge, not an absolute-layout audit.

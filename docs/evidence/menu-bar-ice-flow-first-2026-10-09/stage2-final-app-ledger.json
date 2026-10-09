@@ -1,0 +1,35 @@
+[
+  {
+    "label": "stage2-final-signature",
+    "command": [
+      "codesign",
+      "--verify",
+      "--deep",
+      "--strict",
+      "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "label": "stage2-final-preflight",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app/Contents/MacOS/MacTools",
+      "--ice-candidate-preflight"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"automaticStart\" : false,\n  \"contract\" : \"ordinaryIceInterfaceV9\",\n  \"journalPending\" : false,\n  \"mousePosts\" : 0,\n  \"ordinaryEntryConnected\" : true,\n  \"permissionRequests\" : 0,\n  \"windowsOpened\" : 0,\n  \"workerRevision\" : \"ordinary-Ice-product-stage1\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "stage2-final-recovery",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app/Contents/MacOS/MacTools",
+      "--ice-interface-recovery"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"evidenceDirectory\" : \"\\/Users\\/yangruihan\\/Library\\/Application Support\\/MacTools\\/IceInterfaceCandidate\\/selected-relative-recovery-v2\",\n  \"journalPending\" : false,\n  \"nativePosts\" : 0,\n  \"nonce\" : null,\n  \"recordsCleared\" : 0,\n  \"recordSHA256\" : null,\n  \"unconfirmedDown\" : false\n}\n",
+    "stderr": ""
+  }
+]

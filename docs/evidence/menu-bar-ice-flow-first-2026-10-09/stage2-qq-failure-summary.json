@@ -1,0 +1,39 @@
+{
+  "nonce": "5C85917F-5F76-4E98-B4B0-5F3215F694A7",
+  "session": "/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/session-5C85917F-5F76-4E98-B4B0-5F3215F694A7",
+  "posts": 10,
+  "realClosedLoopVerified": false,
+  "failure": "cancelled",
+  "transportFailure": "timeout",
+  "pendingRecovery": true,
+  "possibleDown": true,
+  "originalGestureStatuses": [
+    "pairedTransportReturned",
+    "pairedTransportReturned",
+    "downReserved"
+  ],
+  "inactiveToRestoringSeconds": 15.037127416580915,
+  "routeBudgetMS": 50,
+  "observedElapsedAtRejectionMS": 53.05350013077259,
+  "overDeadlineMS": 3.0625835061073303,
+  "preparedSpace": 4634,
+  "allObservedInterfaceSpaces": [
+    4634
+  ],
+  "fullscreenOrigin": {
+    "focus": {
+      "active": true,
+      "atUnix": 1791533049.543247,
+      "fullscreen": true,
+      "nativePosts": 0,
+      "nonce": "ac2fd22a-f86a-4d87-8196-2ebc780a8df8",
+      "pid": 96345,
+      "visible": true,
+      "windowID": 356810
+    },
+    "space": 10166,
+    "readOnlyPosts": 0
+  },
+  "cleanupObserved": true,
+  "resultSHA256": "494f1be5d4dc9a28e327f83fdddf3c9bfe4e521069535b20a5af50bfac65becb"
+}

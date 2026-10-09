@@ -1,0 +1,192 @@
+--- a/Tools/IceSelectedQuickInterface/IceSelectedFixture.swift
++++ b/Tools/IceSelectedQuickInterface/IceSelectedFixture.swift
+@@ -95,7 +95,7 @@
+            !seenLifetimeRequests.contains(request.id) {
+             seenLifetimeRequests.insert(request.id)
+             do {
+-                let root = directory.deletingLastPathComponent().deletingLastPathComponent()
++                let root = Bundle.main.bundleURL.deletingLastPathComponent()
+                 guard let manifest = try JSONSerialization.jsonObject(with: Data(contentsOf: root.appendingPathComponent("prepared-build.json"))) as? [String: Any] else { throw IceBaselineSessionLifetime.Failure.phase }
+                 let proof = try MenuBarProcessSignature.read(request.controllerPID)
+                 guard proof.identifier == "com.ryanai.mactools", proof.sha256 == manifest["controllerSHA256"] as? String,
+--- a/Tools/IceInterfaceProduct/MenuBarIceCandidateProduct.swift
++++ b/Tools/IceInterfaceProduct/MenuBarIceCandidateProduct.swift
+@@ -25,16 +25,32 @@
+     private var ownedLaunch: MenuBarIceInterfaceProductBridge.Launch?
+     private var controllerPID: Int32?
+     private var controllerProof: MenuBarProcessSignature.Proof?
++    private func activateProductWindow() async throws -> MenuBarIceSelectedTarget.Directory {
++        guard let window = NSApp.windows.first(where: { $0.title == "MacTools · Ice 候选" || $0.title == "Mac 工具箱" }) else { throw MenuBarIceInterfaceProductBridge.Failure.invalid }
++        // Activate our existing ordinary window before capture, not after binding a fullscreen Space.
++        window.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true)
++        let until = ProcessInfo.processInfo.systemUptime + 8
++        while ProcessInfo.processInfo.systemUptime < until {
++            if window.isOnActiveSpace, window.isKeyWindow, NSApp.isActive,
++               let directory = try? MenuBarIceSelectedTarget.readDirectory() { return directory }
++            try await Task.sleep(nanoseconds: 50_000_000)
++        }
++        throw MenuBarIceInterfaceProductBridge.Failure.invalid
++    }
+     func readOrdinaryDirectory() {
+         guard !busy else { return }
+         ordinaryTarget = nil; ordinaryWindowID = 0
+-        do {
+-            let directory = try MenuBarIceSelectedTarget.readDirectory()
+-            ordinaryDirectory = directory; ordinaryRows = directory.rows
+-            ordinaryStatus = "请选择具体图标。刷新列表不会移动图标或打开菜单。"
+-        } catch {
+-            ordinaryDirectory = nil; ordinaryRows = []
+-            ordinaryStatus = "无法读取本机单屏图标列表：\(error)"
++        busy = true
++        Task {
++            defer { busy = false }
++            do {
++                let directory = try await activateProductWindow()
++                ordinaryDirectory = directory; ordinaryRows = directory.rows
++                ordinaryStatus = "请选择具体图标。刷新列表不会移动图标或打开菜单。"
++            } catch {
++                ordinaryDirectory = nil; ordinaryRows = []
++                ordinaryStatus = "无法读取本机单屏图标列表：\(error)"
++            }
+         }
+     }
+     func bindOrdinaryTarget() {
+@@ -54,6 +70,7 @@
+         Task {
+             defer { busy = false }
+             do {
++                _ = try await activateProductWindow()
+                 let directory = try await Task.detached { try MenuBarIceInterfaceProductBridge.prepare(target) }.value
+                 ordinarySession = directory // Preserve it even if launch validation fails.
+                 ordinaryLaunch = try await MenuBarIceInterfaceProductBridge.launch(directory, target: target)
+@@ -115,6 +132,7 @@
+         Task {
+             defer { busy = false }
+             do {
++                _ = try await activateProductWindow()
+                 let directory = try await Task.detached { try MenuBarIceInterfaceProductBridge.prepareOwned() }.value
+                 session = directory
+                 let launch = try await MenuBarIceInterfaceProductBridge.launch(directory, ownedWindow: ordinaryWindow)
+--- a/Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift
++++ b/Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift
+@@ -26,11 +26,20 @@
+     static func live(owner:IceSelectedBinding.Process,nonce:UUID,display:UInt32,space:UInt,
+                      scope:@escaping()->(UInt32,UInt),identity:@escaping()->Bool,
+                      trace:((String,[String:Any])->Void)?=nil,
+-                     ownership:@escaping ([[String:Any]])->Bool={_ in true})->IceSelectedInterfaceLease {
++                     ownership:@escaping ([[String:Any]])->Bool={_ in true},
++                     ownershipWindowIDs:[UInt32]=[])->IceSelectedInterfaceLease {
+         var sequence=0
++        weak var liveLease:IceSelectedInterfaceLease?
+         let lease=IceSelectedInterfaceLease(owner:owner,nonce:nonce,display:display,space:space,clock:{ProcessInfo.processInfo.systemUptime},reader:{
+             sequence+=1;let identityValid=identity(),currentScope=scope()
+-            let rows=CGWindowListCopyWindowInfo(.optionAll,kCGNullWindowID) as? [[String:Any]]
++            let rows:[[String:Any]]?
++            if let tracked=liveLease?.tracked {
++                // Ice keeps the first interface; sample it and every bound owner fresh, not unrelated windows.
++                var rawIDs=Array(Set(ownershipWindowIDs+[tracked.id])).map {UnsafeRawPointer(bitPattern:UInt($0))}
++                let ids=rawIDs.withUnsafeMutableBufferPointer {CFArrayCreate(kCFAllocatorDefault,$0.baseAddress,$0.count,nil)!}
++                rows=(CGWindowListCreateDescriptionFromArray(ids) as? [[String:Any]])
++                    ?? (CGWindowListCopyWindowInfo(.optionAll,kCGNullWindowID) as? [[String:Any]])
++            } else {rows=CGWindowListCopyWindowInfo(.optionAll,kCGNullWindowID) as? [[String:Any]]}
+             let app=NSRunningApplication(processIdentifier:owner.pid)
+             var malformed=false
+             let windows=(rows ?? []).compactMap{r->Window? in
+@@ -44,7 +53,7 @@
+                          healthy:identityValid && app != nil && rows != nil && ownership(rows ?? []) && windows.count<=4096 && !malformed,
+                          ownerActive:app?.isActive ?? false,windows:windows)
+         },trace:trace)
+-        lease.nativeObservation=true;return lease
++        liveLease=lease;lease.nativeObservation=true;return lease
+     }
+     private func valid(_ s:Sample)->Bool {
+         s.owner==owner && s.nonce==nonce && s.display==display && s.space==space && s.healthy
+--- a/Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift
++++ b/Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift
+@@ -136,7 +136,7 @@
+                         native?.note("interface-lease-"+kind,row)
+                         // Persist/update UI only outside transport-critical return dispatches.
+                         if coordinator.retained?.phase != .restoring {onMenuObservation?(kind,row)}
+-                    },ownership:{plan.validateWindowOwnership($0)})
++                    },ownership:{plan.validateWindowOwnership($0)},ownershipWindowIDs:[b.target.id,b.neighbor.id,b.anchor.id])
+                 interfaceLease=lease;return lease
+             },verifyVisible:{try plan.verifyVisible()},verifyReturned:{
+                 // Ice completion is the original neighbor edge, not an absolute-layout audit.
+--- a/Tools/IceSelectedQuickInterface/IceInterfaceNativeChecks.swift
++++ b/Tools/IceSelectedQuickInterface/IceInterfaceNativeChecks.swift
+@@ -34,7 +34,7 @@
+         try require(defocused.refresh() == .active,"ordinary interface initially active")
+         let focus=Process(),focusNonce=UUID().uuidString
+         let focusFile=URL(fileURLWithPath:"/tmp/ice-interface-focus-"+focusNonce+".json")
+-        focus.executableURL=IceSelectedSession.root.appendingPathComponent("Ice Interface Focus.app/Contents/MacOS/IceInterfaceFocus")
++        focus.executableURL=IceSelectedSession.packageRoot.appendingPathComponent("Ice Interface Focus.app/Contents/MacOS/IceInterfaceFocus")
+         focus.arguments=[focusNonce,focusFile.path];try focus.run()
+         defer{if focus.isRunning {focus.terminate()}}
+         let focusProof=try MenuBarProcessSignature.read(focus.processIdentifier)
+@@ -54,13 +54,15 @@
+         d.orderOut(nil);d.close()
+         let multiple=try lease("multipleOwnerWindows")
+         let a=window("MacTools 自建窗口 A"),b=window("MacTools 自建窗口 B");a.orderFront(nil);b.orderFront(nil);app.activate(ignoringOtherApps:true);try await settle()
+-        try require(multiple.refresh() == .unknown && multiple.diagnostics()["stickyInvalid"] as? Bool==true,"real two-window ambiguity rejected")
++        try require(multiple.refresh() == .active && multiple.diagnostics()["stickyInvalid"] as? Bool==false,"first real same-owner window tracked without extra ambiguity rejection")
+         a.orderOut(nil);a.close();b.orderOut(nil);b.close();try await settle()
+         let rebuilt=try lease("windowRebuilt")
+         let old=window("MacTools 自建原窗口");old.makeKeyAndOrderFront(nil);app.activate(ignoringOtherApps:true);try await settle()
+         try require(rebuilt.refresh() == .active,"original native window tracked")
++        let oldID=UInt32(old.windowNumber)
+         old.orderOut(nil);old.close();let replacement=window("MacTools 自建重建窗口");replacement.makeKeyAndOrderFront(nil);try await settle()
+-        try require(rebuilt.refresh() == .unknown && rebuilt.diagnostics()["stickyInvalid"] as? Bool==true,"real new WindowID cannot replace tracked identity")
++        try require(rebuilt.refresh() == .unknown && rebuilt.diagnostics()["stickyInvalid"] as? Bool==false,"absent original tracked window first inactive sample")
++        try await settle();try require(rebuilt.refresh() == .inactive && rebuilt.diagnostics()["trackedWindowID"] as? UInt32 == oldID,"replacement cannot replace original tracked ID; original context ends")
+         replacement.orderOut(nil);replacement.close()
+         let fence=IceSelectedFence();fence.cancel();var admissions=0,denied=false
+         do{try fence.perform("cancelled-input-admission"){admissions+=1}}catch{denied=true}
+--- a/docs/MENUBAR_ICE_INTERFACE_PRODUCT_CANDIDATE.md
++++ b/docs/MENUBAR_ICE_INTERFACE_PRODUCT_CANDIDATE.md
+@@ -1,3 +1,46 @@
++# 阶段2已完成：真实产品全链路与全屏背景启动（2026-10-09）
++
++阶段1本地提交为 `6ca604791159a21aa1c95d96a6fdfc6ee0d3598c`。以下为当前最终结果，之前失败与中间状态继续保留。
++
++- 普通桌面QQ产品单轮 `6FCDCCB7-73AC-4CC7-83B6-351EF995ABB7`：产品刷新、选择QQ、打开控制窗口、Start、产品“显示控制窗口”真实失焦、等待、归位、产品检查结果/恢复状态全部经CUA按钮执行。界面active **52.278641秒**，inactive持久确认后等 **15.011740秒**；14投递、6路由、10原始回执、returned后clear、无pending。
++- 最终版本全屏背景单轮 `2A12CB50-A9F6-44E5-8D15-E96A5A44D9DA`：自建第二应用真实全屏Space10194 → 激活产品已有普通窗口并等待完整只读目录 → 绑定QQ/发布控制窗口/Start，后续全部观察Space4634；等待 **15.011736秒** 后14投递、原微信左侧邻边归位、无pending，产品回读通过。不是取消Space检查，也不是在移动途中偷偷重绑桌面；事务进行中切Space仍不在已通过可用范围。
++- 产品自建菜单和自建普通窗口分别真实14投递通过；产品开始前取消0投递、无消费标记和无恢复责任；结果与恢复状态都在产品按钮回读。
++- 修正仅为：fixture清单根目录使用包内资源；产品在绑定前激活自身窗口并等目录完整；已跟踪界面用新鲜定点查询读取三份绑定窗口及原tracked ID。新界面发现仍使用全列表、仍跟踪第一个同owner窗口；每次投递仍检查进程/窗口所有权/Space/权限和原50ms期限，15秒延迟与90秒总预算不改，无跨post数据缓存。
++- 实测查询所需字段一致，20样本全查询均值4.125250ms，定点0.670675ms。这是只读测量，不冒充输入验收；真正输入证据为上述两轮各14投递。
++- 新版63场景510断言、等待15断言、派送11场景55断言、桥接24断言通过；5场景14断言原生界面检查输入0。恢复原sampler/workflow的独立签名应用使用同一新版原生测试harness也5/14通过、输入0。此前Swift500测试零失败可复用，5份运行改动均在Tools、不改SPM Sources。
++
++正常构建命令和应用路径保持阶段1不变。阶段2源码/文档补丁与可执行回滚在同一四角色旁 `stage2-sources.patch`、`stage2-source-transaction.json`；完整结果 `stage2-completion.json`。旧50ms失败10投递原件保留；用户本轮人工归位后原邻边、签名、同Space、输入释放与控制器灭失只读核对，原字节/凭证先持久归档后移除活动责任，不改写旧未配对事实。其他8投递未观察到新界面和0投递incomplete，以及全屏目录过渡incomplete均留存，不冒充成功。
++
++**边界：**先正常隐藏QQ已有窗口；已可见但未激活的旧窗口可能没有新界面观察，仍会停止，不能直接反复点开始。同一产品实例只允许一次试用，下一次要退出重开。只有已绑定单屏普通桌面的事务与“全屏背景先回普通桌面再准备”通过；其他图标、右键、多屏/事务中跨Space未验收。未替换Applications正式版、未推送；阶段2修改尚未额外提交，未进入阶段3/4。
++
++---
++
++# 阶段2进展：入口修正通过，QQ最终归位尚未通过（2026-10-09）
++
++阶段1已提交本地 `6ca604791159a21aa1c95d96a6fdfc6ee0d3598c`，未推送；原有 `docs/MENUBAR_ICE_PRODUCT_TRIAL.md` 编辑未提交、未改写。此节是当前结果，下方历史保持原样。
++
++## 实际完成
++
++- 修正自建fixture的 `control()` 清单根目录：改为自己的包目录，不再从可写会话目录找 `prepared-build.json`。原版及回滚复现启动timeout、原生0；修正版零输入产品发布/取消5断言通过，原版失败留存。
++- `MenuBarIceCandidateProductModel.activateProductWindow()` 先激活产品自己已有的普通窗口，再读取图标；普通/自建准备均先等待窗口处于当前桌面且获得焦点。不更换图标、不重新绑定已准备nonce，不移除工作端的Space检查。
++- 真实产品按钮的自建菜单 `A40B3D05-5DA9-4F93-BD08-EFEF24CC5543` 和自建普通窗口 `55CB36EF-DDCC-4382-A58D-125627725058` 均完成14实际投递、原邻边归位、returned后clear，产品检查结果显示通过，fixture/控制器正常退出。
++- QQ产品打开/开始前取消 `22A37F6A-D633-40E7-979B-27E8841611D6`：cancelledBeforeStart、0投递、无消费标记、无待恢复责任；实际点选产品检查结果与恢复状态。
++- 正常构建、63场景510断言、15秒等待15断言、派送11场景55断言、接线24断言和Swift500测试零失败。两份改动源码在独立副本执行回滚，哈希等于原件；补丁重新应用字节等于修改版。
++
++## 当前未完成项与安全状态
++
++自建全屏背景实际位于Space10166；产品刷新激活自己的普通窗口后，选择QQ、发布控制器、开始，全程观察Space4634。启动切桌面问题已在准备前处理，没有靠取消检查通关。
++
++但QQ完整单轮 `5C85917F-5F76-4E98-B4B0-5F3215F694A7` 未通过：跟踪窗口inactive持久确认后等15.037127秒，归位第三手势在53.053500ms拒绝，原50ms期限超出3.062584ms；10实际投递，最终PID转发/up未完成，transportFailure=timeout。两手势pairedTransportReturned，第三手势downReserved、possibleDown=true；原始失败、活动journal和责任原字节保留，不能改成成功。控制器已关闭、QQ界面已隐藏，不自动重试、重放或清除该责任。
++
++此前一轮未先隐藏QQ、未观察到新界面的8投递停止保留；另外6投递仅归位单独记账，当前邻边/签名/同Space和控制器灭失核对后，零输入行政凭证归档，未把原8投递改成成功。本次10投递未配对记录不适用该8投递归档。
++
++**因此阶段2尚未全部完成。**先等待当前nonce人工安全归位确认，再只读核对当前原邻边和已释放输入、保留原失败；随后继续测量并修复50ms归位超时，重跑QQ产品全链路。不是让用户代做程序验收。
++
++核心四角色仍在 `/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/`；新增 `stage2-sources.patch`、`stage2-source-transaction.json`、`stage2-qq-failure-summary.json`、`stage2-status.json`。回滚脚本 `--stage2` 接fixture副本，`--stage2-product` 接产品模型副本，`--stage2-doc` 接此文档副本；须连同相邻baseline/modified目录保留。阶段2修改尚未额外提交，未替换Applications正式版、未推送、未进入阶段3/4。
++
++---
++
+ # 阶段1已完成：正常源码、正常构建、长等待复验（2026-10-09）
+ 
+ 本节取代下方旧临时构建说明；历史失败与验证不删除、不改写。仅完成阶段1，不增加产品行为。

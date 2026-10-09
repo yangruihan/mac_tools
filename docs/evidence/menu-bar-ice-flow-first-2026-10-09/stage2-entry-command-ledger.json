@@ -1,0 +1,22 @@
+[
+  {
+    "label": "stage2-BASELINE-owned-entry",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-baseline/MacTools Ice Interface Candidate.app/Contents/MacOS/MacTools",
+      "--ice-interface-owned-entry-check"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Owned product-entry check failed: unknown(file:///Users/yangruihan/Library/Application%20Support/MacTools/IceInterfaceCandidate/product-entry-check-BD4C1F56-D885-4735-A10D-BB67F898A7B7)\n"
+  },
+  {
+    "label": "stage2-MODIFIED-owned-entry",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app/Contents/MacOS/MacTools",
+      "--ice-interface-owned-entry-check"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "Owned product-entry check failed: unknown(file:///Users/yangruihan/Library/Application%20Support/MacTools/IceInterfaceCandidate/product-entry-check-CC183178-2F93-4676-BD34-4BFB2CC34479)\n"
+  }
+]

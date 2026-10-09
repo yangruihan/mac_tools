@@ -1,0 +1,32 @@
+[
+  {
+    "label": "stage2-final-offline",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app/Contents/Resources/IceWorker/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
+      "--offline-tests"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"assertions\" : 510,\n  \"cursorEffects\" : 0,\n  \"interfaceAssertions\" : 83,\n  \"interfaceScenarios\" : 21,\n  \"legacyAssertions\" : 427,\n  \"legacyScenarios\" : 42,\n  \"nativePosts\" : 0,\n  \"nativeTaps\" : 0,\n  \"passed\" : true,\n  \"provenance\" : \"isolatedReplayWithInjectedSenderAndTaps\",\n  \"receiverAssertions\" : 20,\n  \"scenarios\" : 63\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "stage2-final-delay",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app/Contents/Resources/IceWorker/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
+      "--rehide-delay-tests"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"assertions\" : 15,\n  \"deadlineCrossingInOccupancyCheckCovered\" : true,\n  \"delaySeconds\" : 15,\n  \"holdReports\" : [\n    {\n      \"elapsedSeconds\" : 47.410000000000025,\n      \"failure\" : \"policy\",\n      \"heldInterfaceSeconds\" : 32,\n      \"modeledPosts\" : 14,\n      \"nativeClosedLoopClaimed\" : false,\n      \"nativePosts\" : 0,\n      \"routeBudgetsPreserved\" : true\n    },\n    {\n      \"elapsedSeconds\" : 90.005999999999233,\n      \"failure\" : \"budget\",\n      \"heldInterfaceSeconds\" : 76,\n      \"modeledPosts\" : 8,\n      \"nativeClosedLoopClaimed\" : false,\n      \"nativePosts\" : 0,\n      \"routeBudgetsPreserved\" : true\n    }\n  ],\n  \"nativePosts\" : 0,\n  \"passed\" : true\n}\n",
+    "stderr": "interface-hold-replay: {\"elapsedSeconds\":47.410000000000025,\"failure\":\"policy\",\"heldInterfaceSeconds\":32,\"modeledPosts\":14,\"nativeClosedLoopClaimed\":false,\"nativePosts\":0,\"routeBudgetsPreserved\":true}\ninterface-hold-replay: {\"elapsedSeconds\":90.005999999999233,\"failure\":\"budget\",\"heldInterfaceSeconds\":76,\"modeledPosts\":8,\"nativeClosedLoopClaimed\":false,\"nativePosts\":0,\"routeBudgetsPreserved\":true}\n"
+  },
+  {
+    "label": "stage2-final-dispatch",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app/Contents/Resources/IceWorker/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
+      "--dispatch-validation-tests"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"assertions\" : 55,\n  \"nativePosts\" : 0,\n  \"nativeTaps\" : 0,\n  \"passed\" : true,\n  \"permissionRequests\" : 0,\n  \"provenance\" : \"injectedClockSenderIdentityAndInterface\",\n  \"reports\" : [\n    {\n      \"finalIdentityScopeChecks\" : 0,\n      \"modeledPosts\" : 10,\n      \"name\" : \"legacyDuplicateReads\",\n      \"nativeClosedLoopClaimed\" : false,\n      \"possibleDownRetained\" : true,\n      \"returnPostAdditionalScopeReads\" : 3,\n      \"returnPostOccupancyReads\" : 3,\n      \"returnPostRuntimeReads\" : 6\n    },\n    {\n      \"finalIdentityScopeChecks\" : 14,\n      \"modeledPosts\" : 14,\n      \"name\" : \"sharedPerPost\",\n      \"nativeClosedLoopClaimed\" : false,\n      \"possibleDownRetained\" : false,\n      \"returnPostAdditionalScopeReads\" : 0,\n      \"returnPostOccupancyReads\" : 6,\n      \"returnPostRuntimeReads\" : 6\n    },\n    {\n      \"finalIdentityScopeChecks\" : 9,\n      \"modeledPosts\" : 9,\n      \"name\" : \"identityChanged\",\n      \"nativeClosedLoopClaimed\" : false,\n      \"possibleDownRetained\" : true,\n      \"returnPostAdditionalScopeReads\" : 0,\n      \"returnPostOccupancyReads\" : 1,\n      \"returnPostRuntimeReads\" : 2\n    },\n    {\n      \"finalIdentityScopeChecks\" : 9,\n      \"modeledPosts\" : 9,\n      \"name\" : \"scopeChanged\",\n      \"nativeClosedLoopClaimed\" : false,\n      \"possibleDownRetained\" : true,\n      \"returnPostAdditionalScopeReads\" : 0,\n      \"returnPostOccupancyReads\" : 1,\n      \"returnPostRuntimeReads\" : 2\n    },\n    {\n      \"finalIdentityScopeChecks\" : 9,\n      \"modeledPosts\" : 8,\n      \"name\" : \"identityChangedWithinPost\",\n      \"nativeClosedLoopClaimed\" : false,\n      \"possibleDownRetained\" : true,\n      \"returnPostAdditionalScopeReads\" : 0,\n      \"returnPostOccupancyReads\" : 1,\n      \"returnPostRuntimeReads\" : 1\n    },\n    {\n      \"finalIdentityScopeChecks\" : 9,\n      \"modeledPosts\" : 8,\n      \"name\" : \"scopeChangedWithinPost\",\n      \"nativeClosedLoopClaimed\" : false,\n      \"possibleDownRetained\" : true,\n      \"returnPostAdditionalScopeReads\" : 0,\n      \"returnPostOccupancyReads\" : 1,\n      \"returnPostRuntimeReads\" : 1\n    },\n    {\n      \"finalIdentityScopeChecks\" : 9,\n      \"modeledPosts\" : 9,\n      \"name\" : \"interfaceReactivated\",\n      \"nativeClosedLoopClaimed\" : false,\n      \"possibleDownRetained\" : true,\n      \"returnPostAdditionalScopeReads\" : 0,\n      \"returnPostOccupancyReads\" : 2,\n      \"returnPostRuntimeReads\" : 2\n    },\n    {\n      \"finalIdentityScopeChecks\" : 8,\n      \"modeledPosts\" : 8,\n      \"name\" : \"cancelledDuringRead\",\n      \"nativeClosedLoopClaimed\" : false,\n      \"possibleDownRetained\" : true,\n      \"returnPostAdditionalScopeReads\" : 0,\n      \"returnPostOccupancyReads\" : 0,\n      \"returnPostRuntimeReads\" : 1\n    },\n    {\n      \"finalIdentityScopeChecks\" : 10,\n      \"modeledPosts\" : 9,\n      \"name\" : \"permissionRevoked\",\n      \"nativeClosedLoopClaimed\" : false,\n      \"possibleDownRetained\" : true,\n      \"returnPostAdditionalScopeReads\" : 0,\n      \"returnPostOccupancyReads\" : 2,\n      \"returnPostRuntimeReads\" : 2\n    },\n    {\n      \"finalIdentityScopeChecks\" : 9,\n      \"modeledPosts\" : 8,\n      \"name\" : \"singleReadPastDeadline\",\n      \"nativeClosedLoopClaimed\" : false,\n      \"possibleDownRetained\" : true,\n      \"returnPostAdditionalScopeReads\" : 0,\n      \"returnPostOccupancyReads\" : 1,\n      \"returnPostRuntimeReads\" : 1\n    }\n  ],\n  \"routeBudgetMS\" : 50,\n  \"scenarios\" : 11\n}\n",
+    "stderr": ""
+  }
+]

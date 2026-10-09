@@ -1,0 +1,481 @@
+{
+  "AXActionsRequested" : 0,
+  "currentIceNeighborPositionVerified" : true,
+  "disposition" : "manualQQIceNeighborObservedAfterReturnRouteTimeout",
+  "durablePairedRoutes" : 8,
+  "first" : {
+    "atUptime" : 1850200.0065772501,
+    "combinedLeftDown" : false,
+    "commandShiftControlOptionFnDown" : false,
+    "controllerGone" : true,
+    "hidLeftDown" : false,
+    "nativePosts" : 0,
+    "neighborFrame" : "{{1270, 0}, {38, 37}}",
+    "neighborID" : 354357,
+    "noVisibleOwnerInterface" : true,
+    "noVisibleOwnerPopup" : true,
+    "originalNeighborSameSide" : true,
+    "physicalReleaseProven" : false,
+    "pressedMouseButtons" : 0,
+    "sameIdentityAndScope" : true,
+    "targetFrame" : "{{1238, 0}, {32, 37}}",
+    "targetID" : 351689
+  },
+  "fullRelativeQueueVerified" : false,
+  "historicalActualPosts" : 10,
+  "historicalPairingConfirmed" : false,
+  "nativeReturnProven" : false,
+  "nonce" : "5C85917F-5F76-4E98-B4B0-5F3215F694A7",
+  "originalEnvelopeSHA256" : "e86336fcd7fb529c2dad72a4ae92219973dfa67b8333416822e3cda338c09af5",
+  "originalGestureStatus" : "downReserved",
+  "originalPhase" : "stopped",
+  "originalRecord" : {
+    "binding" : {
+      "anchor" : {
+        "frame" : {
+          "height" : 37,
+          "width" : 29,
+          "x" : 1516,
+          "y" : 0
+        },
+        "id" : 356903,
+        "process" : {
+          "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/ice-interface-product\/MacTools Ice Interface Candidate.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+          "identifier" : "com.ryanai.mactools",
+          "launch" : 1791533061.532764,
+          "pid" : 96674,
+          "sha256" : "a7a80df4e8a52c56ee515a9968d2eb5ea84221b0a8c6812c43d813b9c4496f2b",
+          "team" : "58TJ64422P"
+        }
+      },
+      "area" : {
+        "height" : 37,
+        "width" : 772,
+        "x" : 956,
+        "y" : 0
+      },
+      "controller" : {
+        "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/ice-interface-product\/MacTools Ice Interface Candidate.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+        "identifier" : "com.ryanai.mactools",
+        "launch" : 1791533061.532764,
+        "pid" : 96674,
+        "sha256" : "a7a80df4e8a52c56ee515a9968d2eb5ea84221b0a8c6812c43d813b9c4496f2b",
+        "team" : "58TJ64422P"
+      },
+      "display" : 1,
+      "neighbor" : {
+        "frame" : {
+          "height" : 37,
+          "width" : 38,
+          "x" : 1241,
+          "y" : 0
+        },
+        "id" : 354357,
+        "process" : {
+          "executable" : "\/Applications\/WeChat.app\/Contents\/MacOS\/WeChat",
+          "identifier" : "com.tencent.xinWeChat",
+          "launch" : 1791519333.5285189,
+          "pid" : 63458,
+          "sha256" : "0e80b6c94ee804038031d5c285f864c434a5629abbf3c8655a9c0b1b09d8662e",
+          "team" : "5A4RE8SF68"
+        }
+      },
+      "nonce" : "5C85917F-5F76-4E98-B4B0-5F3215F694A7",
+      "owner" : {
+        "executable" : "\/Applications\/QQ.app\/Contents\/MacOS\/QQ",
+        "identifier" : "com.tencent.qq",
+        "launch" : 1791499568.5659599,
+        "pid" : 58349,
+        "sha256" : "35453afefbecb877a3b7c3e81111b3ea2debec75e263a0e4ac1e0338659dedbd",
+        "team" : "FN2V63AD2J"
+      },
+      "returnOnLeft" : true,
+      "space" : 4634,
+      "target" : {
+        "frame" : {
+          "height" : 37,
+          "width" : 32,
+          "x" : 1209,
+          "y" : 0
+        },
+        "id" : 351689,
+        "process" : {
+          "executable" : "\/Applications\/QQ.app\/Contents\/MacOS\/QQ",
+          "identifier" : "com.tencent.qq",
+          "launch" : 1791499568.5659599,
+          "pid" : 58349,
+          "sha256" : "35453afefbecb877a3b7c3e81111b3ea2debec75e263a0e4ac1e0338659dedbd",
+          "team" : "FN2V63AD2J"
+        }
+      }
+    },
+    "contract" : "ordinaryIceInterfaceV9",
+    "generation" : "252C7AD3-87AF-4BB0-9B5E-F39136FAE369",
+    "gestures" : [
+      {
+        "down" : {
+          "click" : 1,
+          "flags" : 1048576,
+          "handlingWindow" : 351689,
+          "marker" : 462,
+          "number" : 0,
+          "pid" : 58349,
+          "pointerWindow" : 351689,
+          "sourcePID" : 96674,
+          "sourceState" : 1,
+          "timestamp" : 0,
+          "type" : 1,
+          "window" : 351689,
+          "x" : 20000,
+          "y" : 20000
+        },
+        "id" : "B5DBA8A9-52DE-4765-991F-89D70506616A",
+        "routes" : [
+          {
+            "destination" : "PID 58349",
+            "id" : "90DB2989-DC40-4364-B1BA-0039D76C5DC0",
+            "packet" : {
+              "click" : 0,
+              "flags" : 0,
+              "handlingWindow" : 0,
+              "marker" : 462,
+              "number" : 0,
+              "pid" : 0,
+              "pointerWindow" : 0,
+              "sourcePID" : 96674,
+              "sourceState" : 0,
+              "timestamp" : 0,
+              "type" : 0,
+              "window" : 0,
+              "x" : 867.78515625,
+              "y" : 534.7109375
+            }
+          },
+          {
+            "destination" : "session event tap",
+            "id" : "B3B05347-D068-4A2F-A845-6F1EB110D95A",
+            "packet" : {
+              "click" : 1,
+              "flags" : 1048576,
+              "handlingWindow" : 351689,
+              "marker" : 462,
+              "number" : 0,
+              "pid" : 58349,
+              "pointerWindow" : 351689,
+              "sourcePID" : 96674,
+              "sourceState" : 1,
+              "timestamp" : 0,
+              "type" : 1,
+              "window" : 351689,
+              "x" : 20000,
+              "y" : 20000
+            }
+          },
+          {
+            "destination" : "PID 58349",
+            "id" : "A1D3B99B-6056-4B4F-B6B8-0AAB9310F501",
+            "packet" : {
+              "click" : 1,
+              "flags" : 1048576,
+              "handlingWindow" : 351689,
+              "marker" : 462,
+              "number" : 0,
+              "pid" : 58349,
+              "pointerWindow" : 351689,
+              "sourcePID" : 96674,
+              "sourceState" : 1,
+              "timestamp" : 0,
+              "type" : 1,
+              "window" : 351689,
+              "x" : 20000,
+              "y" : 20000
+            }
+          },
+          {
+            "destination" : "PID 58349",
+            "id" : "EBC4234E-B048-4BE6-AB42-F151BAE39FF5",
+            "packet" : {
+              "click" : 0,
+              "flags" : 537919488,
+              "handlingWindow" : 0,
+              "marker" : 462,
+              "number" : 0,
+              "pid" : 0,
+              "pointerWindow" : 0,
+              "sourcePID" : 96674,
+              "sourceState" : 0,
+              "timestamp" : 0,
+              "type" : 0,
+              "window" : 0,
+              "x" : 1727.984375,
+              "y" : 1116.984375
+            }
+          },
+          {
+            "destination" : "session event tap",
+            "id" : "F179D269-1E7F-420D-8935-A1186DEBB90A",
+            "packet" : {
+              "click" : 0,
+              "flags" : 0,
+              "handlingWindow" : 356903,
+              "marker" : 463,
+              "number" : 0,
+              "pid" : 58349,
+              "pointerWindow" : 356903,
+              "sourcePID" : 96674,
+              "sourceState" : 1,
+              "timestamp" : 0,
+              "type" : 2,
+              "window" : 356903,
+              "x" : 1516,
+              "y" : 18.5
+            }
+          },
+          {
+            "destination" : "PID 58349",
+            "id" : "4C8ADB8C-696B-40E9-B0C4-33B15E50CD3A",
+            "packet" : {
+              "click" : 0,
+              "flags" : 0,
+              "handlingWindow" : 356903,
+              "marker" : 463,
+              "number" : 0,
+              "pid" : 58349,
+              "pointerWindow" : 356903,
+              "sourcePID" : 96674,
+              "sourceState" : 1,
+              "timestamp" : 0,
+              "type" : 2,
+              "window" : 356903,
+              "x" : 1516,
+              "y" : 18.5
+            }
+          }
+        ],
+        "status" : "pairedTransportReturned",
+        "up" : {
+          "click" : 0,
+          "flags" : 0,
+          "handlingWindow" : 356903,
+          "marker" : 463,
+          "number" : 0,
+          "pid" : 58349,
+          "pointerWindow" : 356903,
+          "sourcePID" : 96674,
+          "sourceState" : 1,
+          "timestamp" : 0,
+          "type" : 2,
+          "window" : 356903,
+          "x" : 1516,
+          "y" : 18.5
+        }
+      },
+      {
+        "down" : {
+          "click" : 1,
+          "flags" : 0,
+          "handlingWindow" : 351689,
+          "marker" : 465,
+          "number" : 0,
+          "pid" : 58349,
+          "pointerWindow" : 351689,
+          "sourcePID" : 96674,
+          "sourceState" : 1,
+          "timestamp" : 0,
+          "type" : 1,
+          "window" : 351689,
+          "x" : 1500,
+          "y" : 18.5
+        },
+        "id" : "752C35E2-FDE6-44CE-AB43-35F6F68CFADE",
+        "routes" : [
+          {
+            "destination" : "session event tap",
+            "id" : "1724D169-9895-460C-AD15-D4FB77F457D8",
+            "packet" : {
+              "click" : 1,
+              "flags" : 0,
+              "handlingWindow" : 351689,
+              "marker" : 465,
+              "number" : 0,
+              "pid" : 58349,
+              "pointerWindow" : 351689,
+              "sourcePID" : 96674,
+              "sourceState" : 1,
+              "timestamp" : 0,
+              "type" : 1,
+              "window" : 351689,
+              "x" : 1500,
+              "y" : 18.5
+            }
+          },
+          {
+            "destination" : "session event tap",
+            "id" : "107AF1AA-F4D5-490A-9AF6-BE85A9620811",
+            "packet" : {
+              "click" : 1,
+              "flags" : 0,
+              "handlingWindow" : 351689,
+              "marker" : 466,
+              "number" : 0,
+              "pid" : 58349,
+              "pointerWindow" : 351689,
+              "sourcePID" : 96674,
+              "sourceState" : 1,
+              "timestamp" : 0,
+              "type" : 2,
+              "window" : 351689,
+              "x" : 1500,
+              "y" : 18.5
+            }
+          }
+        ],
+        "status" : "pairedTransportReturned",
+        "up" : {
+          "click" : 1,
+          "flags" : 0,
+          "handlingWindow" : 351689,
+          "marker" : 466,
+          "number" : 0,
+          "pid" : 58349,
+          "pointerWindow" : 351689,
+          "sourcePID" : 96674,
+          "sourceState" : 1,
+          "timestamp" : 0,
+          "type" : 2,
+          "window" : 351689,
+          "x" : 1500,
+          "y" : 18.5
+        }
+      },
+      {
+        "down" : {
+          "click" : 1,
+          "flags" : 1048576,
+          "handlingWindow" : 351689,
+          "marker" : 468,
+          "number" : 0,
+          "pid" : 58349,
+          "pointerWindow" : 351689,
+          "sourcePID" : 96674,
+          "sourceState" : 1,
+          "timestamp" : 0,
+          "type" : 1,
+          "window" : 351689,
+          "x" : 20000,
+          "y" : 20000
+        },
+        "id" : "95133E41-99B7-45F4-B113-4BC9705790DB",
+        "routes" : [
+          {
+            "destination" : "PID 58349",
+            "id" : "438AF2B8-AA65-403C-A4B0-9649C8805A44",
+            "packet" : {
+              "click" : 0,
+              "flags" : 536870912,
+              "handlingWindow" : 0,
+              "marker" : 462,
+              "number" : 0,
+              "pid" : 0,
+              "pointerWindow" : 0,
+              "sourcePID" : 96674,
+              "sourceState" : 0,
+              "timestamp" : 0,
+              "type" : 0,
+              "window" : 0,
+              "x" : 867,
+              "y" : 534
+            }
+          },
+          {
+            "destination" : "session event tap",
+            "id" : "CBBAF4E2-0747-4BF6-B09F-B30C282B6275",
+            "packet" : {
+              "click" : 1,
+              "flags" : 1048576,
+              "handlingWindow" : 351689,
+              "marker" : 468,
+              "number" : 0,
+              "pid" : 58349,
+              "pointerWindow" : 351689,
+              "sourcePID" : 96674,
+              "sourceState" : 1,
+              "timestamp" : 0,
+              "type" : 1,
+              "window" : 351689,
+              "x" : 20000,
+              "y" : 20000
+            }
+          },
+          {
+            "destination" : "PID 58349",
+            "id" : "B8FB1F9B-BDBD-4ABE-8174-88A62001589A",
+            "packet" : {
+              "click" : 1,
+              "flags" : 1048576,
+              "handlingWindow" : 351689,
+              "marker" : 468,
+              "number" : 0,
+              "pid" : 58349,
+              "pointerWindow" : 351689,
+              "sourcePID" : 96674,
+              "sourceState" : 1,
+              "timestamp" : 0,
+              "type" : 1,
+              "window" : 351689,
+              "x" : 20000,
+              "y" : 20000
+            }
+          }
+        ],
+        "status" : "downReserved",
+        "up" : {
+          "click" : 0,
+          "flags" : 0,
+          "handlingWindow" : 354357,
+          "marker" : 469,
+          "number" : 0,
+          "pid" : 58349,
+          "pointerWindow" : 354357,
+          "sourcePID" : 96674,
+          "sourceState" : 1,
+          "timestamp" : 0,
+          "type" : 2,
+          "window" : 354357,
+          "x" : 1209,
+          "y" : 18.5
+        }
+      }
+    ],
+    "phase" : "stopped",
+    "revision" : 18,
+    "schemaVersion" : 4,
+    "stopReason" : "cancelled",
+    "transaction" : "983E9437-913A-434A-8995-96119FAB6B16"
+  },
+  "physicalReleaseProven" : false,
+  "recoveryNativePosts" : 0,
+  "second" : {
+    "atUptime" : 1850200.1951437502,
+    "combinedLeftDown" : false,
+    "commandShiftControlOptionFnDown" : false,
+    "controllerGone" : true,
+    "hidLeftDown" : false,
+    "nativePosts" : 0,
+    "neighborFrame" : "{{1270, 0}, {38, 37}}",
+    "neighborID" : 354357,
+    "noVisibleOwnerInterface" : true,
+    "noVisibleOwnerPopup" : true,
+    "originalNeighborSameSide" : true,
+    "physicalReleaseProven" : false,
+    "pressedMouseButtons" : 0,
+    "sameIdentityAndScope" : true,
+    "targetFrame" : "{{1238, 0}, {32, 37}}",
+    "targetID" : 351689
+  },
+  "sessionResultSHA256" : "494f1be5d4dc9a28e327f83fdddf3c9bfe4e521069535b20a5af50bfac65becb",
+  "terminalResultPublished" : true,
+  "transaction" : "983E9437-913A-434A-8995-96119FAB6B16",
+  "userReportedManualReturnComplete" : true,
+  "version" : 1
+}

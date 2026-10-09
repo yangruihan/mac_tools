@@ -1,0 +1,44 @@
+{
+  "nonce": "2A12CB50-A9F6-44E5-8D15-E96A5A44D9DA",
+  "session": "/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/session-2A12CB50-A9F6-44E5-8D15-E96A5A44D9DA",
+  "origin": {
+    "focus": {
+      "active": true,
+      "atUnix": 1791537128.467354,
+      "fullscreen": true,
+      "nativePosts": 0,
+      "nonce": "0039cfbd-0a19-47fc-8b17-9a32f83cb078",
+      "pid": 58067,
+      "visible": true,
+      "windowID": 357606
+    },
+    "space": 10194,
+    "nativePosts": 0
+  },
+  "preparedSpace": 4634,
+  "sampleSpaces": [
+    4634
+  ],
+  "activeSeconds": 13.90040179155767,
+  "inactiveWaitSeconds": 15.011735583422706,
+  "posts": 14,
+  "routeCount": 6,
+  "rawReceiptCount": 10,
+  "realClosedLoopVerified": true,
+  "pendingRecovery": false,
+  "returnEvidence": {
+    "atUptime": 1853342.9474389583,
+    "criterion": "iceNeighborEdgeV4",
+    "fullQueueRequired": false,
+    "neighborFrame": "{{1241, 0}, {38, 37}}",
+    "neighborID": 354357,
+    "nonce": "2A12CB50-A9F6-44E5-8D15-E96A5A44D9DA",
+    "relativeFullQueueVerified": false,
+    "returnOnLeft": true,
+    "targetFrame": "{{1209, 0}, {32, 37}}",
+    "targetID": 351689,
+    "targetPID": 58349
+  },
+  "resultSHA256": "8713c74fc692f7910b8cd1ca7e6bc5507c68b4a79f3c1ab45f52cc590d326318",
+  "entry": "CUA product buttons only for selection, publication, Start, focus switch, result/recovery readback; no direct worker execution for this acceptance"
+}

@@ -34,7 +34,7 @@ import AppKit
         try require(defocused.refresh() == .active,"ordinary interface initially active")
         let focus=Process(),focusNonce=UUID().uuidString
         let focusFile=URL(fileURLWithPath:"/tmp/ice-interface-focus-"+focusNonce+".json")
-        focus.executableURL=IceSelectedSession.root.appendingPathComponent("Ice Interface Focus.app/Contents/MacOS/IceInterfaceFocus")
+        focus.executableURL=IceSelectedSession.packageRoot.appendingPathComponent("Ice Interface Focus.app/Contents/MacOS/IceInterfaceFocus")
         focus.arguments=[focusNonce,focusFile.path];try focus.run()
         defer{if focus.isRunning {focus.terminate()}}
         let focusProof=try MenuBarProcessSignature.read(focus.processIdentifier)
@@ -54,13 +54,15 @@ import AppKit
         d.orderOut(nil);d.close()
         let multiple=try lease("multipleOwnerWindows")
         let a=window("MacTools 自建窗口 A"),b=window("MacTools 自建窗口 B");a.orderFront(nil);b.orderFront(nil);app.activate(ignoringOtherApps:true);try await settle()
-        try require(multiple.refresh() == .unknown && multiple.diagnostics()["stickyInvalid"] as? Bool==true,"real two-window ambiguity rejected")
+        try require(multiple.refresh() == .active && multiple.diagnostics()["stickyInvalid"] as? Bool==false,"first real same-owner window tracked without extra ambiguity rejection")
         a.orderOut(nil);a.close();b.orderOut(nil);b.close();try await settle()
         let rebuilt=try lease("windowRebuilt")
         let old=window("MacTools 自建原窗口");old.makeKeyAndOrderFront(nil);app.activate(ignoringOtherApps:true);try await settle()
         try require(rebuilt.refresh() == .active,"original native window tracked")
+        let oldID=UInt32(old.windowNumber)
         old.orderOut(nil);old.close();let replacement=window("MacTools 自建重建窗口");replacement.makeKeyAndOrderFront(nil);try await settle()
-        try require(rebuilt.refresh() == .unknown && rebuilt.diagnostics()["stickyInvalid"] as? Bool==true,"real new WindowID cannot replace tracked identity")
+        try require(rebuilt.refresh() == .unknown && rebuilt.diagnostics()["stickyInvalid"] as? Bool==false,"absent original tracked window first inactive sample")
+        try await settle();try require(rebuilt.refresh() == .inactive && rebuilt.diagnostics()["trackedWindowID"] as? UInt32 == oldID,"replacement cannot replace original tracked ID; original context ends")
         replacement.orderOut(nil);replacement.close()
         let fence=IceSelectedFence();fence.cancel();var admissions=0,denied=false
         do{try fence.perform("cancelled-input-admission"){admissions+=1}}catch{denied=true}

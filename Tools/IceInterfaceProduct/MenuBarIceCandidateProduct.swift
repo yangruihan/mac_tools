@@ -25,16 +25,32 @@ enum MenuBarIceCandidateProductBridge {
     private var ownedLaunch: MenuBarIceInterfaceProductBridge.Launch?
     private var controllerPID: Int32?
     private var controllerProof: MenuBarProcessSignature.Proof?
+    private func activateProductWindow() async throws -> MenuBarIceSelectedTarget.Directory {
+        guard let window = NSApp.windows.first(where: { $0.title == "MacTools · Ice 候选" || $0.title == "Mac 工具箱" }) else { throw MenuBarIceInterfaceProductBridge.Failure.invalid }
+        // Activate our existing ordinary window before capture, not after binding a fullscreen Space.
+        window.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true)
+        let until = ProcessInfo.processInfo.systemUptime + 8
+        while ProcessInfo.processInfo.systemUptime < until {
+            if window.isOnActiveSpace, window.isKeyWindow, NSApp.isActive,
+               let directory = try? MenuBarIceSelectedTarget.readDirectory() { return directory }
+            try await Task.sleep(nanoseconds: 50_000_000)
+        }
+        throw MenuBarIceInterfaceProductBridge.Failure.invalid
+    }
     func readOrdinaryDirectory() {
         guard !busy else { return }
         ordinaryTarget = nil; ordinaryWindowID = 0
-        do {
-            let directory = try MenuBarIceSelectedTarget.readDirectory()
-            ordinaryDirectory = directory; ordinaryRows = directory.rows
-            ordinaryStatus = "请选择具体图标。刷新列表不会移动图标或打开菜单。"
-        } catch {
-            ordinaryDirectory = nil; ordinaryRows = []
-            ordinaryStatus = "无法读取本机单屏图标列表：\(error)"
+        busy = true
+        Task {
+            defer { busy = false }
+            do {
+                let directory = try await activateProductWindow()
+                ordinaryDirectory = directory; ordinaryRows = directory.rows
+                ordinaryStatus = "请选择具体图标。刷新列表不会移动图标或打开菜单。"
+            } catch {
+                ordinaryDirectory = nil; ordinaryRows = []
+                ordinaryStatus = "无法读取本机单屏图标列表：\(error)"
+            }
         }
     }
     func bindOrdinaryTarget() {
@@ -54,6 +70,7 @@ enum MenuBarIceCandidateProductBridge {
         Task {
             defer { busy = false }
             do {
+                _ = try await activateProductWindow()
                 let directory = try await Task.detached { try MenuBarIceInterfaceProductBridge.prepare(target) }.value
                 ordinarySession = directory // Preserve it even if launch validation fails.
                 ordinaryLaunch = try await MenuBarIceInterfaceProductBridge.launch(directory, target: target)
@@ -115,6 +132,7 @@ enum MenuBarIceCandidateProductBridge {
         Task {
             defer { busy = false }
             do {
+                _ = try await activateProductWindow()
                 let directory = try await Task.detached { try MenuBarIceInterfaceProductBridge.prepareOwned() }.value
                 session = directory
                 let launch = try await MenuBarIceInterfaceProductBridge.launch(directory, ownedWindow: ordinaryWindow)

@@ -95,7 +95,7 @@ final class IceSelectedFixture: NSObject, NSApplicationDelegate, NSMenuDelegate 
            !seenLifetimeRequests.contains(request.id) {
             seenLifetimeRequests.insert(request.id)
             do {
-                let root = directory.deletingLastPathComponent().deletingLastPathComponent()
+                let root = Bundle.main.bundleURL.deletingLastPathComponent()
                 guard let manifest = try JSONSerialization.jsonObject(with: Data(contentsOf: root.appendingPathComponent("prepared-build.json"))) as? [String: Any] else { throw IceBaselineSessionLifetime.Failure.phase }
                 let proof = try MenuBarProcessSignature.read(request.controllerPID)
                 guard proof.identifier == "com.ryanai.mactools", proof.sha256 == manifest["controllerSHA256"] as? String,

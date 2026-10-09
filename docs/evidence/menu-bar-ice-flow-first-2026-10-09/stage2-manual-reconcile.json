@@ -1,0 +1,29 @@
+{
+  "activeJournalPending" : false,
+  "disposition" : "manualQQIceNeighborObservedAfterReturnRouteTimeout",
+  "final" : {
+    "atUptime" : 1850200.2235911251,
+    "combinedLeftDown" : false,
+    "commandShiftControlOptionFnDown" : false,
+    "controllerGone" : true,
+    "hidLeftDown" : false,
+    "nativePosts" : 0,
+    "neighborFrame" : "{{1270, 0}, {38, 37}}",
+    "neighborID" : 354357,
+    "noVisibleOwnerInterface" : true,
+    "noVisibleOwnerPopup" : true,
+    "originalNeighborSameSide" : true,
+    "physicalReleaseProven" : false,
+    "pressedMouseButtons" : 0,
+    "sameIdentityAndScope" : true,
+    "targetFrame" : "{{1238, 0}, {32, 37}}",
+    "targetID" : 351689
+  },
+  "nativePosts" : 0,
+  "nativeReturnProven" : false,
+  "originalArchive" : "\/Users\/yangruihan\/Library\/Application Support\/MacTools\/IceInterfaceCandidate\/selected-relative-recovery-v2\/stage2-timeout-user-manual-return-original-983E9437-913A-434A-8995-96119FAB6B16.json",
+  "physicalReleaseProven" : false,
+  "receipt" : "\/Users\/yangruihan\/Library\/Application Support\/MacTools\/IceInterfaceCandidate\/selected-relative-recovery-v2\/stage2-timeout-user-manual-return-receipt-983E9437-913A-434A-8995-96119FAB6B16.json",
+  "receiptSHA256" : "e55432a9b3767e2710d07713827e976bdb29555f4ab3a36f2fa97d07258da0cc",
+  "reconciled" : true
+}

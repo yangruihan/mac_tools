@@ -1,0 +1,9 @@
+{
+  "hostSHA256": "729293d0501fdfd107b73d4b1f869c27e60e513be97138d4ec7373d5f368f171",
+  "controllerSHA256": "908ff5857c0b6d065f9a033af79c63de065f2d7ce1388f40124a677c47a071dc",
+  "fixtureSHA256": "15da9c69fbda83a441261a1d5f1b88dc2e891a21a1a6be9a971d97112a9c8cd3",
+  "sourceHEAD": "6ca604791159a21aa1c95d96a6fdfc6ee0d3598c",
+  "sourcesMatchCompiledManifestAndPackage": true,
+  "uncommittedSource": true,
+  "formalAppUnchanged": true
+}

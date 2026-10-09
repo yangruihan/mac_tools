@@ -1,0 +1,11 @@
+{
+  "target": "/Users/yangruihan/Workspace/mac_tools/Tools/IceSelectedQuickInterface/IceSelectedFixture.swift",
+  "changedSite": "IceSelectedFixture.control lifetime-request root",
+  "originalSHA256": "dc690eb2f281e4d09518aeaf2b23857d04d73b894c2776a62426b0b7eb4dca9f",
+  "modifiedSHA256": "fc9ef0bd66c8a1e70a63c87e3e7d4f3a327b39c12716ac5e81694dcde259f405",
+  "baselineNativeResultSession": "/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/session-FE817D00-4CFF-4F79-AE08-BC327935C115",
+  "baselineApp": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-baseline/MacTools Ice Interface Candidate.app",
+  "stage1Commit": "6ca604791159a21aa1c95d96a6fdfc6ee0d3598c",
+  "productTarget": "/Users/yangruihan/Workspace/mac_tools/Tools/IceInterfaceProduct/MenuBarIceCandidateProduct.swift",
+  "productGoal": "activateProductWindow: activate existing own ordinary window before capture and before either preparation; retain exact selected icon and worker Space checks"
+}

@@ -1,0 +1,8 @@
+{
+  "status": "complete",
+  "ACTIVE_OBJECT": "MacTools Stage2 complete product button entry",
+  "LAST_CONFIRMED_RESULT": "ordinary product QQ active52.278641s +15.011740s returned14; fullscreen background10194 settled to prepared4634, full product QQ returned14; native/owned/cancel/recovery verified; no pending",
+  "NEXT_EXECUTABLE_ACTION": "Wait for user authorization for Stage3 experience handoff; no extra native test or Stage4 installation",
+  "stage1Commit": "6ca604791159a21aa1c95d96a6fdfc6ee0d3598c",
+  "pendingRecovery": false
+}
