@@ -1,0 +1,6 @@
+UI: Window Shortcut -> Option on, Shift on, Command off, Control off, M; no registration failure label. No setting toggles changed.
+CUA key attempt in frontmost host: before/after hostWindow363266 onscreen=true, no transition. This attempt not accepted as global input.
+Human physical ShiftOptionM #1: user reported hidden; passive CGWindow read onscreen=false, frontPID62881.
+Human #2: user reported shown; passive read onscreen=true, Space4634; focus after reply cannot establish peak.
+Human #3 from other app: user reported invoked; passive timeline observes hostPID12446 active/frontmost and same window363266 onscreen, at least8s. No CUA UI action between request and accepted samples.
+No keyboard content/tap monitored: sampler reads own app/window/frontmost PID only. No icon movement/worker launch, no permission or shortcut change.

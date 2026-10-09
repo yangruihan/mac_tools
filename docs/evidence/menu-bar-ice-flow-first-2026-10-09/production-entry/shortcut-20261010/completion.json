@@ -1,0 +1,98 @@
+{
+  "status": "physical-global-shortcut-accepted",
+  "installed": "/Applications/MacTools.app",
+  "build": 9,
+  "hostPID": 12446,
+  "hostWindowID": 363266,
+  "hostSHA256": "3e7df2686b2f315818aad072f9a585b2649c043730a5c6e6570f33cc921a3429",
+  "shortcut": {
+    "key": "M",
+    "carbonModifiers": 2560,
+    "display": "⇧⌥M",
+    "settingsChanged": false
+  },
+  "registrationUI": "no error shown for app.window/toggle",
+  "cuaKeyAttempt": "no window transition observed; tool delivery not counted as acceptance",
+  "physicalHide": {
+    "userConfirmed": true,
+    "windowOnScreen": false,
+    "frontPID": 62881
+  },
+  "physicalShow": {
+    "userConfirmed": true,
+    "windowOnScreen": true
+  },
+  "globalForeground": {
+    "userConfirmed": true,
+    "firstSample": {
+      "atUnix": 1791570099.839401,
+      "frontPID": 12446,
+      "hostPID": 12446,
+      "nativePosts": 0,
+      "ownerActive": true,
+      "windows": [
+        {
+          "id": 363263,
+          "level": 25,
+          "onScreen": true
+        },
+        {
+          "id": 363266,
+          "level": 0,
+          "onScreen": true
+        },
+        {
+          "id": 363264,
+          "level": 25,
+          "onScreen": true
+        },
+        {
+          "id": 363265,
+          "level": 25,
+          "onScreen": false
+        }
+      ]
+    },
+    "lastSample": {
+      "atUnix": 1791570130.064437,
+      "frontPID": 12446,
+      "hostPID": 12446,
+      "nativePosts": 0,
+      "ownerActive": true,
+      "windows": [
+        {
+          "id": 363263,
+          "level": 25,
+          "onScreen": true
+        },
+        {
+          "id": 363266,
+          "level": 0,
+          "onScreen": true
+        },
+        {
+          "id": 363264,
+          "level": 25,
+          "onScreen": true
+        },
+        {
+          "id": 363265,
+          "level": 25,
+          "onScreen": false
+        }
+      ]
+    },
+    "sampleCount": 138,
+    "observedSpanSeconds": 30.225035905838013,
+    "freshProcessReads": true
+  },
+  "ordinarySpace": 4634,
+  "sourceChanged": false,
+  "imageMoves": 0,
+  "workerSessionsStarted": 0,
+  "permissionsRequested": 0,
+  "baselineAssertions": 510,
+  "modifiedAssertions": 527,
+  "rollbackAssertions": 510,
+  "scope": "ordinary desktop physical keyboard; actual fullscreen global-key route not separately accepted"
+}

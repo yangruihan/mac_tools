@@ -1,19 +1,17 @@
 {
   "activeObject": "/Users/yangruihan/Workspace/mac_tools",
-  "lastConfirmedResult": "build9 ordinary icon, screen-off metadata, existing-background-window thumbnail, fullscreen-origin->ordinary-desktop entry all native accepted14; journal clear",
-  "nextExecutableAction": "read current registered window shortcut UI/status and verify genuine global shortcut entry without icon movement; CUA ShiftOptionM delivery remained unconfirmed",
+  "lastConfirmedResult": "build9: normal icons, offscreen directory, existing-window thumbnails, fullscreen-origin window entry, and physical global shortcut on ordinary desktop accepted; no recovery pending",
+  "nextExecutableAction": "audit recorded daily-use acceptance matrix for unresolved user-facing gaps without widening display scope or moving icons; preserve existing settings and native Command drag",
   "inputPaths": [
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/shortcut-20261010/completion.json",
     "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/fullscreen-20261010/completion.json",
-    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/fullscreen-20261010/ui-acceptance.txt",
     "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/continuation-20261010/completion.json"
   ],
-  "acceptanceEvent": "actual configured global shortcut brings toolbox foreground on ordinary Space, nativePosts0; or explicit registration failure diagnosed",
-  "unfinished": [
-    "global shortcut activation acceptance"
-  ],
+  "acceptanceEvent": "concise source-faithful daily-use acceptance matrix identifies only genuinely remaining gaps; no synthetic result relabeled native",
+  "unfinished": [],
   "unsupported": [
-    "direct moving while remaining fullscreen not accepted",
-    "multidisplay not supported; no scope expansion"
+    "direct movement while staying fullscreen not accepted",
+    "multidisplay not supported"
   ],
   "doNotResumeNonces": [
     "0A81E3AD-5B0E-458C-BF2C-5F5A6A30D198",

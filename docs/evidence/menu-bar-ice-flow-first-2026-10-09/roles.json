@@ -178,5 +178,10 @@
         "multidisplay not supported; scope unchanged"
       ]
     }
+  },
+  "physicalGlobalShortcutAcceptance": {
+    "record": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/shortcut-20261010/completion.json",
+    "timeline": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/shortcut-20261010/human-focus-accepted.jsonl",
+    "accepted": true
   }
 }

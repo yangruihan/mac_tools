@@ -1,0 +1,264 @@
+{
+  "display" : 1,
+  "mousePosts" : 0,
+  "ordinaryEntryConnected" : true,
+  "ordinaryMovementEnabled" : false,
+  "permissionRequests" : 0,
+  "readOnly" : true,
+  "rows" : [
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 41,
+        "x" : -2866,
+        "y" : 0
+      },
+      "pid" : 96841,
+      "title" : "搜狗输入法",
+      "windowID" : 341034
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 36,
+        "x" : -2825,
+        "y" : 0
+      },
+      "pid" : 737,
+      "title" : "百度网盘",
+      "windowID" : 61
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 44,
+        "x" : -2789,
+        "y" : 0
+      },
+      "pid" : 951,
+      "title" : "TextInputMenuAgent",
+      "windowID" : 67
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 100,
+        "x" : -2745,
+        "y" : 0
+      },
+      "pid" : 61200,
+      "title" : "云磁盘",
+      "windowID" : 359126
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 38,
+        "x" : -2645,
+        "y" : 0
+      },
+      "pid" : 35462,
+      "title" : "QQ音乐",
+      "windowID" : 310606
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 38,
+        "x" : -2607,
+        "y" : 0
+      },
+      "pid" : 62881,
+      "title" : "ChatGPT",
+      "windowID" : 359308
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 38,
+        "x" : -2569,
+        "y" : 0
+      },
+      "pid" : 57235,
+      "title" : "With",
+      "windowID" : 167701
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 42,
+        "x" : -2531,
+        "y" : 0
+      },
+      "pid" : 7432,
+      "title" : "腾讯电脑管家-Monitor",
+      "windowID" : 144
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 34,
+        "x" : 983,
+        "y" : 0
+      },
+      "pid" : 12780,
+      "title" : "Quota Pace",
+      "windowID" : 349119
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 35,
+        "x" : 1017,
+        "y" : 0
+      },
+      "pid" : 1051,
+      "title" : "UU远程",
+      "windowID" : 341097
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 33,
+        "x" : 1052,
+        "y" : 0
+      },
+      "pid" : 74956,
+      "title" : "iOA",
+      "windowID" : 359596
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 47,
+        "x" : 1085,
+        "y" : 0
+      },
+      "pid" : 42072,
+      "title" : "钉钉",
+      "windowID" : 125881
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 32,
+        "x" : 1132,
+        "y" : 0
+      },
+      "pid" : 58349,
+      "title" : "QQ",
+      "windowID" : 351689
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 38,
+        "x" : 1164,
+        "y" : 0
+      },
+      "pid" : 63458,
+      "title" : "微信",
+      "windowID" : 354357
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 81,
+        "x" : 1202,
+        "y" : 0
+      },
+      "pid" : 75734,
+      "title" : "企业微信",
+      "windowID" : 359672
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 38,
+        "x" : 1283,
+        "y" : 0
+      },
+      "pid" : 12446,
+      "title" : "Mac 工具箱",
+      "windowID" : 363264
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 33,
+        "x" : 1321,
+        "y" : 0
+      },
+      "pid" : 12446,
+      "title" : "Mac 工具箱",
+      "windowID" : 363263
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 32,
+        "x" : 1354,
+        "y" : 0
+      },
+      "pid" : 758,
+      "title" : "聚焦",
+      "windowID" : 39
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 33,
+        "x" : 1386,
+        "y" : 0
+      },
+      "pid" : 635,
+      "title" : "控制中心",
+      "windowID" : 986
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 38,
+        "x" : 1419,
+        "y" : 0
+      },
+      "pid" : 635,
+      "title" : "控制中心",
+      "windowID" : 18
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 38,
+        "x" : 1457,
+        "y" : 0
+      },
+      "pid" : 635,
+      "title" : "控制中心",
+      "windowID" : 15
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 42,
+        "x" : 1495,
+        "y" : 0
+      },
+      "pid" : 635,
+      "title" : "控制中心",
+      "windowID" : 17
+    },
+    {
+      "frame" : {
+        "height" : 37,
+        "width" : 34,
+        "x" : 1537,
+        "y" : 0
+      },
+      "pid" : 635,
+      "title" : "控制中心",
+      "windowID" : 14
+    }
+  ],
+  "space" : 4634
+}
