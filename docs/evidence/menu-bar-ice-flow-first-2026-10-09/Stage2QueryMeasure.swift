@@ -12,7 +12,7 @@ import AppKit
   for _ in 0..<20 {
    var start=ProcessInfo.processInfo.systemUptime
    guard let all=CGWindowListCopyWindowInfo(.optionAll,kCGNullWindowID) as? [[String:Any]] else{exit(1)}
-   
+
    let selected=all.filter {ids.contains(($0[kCGWindowNumber as String] as? NSNumber) ?? -1)};full.append((ProcessInfo.processInfo.systemUptime-start)*1000)
    start=ProcessInfo.processInfo.systemUptime
    guard let subset=CGWindowListCreateDescriptionFromArray(raw) as? [[String:Any]] else{exit(1)};targeted.append((ProcessInfo.processInfo.systemUptime-start)*1000)

@@ -4509,3 +4509,16 @@ Failed old50ms QQ10 original preserved; user本轮已归位 confirmed and zero-i
 Additional8 paired-stop with preexisting QQ inactive visible window did not produce new interface; budget90 preserved,6-post return-only separately recorded, original8 stop archived only after extinct controller/current neighbor and released samples verified. 0-post incomplete snapshot failure and fullscreen transient incomplete were not counted as success; final activation loop waits complete read-only directory before binding. No automatic movement retry or stale nonce reuse.
 Final same-source native query rollback: sampler/workflow pristine hashes restored in independent signed package, same updated native harness5/14 passed,0 posts. All6 changed source/doc paths rolled back individually, pristine byte equality verified; native patch reapplied equals modified bytes. Runtime target files retain changes.
 Stage1 commit6ca604791159a21aa1c95d96a6fdfc6ee0d3598c,106 related files (runtime dependency closure plus bounded evidence, no generated binaries). Initial git diff --cached --check exit2 only because native patch context blank lines; changed command excludes *.patch and passed0 without altering patch bytes; userProductTrial edit excluded. Stage2 not additionally committed; no push/install or Stage3/4.
+
+STAGE2 COMMIT AND NEXT-STAGE HANDOFF CHECK
+Main Stage2 commit=e01243710cb6288b76bffc2389bdd08c01f71da3. Precommit check error source: Stage2QueryMeasure.swift line15 trailing spaces, git diff --cached --check exit2; previous shell nevertheless ran commit. Correction strips only trailing whitespace in that measurement-source artifact, leaves runtime and frozen measurement result unchanged, uses set -e and repeats source diff check before a small follow-up commit. Original exact measurement source remains recoverable from e0124371.
+{
+  "command": [
+    "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app/Contents/MacOS/MacTools",
+    "--ice-candidate-preflight"
+  ],
+  "exit": 0,
+  "stdout": "{\n  \"automaticStart\" : false,\n  \"contract\" : \"ordinaryIceInterfaceV9\",\n  \"journalPending\" : false,\n  \"mousePosts\" : 0,\n  \"ordinaryEntryConnected\" : true,\n  \"permissionRequests\" : 0,\n  \"windowsOpened\" : 0,\n  \"workerRevision\" : \"ordinary-Ice-product-stage1\"\n}\n",
+  "stderr": ""
+}
+No new native test launched. Observed prior BASELINE/ROLLBACK fixture startup timeout0 posts; MODIFIED ordinary QQ52.278641s+15.011740s returned14 and full-screen-background QQreturned14. Same updated native sampler harness5/14 passed both modified and restored source,0 inputs. Rollback/source hashes and exact patch reapply previously verified. Stage3 task: fixed candidate handoff and guide, user subjective focus/cursor/wait feedback, no automatic feature expansion or formal installation.
