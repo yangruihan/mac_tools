@@ -1,0 +1,6 @@
+Self-owned fixture fullscreen active in Space10328, nativePosts0.
+Existing configured window shortcut Shift+Option+M invoked through CUA but no foreground/Space transition observed; NOT accepted as hotkey verification.
+Normal toolbox window button6 invokes existing showWindow; fixture becomes inactive while still fullscreen, Space4634 observed.
+收纳图标… -> 打开QQ音乐 -> quiet worker ready0 -> actual ordinary window310607 active -> toolbox button6 defocus ->15s ->actual14 ->target310606 left edge of neighbor359308 ->cleanup no journal and child exited.
+Final AX: 图标已打开并回到原邻边；可以继续使用。
+This proves fullscreen-origin -> ordinary-desktop entry, NOT direct movement while remaining fullscreen. No application code or permissions changed.

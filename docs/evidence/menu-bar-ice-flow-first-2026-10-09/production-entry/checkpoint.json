@@ -1,17 +1,20 @@
 {
   "activeObject": "/Users/yangruihan/Workspace/mac_tools",
-  "lastConfirmedResult": "build9 installed; offscreen directory14 and existing-background-window thumbnail14 native return/clear; failureC21 preserved and human archived0; offline510/527/510",
-  "nextExecutableAction": "verify fullscreen-origin ordinary entry using recorded self-owned fullscreen fixture, bound exact ordinary target, and fresh zero-post preparation before any new movement",
+  "lastConfirmedResult": "build9 ordinary icon, screen-off metadata, existing-background-window thumbnail, fullscreen-origin->ordinary-desktop entry all native accepted14; journal clear",
+  "nextExecutableAction": "read current registered window shortcut UI/status and verify genuine global shortcut entry without icon movement; CUA ShiftOptionM delivery remained unconfirmed",
   "inputPaths": [
-    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/continuation-20261010/completion.json",
-    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/continuation-20261010/ui-acceptance.txt",
-    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/continuation-20261010/session-19433254-4647-492A-9062-0106D45196BC"
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/fullscreen-20261010/completion.json",
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/fullscreen-20261010/ui-acceptance.txt",
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/continuation-20261010/completion.json"
   ],
-  "acceptanceEvent": "fresh fullscreen-origin normal-entry session completes14 + original neighbor return + cleanup clear, or concrete scope rejection0 without movement",
+  "acceptanceEvent": "actual configured global shortcut brings toolbox foreground on ordinary Space, nativePosts0; or explicit registration failure diagnosed",
   "unfinished": [
-    "fullscreen-origin GUI acceptance"
+    "global shortcut activation acceptance"
   ],
-  "unsupported": "multidisplay; do not extend single-display scope without explicit task",
+  "unsupported": [
+    "direct moving while remaining fullscreen not accepted",
+    "multidisplay not supported; no scope expansion"
+  ],
   "doNotResumeNonces": [
     "0A81E3AD-5B0E-458C-BF2C-5F5A6A30D198",
     "C21AAC11-C095-4392-8DF9-2CDE8DCBB101"

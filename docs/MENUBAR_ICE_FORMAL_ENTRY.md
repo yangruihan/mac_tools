@@ -27,3 +27,7 @@ docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh --production-entry-
 新缩略图轮19433254：原普通窗口310607在后台但显示，点击缩略图后同一窗口激活，失活15秒，14投递回到ChatGPT左邻边并清记录；无开始单轮窗口。
 离线BASELINE510/MODIFIED527/ROLLBACK510，全签名应用回滚复核恢复build8的330bf603哈希。当前两种入口已实测；全屏仍待验收，多显示器范围未扩展。
 本轮回滚：ROLLBACK.sh --background-window-installed-app /Applications/MacTools.app（先退出应用和组件）。
+
+## 全屏起点入口验收
+自建全屏窗口实际Space10328 -> 正式工具箱窗口入口切回Space4634 -> 收纳图标打开QQ音乐，nonce0EB37F5D：静默启动、14次投递、失活15秒、原邻边归位、无恢复记录。全屏到普通桌面切换在目标捕获前完成，零投递。
+没有声称全屏Space内直接搬移已通过；配置的全局窗口快捷键经CUA发送未观察到触发，本轮不作为快捷键验收。应用源代码与build9不变，多显示器范围不扩展。

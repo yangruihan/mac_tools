@@ -1,0 +1,55 @@
+{
+  "activeBaseline" : {
+    "display" : 1,
+    "nonce" : "0EB37F5D-65E8-4925-94F8-D65C0777AB63",
+    "originalFrame" : [
+      [
+        -2674,
+        0
+      ],
+      [
+        38,
+        37
+      ]
+    ],
+    "owner" : {
+      "appleAnchor" : false,
+      "executable" : "\/Applications\/QQMusic.app\/Contents\/MacOS\/QQMusic",
+      "identifier" : "com.tencent.QQMusicMac",
+      "launch" : 1791024996.1844699,
+      "pid" : 35462,
+      "sha256" : "8bd28a3dda468874178e56935e44b0deda6eca72850787d68d2d6c1c4861b185",
+      "team" : "FN2V63AD2J"
+    },
+    "space" : 4634,
+    "windowID" : 310606
+  },
+  "hitTestRequired" : false,
+  "inputPolicy" : "iceMouseTracking",
+  "selectionBeforeAnchor" : {
+    "display" : 1,
+    "nonce" : "0EB37F5D-65E8-4925-94F8-D65C0777AB63",
+    "originalFrame" : [
+      [
+        -2645,
+        0
+      ],
+      [
+        38,
+        37
+      ]
+    ],
+    "owner" : {
+      "appleAnchor" : false,
+      "executable" : "\/Applications\/QQMusic.app\/Contents\/MacOS\/QQMusic",
+      "identifier" : "com.tencent.QQMusicMac",
+      "launch" : 1791024996.1844699,
+      "pid" : 35462,
+      "sha256" : "8bd28a3dda468874178e56935e44b0deda6eca72850787d68d2d6c1c4861b185",
+      "team" : "FN2V63AD2J"
+    },
+    "space" : 4634,
+    "windowID" : 310606
+  },
+  "strictANYRequired" : false
+}

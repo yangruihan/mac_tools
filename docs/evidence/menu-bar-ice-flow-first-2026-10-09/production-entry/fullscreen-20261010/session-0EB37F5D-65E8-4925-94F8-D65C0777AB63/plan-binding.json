@@ -1,0 +1,81 @@
+{
+  "binding" : {
+    "anchor" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 29,
+        "x" : 1508,
+        "y" : 0
+      },
+      "id" : 363413,
+      "process" : {
+        "executable" : "\/Applications\/MacTools.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+        "identifier" : "com.ryanai.mactools",
+        "launch" : 1791569501.949748,
+        "pid" : 22671,
+        "sha256" : "c13cb6284e48ae944528e446cb6cdb58a2035c25e9dbcebca6c367465a42be6b",
+        "team" : "58TJ64422P"
+      }
+    },
+    "area" : {
+      "height" : 37,
+      "width" : 772,
+      "x" : 956,
+      "y" : 0
+    },
+    "controller" : {
+      "executable" : "\/Applications\/MacTools.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+      "identifier" : "com.ryanai.mactools",
+      "launch" : 1791569501.949748,
+      "pid" : 22671,
+      "sha256" : "c13cb6284e48ae944528e446cb6cdb58a2035c25e9dbcebca6c367465a42be6b",
+      "team" : "58TJ64422P"
+    },
+    "display" : 1,
+    "neighbor" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 38,
+        "x" : -2636,
+        "y" : 0
+      },
+      "id" : 359308,
+      "process" : {
+        "executable" : "\/Applications\/ChatGPT.app\/Contents\/MacOS\/ChatGPT",
+        "identifier" : "com.openai.codex",
+        "launch" : 1791548940.6782191,
+        "pid" : 62881,
+        "sha256" : "78ea6475fc65222a54d627d637d25e372c755011b8997eb269de7a6c2f2fe544",
+        "team" : "2DC432GLL2"
+      }
+    },
+    "nonce" : "0EB37F5D-65E8-4925-94F8-D65C0777AB63",
+    "owner" : {
+      "executable" : "\/Applications\/QQMusic.app\/Contents\/MacOS\/QQMusic",
+      "identifier" : "com.tencent.QQMusicMac",
+      "launch" : 1791024996.1844699,
+      "pid" : 35462,
+      "sha256" : "8bd28a3dda468874178e56935e44b0deda6eca72850787d68d2d6c1c4861b185",
+      "team" : "FN2V63AD2J"
+    },
+    "returnOnLeft" : true,
+    "space" : 4634,
+    "target" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 38,
+        "x" : -2674,
+        "y" : 0
+      },
+      "id" : 310606,
+      "process" : {
+        "executable" : "\/Applications\/QQMusic.app\/Contents\/MacOS\/QQMusic",
+        "identifier" : "com.tencent.QQMusicMac",
+        "launch" : 1791024996.1844699,
+        "pid" : 35462,
+        "sha256" : "8bd28a3dda468874178e56935e44b0deda6eca72850787d68d2d6c1c4861b185",
+        "team" : "FN2V63AD2J"
+      }
+    }
+  }
+}
