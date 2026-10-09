@@ -88,7 +88,7 @@ final class IceSelectedFence: @unchecked Sendable {
     }
     private func runScoped<T>(_ body:()async throws->T)async throws->T {
         // Explicit Ice quiet contract; disabled fails before effects or journal writes.
-        guard [.ordinaryIceQuietV1,.ordinaryIceRelativeV2,.ordinaryIceQuickV4,.ordinaryIceInterfaceV9].contains(contract) else{throw IceSelectedFailure.policy}
+        guard [.ordinaryIceQuietV1,.ordinaryIceRelativeV2,.ordinaryIceQuickV4,.ordinaryIceInterfaceV9,.ordinaryIceLayoutV10].contains(contract) else{throw IceSelectedFailure.policy}
         guard !used else{throw IceSelectedFailure.stopped};used=true
         try binding.validate();active=true
         defer{active=false;engine=nil}
@@ -100,7 +100,7 @@ final class IceSelectedFence: @unchecked Sendable {
             try await commit(prepared)
             let value=try await body()
             try check()
-            guard let record=retained,record.phase  ==  .returned,!record.needsRelease else{throw IceSelectedFailure.phase}
+            guard let record=retained,record.phase == (contract == .ordinaryIceLayoutV10 ? .placed : .returned),!record.needsRelease else{throw IceSelectedFailure.phase}
             durableReturned=record
             // Only dispatch to I/O is admitted here. Already admitted clear may
             // finish after stop; returned proof is durable before this point.
@@ -115,7 +115,7 @@ final class IceSelectedFence: @unchecked Sendable {
         }catch{
             if Task.isCancelled || error is CancellationError { fence.cancel() } else { fence.fail() }
             engine?.cancel()
-            if var next=retained,!journalOutcomeUncertain,next.phase  !=  .returned,next.phase  !=  .stopped {
+            if var next=retained,!journalOutcomeUncertain,next.phase  !=  .returned,next.phase != .placed,next.phase  !=  .stopped {
                 next.revision+=1;next.phase = .stopped;next.stopReason=String(describing:error)
                 try? await commit(next,terminal:true)
             }
@@ -139,8 +139,9 @@ final class IceSelectedFence: @unchecked Sendable {
         switch next.phase {
         case .moving:
             guard next.gestures.count == 0,d.flags == CGEventFlags.maskCommand.rawValue,d.click == 1,u.click == 0,
-                  d.x == 20000,d.y == 20000,u.window == Int64(binding.anchor.id),
-                  u.x == binding.anchor.frame.x,u.y == binding.anchor.frame.cg.midY else{throw IceSelectedFailure.packet}
+                  d.x == 20000,d.y == 20000,u.window == Int64(binding.layoutDestination?.id ?? binding.anchor.id),
+                  u.x == (contract == .ordinaryIceLayoutV10 && binding.layoutOnLeft == false ? binding.layoutDestination!.frame.cg.maxX : (binding.layoutDestination?.frame.x ?? binding.anchor.frame.x)),
+                  u.y == (binding.layoutDestination?.frame.cg.midY ?? binding.anchor.frame.cg.midY) else{throw IceSelectedFailure.packet}
         case .opening:
             guard next.gestures.count == 1,d.flags == 0,d.click == 1,u.click == 1,u.window == d.window,d.x == u.x,d.y == u.y,
                   binding.area.cg.contains(CGPoint(x:d.x,y:d.y)) else{throw IceSelectedFailure.packet}
@@ -209,6 +210,15 @@ final class IceSelectedFence: @unchecked Sendable {
         try check();guard var next=retained,next.phase  ==  .restoring,!next.needsRelease,!next.gestures.isEmpty,
               next.gestures.count == 3,next.gestures.allSatisfy({$0.status  ==  .pairedTransportReturned}),!evidence.isEmpty else{throw IceSelectedFailure.unresolvedDown}
         next.revision+=1;next.phase = .returned;next.returnedEvidenceSHA256=IceSelectedJournal.hash(evidence)
+        try await commit(next)
+    }
+    func confirmPlacement(_ proof: IceSelectedLayoutProof) async throws {
+        try check()
+        guard contract == .ordinaryIceLayoutV10, var next=retained, next.phase == .moving,
+              !next.needsRelease, next.gestures.count <= 1,
+              next.gestures.allSatisfy({$0.status == .pairedTransportReturned}) else { throw IceSelectedFailure.policy }
+        try proof.validate(binding:binding,now:clock())
+        next.revision+=1;next.phase = .placed;next.placementEvidenceSHA256=IceSelectedJournal.hash(proof.data)
         try await commit(next)
     }
     func performAux<T>(_ name:String,_ body:()throws->T)throws->T { try check();return try fence.perform(name,body) }

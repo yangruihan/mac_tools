@@ -1,0 +1,900 @@
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
+@@ -3,6 +3,7 @@
+ import ScreenCaptureKit
+ import ApplicationServices
+ import Combine
++import UniformTypeIdentifiers
+ 
+ struct ShelfIcon: Identifiable {
+     let id: CGWindowID
+@@ -15,6 +16,16 @@
+ enum ShelfDropAction: Equatable {
+     case move(CGWindowID, Bool)
+     case reorder(CGWindowID, CGWindowID)
++}
++
++struct ShelfDragPayload: Codable {
++    static let typeIdentifier = "com.ryanai.mactools.menu-bar-icon"
++    let id: CGWindowID, generation: UUID
++    static func decode(_ data:Data,generation:UUID,known:Set<CGWindowID>)->Self? {
++        guard data.count<4096,let value=try? JSONDecoder().decode(Self.self,from:data),
++              value.generation==generation,known.contains(value.id) else{return nil}
++        return value
++    }
+ }
+ 
+ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPopoverDelegate {
+@@ -45,6 +56,7 @@
+     private var control: NSStatusItem?
+     private var divider: NSStatusItem?
+     private var shelfPopover: NSPopover?
++    private var shelfWindow: NSPanel?
+     private var popoverMonitors: [Any] = []
+     private var popoverDeactivateObserver: NSObjectProtocol?
+     private var work: Task<Void, Never>?
+@@ -67,7 +79,12 @@
+     // ToolPlugin lifecycle/UI callbacks run on the main thread. Keep this
+     // boundary explicit without changing actor isolation of pure layout helpers.
+     private var activationBlocksLayout: Bool {
+-        nativeRevealBlocksLayout || MainActor.assumeIsolated { operationCoordinator?.blocksLayout == true }
++        nativeRevealBlocksLayout || MainActor.assumeIsolated {
++            #if ICE_MENU_BAR_INTEGRATED
++            if iceActivation != nil || iceLaunch?.isRunning == true { return true }
++            #endif
++            return operationCoordinator?.blocksLayout == true
++        }
+     }
+ 
+     static func prepareMainStatusPosition(defaults: UserDefaults = .standard) {
+@@ -350,7 +367,7 @@
+         guard isOrganizing else { return }
+         guard !nativeRevealBlocksLayout else { status = "请先完成或取消临时露出。"; return }
+         MainActor.assumeIsolated { operationCoordinator?.releaseUnmovedInteraction() }
+-        if shelfPopover != nil { dismissShelf() }
++        if shelfPopover != nil || shelfWindow != nil { dismissShelf() }
+         else if isCapturing { expand() }
+         else { hideIntoPanel() }
+     }
+@@ -513,9 +530,91 @@
+     func postDrag(from source: CGPoint, to destination: CGPoint, token moveToken: UUID) async -> Bool {
+         automaticLayoutUnsupported(); return false
+     }
+-    func moveIcon(_ id: CGWindowID, intoShelf: Bool) { automaticLayoutUnsupported() }
++    func moveIcon(_ id: CGWindowID, intoShelf: Bool) {
++        #if ICE_MENU_BAR_INTEGRATED
++        placePanelIcon(id,destination:nil,onLeft:intoShelf,intoShelf:intoShelf)
++        #else
++        automaticLayoutUnsupported()
++        #endif
++    }
+     func applyVisibleLimit() { automaticLayoutUnsupported() }
+-    func reorderIcon(_ id: CGWindowID, nextTo targetID: CGWindowID) { automaticLayoutUnsupported() }
++    func reorderIcon(_ id: CGWindowID, nextTo targetID: CGWindowID) {
++        #if ICE_MENU_BAR_INTEGRATED
++        guard let source=(icons+visibleIcons).first(where:{$0.id==id}),
++              let target=(icons+visibleIcons).first(where:{$0.id==targetID}) else{return}
++        placePanelIcon(id,destination:targetID,onLeft:source.frame.midX>target.frame.midX,intoShelf:icons.contains{$0.id==targetID})
++        #else
++        automaticLayoutUnsupported()
++        #endif
++    }
++    func acceptPanelDrop(_ data:Data,destination:CGWindowID?,onLeft:Bool,intoShelf:Bool) {
++        #if ICE_MENU_BAR_INTEGRATED
++        guard let payload=ShelfDragPayload.decode(data,generation:token,known:Set((icons+visibleIcons).map(\.id))) else{return}
++        placePanelIcon(payload.id,destination:destination,onLeft:onLeft,intoShelf:intoShelf)
++        #endif
++    }
++    #if ICE_MENU_BAR_INTEGRATED
++    private func exactLayoutTarget(_ identity:MenuBarIconIdentity)throws->MenuBarIceSelectedTarget {
++        guard let original=identity.application,MenuBarApplicationIdentity.current(pid:identity.pid)==original else{throw MenuBarIceSelectedTarget.Failure.identity}
++        let directory=try MenuBarIceSelectedTarget.readDirectory()
++        guard let row=directory.rows.first(where:{$0.id==identity.windowID && $0.pid==identity.pid}) else{throw MenuBarIceSelectedTarget.Failure.missing}
++        let target=try MenuBarIceSelectedTarget.capture(row,from:directory)
++        guard target.owner.launch==original.launch,target.owner.identifier==original.bundleID else{throw MenuBarIceSelectedTarget.Failure.identity}
++        return target
++    }
++    private func placePanelIcon(_ id:CGWindowID,destination:CGWindowID?,onLeft:Bool,intoShelf:Bool) {
++        guard isOrganizing,isCollapsed,!activationBlocksLayout,id != destination,
++              let source=(icons+visibleIcons).first(where:{$0.id==id})?.identity else{return}
++        let peer=destination.flatMap{key in (icons+visibleIcons).first(where:{$0.id==key})?.identity}
++        guard destination==nil || peer != nil else{return}
++        expand()
++        status="正在保存拖放后的真实排列…"
++        iceActivation=Task { @MainActor [weak self] in
++            guard let self else{return};defer{self.iceActivation=nil}
++            do {
++                try await Task.sleep(nanoseconds:350_000_000)
++                guard self.isOrganizing else{throw MenuBarIceSelectedTarget.Failure.changed}
++                let target=try self.exactLayoutTarget(source)
++                let desired:MenuBarIceSelectedTarget
++                if let peer { desired=try self.exactLayoutTarget(peer) }
++                else {
++                    guard let number=self.divider?.button?.window?.windowNumber,number>0 else{throw MenuBarIceSelectedTarget.Failure.missing}
++                    let directory=try MenuBarIceSelectedTarget.readDirectory(includeOwn:true)
++                    guard let row=directory.rows.first(where:{$0.id==UInt32(number) && $0.pid==ProcessInfo.processInfo.processIdentifier}) else{throw MenuBarIceSelectedTarget.Failure.missing}
++                    desired=try MenuBarIceSelectedTarget.capture(row,from:directory,includeOwn:true)
++                }
++                guard let geometry=self.placement(),
++                      peer==nil || (intoShelf ? desired.originalFrame.maxX<=geometry.divider.minX+1 : desired.originalFrame.minX>=geometry.divider.maxX-1) else{throw MenuBarIceSelectedTarget.Failure.changed}
++                let session=try MenuBarIceInterfaceProductBridge.prepare(target)
++                guard let nonce=UUID(uuidString:String(session.lastPathComponent.dropFirst(8))) else{throw MenuBarIceSelectedTarget.Failure.changed}
++                let request=MenuBarIceLayoutRequest(nonce:nonce,destination:desired,onLeft:peer==nil ? intoShelf : onLeft)
++                try Task.checkCancellation()
++                let launch=try await MenuBarIceInterfaceProductBridge.launch(session,target:target,production:true,layout:request)
++                self.iceLaunch=launch
++                do {
++                    while !FileManager.default.fileExists(atPath:session.appendingPathComponent("result.json").path) {
++                        guard launch.isRunning else{throw MenuBarIceInterfaceProductBridge.Failure.unknown(session)}
++                        try await Task.sleep(nanoseconds:100_000_000)
++                    }
++                    let bytes=try Data(contentsOf:session.appendingPathComponent("result.json"))
++                    guard bytes.count<2_000_000,let value=try JSONSerialization.jsonObject(with:bytes) as? [String:Any] else{throw MenuBarIceSelectedTarget.Failure.changed}
++                    guard try MenuBarIceInterfaceProductBridge.layoutResult(value,request:request,sourceID:target.windowID) else{
++                        self.status="拖放未完成；恢复记录保留，不自动重试。";return
++                    }
++                    while launch.isRunning {try await Task.sleep(nanoseconds:100_000_000)}
++                    let cleanupBytes=try Data(contentsOf:session.appendingPathComponent("cleanup.json"))
++                    guard let clean=try JSONSerialization.jsonObject(with:cleanupBytes) as? [String:Any],clean["journalPending"] as? Bool==false else{throw MenuBarIceSelectedTarget.Failure.changed}
++                    self.iceLaunch=nil
++                    self.status="真实排列已保存，正在刷新缩略图。"
++                    DispatchQueue.main.async { [weak self] in self?.hideIntoPanel() }
++                } catch {
++                    if Task.isCancelled,launch.isRunning,(try? MenuBarProcessSignature.read(launch.proof.pid))==launch.proof{launch.application.terminate()}
++                    throw error
++                }
++            } catch {self.status="拖放未完成：\(error.localizedDescription)。未自动重试。"}
++        }
++    }
++    #endif
+     private func removePopoverMonitors() {
+         popoverMonitors.forEach(NSEvent.removeMonitor); popoverMonitors = []
+         if let popoverDeactivateObserver { NotificationCenter.default.removeObserver(popoverDeactivateObserver) }
+@@ -528,6 +627,7 @@
+     }
+     private func dismissPopoverOnly() {
+         removePopoverMonitors()
++        shelfWindow?.orderOut(nil);shelfWindow?.contentView=nil;shelfWindow=nil
+         let popover = shelfPopover; shelfPopover = nil
+         popover?.delegate = nil; popover?.close(); popover?.contentViewController = nil
+     }
+@@ -583,6 +683,26 @@
+         controller.view.window?.title = "菜单栏收纳"
+         NSApp.activate(ignoringOtherApps: true)
+         controller.view.window?.makeKey()
++    }
++    private func showDragPanel(_ content:AnyView,width:CGFloat) {
++        guard let anchor=control?.button?.window,let screen=screen(for:anchor.frame),!environment.sleeping else{expand();return}
++        let view=NSHostingView(rootView:content.frame(width:width).padding(10).background(.regularMaterial))
++        view.layoutSubtreeIfNeeded()
++        let size=NSSize(width:width+20,height:max(80,view.fittingSize.height))
++        let panel=ShelfDragPanel(contentRect:NSRect(origin:.zero,size:size),styleMask:[.borderless],backing:.buffered,defer:false)
++        panel.title="菜单栏收纳";panel.level = .floating;panel.hidesOnDeactivate=false
++        panel.isReleasedWhenClosed=false;panel.isMovableByWindowBackground=false;panel.contentView=view
++        panel.setFrameOrigin(NSPoint(x:min(max(anchor.frame.midX-size.width/2,screen.minX+8),screen.maxX-size.width-8),
++                                     y:anchor.frame.minY-size.height-4))
++        shelfWindow=panel
++        if let monitor=NSEvent.addLocalMonitorForEvents(matching:[.leftMouseDown,.rightMouseDown,.keyDown],handler:{[weak self,weak panel] event in
++            guard let self,let panel,self.shelfWindow===panel else{return event}
++            if event.type == .keyDown {if event.keyCode==53{self.dismissShelf();return nil};return event}
++            if event.window===panel || event.window===self.control?.button?.window{return event}
++            self.dismissShelf();return event
++        }) {popoverMonitors.append(monitor)}
++        if let monitor=NSEvent.addGlobalMonitorForEvents(matching:[.leftMouseDown,.rightMouseDown],handler:{[weak self] _ in self?.dismissShelf()}) {popoverMonitors.append(monitor)}
++        panel.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true)
+     }
+     private func showHelpPanel() {
+         guard let frame = control?.button?.window?.frame, let screen = screen(for: frame) else { expand(); return }
+@@ -696,11 +816,16 @@
+         guard isCollapsed, let geometry = placement(), !icons.isEmpty else { expand(); return }
+         dismissPopoverOnly()
+         let width = MenuBarPopoverLayout.width(iconCount: max(icons.count, visibleIcons.count), screenWidth: geometry.screen.width)
+-        let view = ShelfPanelView(icons: icons, outside: visibleIcons, width: width,
++        let view = ShelfPanelView(icons: icons, outside: visibleIcons, width: width, generation: token,
++            onDrop: { [weak self] data,id,left,hidden in self?.acceptPanelDrop(data,destination:id,onLeft:left,intoShelf:hidden) },
+             onExpand: { [weak self] in self?.arrangeNativeIcons() },
+             onClick: { [weak self] id in Task { @MainActor in self?.activateIcon(id) } },
+             onOpenToolbox: { [weak self] in self?.openToolbox() })
++        #if ICE_MENU_BAR_INTEGRATED
++        showDragPanel(AnyView(view),width:width)
++        #else
+         showPopover(AnyView(view), width: width)
++        #endif
+     }
+     func openToolbox() {
+         expand(); showsAdvancedOptions = true
+@@ -899,12 +1024,39 @@
+     }
+ }
+ 
++private final class ShelfDragPanel: NSPanel {
++    override var canBecomeKey:Bool {true}
++    override var canBecomeMain:Bool {false}
++}
++
++private struct ShelfIconFrames: PreferenceKey {
++    static var defaultValue:[CGWindowID:CGRect]=[:]
++    static func reduce(value:inout [CGWindowID:CGRect],nextValue:()->[CGWindowID:CGRect]){value.merge(nextValue(),uniquingKeysWith:{$1})}
++}
++private struct ShelfRowFrames: PreferenceKey {
++    static var defaultValue:[Bool:CGRect]=[:]
++    static func reduce(value:inout [Bool:CGRect],nextValue:()->[Bool:CGRect]){value.merge(nextValue(),uniquingKeysWith:{$1})}
++}
++
+ private struct ShelfPanelView: View {
+     @State private var hiddenPage = 0
+     @State private var visiblePage = 0
++    @State private var draggedID:CGWindowID?
++    @State private var dragPoint=CGPoint.zero
++    @State private var iconFrames:[CGWindowID:CGRect]=[:]
++    @State private var rowFrames:[Bool:CGRect]=[:]
+     let icons: [ShelfIcon]
+     let outside: [ShelfIcon]
+     let width: CGFloat
++    private var dragEnabled: Bool {
++        #if ICE_MENU_BAR_INTEGRATED
++        return true
++        #else
++        return false
++        #endif
++    }
++    let generation: UUID
++    let onDrop: (Data,CGWindowID?,Bool,Bool) -> Void
+     let onExpand: () -> Void
+     let onClick: (CGWindowID) -> Void
+     let onOpenToolbox: () -> Void
+@@ -921,6 +1073,23 @@
+         }.buttonStyle(.plain)
+             .accessibilityLabel("\(hidden ? "收纳" : "可见")图标 \(index + 1)")
+             .accessibilityIdentifier("menu-bar-icon-\(icon.id)")
++            .background(GeometryReader { proxy in Color.clear.preference(key:ShelfIconFrames.self,value:[icon.id:proxy.frame(in:.named("shelf-drag"))]) })
++            .opacity(draggedID==icon.id ? 0.45 : 1)
++            .highPriorityGesture(DragGesture(minimumDistance:6,coordinateSpace:.named("shelf-drag"))
++                .onChanged { value in
++                    guard dragEnabled else{return}
++                    draggedID=icon.id;dragPoint=value.location
++                }
++                .onEnded { value in
++                    guard dragEnabled else{return}
++                    defer{draggedID=nil}
++                    guard let targetHidden=rowFrames.first(where:{$0.value.contains(value.location)})?.key else{return}
++                    let candidates=targetHidden ? icons : outside
++                    let target=candidates.first{ $0.id != icon.id && iconFrames[$0.id]?.contains(value.location)==true }
++                    let left=target.flatMap{iconFrames[$0.id]}.map{targetHidden ? value.location.x<$0.midX : value.location.x>=$0.midX} ?? targetHidden
++                    guard let data=try? JSONEncoder().encode(ShelfDragPayload(id:icon.id,generation:generation)) else{return}
++                    onDrop(data,target?.id,left,targetHidden)
++                })
+             .overlay(alignment: .bottomTrailing) {
+                 if icon.availability == .occluded {
+                     Image(systemName: "exclamationmark.triangle.fill").font(.caption2).foregroundStyle(.orange)
+@@ -956,20 +1125,22 @@
+         let page = hidden ? hiddenPage : visiblePage
+         let range = MenuBarPopoverLayout.pageRange(count: items.count, page: page, columns: columns)
+         return VStack(spacing: 4) {
++            if items.isEmpty { Text("拖到此处").frame(maxWidth:.infinity,minHeight:MenuBarPopoverLayout.tile) }
+             iconGrid(items, range: range, columns: columns, hidden: hidden)
+             if items.count > columns * 2 { pageControls(count: items.count, page: page, columns: columns, hidden: hidden) }
+-        }
++        }.contentShape(Rectangle())
++            .background(GeometryReader { proxy in Color.clear.preference(key:ShelfRowFrames.self,value:[hidden:proxy.frame(in:.named("shelf-drag"))]) })
+     }
+     var body: some View {
+         VStack(alignment: .leading, spacing: 6) {
+             Text("收纳区 · \(icons.count)").font(.caption.weight(.medium)).foregroundStyle(.secondary)
+             row(icons, hidden: true)
+-            if !outside.isEmpty {
++            if !outside.isEmpty || !icons.isEmpty {
+                 Divider()
+                 Text("常驻图标 · \(outside.count)").font(.caption2).foregroundStyle(.secondary)
+                 row(outside, hidden: false)
+             }
+-            Text("打开会临时露出原图标；界面不再占用15秒后回到原邻边。排列请用原生 ⌘ 拖拽。")
++            Text("拖动缩略图可换序；跨分区拖动改变收纳归属。点击打开后仍按15秒归位。")
+                 .font(.caption2).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+             Divider()
+             HStack {
+@@ -978,7 +1149,17 @@
+                 Spacer()
+                 Button("打开工具箱") { onOpenToolbox() }
+             }.controlSize(.small)
+-        }.padding(10).accessibilityIdentifier("menu-bar-shelf-popover")
++        }.padding(10)
++            .coordinateSpace(name:"shelf-drag")
++            .onPreferenceChange(ShelfIconFrames.self){iconFrames=$0}
++            .onPreferenceChange(ShelfRowFrames.self){rowFrames=$0}
++            .overlay(alignment:.topLeading) {
++                if let id=draggedID,let icon=(icons+outside).first(where:{$0.id==id}),let image=icon.image {
++                    Image(decorative:image,scale:2).resizable().aspectRatio(contentMode:.fit)
++                        .frame(width:44,height:44).position(dragPoint).allowsHitTesting(false)
++                }
++            }
++            .accessibilityIdentifier("menu-bar-shelf-popover")
+     }
+ }
+ 
+@@ -1088,7 +1269,7 @@
+                                 Button("辅助功能权限") { plugin.requestAccessibilityPermission() }
+                             }
+                         }
+-                        Text("排列请展开原生菜单栏，按住 ⌘ 手动拖动；本版本不按数量自动整理。")
++                        Text("排列请展开原生菜单栏，按住 ⌘ 手动拖动；可在缩略图面板拖放换序或改变收纳归属；不按数量自动整理。")
+                             .font(.caption).foregroundStyle(.secondary)
+                     }.padding(.top, 8)
+                 }
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceSelectedTarget.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceSelectedTarget.swift
+@@ -38,11 +38,20 @@
+     }
+     /// Existing read-only Ice bindings plus public CGWindow metadata; no new API,
+     /// image capture, AX action, sender, permission request or preference write.
+-    static func readDirectory() throws -> Directory {
++    static func readDirectory(includeOwn: Bool = false) throws -> Directory {
+         guard NSScreen.screens.count == 1, let screen = NSScreen.screens.first,
+               let display = (screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber)?.uint32Value,
+               let publicRows = CGWindowListCopyWindowInfo(.optionAll,kCGNullWindowID) as? [[String:Any]] else { throw Failure.scope }
+-        let directory = try IceMenuBarReadAdapter.isolatedReadOnly().read()
++        var stable:IceMenuBarReadAdapter.Directory?
++        for attempt in 0..<5 {
++            do { stable=try IceMenuBarReadAdapter.isolatedReadOnly().read();break }
++            catch IceMenuBarReadAdapter.Failure.incomplete {
++                guard attempt<4 else{throw IceMenuBarReadAdapter.Failure.incomplete}
++                // Metadata only: a closing panel may change the window count; never retry an input.
++                Thread.sleep(forTimeInterval:0.05)
++            }
++        }
++        guard let directory=stable else{throw Failure.changed}
+         let grouped = Dictionary(grouping:publicRows, by: { ($0[kCGWindowNumber as String] as? NSNumber)?.uint32Value ?? 0 })
+         let bounds = CGDisplayBounds(display), ownPID = ProcessInfo.processInfo.processIdentifier
+         let rows = directory.members.compactMap { member -> Row? in
+@@ -50,16 +59,16 @@
+                   abs(member.frame.minY-bounds.minY) < 1,
+                   let matches = grouped[member.windowID], matches.count == 1, let row = matches.first,
+                   let pid = (row[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value,
+-                  pid > 0, pid != ownPID,
++                  pid > 0, (includeOwn || pid != ownPID),
+                   (row[kCGWindowLayer as String] as? NSNumber)?.intValue == Int(CGWindowLevelForKey(.statusWindow)),
+                   let app = NSRunningApplication(processIdentifier:pid), app.bundleURL != nil else { return nil }
+             return .init(id:member.windowID,pid:pid,title:app.localizedName ?? app.bundleIdentifier ?? "应用",frame:member.frame)
+         }.sorted { $0.frame.minX == $1.frame.minX ? $0.id < $1.id : $0.frame.minX < $1.frame.minX }
+         return .init(display:display,space:directory.spaceAfter,rows:rows)
+     }
+-    static func capture(_ row: Row, from directory: Directory) throws -> Self {
++    static func capture(_ row: Row, from directory: Directory, includeOwn: Bool = false) throws -> Self {
+         let before = try MenuBarProcessSignature.read(row.pid)
+-        let current = try readDirectory()
++        let current = try readDirectory(includeOwn: includeOwn)
+         guard current.display == directory.display, current.space == directory.space,
+               current.rows.contains(row) else { throw Failure.changed }
+         let binding = try Self(row:row,directory:current,owner:before)
+@@ -133,3 +142,10 @@
+                      display:directory.display,space:directory.space,healthy:true,windows:windows)
+     }
+ }
++
++// One completed panel drop: exact source session and exact signed destination, never a bare coordinate.
++struct MenuBarIceLayoutRequest: Codable, Equatable {
++    let nonce: UUID
++    let destination: MenuBarIceSelectedTarget
++    let onLeft: Bool
++}
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductBridge.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductBridge.swift
+@@ -133,8 +133,9 @@
+                   let number = value["windowNumber"] as? Int, number > 0 else { throw Failure.invalid }
+         }
+     }
+-    static func launch(_ directory: URL, target: MenuBarIceSelectedTarget? = nil, ownedWindow: Bool = false, ownedCancelCheck: Bool = false, production: Bool = false) async throws -> Launch {
++    static func launch(_ directory: URL, target: MenuBarIceSelectedTarget? = nil, ownedWindow: Bool = false, ownedCancelCheck: Bool = false, production: Bool = false, layout: MenuBarIceLayoutRequest? = nil) async throws -> Launch {
+         guard !production || (target != nil && !ownedWindow && !ownedCancelCheck) else { throw Failure.invalid }
++        guard layout == nil || production else { throw Failure.invalid }
+         let manifest = try manifest()
+         guard directory.resolvingSymlinksInPath() == directory,
+               !FileManager.default.fileExists(atPath: directory.appendingPathComponent("action-consumed.json").path),
+@@ -160,7 +161,14 @@
+         configuration.createsNewApplicationInstance = true
+         configuration.arguments = ["--session", directory.path]
+         configuration.activates = !production
+-        if production { configuration.arguments.append("--production-session") }
++        if let layout {
++            guard layout.nonce==prepared.nonce,let selected=prepared.selected,
++                  layout.destination.windowID != selected.windowID,
++                  layout.destination.display==selected.display,layout.destination.space==selected.space else{throw Failure.invalid}
++            _ = try layout.destination.validate(directory:MenuBarIceSelectedTarget.readDirectory(includeOwn:true),owner:MenuBarProcessSignature.read(layout.destination.owner.pid))
++            try JSONEncoder().encode(layout).write(to:directory.appendingPathComponent("layout-request.json"),options:.withoutOverwriting)
++            configuration.arguments.append("--layout-session")
++        } else if production { configuration.arguments.append("--production-session") }
+         try Task.checkCancellation()
+         if ownedCancelCheck { configuration.arguments.append("--owned-entry-cancel-check") }
+         else if ownedWindow { configuration.arguments.append("--owned-window-session") }
+@@ -183,6 +191,7 @@
+                 if let bytes = try? Data(contentsOf: directory.appendingPathComponent("ready.json")), bytes.count < 65_536,
+                    let value = try? JSONSerialization.jsonObject(with: bytes) as? [String: Any] {
+                     try validateReady(value, nonce: prepared.nonce, pid: proof.pid, production: production)
++                    guard (value["layoutMode"] as? Bool ?? false)==(layout != nil) else{throw Failure.invalid}
+                     if !ownedCancelCheck {
+                         guard launch.isRunning else { throw Failure.invalid }
+                         guard try MenuBarProcessSignature.read(proof.pid) == proof else { throw Failure.invalid }
+@@ -202,6 +211,28 @@
+         } catch let error as Failure { throw error }
+         catch { throw Failure.unknown(directory) }
+     }
++    static func layoutResult(_ value:[String:Any],request:MenuBarIceLayoutRequest,sourceID:UInt32)throws->Bool {
++        let nonce=request.nonce
++        guard value["nonce"] as? String==nonce.uuidString, let passed=value["layoutVerified"] as? Bool,
++              let posts=value["posts"] as? Int,(0...6).contains(posts) else{throw Failure.invalid}
++        if passed {
++            guard [0,6].contains(posts),value["persistent"] as? Bool==true,value["openedInterface"] as? Bool==false,
++                  value["automaticReturn"] as? Bool==false,
++                  let journal=value["journal"] as? [String:Any],journal["contract"] as? String=="ordinaryIceLayoutV10",
++                  journal["phase"] as? String=="placed",journal["pendingRecovery"] as? Bool==false,
++                  journal["possibleDown"] as? Bool==false,journal["journalOutcomeUncertain"] as? Bool==false,
++                  let durable=journal["durableRecord"] as? [String:Any],durable["schemaVersion"] as? Int==5,
++                  durable["phase"] as? String=="placed",let binding=durable["binding"] as? [String:Any],
++                  binding["nonce"] as? String==nonce.uuidString,binding["layoutOnLeft"] as? Bool==request.onLeft,
++                  let destination=binding["layoutDestination"] as? [String:Any],
++                  destination["id"] as? UInt32==request.destination.windowID,
++                  let source=binding["target"] as? [String:Any],source["id"] as? UInt32==sourceID,
++                  let proof=value["placementEvidence"] as? [String:Any],proof["nonce"] as? String==nonce.uuidString,
++                  proof["criterion"] as? String=="icePersistentNeighborEdgeV10",
++                  proof["nativeObservation"] as? Bool==true else{throw Failure.invalid}
++        }
++        return passed
++    }
+     static func result(_ value: [String: Any], nonce: UUID) throws -> (passed: Bool, posts: Int) {
+         guard value["nonce"] as? String == nonce.uuidString, let posts = value["posts"] as? Int, posts >= 0,
+               let passed = value["realClosedLoopVerified"] as? Bool else { throw Failure.invalid }
+--- a/Tools/IceSelectedQuickInterface/IceSelectedJournal.swift
++++ b/Tools/IceSelectedQuickInterface/IceSelectedJournal.swift
+@@ -6,7 +6,7 @@
+ import Darwin
+ 
+ enum IceSelectedContract: String, Codable, Sendable {
+-    case disabled, ordinaryIceQuietV1, ordinaryIceRelativeV2, ordinaryIceQuickV4, ordinaryIceInterfaceV9
++    case disabled, ordinaryIceQuietV1, ordinaryIceRelativeV2, ordinaryIceQuickV4, ordinaryIceInterfaceV9, ordinaryIceLayoutV10
+ }
+ enum IceSelectedFailure: Error { case policy, binding, pendingRecovery, phase, packet, stopped, budget, unresolvedDown }
+ 
+@@ -30,7 +30,17 @@
+     }
+     let nonce: UUID, controller: Process, owner: Process, display: UInt32, space: UInt, area: Rect
+     let target: Item, neighbor: Item, anchor: Item, returnOnLeft: Bool
++    var layoutDestination: Item? = nil
++    var layoutOnLeft: Bool? = nil
+     func validate() throws {
++        if let destination = layoutDestination {
++            guard layoutOnLeft != nil, destination.id != target.id, destination.id > 0,
++                  destination.frame.valid, destination.frame.width > 8, destination.frame.width < 150,
++                  destination.frame.y == target.frame.y, destination.frame.height == target.frame.height,
++                  destination.process.pid > 0, destination.process.launch.isFinite, destination.process.launch > 0,
++                  destination.process.executable.hasPrefix("/"), !destination.process.identifier.isEmpty,
++                  Self.validHash(destination.process.sha256) else { throw IceSelectedFailure.binding }
++        } else { guard layoutOnLeft == nil else { throw IceSelectedFailure.binding } }
+         let items = [target,neighbor,anchor]
+         guard controller.pid > 0, owner.pid > 0, controller.pid != owner.pid,
+               controller.identifier == "com.ryanai.mactools", controller.executable.hasSuffix("/Ice Selected Controller.app/Contents/MacOS/IceSelectedController"),
+@@ -62,7 +72,7 @@
+     var valid:Bool { x.isFinite && y.isFinite && marker>0 && [0,1,2].contains(type) }
+ }
+ struct IceSelectedRecord: Codable, Equatable, Sendable {
+-    enum Phase:String,Codable,Sendable { case prepared,moving,visible,opening,menuClosed,interfaceInactive,restoring,returned,stopped }
++    enum Phase:String,Codable,Sendable { case prepared,moving,visible,opening,menuClosed,interfaceInactive,restoring,returned,placed,stopped }
+     enum Status:String,Codable,Sendable { case registered,downReserved,downReturned,upReserved,pairedTransportReturned }
+     struct Route:Codable,Equatable,Sendable {
+         let id:UUID,packet:IceSelectedPacket,destination:String
+@@ -74,18 +84,19 @@
+     }
+     let schemaVersion:Int,transaction:UUID,generation:UUID,binding:IceSelectedBinding,contract:IceSelectedContract
+     var revision:Int=0,phase:Phase = .prepared,gestures:[Gesture]=[],stopReason:String?,returnedEvidenceSHA256:String?
++    var placementEvidenceSHA256: String? = nil
+     struct Source:Codable,Equatable,Sendable {let senderPID:Int32,state:Int64}
+     var packetSource:Source?
+     let relativePlan:IceRelativeReturn.Plan?
+     init(binding:IceSelectedBinding,generation:UUID,contract:IceSelectedContract,relativePlan:IceRelativeReturn.Plan?=nil) {
+-        schemaVersion=contract == .ordinaryIceRelativeV2 ? 2 : (contract == .ordinaryIceInterfaceV9 ? 4 : (contract == .ordinaryIceQuickV4 ? 3 : 1));transaction=UUID();self.generation=generation;self.binding=binding;self.contract=contract;self.relativePlan=relativePlan
++        schemaVersion=contract == .ordinaryIceLayoutV10 ? 5 : (contract == .ordinaryIceRelativeV2 ? 2 : (contract == .ordinaryIceInterfaceV9 ? 4 : (contract == .ordinaryIceQuickV4 ? 3 : 1)));transaction=UUID();self.generation=generation;self.binding=binding;self.contract=contract;self.relativePlan=relativePlan
+     }
+     // Reservation is conservative: it is NOT evidence that a route was sent.
+     var needsRelease:Bool { gestures.contains{[Status.downReserved,.downReturned,.upReserved].contains($0.status)} }
+     var hasPossibleEffect:Bool { gestures.contains{ !$0.routes.isEmpty } }
+     func validate() throws {
+         try binding.validate()
+-        guard schemaVersion == (contract == .ordinaryIceRelativeV2 ? 2 : (contract == .ordinaryIceInterfaceV9 ? 4 : (contract == .ordinaryIceQuickV4 ? 3 : 1))),revision>=0,revision<=10000,[.ordinaryIceQuietV1,.ordinaryIceRelativeV2,.ordinaryIceQuickV4,.ordinaryIceInterfaceV9].contains(contract),
++        guard schemaVersion == (contract == .ordinaryIceLayoutV10 ? 5 : (contract == .ordinaryIceRelativeV2 ? 2 : (contract == .ordinaryIceInterfaceV9 ? 4 : (contract == .ordinaryIceQuickV4 ? 3 : 1)))),revision>=0,revision<=10000,[.ordinaryIceQuietV1,.ordinaryIceRelativeV2,.ordinaryIceQuickV4,.ordinaryIceInterfaceV9,.ordinaryIceLayoutV10].contains(contract),
+               gestures.count<=3,gestures.reduce(0,{$0+$1.routes.count})<=14,
+               Set(gestures.map(\.id)).count == gestures.count,
+               Set(gestures.flatMap { $0.routes.map(\.id) }).count == gestures.reduce(0,{$0+$1.routes.count}) else { throw IceSelectedFailure.binding }
+@@ -93,25 +104,33 @@
+         guard contract != .ordinaryIceInterfaceV9 || phase != .menuClosed else {throw IceSelectedFailure.policy}
+         if contract == .ordinaryIceRelativeV2 { guard let relativePlan else{throw IceSelectedFailure.binding};try IceSelectedLiveRelative.validate(relativePlan,binding:binding) }
+         else {guard relativePlan==nil else{throw IceSelectedFailure.binding}}
++        let layout = contract == .ordinaryIceLayoutV10
++        guard layout == (binding.layoutDestination != nil), layout || phase != .placed else { throw IceSelectedFailure.policy }
++        if layout { guard [.prepared,.moving,.placed,.stopped].contains(phase), gestures.count <= 1 else { throw IceSelectedFailure.phase } }
++        if phase == .placed {
++            guard !needsRelease, gestures.allSatisfy({$0.status == .pairedTransportReturned}),
++                  let hash=placementEvidenceSHA256, IceSelectedBinding.validHash(hash) else { throw IceSelectedFailure.unresolvedDown }
++        } else { guard placementEvidenceSHA256 == nil else { throw IceSelectedFailure.phase } }
+         guard packetSource == nil else { throw IceSelectedFailure.packet }
+         for (index,g) in gestures.enumerated() {
+             guard g.down.valid,g.up.valid,g.down.type == 1,g.up.type == 2,
+                   g.down.pid == Int64(binding.owner.pid),g.up.pid == g.down.pid,
+                   g.down.window == Int64(binding.target.id),
+-                  [binding.target.id,binding.neighbor.id,binding.anchor.id].contains(UInt32(exactly:g.up.window) ?? 0),
++                  ([binding.target.id,binding.neighbor.id,binding.anchor.id] + (binding.layoutDestination.map{[$0.id]} ?? [])).contains(UInt32(exactly:g.up.window) ?? 0),
+                   validSource(g.down),validSource(g.up),
+                   g.down.marker  !=  g.up.marker,g.up.flags == 0,
+                   [UInt64(0),CGEventFlags.maskCommand.rawValue].contains(g.down.flags),
+                   Set(g.routes.map(\.id)).count == g.routes.count else { throw IceSelectedFailure.packet }
+             let opening=index == 1
++            let destination = layout ? binding.layoutDestination! : (index == 0 ? binding.anchor : binding.neighbor)
+             guard g.down.flags == (opening ? 0 : CGEventFlags.maskCommand.rawValue),g.down.click == 1,g.up.click == (opening ? 1 : 0),
+-                  g.up.window == Int64(opening ? binding.target.id : (index == 0 ? binding.anchor.id : binding.neighbor.id)) else { throw IceSelectedFailure.packet }
++                  g.up.window == Int64(opening ? binding.target.id : destination.id) else { throw IceSelectedFailure.packet }
+             if opening {
+                 guard g.down.x == g.up.x,g.down.y == g.up.y,binding.area.cg.contains(CGPoint(x:g.down.x,y:g.down.y)) else { throw IceSelectedFailure.packet }
+             } else {
+                 guard g.down.x == 20000,g.down.y == 20000,
+-                      g.up.y == (index == 0 ? binding.anchor.frame.cg.midY : binding.neighbor.frame.cg.midY),
+-                      index != 0 || g.up.x == binding.anchor.frame.x else { throw IceSelectedFailure.packet }
++                      g.up.y == destination.frame.cg.midY,
++                      index != 0 || g.up.x == (layout && binding.layoutOnLeft == false ? destination.frame.cg.maxX : destination.frame.x) else { throw IceSelectedFailure.packet }
+             }
+             guard index == gestures.count-1 || g.status == .pairedTransportReturned else { throw IceSelectedFailure.unresolvedDown }
+             let width = g.down.flags == 0 ? 1 : 3
+@@ -142,6 +161,7 @@
+         case .menuClosed,.interfaceInactive:range=2...2
+         case .restoring:range=2...3
+         case .returned:range=3...3
++        case .placed:range=0...1
+         case .stopped:range=0...3
+         }
+         guard range.contains(gestures.count) else { throw IceSelectedFailure.phase }
+@@ -151,7 +171,7 @@
+         guard (phase == .stopped) == (stopReason != nil) else { throw IceSelectedFailure.phase }
+     }
+     func validSource(_ packet: IceSelectedPacket) -> Bool {
+-        [.ordinaryIceQuietV1,.ordinaryIceRelativeV2,.ordinaryIceQuickV4,.ordinaryIceInterfaceV9].contains(contract) && packet.sourceState == Int64(CGEventSourceStateID.hidSystemState.rawValue) && packetSource == nil
++        [.ordinaryIceQuietV1,.ordinaryIceRelativeV2,.ordinaryIceQuickV4,.ordinaryIceInterfaceV9,.ordinaryIceLayoutV10].contains(contract) && packet.sourceState == Int64(CGEventSourceStateID.hidSystemState.rawValue) && packetSource == nil
+     }
+ }
+ 
+@@ -207,7 +227,7 @@
+     }
+     func clear(_ returned:IceSelectedRecord) throws {
+         try returned.validate()
+-        guard returned.phase == .returned,!returned.needsRelease else { throw Failure.transition }
++        guard (returned.phase == .returned || (returned.phase == .placed && returned.contract == .ordinaryIceLayoutV10)),!returned.needsRelease else { throw Failure.transition }
+         try locked(create:false){fd in
+             guard !poisoned,fd>=0,try read(fd) == returned else { throw Failure.stale }
+             do {
+@@ -301,9 +321,10 @@
+         }
+     }
+     private static func transition(_ a:IceSelectedRecord.Phase,_ b:IceSelectedRecord.Phase)->Bool {
+-        if a == b { return a  !=  .stopped && a  !=  .returned }
+-        if b == .stopped { return a  !=  .returned && a  !=  .stopped }
++        if a == b { return a  !=  .stopped && a  !=  .returned && a != .placed }
++        if b == .stopped { return a  !=  .returned && a  !=  .stopped && a != .placed }
+         switch(a,b) {
++        case (.moving,.placed):return true
+         case (.prepared,.moving),(.moving,.visible),(.visible,.opening),(.opening,.menuClosed),(.menuClosed,.restoring),(.opening,.interfaceInactive),(.interfaceInactive,.restoring),(.restoring,.returned):return true
+         default:return false
+         }
+--- a/Tools/IceSelectedQuickInterface/IceSelectedCoordinator.swift
++++ b/Tools/IceSelectedQuickInterface/IceSelectedCoordinator.swift
+@@ -88,7 +88,7 @@
+     }
+     private func runScoped<T>(_ body:()async throws->T)async throws->T {
+         // Explicit Ice quiet contract; disabled fails before effects or journal writes.
+-        guard [.ordinaryIceQuietV1,.ordinaryIceRelativeV2,.ordinaryIceQuickV4,.ordinaryIceInterfaceV9].contains(contract) else{throw IceSelectedFailure.policy}
++        guard [.ordinaryIceQuietV1,.ordinaryIceRelativeV2,.ordinaryIceQuickV4,.ordinaryIceInterfaceV9,.ordinaryIceLayoutV10].contains(contract) else{throw IceSelectedFailure.policy}
+         guard !used else{throw IceSelectedFailure.stopped};used=true
+         try binding.validate();active=true
+         defer{active=false;engine=nil}
+@@ -100,7 +100,7 @@
+             try await commit(prepared)
+             let value=try await body()
+             try check()
+-            guard let record=retained,record.phase  ==  .returned,!record.needsRelease else{throw IceSelectedFailure.phase}
++            guard let record=retained,record.phase == (contract == .ordinaryIceLayoutV10 ? .placed : .returned),!record.needsRelease else{throw IceSelectedFailure.phase}
+             durableReturned=record
+             // Only dispatch to I/O is admitted here. Already admitted clear may
+             // finish after stop; returned proof is durable before this point.
+@@ -115,7 +115,7 @@
+         }catch{
+             if Task.isCancelled || error is CancellationError { fence.cancel() } else { fence.fail() }
+             engine?.cancel()
+-            if var next=retained,!journalOutcomeUncertain,next.phase  !=  .returned,next.phase  !=  .stopped {
++            if var next=retained,!journalOutcomeUncertain,next.phase  !=  .returned,next.phase != .placed,next.phase  !=  .stopped {
+                 next.revision+=1;next.phase = .stopped;next.stopReason=String(describing:error)
+                 try? await commit(next,terminal:true)
+             }
+@@ -139,8 +139,9 @@
+         switch next.phase {
+         case .moving:
+             guard next.gestures.count == 0,d.flags == CGEventFlags.maskCommand.rawValue,d.click == 1,u.click == 0,
+-                  d.x == 20000,d.y == 20000,u.window == Int64(binding.anchor.id),
+-                  u.x == binding.anchor.frame.x,u.y == binding.anchor.frame.cg.midY else{throw IceSelectedFailure.packet}
++                  d.x == 20000,d.y == 20000,u.window == Int64(binding.layoutDestination?.id ?? binding.anchor.id),
++                  u.x == (contract == .ordinaryIceLayoutV10 && binding.layoutOnLeft == false ? binding.layoutDestination!.frame.cg.maxX : (binding.layoutDestination?.frame.x ?? binding.anchor.frame.x)),
++                  u.y == (binding.layoutDestination?.frame.cg.midY ?? binding.anchor.frame.cg.midY) else{throw IceSelectedFailure.packet}
+         case .opening:
+             guard next.gestures.count == 1,d.flags == 0,d.click == 1,u.click == 1,u.window == d.window,d.x == u.x,d.y == u.y,
+                   binding.area.cg.contains(CGPoint(x:d.x,y:d.y)) else{throw IceSelectedFailure.packet}
+@@ -211,6 +212,15 @@
+         next.revision+=1;next.phase = .returned;next.returnedEvidenceSHA256=IceSelectedJournal.hash(evidence)
+         try await commit(next)
+     }
++    func confirmPlacement(_ proof: IceSelectedLayoutProof) async throws {
++        try check()
++        guard contract == .ordinaryIceLayoutV10, var next=retained, next.phase == .moving,
++              !next.needsRelease, next.gestures.count <= 1,
++              next.gestures.allSatisfy({$0.status == .pairedTransportReturned}) else { throw IceSelectedFailure.policy }
++        try proof.validate(binding:binding,now:clock())
++        next.revision+=1;next.phase = .placed;next.placementEvidenceSHA256=IceSelectedJournal.hash(proof.data)
++        try await commit(next)
++    }
+     func performAux<T>(_ name:String,_ body:()throws->T)throws->T { try check();return try fence.perform(name,body) }
+     func diagnostics()->[String:Any] {
+         func value(_ record:IceSelectedRecord?)->Any {
+--- a/Tools/IceSelectedQuickInterface/IceSelectedLiveRelative.swift
++++ b/Tools/IceSelectedQuickInterface/IceSelectedLiveRelative.swift
+@@ -159,3 +159,33 @@
+         return .init(plan:plan,data:data,atUptime:last.uptime)
+     }
+ }
++
++// Only this live sampler can issue the persistent-layout completion proof.
++@MainActor struct IceSelectedLayoutProof {
++    let binding: IceSelectedBinding, data: Data, at: Double
++    private init(binding:IceSelectedBinding,data:Data,at:Double){self.binding=binding;self.data=data;self.at=at}
++    func validate(binding expected:IceSelectedBinding,now:Double)throws {
++        guard binding==expected,expected.layoutDestination != nil,now>=at,now-at<0.25,!data.isEmpty else{throw IceSelectedFailure.binding}
++    }
++    static func capture(_ plan:IceSelectedPlan)async throws->Self {
++        let b=plan.binding
++        guard let destination=b.layoutDestination,let left=b.layoutOnLeft,
++              plan.runtime.processes.contains(destination.process) else{throw IceSelectedFailure.policy}
++        func sample()throws->[String:Any] {
++            try plan.runtime.checkFullSignatures();try plan.verifyRuntime()
++            let t=try plan.windows.frame(plan.item(b.target)),d=try plan.windows.frame(plan.item(destination))
++            guard abs((left ? t.maxX-d.minX : t.minX-d.maxX))<=1,
++                  t.minY==d.minY,t.height==d.height else{throw IceBaselineError.geometry}
++            return ["targetID":b.target.id,"destinationID":destination.id,"onLeft":left,
++                    "targetFrame":NSStringFromRect(t),"destinationFrame":NSStringFromRect(d)]
++        }
++        let first=try sample();try await Task.sleep(nanoseconds:120_000_000)
++        let second=try sample();try Task.checkCancellation()
++        guard first["targetFrame"] as? String==second["targetFrame"] as? String,
++              first["destinationFrame"] as? String==second["destinationFrame"] as? String else{throw IceBaselineError.geometry}
++        let at=ProcessInfo.processInfo.systemUptime
++        let data=try JSONSerialization.data(withJSONObject:["criterion":"icePersistentNeighborEdgeV10","nonce":b.nonce.uuidString,
++            "display":b.display,"space":b.space,"nativeObservation":true,"first":first,"second":second,"atUptime":at],options:.sortedKeys)
++        return .init(binding:b,data:data,at:at)
++    }
++}
+--- a/Tools/IceInterfaceProductWorker/IceSelectedPlan.swift
++++ b/Tools/IceInterfaceProductWorker/IceSelectedPlan.swift
+@@ -37,7 +37,7 @@
+     let originalPeers: [[String:Any]]
+     let relative:IceSelectedLiveRelative?
+     let relativeRuntime:IceSelectedRuntime?
+-    init(selected: MenuBarIceSelectedTarget, anchorID: UInt32, windows: IceBaselineWindows, quick:Bool = false, diagnostics: @escaping (String,[String:Any])->Void = {_,_ in}) throws {
++    init(selected: MenuBarIceSelectedTarget, anchorID: UInt32, windows: IceBaselineWindows, quick:Bool = false, layout: MenuBarIceLayoutRequest? = nil, diagnostics: @escaping (String,[String:Any])->Void = {_,_ in}) throws {
+         diagnostics("scope",["selected":try JSONSerialization.jsonObject(with:JSONEncoder().encode(selected)),"anchorID":anchorID,"screens":NSScreen.screens.map{["frame":NSStringFromRect($0.frame),"right":$0.auxiliaryTopRightArea.map(NSStringFromRect) as Any? ?? NSNull()]}])
+         guard NSScreen.screens.count == 1, let screen = NSScreen.screens.first,
+               let right = screen.auxiliaryTopRightArea,
+@@ -73,15 +73,23 @@
+         guard chosen.count == 1, let neighbor = chosen.first else { throw IceSelectedFailure.binding }
+         let neighborItem = try item(neighbor.windowID)
+         let area = CGRect(x:right.minX,y:anchor.frame.y,width:right.width,height:anchor.frame.height)
+-        binding = .init(nonce:selected.nonce,controller:own,owner:try .init(selected.owner),display:display,space:UInt(selected.space),area:.init(area),
++        var captured = IceSelectedBinding(nonce:selected.nonce,controller:own,owner:try .init(selected.owner),display:display,space:UInt(selected.space),area:.init(area),
+                         target:target,neighbor:neighborItem,anchor:anchor,returnOnLeft:!rightNeighbors.isEmpty)
++        if let layout {
++            guard layout.nonce==selected.nonce,layout.destination.display==display,layout.destination.space==selected.space,
++                  layout.destination.windowID != selected.windowID else{throw IceSelectedFailure.binding}
++            _ = try layout.destination.validate(directory:MenuBarIceSelectedTarget.readDirectory(),owner:MenuBarProcessSignature.read(layout.destination.owner.pid))
++            captured.layoutDestination = try item(layout.destination.windowID)
++            captured.layoutOnLeft = layout.onLeft
++        }
++        binding = captured
+         diagnostics("binding",["binding":try JSONSerialization.jsonObject(with:JSONEncoder().encode(binding))])
+         try binding.validate()
+         self.selected = selected; self.windows = windows
+         diagnostics("runtime",["next":"hotGuestCapture"])
+         let liveRelative = quick ? nil : try IceSelectedLiveRelative(binding:binding,windows:windows,diagnostics:diagnostics)
+         relative = liveRelative
+-        runtime = try IceSelectedRuntime([own,binding.owner,neighborItem.process])
++        runtime = try IceSelectedRuntime([own,binding.owner,neighborItem.process]+(binding.layoutDestination.map{[$0.process]} ?? []))
+         if let liveRelative {relativeRuntime = try IceSelectedRuntime([own,binding.owner,neighborItem.process]+liveRelative.protectedProcesses)} else {relativeRuntime = nil}
+         originalPeers = Self.peerFacts(publicRows)
+         diagnostics("runtime-check",["next":"fullSignaturesAndPublicWindowOwnership"])
+@@ -99,17 +107,17 @@
+         try runtime.check()
+         // This public C API takes raw CGWindowID values, not CFNumber objects.
+         // Foundation bridging [UInt32] as CFArray produces an empty description.
+-        var rawIDs=[binding.target.id,binding.neighbor.id,binding.anchor.id].map {UnsafeRawPointer(bitPattern:UInt($0))}
++        var rawIDs=Array(Set([binding.target.id,binding.neighbor.id,binding.anchor.id]+(binding.layoutDestination.map{[$0.id]} ?? []))).map {UnsafeRawPointer(bitPattern:UInt($0))}
+         let ids=rawIDs.withUnsafeMutableBufferPointer {CFArrayCreate(kCFAllocatorDefault,$0.baseAddress,$0.count,nil)!}
+         let display = NSScreen.screens.count == 1 ? (NSScreen.screens.first?.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber)?.uint32Value ?? 0 : 0
+         let space = windows.activeSpace(windows.connection())
+         guard display == binding.display, space == binding.space,
+-              let rows = CGWindowListCreateDescriptionFromArray(ids) as? [[String:Any]], rows.count == 3 else { throw IceSelectedFailure.binding }
++              let rows = CGWindowListCreateDescriptionFromArray(ids) as? [[String:Any]], rows.count == rawIDs.count else { throw IceSelectedFailure.binding }
+         guard validateWindowOwnership(rows) else { throw IceSelectedFailure.binding }
+         return (display,space)
+     }
+     func validateWindowOwnership(_ rows:[[String:Any]]) -> Bool {
+-        Self.windowOwnershipMatches(rows,items:[binding.target,binding.neighbor,binding.anchor])
++        Self.windowOwnershipMatches(rows,items:[binding.target,binding.neighbor,binding.anchor]+(binding.layoutDestination.map{[$0]} ?? []))
+     }
+     static func windowOwnershipMatches(_ rows:[[String:Any]],items:[IceSelectedBinding.Item]) -> Bool {
+         items.allSatisfy { item in
+--- a/Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift
++++ b/Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift
+@@ -154,4 +154,36 @@
+                     "interfaceLeaseDiagnostics":interfaceLease?.diagnostics() as Any? ?? NSNull(),"journal":coordinator.diagnostics(),"nonce":plan.binding.nonce.uuidString,"scope":"singleScreenExactSelectedIcon"]
+         }
+     }
++    static func runLayout(_ plan:IceSelectedPlan,journal:IceSelectedJournal,onCoordinator:(IceSelectedCoordinator)->Void)async throws->[String:Any] {
++        let b=plan.binding
++        guard let destination=b.layoutDestination,let left=b.layoutOnLeft else{throw IceSelectedFailure.policy}
++        try plan.runtime.checkFullSignatures()
++        let coordinator=IceSelectedCoordinator(journal:journal,binding:b,contract:.ordinaryIceLayoutV10,
++            deadline:ProcessInfo.processInfo.systemUptime+15)
++        onCoordinator(coordinator);var native:IceSelectedNative?,evidence:Any=NSNull()
++        let validation=IceSynchronousDispatchValidation(read:{try plan.verifiedRuntimeScope()},scope:{plan.scope()},final:{try plan.finalRuntimeScope()},trace:{native?.note("dispatch-runtime-snapshot",$0)})
++        do {
++            try await coordinator.run {
++                let transport=try coordinator.performAux("layout-transport-create") {
++                    IceSelectedNative(windows:plan.windows,pid:b.owner.pid,identity:{try validation.validateBeforePost()},withDispatchValidation:{try validation.perform($0)})
++                }
++                native=transport;defer{transport.stopMonitoring()}
++                try transport.bindCandidate(coordinator)
++                let engine=IceBaselineEngine(transport,budget:15);try coordinator.attach(engine)
++                try await coordinator.advance(.moving)
++                try await engine.move(plan.item(b.target),to:left ? .left(plan.item(destination)) : .right(plan.item(destination)))
++                let proof=try await IceSelectedLayoutProof.capture(plan)
++                evidence=try JSONSerialization.jsonObject(with:proof.data)
++                try await coordinator.confirmPlacement(proof)
++            }
++            return ["layoutVerified":true,"realClosedLoopVerified":false,"posts":native?.posts ?? 0,"events":native?.events ?? [],
++                    "journal":coordinator.diagnostics(),"placementEvidence":evidence,"nonce":b.nonce.uuidString,
++                    "persistent":true,"openedInterface":false,"automaticReturn":false]
++        } catch {
++            native?.stopMonitoring()
++            return ["layoutVerified":false,"realClosedLoopVerified":false,"posts":native?.posts ?? 0,"events":native?.events ?? [],
++                    "journal":coordinator.diagnostics(),"nonce":b.nonce.uuidString,"failure":String(describing:error)]
++        }
++    }
++
+ }
+--- a/Tools/IceInterfaceProductWorker/IceSelectedController.swift
++++ b/Tools/IceInterfaceProductWorker/IceSelectedController.swift
+@@ -3,7 +3,8 @@
+ 
+ @MainActor final class IceSelectedController: NSObject, NSApplicationDelegate, NSWindowDelegate {
+     let directory: URL, prepared: IceSelectedSession.Prepared
+-    var production: Bool { CommandLine.arguments.contains("--production-session") }
++    var production: Bool { CommandLine.arguments.contains("--production-session") || CommandLine.arguments.contains("--layout-session") }
++    var layoutMode: Bool { CommandLine.arguments.contains("--layout-session") }
+     let autoOwned: Bool
+     var window: NSWindow!, status: NSTextField!, start: NSButton!, cancelButton: NSButton!
+     let journal: IceSelectedJournal
+@@ -76,7 +77,7 @@
+             if prepared.selfOwned {try await launchFixture()}
+             try Task.checkCancellation();guard !cancelled,!quitting else{throw IceBaselineError.cancelled}
+             try mark("ready");start.isEnabled=true;status.stringValue="已就绪；只运行一次，按 Ice 邻居边缘归位；完整队列仅诊断。"
+-            try save("ready.json",["nonce":prepared.nonce.uuidString,"pid":ProcessInfo.processInfo.processIdentifier,"fixturePID":fixturePID as Any? ?? NSNull(),"strictANYRequired":false,"hitTestRequired":false,"nativePosts":0,"windowNumber":window.windowNumber,"windowVisible":window.isVisible,"productionMode":production,"automaticStart":production,"windowKey":window.isKeyWindow,"frontPID":NSWorkspace.shared.frontmostApplication?.processIdentifier ?? -1])
++            try save("ready.json",["nonce":prepared.nonce.uuidString,"pid":ProcessInfo.processInfo.processIdentifier,"fixturePID":fixturePID as Any? ?? NSNull(),"strictANYRequired":false,"hitTestRequired":false,"nativePosts":0,"windowNumber":window.windowNumber,"windowVisible":window.isVisible,"productionMode":production,"layoutMode":layoutMode,"automaticStart":production,"windowKey":window.isKeyWindow,"frontPID":NSWorkspace.shared.frontmostApplication?.processIdentifier ?? -1])
+             if CommandLine.arguments.contains("--owned-entry-cancel-check") {cancelButton.performClick(nil)}
+             else if autoOwned || production {begin()}
+         } catch {await finish(["realClosedLoopVerified":false,"posts":0,"stage":stage,"failure":String(describing:error)])}}
+@@ -156,12 +157,25 @@
+             let windows=try IceBaselineWindows(),first=try selectedTarget()
+             try await Task.sleep(nanoseconds:150_000_000)
+             let second=try selectedTarget();guard first==second else{throw IceBaselineError.geometry}
+-            let plan=try IceSelectedPlan(selected:second,anchorID:UInt32(id),windows:windows,quick:true,diagnostics:{name,facts in try? self.save("plan-"+name+".json",facts)})
++            var layout:MenuBarIceLayoutRequest?
++            if layoutMode {
++                let bytes=try Data(contentsOf:directory.appendingPathComponent("layout-request.json"))
++                guard bytes.count<65_536 else{throw IceSelectedFailure.policy}
++                let request=try JSONDecoder().decode(MenuBarIceLayoutRequest.self,from:bytes)
++                guard request.nonce==prepared.nonce,!prepared.selfOwned else{throw IceSelectedFailure.policy}
++                layout=request
++            }
++            let plan=try IceSelectedPlan(selected:second,anchorID:UInt32(id),windows:windows,quick:true,layout:layout,diagnostics:{name,facts in try? self.save("plan-"+name+".json",facts)})
+             try save("plan.json",try JSONSerialization.jsonObject(with:JSONEncoder().encode(plan.binding)))
+             try save("setup.json",["selectionBeforeAnchor":prepared.selected.map{try! JSONSerialization.jsonObject(with:JSONEncoder().encode($0))} as Any? ?? NSNull(),"activeBaseline":try JSONSerialization.jsonObject(with:JSONEncoder().encode(second)),"inputPolicy":"iceMouseTracking","strictANYRequired":false,"hitTestRequired":false])
+             if prepared.selfOwned {try await lifetime("begin")}
+             guard !cancelled else{throw IceBaselineError.cancelled}
+             try save("action-consumed.json",["nonce":prepared.nonce.uuidString,"atUnix":Date().timeIntervalSince1970,"selfOwned":prepared.selfOwned]);try mark("execute")
++            if layoutMode {
++                status.stringValue="正在保存拖放后的真实图标位置…"
++                let result=try await IceSelectedWorkflow.runLayout(plan,journal:journal,onCoordinator:{self.operation=$0})
++                await finish(result);return
++            }
+             status.stringValue=prepared.selfOwned ? "正在验证自建 T 闭环…" : "正在搬出图标；界面出现后请关闭或切换至其他应用。"
+             let close:(() async throws -> Void)? = prepared.selfOwned ? { [self] in
+                 if (CommandLine.arguments.contains("--self-owned-window-run") || CommandLine.arguments.contains("--owned-window-session")) {
+@@ -213,7 +227,7 @@
+         if !prepared.selfOwned,let record=try? journal.inspect(),record.phase == .stopped {
+             try? save("result.json",value);recoveryPending=true;task=nil
+             status.stringValue=record.needsRelease ? "投递配对未确认；已停止并保留责任，不能自动清除。" : "已停止。正常关闭菜单、松开鼠标；按Command仅拖回选定图标至原邻居同一侧，再确认归位。"
+-            if [.ordinaryIceQuickV4, .ordinaryIceInterfaceV9].contains(record.contract) {
++            if [.ordinaryIceQuickV4, .ordinaryIceInterfaceV9, .ordinaryIceLayoutV10].contains(record.contract) {
+                 status.stringValue=record.needsRelease ? "本轮已停止，投递配对未确认；原始记录已保留。" : "本轮已停止，未完成Ice归位；原始记录已保留。"
+                 start.title="本轮已结束";start.isEnabled=false
+             } else {
+@@ -313,10 +327,10 @@
+             let autoOwned=args.count==2 && ["--self-owned-run","--self-owned-receiver-lag-run","--self-owned-window-run"].contains(args[1])
+             let directory:URL
+             if autoOwned {directory=try IceSelectedSession.prepare(windowID:nil)}
+-            else if (args.count==3 || (args.count==4 && ["--owned-entry-cancel-check","--owned-window-session","--production-session"].contains(args[3]))),args[1]=="--session" {directory=URL(fileURLWithPath:args[2])}
++            else if (args.count==3 || (args.count==4 && ["--owned-entry-cancel-check","--owned-window-session","--production-session","--layout-session"].contains(args[3]))),args[1]=="--session" {directory=URL(fileURLWithPath:args[2])}
+             else{throw IceSelectedFailure.policy}
+             let prepared=try IceSelectedSession.load(directory)
+-            guard !args.contains("--production-session") || (!prepared.selfOwned && prepared.selected != nil) else{throw IceSelectedFailure.policy}
++            guard (!args.contains("--production-session") && !args.contains("--layout-session")) || (!prepared.selfOwned && prepared.selected != nil) else{throw IceSelectedFailure.policy}
+             guard !autoOwned || prepared.selfOwned else{throw IceSelectedFailure.policy}
+             guard !args.contains("--owned-window-session") || prepared.selfOwned else{throw IceSelectedFailure.policy}
+             if args.contains("--owned-entry-cancel-check"),!prepared.selfOwned {
+@@ -326,7 +340,7 @@
+                       target.owner.sha256==m["productTargetSHA256"] as? String else{throw IceSelectedFailure.policy}
+             }
+             try emit(["session":directory.path,"selfOwned":prepared.selfOwned,"autoStart":autoOwned])
+-            let app=NSApplication.shared;app.setActivationPolicy(args.contains("--production-session") ? .accessory : .regular)
++            let app=NSApplication.shared;app.setActivationPolicy((args.contains("--production-session") || args.contains("--layout-session")) ? .accessory : .regular)
+             let delegate=IceSelectedController(directory:directory,prepared:prepared,autoOwned:autoOwned);app.delegate=delegate
+             withExtendedLifetime(delegate){app.run()}
+         }catch{fputs("selected candidate: \(error)\n",stderr);exit(1)}
+--- a/Tools/IceInterfaceProductWorker/IceInterfaceChecks.swift
++++ b/Tools/IceInterfaceProductWorker/IceInterfaceChecks.swift
+@@ -76,6 +76,35 @@
+                 try check(refused,"unobserved existing interface cannot authorize return")
+             }
+         }
++        scenarios+=1
++        var layoutBinding=b
++        layoutBinding.layoutDestination=b.neighbor
++        layoutBinding.layoutOnLeft=false
++        try layoutBinding.validate()
++        let layout=IceSelectedRecord(binding:layoutBinding,generation:UUID(),contract:.ordinaryIceLayoutV10)
++        try layout.validate()
++        try check(layout.schemaVersion==5,"layout uses a separate durable contract, not temporary return")
++        var placed=layout;placed.revision=1;placed.phase = .moving
++        try placed.validate()
++        placed.revision+=1;placed.phase = .placed;placed.placementEvidenceSHA256=String(repeating:"a",count:64)
++        try placed.validate()
++        try check(placed.gestures.isEmpty && !placed.needsRelease,"already-at-destination no-op needs no input")
++        var invalid=placed;invalid.placementEvidenceSHA256=nil
++        var refused=false;do{try invalid.validate()}catch{refused=true}
++        try check(refused,"layout terminal requires durable placement evidence")
++        let oldContract=IceSelectedRecord(binding:layoutBinding,generation:UUID(),contract:.ordinaryIceInterfaceV9)
++        refused=false;do{try oldContract.validate()}catch{refused=true}
++        try check(refused,"temporary workflow refuses layout intent")
++        let noIntent=IceSelectedRecord(binding:b,generation:UUID(),contract:.ordinaryIceLayoutV10)
++        refused=false;do{try noIntent.validate()}catch{refused=true}
++        try check(refused,"persistent layout refuses missing destination")
++        scenarios+=1
++        let generation=UUID(),payload=ShelfDragPayload(id:99,generation:generation)
++        let data=try JSONEncoder().encode(payload)
++        try check(ShelfDragPayload.decode(data,generation:generation,known:[99]) != nil,"own current panel drag accepted")
++        try check(ShelfDragPayload.decode(data,generation:UUID(),known:[99]) == nil,"stale panel rejected")
++        try check(ShelfDragPayload.decode(data,generation:generation,known:[100]) == nil,"foreign source rejected")
++        try check(ShelfDragPayload.decode(Data(repeating:0,count:4096),generation:generation,known:[99]) == nil,"oversize payload rejected")
+         for name in ["cancelObserved","cancelDelay","unknown","multiple","rebuild","reopenedDuringReturn","forgedReturn"] {try await workflow(name,b)}
+         return(scenarios,assertions)
+     }
+--- a/scripts/build-ice-interface-product-candidate.sh
++++ b/scripts/build-ice-interface-product-candidate.sh
+@@ -34,7 +34,7 @@
+ for p in [repo/'COPYING.GPL-3.0',repo/'THIRD_PARTY_NOTICES.md',worker/'prepared-build.json']:shutil.copyfile(p,package/p.name)
+ for p in sources:
+  dest=resources/'Source'/p.relative_to(repo);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
+-(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'9' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
++(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'13' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
+ (root/'source-manifest.json').write_text(json.dumps({str(p.relative_to(repo)):sha(p) for p in sources},indent=2,sort_keys=True)+'\n')
+ PY
+ swiftc -parse-as-library -D"$FLAG" -module-name MacTools -module-cache-path "$ROOT/module-cache" $(cat "$ROOT/sources.txt") -o "$APP/Contents/MacOS/MacTools"

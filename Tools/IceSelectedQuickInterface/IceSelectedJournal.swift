@@ -6,7 +6,7 @@ import CryptoKit
 import Darwin
 
 enum IceSelectedContract: String, Codable, Sendable {
-    case disabled, ordinaryIceQuietV1, ordinaryIceRelativeV2, ordinaryIceQuickV4, ordinaryIceInterfaceV9
+    case disabled, ordinaryIceQuietV1, ordinaryIceRelativeV2, ordinaryIceQuickV4, ordinaryIceInterfaceV9, ordinaryIceLayoutV10
 }
 enum IceSelectedFailure: Error { case policy, binding, pendingRecovery, phase, packet, stopped, budget, unresolvedDown }
 
@@ -30,7 +30,17 @@ struct IceSelectedBinding: Codable, Equatable, Sendable {
     }
     let nonce: UUID, controller: Process, owner: Process, display: UInt32, space: UInt, area: Rect
     let target: Item, neighbor: Item, anchor: Item, returnOnLeft: Bool
+    var layoutDestination: Item? = nil
+    var layoutOnLeft: Bool? = nil
     func validate() throws {
+        if let destination = layoutDestination {
+            guard layoutOnLeft != nil, destination.id != target.id, destination.id > 0,
+                  destination.frame.valid, destination.frame.width > 8, destination.frame.width < 150,
+                  destination.frame.y == target.frame.y, destination.frame.height == target.frame.height,
+                  destination.process.pid > 0, destination.process.launch.isFinite, destination.process.launch > 0,
+                  destination.process.executable.hasPrefix("/"), !destination.process.identifier.isEmpty,
+                  Self.validHash(destination.process.sha256) else { throw IceSelectedFailure.binding }
+        } else { guard layoutOnLeft == nil else { throw IceSelectedFailure.binding } }
         let items = [target,neighbor,anchor]
         guard controller.pid > 0, owner.pid > 0, controller.pid != owner.pid,
               controller.identifier == "com.ryanai.mactools", controller.executable.hasSuffix("/Ice Selected Controller.app/Contents/MacOS/IceSelectedController"),
@@ -62,7 +72,7 @@ struct IceSelectedPacket: Codable, Equatable, Sendable {
     var valid:Bool { x.isFinite && y.isFinite && marker>0 && [0,1,2].contains(type) }
 }
 struct IceSelectedRecord: Codable, Equatable, Sendable {
-    enum Phase:String,Codable,Sendable { case prepared,moving,visible,opening,menuClosed,interfaceInactive,restoring,returned,stopped }
+    enum Phase:String,Codable,Sendable { case prepared,moving,visible,opening,menuClosed,interfaceInactive,restoring,returned,placed,stopped }
     enum Status:String,Codable,Sendable { case registered,downReserved,downReturned,upReserved,pairedTransportReturned }
     struct Route:Codable,Equatable,Sendable {
         let id:UUID,packet:IceSelectedPacket,destination:String
@@ -74,18 +84,19 @@ struct IceSelectedRecord: Codable, Equatable, Sendable {
     }
     let schemaVersion:Int,transaction:UUID,generation:UUID,binding:IceSelectedBinding,contract:IceSelectedContract
     var revision:Int=0,phase:Phase = .prepared,gestures:[Gesture]=[],stopReason:String?,returnedEvidenceSHA256:String?
+    var placementEvidenceSHA256: String? = nil
     struct Source:Codable,Equatable,Sendable {let senderPID:Int32,state:Int64}
     var packetSource:Source?
     let relativePlan:IceRelativeReturn.Plan?
     init(binding:IceSelectedBinding,generation:UUID,contract:IceSelectedContract,relativePlan:IceRelativeReturn.Plan?=nil) {
-        schemaVersion=contract == .ordinaryIceRelativeV2 ? 2 : (contract == .ordinaryIceInterfaceV9 ? 4 : (contract == .ordinaryIceQuickV4 ? 3 : 1));transaction=UUID();self.generation=generation;self.binding=binding;self.contract=contract;self.relativePlan=relativePlan
+        schemaVersion=contract == .ordinaryIceLayoutV10 ? 5 : (contract == .ordinaryIceRelativeV2 ? 2 : (contract == .ordinaryIceInterfaceV9 ? 4 : (contract == .ordinaryIceQuickV4 ? 3 : 1)));transaction=UUID();self.generation=generation;self.binding=binding;self.contract=contract;self.relativePlan=relativePlan
     }
     // Reservation is conservative: it is NOT evidence that a route was sent.
     var needsRelease:Bool { gestures.contains{[Status.downReserved,.downReturned,.upReserved].contains($0.status)} }
     var hasPossibleEffect:Bool { gestures.contains{ !$0.routes.isEmpty } }
     func validate() throws {
         try binding.validate()
-        guard schemaVersion == (contract == .ordinaryIceRelativeV2 ? 2 : (contract == .ordinaryIceInterfaceV9 ? 4 : (contract == .ordinaryIceQuickV4 ? 3 : 1))),revision>=0,revision<=10000,[.ordinaryIceQuietV1,.ordinaryIceRelativeV2,.ordinaryIceQuickV4,.ordinaryIceInterfaceV9].contains(contract),
+        guard schemaVersion == (contract == .ordinaryIceLayoutV10 ? 5 : (contract == .ordinaryIceRelativeV2 ? 2 : (contract == .ordinaryIceInterfaceV9 ? 4 : (contract == .ordinaryIceQuickV4 ? 3 : 1)))),revision>=0,revision<=10000,[.ordinaryIceQuietV1,.ordinaryIceRelativeV2,.ordinaryIceQuickV4,.ordinaryIceInterfaceV9,.ordinaryIceLayoutV10].contains(contract),
               gestures.count<=3,gestures.reduce(0,{$0+$1.routes.count})<=14,
               Set(gestures.map(\.id)).count == gestures.count,
               Set(gestures.flatMap { $0.routes.map(\.id) }).count == gestures.reduce(0,{$0+$1.routes.count}) else { throw IceSelectedFailure.binding }
@@ -93,25 +104,33 @@ struct IceSelectedRecord: Codable, Equatable, Sendable {
         guard contract != .ordinaryIceInterfaceV9 || phase != .menuClosed else {throw IceSelectedFailure.policy}
         if contract == .ordinaryIceRelativeV2 { guard let relativePlan else{throw IceSelectedFailure.binding};try IceSelectedLiveRelative.validate(relativePlan,binding:binding) }
         else {guard relativePlan==nil else{throw IceSelectedFailure.binding}}
+        let layout = contract == .ordinaryIceLayoutV10
+        guard layout == (binding.layoutDestination != nil), layout || phase != .placed else { throw IceSelectedFailure.policy }
+        if layout { guard [.prepared,.moving,.placed,.stopped].contains(phase), gestures.count <= 1 else { throw IceSelectedFailure.phase } }
+        if phase == .placed {
+            guard !needsRelease, gestures.allSatisfy({$0.status == .pairedTransportReturned}),
+                  let hash=placementEvidenceSHA256, IceSelectedBinding.validHash(hash) else { throw IceSelectedFailure.unresolvedDown }
+        } else { guard placementEvidenceSHA256 == nil else { throw IceSelectedFailure.phase } }
         guard packetSource == nil else { throw IceSelectedFailure.packet }
         for (index,g) in gestures.enumerated() {
             guard g.down.valid,g.up.valid,g.down.type == 1,g.up.type == 2,
                   g.down.pid == Int64(binding.owner.pid),g.up.pid == g.down.pid,
                   g.down.window == Int64(binding.target.id),
-                  [binding.target.id,binding.neighbor.id,binding.anchor.id].contains(UInt32(exactly:g.up.window) ?? 0),
+                  ([binding.target.id,binding.neighbor.id,binding.anchor.id] + (binding.layoutDestination.map{[$0.id]} ?? [])).contains(UInt32(exactly:g.up.window) ?? 0),
                   validSource(g.down),validSource(g.up),
                   g.down.marker  !=  g.up.marker,g.up.flags == 0,
                   [UInt64(0),CGEventFlags.maskCommand.rawValue].contains(g.down.flags),
                   Set(g.routes.map(\.id)).count == g.routes.count else { throw IceSelectedFailure.packet }
             let opening=index == 1
+            let destination = layout ? binding.layoutDestination! : (index == 0 ? binding.anchor : binding.neighbor)
             guard g.down.flags == (opening ? 0 : CGEventFlags.maskCommand.rawValue),g.down.click == 1,g.up.click == (opening ? 1 : 0),
-                  g.up.window == Int64(opening ? binding.target.id : (index == 0 ? binding.anchor.id : binding.neighbor.id)) else { throw IceSelectedFailure.packet }
+                  g.up.window == Int64(opening ? binding.target.id : destination.id) else { throw IceSelectedFailure.packet }
             if opening {
                 guard g.down.x == g.up.x,g.down.y == g.up.y,binding.area.cg.contains(CGPoint(x:g.down.x,y:g.down.y)) else { throw IceSelectedFailure.packet }
             } else {
                 guard g.down.x == 20000,g.down.y == 20000,
-                      g.up.y == (index == 0 ? binding.anchor.frame.cg.midY : binding.neighbor.frame.cg.midY),
-                      index != 0 || g.up.x == binding.anchor.frame.x else { throw IceSelectedFailure.packet }
+                      g.up.y == destination.frame.cg.midY,
+                      index != 0 || g.up.x == (layout && binding.layoutOnLeft == false ? destination.frame.cg.maxX : destination.frame.x) else { throw IceSelectedFailure.packet }
             }
             guard index == gestures.count-1 || g.status == .pairedTransportReturned else { throw IceSelectedFailure.unresolvedDown }
             let width = g.down.flags == 0 ? 1 : 3
@@ -142,6 +161,7 @@ struct IceSelectedRecord: Codable, Equatable, Sendable {
         case .menuClosed,.interfaceInactive:range=2...2
         case .restoring:range=2...3
         case .returned:range=3...3
+        case .placed:range=0...1
         case .stopped:range=0...3
         }
         guard range.contains(gestures.count) else { throw IceSelectedFailure.phase }
@@ -151,7 +171,7 @@ struct IceSelectedRecord: Codable, Equatable, Sendable {
         guard (phase == .stopped) == (stopReason != nil) else { throw IceSelectedFailure.phase }
     }
     func validSource(_ packet: IceSelectedPacket) -> Bool {
-        [.ordinaryIceQuietV1,.ordinaryIceRelativeV2,.ordinaryIceQuickV4,.ordinaryIceInterfaceV9].contains(contract) && packet.sourceState == Int64(CGEventSourceStateID.hidSystemState.rawValue) && packetSource == nil
+        [.ordinaryIceQuietV1,.ordinaryIceRelativeV2,.ordinaryIceQuickV4,.ordinaryIceInterfaceV9,.ordinaryIceLayoutV10].contains(contract) && packet.sourceState == Int64(CGEventSourceStateID.hidSystemState.rawValue) && packetSource == nil
     }
 }
 
@@ -207,7 +227,7 @@ final class IceSelectedJournal: @unchecked Sendable {
     }
     func clear(_ returned:IceSelectedRecord) throws {
         try returned.validate()
-        guard returned.phase == .returned,!returned.needsRelease else { throw Failure.transition }
+        guard (returned.phase == .returned || (returned.phase == .placed && returned.contract == .ordinaryIceLayoutV10)),!returned.needsRelease else { throw Failure.transition }
         try locked(create:false){fd in
             guard !poisoned,fd>=0,try read(fd) == returned else { throw Failure.stale }
             do {
@@ -301,9 +321,10 @@ final class IceSelectedJournal: @unchecked Sendable {
         }
     }
     private static func transition(_ a:IceSelectedRecord.Phase,_ b:IceSelectedRecord.Phase)->Bool {
-        if a == b { return a  !=  .stopped && a  !=  .returned }
-        if b == .stopped { return a  !=  .returned && a  !=  .stopped }
+        if a == b { return a  !=  .stopped && a  !=  .returned && a != .placed }
+        if b == .stopped { return a  !=  .returned && a  !=  .stopped && a != .placed }
         switch(a,b) {
+        case (.moving,.placed):return true
         case (.prepared,.moving),(.moving,.visible),(.visible,.opening),(.opening,.menuClosed),(.menuClosed,.restoring),(.opening,.interfaceInactive),(.interfaceInactive,.restoring),(.restoring,.returned):return true
         default:return false
         }

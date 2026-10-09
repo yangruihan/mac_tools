@@ -133,8 +133,9 @@ enum MenuBarIceInterfaceProductBridge {
                   let number = value["windowNumber"] as? Int, number > 0 else { throw Failure.invalid }
         }
     }
-    static func launch(_ directory: URL, target: MenuBarIceSelectedTarget? = nil, ownedWindow: Bool = false, ownedCancelCheck: Bool = false, production: Bool = false) async throws -> Launch {
+    static func launch(_ directory: URL, target: MenuBarIceSelectedTarget? = nil, ownedWindow: Bool = false, ownedCancelCheck: Bool = false, production: Bool = false, layout: MenuBarIceLayoutRequest? = nil) async throws -> Launch {
         guard !production || (target != nil && !ownedWindow && !ownedCancelCheck) else { throw Failure.invalid }
+        guard layout == nil || production else { throw Failure.invalid }
         let manifest = try manifest()
         guard directory.resolvingSymlinksInPath() == directory,
               !FileManager.default.fileExists(atPath: directory.appendingPathComponent("action-consumed.json").path),
@@ -160,7 +161,14 @@ enum MenuBarIceInterfaceProductBridge {
         configuration.createsNewApplicationInstance = true
         configuration.arguments = ["--session", directory.path]
         configuration.activates = !production
-        if production { configuration.arguments.append("--production-session") }
+        if let layout {
+            guard layout.nonce==prepared.nonce,let selected=prepared.selected,
+                  layout.destination.windowID != selected.windowID,
+                  layout.destination.display==selected.display,layout.destination.space==selected.space else{throw Failure.invalid}
+            _ = try layout.destination.validate(directory:MenuBarIceSelectedTarget.readDirectory(includeOwn:true),owner:MenuBarProcessSignature.read(layout.destination.owner.pid))
+            try JSONEncoder().encode(layout).write(to:directory.appendingPathComponent("layout-request.json"),options:.withoutOverwriting)
+            configuration.arguments.append("--layout-session")
+        } else if production { configuration.arguments.append("--production-session") }
         try Task.checkCancellation()
         if ownedCancelCheck { configuration.arguments.append("--owned-entry-cancel-check") }
         else if ownedWindow { configuration.arguments.append("--owned-window-session") }
@@ -183,6 +191,7 @@ enum MenuBarIceInterfaceProductBridge {
                 if let bytes = try? Data(contentsOf: directory.appendingPathComponent("ready.json")), bytes.count < 65_536,
                    let value = try? JSONSerialization.jsonObject(with: bytes) as? [String: Any] {
                     try validateReady(value, nonce: prepared.nonce, pid: proof.pid, production: production)
+                    guard (value["layoutMode"] as? Bool ?? false)==(layout != nil) else{throw Failure.invalid}
                     if !ownedCancelCheck {
                         guard launch.isRunning else { throw Failure.invalid }
                         guard try MenuBarProcessSignature.read(proof.pid) == proof else { throw Failure.invalid }
@@ -201,6 +210,28 @@ enum MenuBarIceInterfaceProductBridge {
             throw Failure.unknown(directory)
         } catch let error as Failure { throw error }
         catch { throw Failure.unknown(directory) }
+    }
+    static func layoutResult(_ value:[String:Any],request:MenuBarIceLayoutRequest,sourceID:UInt32)throws->Bool {
+        let nonce=request.nonce
+        guard value["nonce"] as? String==nonce.uuidString, let passed=value["layoutVerified"] as? Bool,
+              let posts=value["posts"] as? Int,(0...6).contains(posts) else{throw Failure.invalid}
+        if passed {
+            guard [0,6].contains(posts),value["persistent"] as? Bool==true,value["openedInterface"] as? Bool==false,
+                  value["automaticReturn"] as? Bool==false,
+                  let journal=value["journal"] as? [String:Any],journal["contract"] as? String=="ordinaryIceLayoutV10",
+                  journal["phase"] as? String=="placed",journal["pendingRecovery"] as? Bool==false,
+                  journal["possibleDown"] as? Bool==false,journal["journalOutcomeUncertain"] as? Bool==false,
+                  let durable=journal["durableRecord"] as? [String:Any],durable["schemaVersion"] as? Int==5,
+                  durable["phase"] as? String=="placed",let binding=durable["binding"] as? [String:Any],
+                  binding["nonce"] as? String==nonce.uuidString,binding["layoutOnLeft"] as? Bool==request.onLeft,
+                  let destination=binding["layoutDestination"] as? [String:Any],
+                  destination["id"] as? UInt32==request.destination.windowID,
+                  let source=binding["target"] as? [String:Any],source["id"] as? UInt32==sourceID,
+                  let proof=value["placementEvidence"] as? [String:Any],proof["nonce"] as? String==nonce.uuidString,
+                  proof["criterion"] as? String=="icePersistentNeighborEdgeV10",
+                  proof["nativeObservation"] as? Bool==true else{throw Failure.invalid}
+        }
+        return passed
     }
     static func result(_ value: [String: Any], nonce: UUID) throws -> (passed: Bool, posts: Int) {
         guard value["nonce"] as? String == nonce.uuidString, let posts = value["posts"] as? Int, posts >= 0,

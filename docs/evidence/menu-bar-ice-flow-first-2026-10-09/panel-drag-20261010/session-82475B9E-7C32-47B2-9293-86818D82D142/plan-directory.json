@@ -1,0 +1,837 @@
+{
+  "members" : [
+    {
+      "frame" : "{{0, 0}, {1728, 37}}",
+      "id" : 359859,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1571, 0}, {159, 37}}",
+      "id" : 13,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1537, 0}, {34, 37}}",
+      "id" : 14,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1508, 0}, {29, 37}}",
+      "id" : 365418,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1466, 0}, {42, 37}}",
+      "id" : 17,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1428, 0}, {38, 37}}",
+      "id" : 15,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1390, 0}, {38, 37}}",
+      "id" : 18,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1360, 0}, {30, 37}}",
+      "id" : 365248,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1327, 0}, {33, 37}}",
+      "id" : 986,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1295, 0}, {32, 37}}",
+      "id" : 39,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1262, 0}, {33, 37}}",
+      "id" : 365249,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1224, 0}, {38, 37}}",
+      "id" : 365250,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1143, 0}, {81, 37}}",
+      "id" : 359672,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1105, 0}, {38, 37}}",
+      "id" : 354357,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1073, 0}, {32, 37}}",
+      "id" : 351689,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1041, 0}, {32, 37}}",
+      "id" : 125881,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{1008, 0}, {33, 37}}",
+      "id" : 359596,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{973, 0}, {35, 37}}",
+      "id" : 341097,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{939, 0}, {34, 37}}",
+      "id" : 349119,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{915, 0}, {24, 37}}",
+      "id" : 365251,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{873, 0}, {42, 37}}",
+      "id" : 144,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{835, 0}, {38, 37}}",
+      "id" : 167701,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{797, 0}, {38, 37}}",
+      "id" : 359308,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{759, 0}, {38, 37}}",
+      "id" : 310606,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{659, 0}, {100, 37}}",
+      "id" : 359126,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{615, 0}, {44, 37}}",
+      "id" : 67,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{579, 0}, {36, 37}}",
+      "id" : 61,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{538, 0}, {41, 37}}",
+      "id" : 341034,
+      "spaces" : [
+        4634
+      ]
+    },
+    {
+      "frame" : "{{509, 0}, {29, 37}}",
+      "id" : 365247,
+      "spaces" : [
+        4634
+      ]
+    }
+  ],
+  "publicRows" : [
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 30,
+        "X" : 1360,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-1",
+      "kCGWindowNumber" : 365248,
+      "kCGWindowOwnerName" : "PanelLayoutFixture",
+      "kCGWindowOwnerPID" : 59661,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 29,
+        "X" : 509,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 365247,
+      "kCGWindowOwnerName" : "PanelLayoutFixture",
+      "kCGWindowOwnerPID" : 59661,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 24,
+        "X" : 915,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "mactools_shelf_divider",
+      "kCGWindowNumber" : 365251,
+      "kCGWindowOwnerName" : "Mac 工具箱",
+      "kCGWindowOwnerPID" : 59836,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 81,
+        "X" : 1143,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 359672,
+      "kCGWindowOwnerName" : "企业微信",
+      "kCGWindowOwnerPID" : 75734,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 33,
+        "X" : 1008,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 359596,
+      "kCGWindowOwnerName" : "iOA",
+      "kCGWindowOwnerPID" : 74956,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 100,
+        "X" : 659,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 359126,
+      "kCGWindowOwnerName" : "云磁盘",
+      "kCGWindowOwnerPID" : 61200,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 38,
+        "X" : 1105,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 354357,
+      "kCGWindowOwnerName" : "微信",
+      "kCGWindowOwnerPID" : 63458,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 38,
+        "X" : 1224,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "mactools_shelf_control",
+      "kCGWindowNumber" : 365250,
+      "kCGWindowOwnerName" : "Mac 工具箱",
+      "kCGWindowOwnerPID" : 59836,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 32,
+        "X" : 1073,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 351689,
+      "kCGWindowOwnerName" : "QQ",
+      "kCGWindowOwnerPID" : 58349,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 34,
+        "X" : 939,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 349119,
+      "kCGWindowOwnerName" : "Quota Pace",
+      "kCGWindowOwnerPID" : 12780,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 144,
+        "Width" : 96,
+        "X" : 0,
+        "Y" : 973
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "",
+      "kCGWindowNumber" : 341441,
+      "kCGWindowOwnerName" : "搜狗输入法",
+      "kCGWindowOwnerPID" : 96841,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 35,
+        "X" : 973,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 341097,
+      "kCGWindowOwnerName" : "UU远程",
+      "kCGWindowOwnerPID" : 1051,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 41,
+        "X" : 538,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 341034,
+      "kCGWindowOwnerName" : "搜狗输入法",
+      "kCGWindowOwnerPID" : 96841,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 38,
+        "X" : 835,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 167701,
+      "kCGWindowOwnerName" : "With",
+      "kCGWindowOwnerPID" : 57235,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 0,
+        "Width" : 0,
+        "X" : 864,
+        "Y" : 1056
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "",
+      "kCGWindowNumber" : 125889,
+      "kCGWindowOwnerName" : "钉钉",
+      "kCGWindowOwnerPID" : 42072,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 32,
+        "X" : 1041,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "statusItem",
+      "kCGWindowNumber" : 125881,
+      "kCGWindowOwnerName" : "钉钉",
+      "kCGWindowOwnerPID" : 42072,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 29,
+        "X" : 1508,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "ice_selected_A_82475B9E-7C32-47B2-9293-86818D82D142",
+      "kCGWindowNumber" : 365418,
+      "kCGWindowOwnerName" : "Ice Selected Controller",
+      "kCGWindowOwnerPID" : 62691,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 363,
+        "Width" : 480,
+        "X" : 624,
+        "Y" : 376
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "",
+      "kCGWindowNumber" : 2915,
+      "kCGWindowOwnerName" : "[ App 0\/1819068 pid=69992 ]",
+      "kCGWindowOwnerPID" : 69992,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 32,
+        "X" : 1295,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 39,
+      "kCGWindowOwnerName" : "聚焦",
+      "kCGWindowOwnerPID" : 758,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 33,
+        "X" : 1262,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 365249,
+      "kCGWindowOwnerName" : "Mac 工具箱",
+      "kCGWindowOwnerPID" : 59836,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 48,
+        "X" : 1310,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "AudioVideoModule",
+      "kCGWindowNumber" : 6863,
+      "kCGWindowOwnerName" : "控制中心",
+      "kCGWindowOwnerPID" : 635,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 570,
+        "Width" : 320,
+        "X" : 1005,
+        "Y" : 34
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "",
+      "kCGWindowNumber" : 2687,
+      "kCGWindowOwnerName" : "腾讯电脑管家-Monitor",
+      "kCGWindowOwnerPID" : 7432,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 38,
+        "X" : 797,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 359308,
+      "kCGWindowOwnerName" : "ChatGPT",
+      "kCGWindowOwnerPID" : 62881,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 33,
+        "X" : 1327,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "NowPlaying",
+      "kCGWindowNumber" : 986,
+      "kCGWindowOwnerName" : "控制中心",
+      "kCGWindowOwnerPID" : 635,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 38,
+        "X" : 0,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-1",
+      "kCGWindowNumber" : 575,
+      "kCGWindowOwnerName" : "Parallels Desktop",
+      "kCGWindowOwnerPID" : 91669,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 38,
+        "X" : 759,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 310606,
+      "kCGWindowOwnerName" : "QQ音乐",
+      "kCGWindowOwnerPID" : 35462,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 44,
+        "X" : 615,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 67,
+      "kCGWindowOwnerName" : "TextInputMenuAgent",
+      "kCGWindowOwnerPID" : 951,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 36,
+        "X" : 579,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 61,
+      "kCGWindowOwnerName" : "百度网盘",
+      "kCGWindowOwnerPID" : 737,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 42,
+        "X" : 873,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 144,
+      "kCGWindowOwnerName" : "腾讯电脑管家-Monitor",
+      "kCGWindowOwnerPID" : 7432,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 48,
+        "X" : 0,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Item-0",
+      "kCGWindowNumber" : 365047,
+      "kCGWindowOwnerName" : "ChatGPT Computer Use",
+      "kCGWindowOwnerPID" : 27362,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 38,
+        "X" : 1351,
+        "Y" : 0
+      },
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "FocusModes",
+      "kCGWindowNumber" : 19,
+      "kCGWindowOwnerName" : "控制中心",
+      "kCGWindowOwnerPID" : 635,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 38,
+        "X" : 1390,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Sound",
+      "kCGWindowNumber" : 18,
+      "kCGWindowOwnerName" : "控制中心",
+      "kCGWindowOwnerPID" : 635,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 42,
+        "X" : 1466,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Battery",
+      "kCGWindowNumber" : 17,
+      "kCGWindowOwnerName" : "控制中心",
+      "kCGWindowOwnerPID" : 635,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 38,
+        "X" : 1428,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "WiFi",
+      "kCGWindowNumber" : 15,
+      "kCGWindowOwnerName" : "控制中心",
+      "kCGWindowOwnerPID" : 635,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 34,
+        "X" : 1537,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "BentoBox",
+      "kCGWindowNumber" : 14,
+      "kCGWindowOwnerName" : "控制中心",
+      "kCGWindowOwnerPID" : 635,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    },
+    {
+      "kCGWindowAlpha" : 1,
+      "kCGWindowBounds" : {
+        "Height" : 37,
+        "Width" : 159,
+        "X" : 1571,
+        "Y" : 0
+      },
+      "kCGWindowIsOnscreen" : true,
+      "kCGWindowLayer" : 25,
+      "kCGWindowMemoryUsage" : 2288,
+      "kCGWindowName" : "Clock",
+      "kCGWindowNumber" : 13,
+      "kCGWindowOwnerName" : "控制中心",
+      "kCGWindowOwnerPID" : 635,
+      "kCGWindowSharingState" : 1,
+      "kCGWindowStoreType" : 1
+    }
+  ]
+}

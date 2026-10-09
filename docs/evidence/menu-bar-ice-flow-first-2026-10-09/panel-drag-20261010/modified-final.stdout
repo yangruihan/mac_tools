@@ -1,0 +1,14 @@
+{
+  "assertions" : 536,
+  "cursorEffects" : 0,
+  "interfaceAssertions" : 109,
+  "interfaceScenarios" : 28,
+  "legacyAssertions" : 427,
+  "legacyScenarios" : 42,
+  "nativePosts" : 0,
+  "nativeTaps" : 0,
+  "passed" : true,
+  "provenance" : "isolatedReplayWithInjectedSenderAndTaps",
+  "receiverAssertions" : 20,
+  "scenarios" : 70
+}

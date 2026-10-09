@@ -1,0 +1,33 @@
+{
+  "status": "candidate-installed-gui-drop-acceptance-pending",
+  "app": "/Applications/MacTools.app",
+  "build": 10,
+  "sha256": "16e0b8d89d91387a68635df24d76a558ef5f51c7933b43a7497a065ef3b55cc6",
+  "changedSymbols": [
+    "ShelfPanelView.onDrag/onDrop",
+    "MenuBarOrganizerPlugin.acceptPanelDrop/placePanelIcon",
+    "IceSelectedContract.ordinaryIceLayoutV10",
+    "IceSelectedRecord.Phase.placed"
+  ],
+  "baselineAssertions": 527,
+  "modifiedAssertions": 536,
+  "rollbackAssertions": 527,
+  "swiftTests": 500,
+  "nativeLayoutVerified": false,
+  "nativeLayoutSessionsStartedObserved": 0,
+  "observations": [
+    "initial35s owned fixture expired before useful GUI result",
+    "CUA first screenshot-coordinate drag no accepted drop observed",
+    "attempt using screen absolute coordinates rejected by CUA windowNotFoundAtPosition; no native layout",
+    "long-lived owned N/T fixture created; human drag requested",
+    "user requested panel close/reopen; panel reopened via native button and AX confirms popover"
+  ],
+  "userAppsMoved": false,
+  "remaining": [
+    "actual same-row drag acceptance",
+    "hidden/resident cross-row moves",
+    "empty-row drop and cancelled/foreign/stale drop UI acceptance",
+    "normal open workflow regression after native layout",
+    "provider representation diagnostics if human drag does not reach handler"
+  ]
+}

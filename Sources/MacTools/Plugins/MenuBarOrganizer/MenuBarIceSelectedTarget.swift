@@ -38,11 +38,20 @@ struct MenuBarIceSelectedTarget: Codable, Equatable {
     }
     /// Existing read-only Ice bindings plus public CGWindow metadata; no new API,
     /// image capture, AX action, sender, permission request or preference write.
-    static func readDirectory() throws -> Directory {
+    static func readDirectory(includeOwn: Bool = false) throws -> Directory {
         guard NSScreen.screens.count == 1, let screen = NSScreen.screens.first,
               let display = (screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber)?.uint32Value,
               let publicRows = CGWindowListCopyWindowInfo(.optionAll,kCGNullWindowID) as? [[String:Any]] else { throw Failure.scope }
-        let directory = try IceMenuBarReadAdapter.isolatedReadOnly().read()
+        var stable:IceMenuBarReadAdapter.Directory?
+        for attempt in 0..<5 {
+            do { stable=try IceMenuBarReadAdapter.isolatedReadOnly().read();break }
+            catch IceMenuBarReadAdapter.Failure.incomplete {
+                guard attempt<4 else{throw IceMenuBarReadAdapter.Failure.incomplete}
+                // Metadata only: a closing panel may change the window count; never retry an input.
+                Thread.sleep(forTimeInterval:0.05)
+            }
+        }
+        guard let directory=stable else{throw Failure.changed}
         let grouped = Dictionary(grouping:publicRows, by: { ($0[kCGWindowNumber as String] as? NSNumber)?.uint32Value ?? 0 })
         let bounds = CGDisplayBounds(display), ownPID = ProcessInfo.processInfo.processIdentifier
         let rows = directory.members.compactMap { member -> Row? in
@@ -50,16 +59,16 @@ struct MenuBarIceSelectedTarget: Codable, Equatable {
                   abs(member.frame.minY-bounds.minY) < 1,
                   let matches = grouped[member.windowID], matches.count == 1, let row = matches.first,
                   let pid = (row[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value,
-                  pid > 0, pid != ownPID,
+                  pid > 0, (includeOwn || pid != ownPID),
                   (row[kCGWindowLayer as String] as? NSNumber)?.intValue == Int(CGWindowLevelForKey(.statusWindow)),
                   let app = NSRunningApplication(processIdentifier:pid), app.bundleURL != nil else { return nil }
             return .init(id:member.windowID,pid:pid,title:app.localizedName ?? app.bundleIdentifier ?? "应用",frame:member.frame)
         }.sorted { $0.frame.minX == $1.frame.minX ? $0.id < $1.id : $0.frame.minX < $1.frame.minX }
         return .init(display:display,space:directory.spaceAfter,rows:rows)
     }
-    static func capture(_ row: Row, from directory: Directory) throws -> Self {
+    static func capture(_ row: Row, from directory: Directory, includeOwn: Bool = false) throws -> Self {
         let before = try MenuBarProcessSignature.read(row.pid)
-        let current = try readDirectory()
+        let current = try readDirectory(includeOwn: includeOwn)
         guard current.display == directory.display, current.space == directory.space,
               current.rows.contains(row) else { throw Failure.changed }
         let binding = try Self(row:row,directory:current,owner:before)
@@ -132,4 +141,11 @@ struct MenuBarIceManualMenuClose {
         return .init(sequence:sequence,uptime:ProcessInfo.processInfo.systemUptime,owner:owner,
                      display:directory.display,space:directory.space,healthy:true,windows:windows)
     }
+}
+
+// One completed panel drop: exact source session and exact signed destination, never a bare coordinate.
+struct MenuBarIceLayoutRequest: Codable, Equatable {
+    let nonce: UUID
+    let destination: MenuBarIceSelectedTarget
+    let onLeft: Bool
 }

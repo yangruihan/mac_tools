@@ -1,0 +1,34 @@
+{
+  "anchorID" : 365418,
+  "screens" : [
+    {
+      "frame" : "{{0, 0}, {1728, 1117}}",
+      "right" : "{{956, 1085}, {772, 32}}"
+    }
+  ],
+  "selected" : {
+    "display" : 1,
+    "nonce" : "82475B9E-7C32-47B2-9293-86818D82D142",
+    "originalFrame" : [
+      [
+        1360,
+        0
+      ],
+      [
+        30,
+        37
+      ]
+    ],
+    "owner" : {
+      "appleAnchor" : false,
+      "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/docs\/evidence\/menu-bar-ice-flow-first-2026-10-09\/panel-drag-20261010\/PanelLayoutFixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+      "identifier" : "com.ryanai.mactools.layoutfixture",
+      "launch" : 1791575230.8068759,
+      "pid" : 59661,
+      "sha256" : "176e64f634a9fbf776080a82f008accfcfacc2e6737c0dbc7f6459cc6bd7838f",
+      "team" : "58TJ64422P"
+    },
+    "space" : 4634,
+    "windowID" : 365248
+  }
+}

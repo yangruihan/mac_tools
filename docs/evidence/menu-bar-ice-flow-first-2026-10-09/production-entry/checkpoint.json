@@ -1,20 +1,18 @@
 {
   "activeObject": "/Users/yangruihan/Workspace/mac_tools",
-  "lastConfirmedResult": "build9: normal icons, offscreen directory, existing-window thumbnails, fullscreen-origin window entry, and physical global shortcut on ordinary desktop accepted; no recovery pending",
-  "nextExecutableAction": "audit recorded daily-use acceptance matrix for unresolved user-facing gaps without widening display scope or moving icons; preserve existing settings and native Command drag",
+  "lastConfirmedResult": "build13 direct assistant native panel drag same-row and both directions cross-row accepted6 each/placed/clear; 500SPM and527/536/527; no fixture remains",
+  "nextExecutableAction": "finish remaining QA for empty-row/cancel and normal click regression using fresh owned fixtures; do not reopen already-completed N/T runs or old failures",
   "inputPaths": [
-    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/shortcut-20261010/completion.json",
-    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/fullscreen-20261010/completion.json",
-    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/production-entry/continuation-20261010/completion.json"
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/panel-drag-20261010/completion.json",
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/panel-drag-20261010/source-transaction.json"
   ],
-  "acceptanceEvent": "concise source-faithful daily-use acceptance matrix identifies only genuinely remaining gaps; no synthetic result relabeled native",
-  "unfinished": [],
-  "unsupported": [
-    "direct movement while staying fullscreen not accepted",
-    "multidisplay not supported"
+  "acceptanceEvent": "new requested QA observed under exact signed fixture identities, no unsupported source rematching",
+  "unfinished": [
+    "empty receiving-row native drop",
+    "drag cancellation outside row; unit guards exist",
+    "post-layout normal click/open native regression",
+    "third-party icon layout and restart persistence not separately accepted"
   ],
-  "doNotResumeNonces": [
-    "0A81E3AD-5B0E-458C-BF2C-5F5A6A30D198",
-    "C21AAC11-C095-4392-8DF9-2CDE8DCBB101"
-  ]
+  "installed": "/Applications/MacTools.app",
+  "build": 13
 }

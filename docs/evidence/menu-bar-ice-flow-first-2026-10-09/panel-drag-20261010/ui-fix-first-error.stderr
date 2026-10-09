@@ -1,0 +1,15 @@
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift:695:92: error: value of type '(CGFloat, NSCompositingOperation) -> ()' has no member 'minX'
+ 693 |         panel.title="菜单栏收纳";panel.level = .floating;panel.hidesOnDeactivate=false
+ 694 |         panel.isReleasedWhenClosed=false;panel.isMovableByWindowBackground=false;panel.contentView=view
+ 695 |         panel.setFrameOrigin(NSPoint(x:min(max(anchor.frame.midX-size.width/2,screen.frame.minX+8),screen.frame.maxX-size.width-8),
+     |                                                                                            `- error: value of type '(CGFloat, NSCompositingOperation) -> ()' has no member 'minX'
+ 696 |                                      y:anchor.frame.minY-size.height-4))
+ 697 |         shelfWindow=panel
+
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift:695:113: error: value of type '(CGFloat, NSCompositingOperation) -> ()' has no member 'maxX'
+ 693 |         panel.title="菜单栏收纳";panel.level = .floating;panel.hidesOnDeactivate=false
+ 694 |         panel.isReleasedWhenClosed=false;panel.isMovableByWindowBackground=false;panel.contentView=view
+ 695 |         panel.setFrameOrigin(NSPoint(x:min(max(anchor.frame.midX-size.width/2,screen.frame.minX+8),screen.frame.maxX-size.width-8),
+     |                                                                                                                 `- error: value of type '(CGFloat, NSCompositingOperation) -> ()' has no member 'maxX'
+ 696 |                                      y:anchor.frame.minY-size.height-4))
+ 697 |         shelfWindow=panel

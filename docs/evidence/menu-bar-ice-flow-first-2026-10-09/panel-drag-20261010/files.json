@@ -1,0 +1,13 @@
+{
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": "0d0485c6ab8b9249a05294dba8f70801ac54626a0fe8c1ec7ccb5bcad60fee5c",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceSelectedTarget.swift": "3b0bcdcecc14eff53fa374865b6ab82b723c17a874cbab32b5341683b7c379b4",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductBridge.swift": "d7003d76ad87a9f26cffc2a78deea6d1588240c870fb01b521c09e6472da8ec2",
+  "Tools/IceSelectedQuickInterface/IceSelectedJournal.swift": "e642cef03c8978de646a4174fbfa583c68c4982efb67d8e5cdabfde1e0547851",
+  "Tools/IceSelectedQuickInterface/IceSelectedCoordinator.swift": "745f3330ee3cf937809ed9b281df9bf946027fb91de919a73a734714c81294f8",
+  "Tools/IceSelectedQuickInterface/IceSelectedLiveRelative.swift": "73aa5c2de00986eb17aa146c8c5341fc3568305da520d1e43f829e321a17e9b8",
+  "Tools/IceInterfaceProductWorker/IceSelectedPlan.swift": "7e20451562f589a6d08ff610b74c143618aeeb641502a676b3a0de1ec1617c1e",
+  "Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift": "a860fc34b9c4652edea3f5e96fc6286e6f0edee7c0cdc6f6426ef1ab73ccacc6",
+  "Tools/IceInterfaceProductWorker/IceSelectedController.swift": "1347651ad156439b970ca5fae1ff8bd7ec1a477d0cd470a33fb04f1b9e698b88",
+  "Tools/IceInterfaceProductWorker/IceInterfaceChecks.swift": "bc04de25edf43048d8d7b3fdbba174a1ad28c19ee1dc30450730b660e380b711",
+  "scripts/build-ice-interface-product-candidate.sh": "867a1b52b81bb1183db94070cc88cc588fe221589cbf1593e514d438043c5c11"
+}

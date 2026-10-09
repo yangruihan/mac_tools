@@ -1,5 +1,16 @@
 #!/bin/sh
 set -eu
+if [ "${1:-}" = "--panel-drag-installed-app" ]; then
+ [ "$#" -eq 2 ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ exec "$DIR/panel-drag-20261010/ROLLBACK_INSTALLED_APP.sh" "$2"
+fi
+if [ "${1:-}" = "--panel-drag-source" ] || [ "${1:-}" = "--panel-drag-worker" ]; then
+ [ "$#" -eq 2 ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ MODE=source; [ "$1" != "--panel-drag-worker" ] || MODE=worker
+ exec "$DIR/panel-drag-20261010/ROLLBACK.sh" "$MODE" "$2"
+fi
 if [ "${1:-}" = "--background-window-installed-app" ]; then
  [ "$#" -eq 2 ] || exit 2
  DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)

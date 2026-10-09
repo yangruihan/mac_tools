@@ -1,0 +1,39 @@
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift:110:88: warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+108 |             return
+109 |         }
+110 |         NSRunningApplication(processIdentifier: launch.proof.pid)?.activate(options: [.activateIgnoringOtherApps])
+    |                                                                                        `- warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+111 |     }
+112 |     func showOrdinaryEvidence() { if let ordinarySession { NSWorkspace.shared.open(ordinarySession) } }
+
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift:161:83: warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+159 |             status = "原控制窗口已退出或身份改变；不会激活其他进程。"; return
+160 |         }
+161 |         NSRunningApplication(processIdentifier:controllerPID)?.activate(options:[.activateIgnoringOtherApps])
+    |                                                                                   `- warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+162 |     }
+163 |     func showEvidence() { if let session { NSWorkspace.shared.open(session) } }
+
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift:199:95: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+197 |                             Text("\(row.title) · \(row.id)").tag(row.id)
+198 |                         }
+199 |                     }.disabled(model.busy || model.ordinaryAttempted || model.session != nil).onChange(of:model.ordinaryWindowID) { _ in model.bindOrdinaryTarget() }
+    |                                                                                               `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+200 |                 }
+201 |                 HStack {
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/panel-drag-20261010/modified/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift:604:25: error: invalid redeclaration of 'bytes'
+ 596 |                         try await Task.sleep(nanoseconds:100_000_000)
+ 597 |                     }
+ 598 |                     let bytes=try Data(contentsOf:session.appendingPathComponent("result.json"))
+     |                         `- note: 'bytes' previously declared here
+ 599 |                     guard bytes.count<2_000_000,let value=try JSONSerialization.jsonObject(with:bytes) as? [String:Any] else{throw MenuBarIceSelectedTarget.Failure.changed}
+ 600 |                     guard try MenuBarIceInterfaceProductBridge.layoutResult(value,nonce:nonce) else{
+     :
+ 602 |                     }
+ 603 |                     while launch.isRunning {try await Task.sleep(nanoseconds:100_000_000)}
+ 604 |                     let bytes=try Data(contentsOf:session.appendingPathComponent("cleanup.json"))
+     |                         `- error: invalid redeclaration of 'bytes'
+ 605 |                     guard let clean=try JSONSerialization.jsonObject(with:bytes) as? [String:Any],clean["journalPending"] as? Bool==false else{throw MenuBarIceSelectedTarget.Failure.changed}
+ 606 |                     self.iceLaunch=nil

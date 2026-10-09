@@ -1,0 +1,11 @@
+Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
+Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceSelectedTarget.swift
+Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductBridge.swift
+Tools/IceSelectedQuickInterface/IceSelectedJournal.swift
+Tools/IceSelectedQuickInterface/IceSelectedCoordinator.swift
+Tools/IceSelectedQuickInterface/IceSelectedLiveRelative.swift
+Tools/IceInterfaceProductWorker/IceSelectedPlan.swift
+Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift
+Tools/IceInterfaceProductWorker/IceSelectedController.swift
+Tools/IceInterfaceProductWorker/IceInterfaceChecks.swift
+scripts/build-ice-interface-product-candidate.sh

@@ -37,7 +37,7 @@ import Darwin
     let originalPeers: [[String:Any]]
     let relative:IceSelectedLiveRelative?
     let relativeRuntime:IceSelectedRuntime?
-    init(selected: MenuBarIceSelectedTarget, anchorID: UInt32, windows: IceBaselineWindows, quick:Bool = false, diagnostics: @escaping (String,[String:Any])->Void = {_,_ in}) throws {
+    init(selected: MenuBarIceSelectedTarget, anchorID: UInt32, windows: IceBaselineWindows, quick:Bool = false, layout: MenuBarIceLayoutRequest? = nil, diagnostics: @escaping (String,[String:Any])->Void = {_,_ in}) throws {
         diagnostics("scope",["selected":try JSONSerialization.jsonObject(with:JSONEncoder().encode(selected)),"anchorID":anchorID,"screens":NSScreen.screens.map{["frame":NSStringFromRect($0.frame),"right":$0.auxiliaryTopRightArea.map(NSStringFromRect) as Any? ?? NSNull()]}])
         guard NSScreen.screens.count == 1, let screen = NSScreen.screens.first,
               let right = screen.auxiliaryTopRightArea,
@@ -73,15 +73,23 @@ import Darwin
         guard chosen.count == 1, let neighbor = chosen.first else { throw IceSelectedFailure.binding }
         let neighborItem = try item(neighbor.windowID)
         let area = CGRect(x:right.minX,y:anchor.frame.y,width:right.width,height:anchor.frame.height)
-        binding = .init(nonce:selected.nonce,controller:own,owner:try .init(selected.owner),display:display,space:UInt(selected.space),area:.init(area),
+        var captured = IceSelectedBinding(nonce:selected.nonce,controller:own,owner:try .init(selected.owner),display:display,space:UInt(selected.space),area:.init(area),
                         target:target,neighbor:neighborItem,anchor:anchor,returnOnLeft:!rightNeighbors.isEmpty)
+        if let layout {
+            guard layout.nonce==selected.nonce,layout.destination.display==display,layout.destination.space==selected.space,
+                  layout.destination.windowID != selected.windowID else{throw IceSelectedFailure.binding}
+            _ = try layout.destination.validate(directory:MenuBarIceSelectedTarget.readDirectory(),owner:MenuBarProcessSignature.read(layout.destination.owner.pid))
+            captured.layoutDestination = try item(layout.destination.windowID)
+            captured.layoutOnLeft = layout.onLeft
+        }
+        binding = captured
         diagnostics("binding",["binding":try JSONSerialization.jsonObject(with:JSONEncoder().encode(binding))])
         try binding.validate()
         self.selected = selected; self.windows = windows
         diagnostics("runtime",["next":"hotGuestCapture"])
         let liveRelative = quick ? nil : try IceSelectedLiveRelative(binding:binding,windows:windows,diagnostics:diagnostics)
         relative = liveRelative
-        runtime = try IceSelectedRuntime([own,binding.owner,neighborItem.process])
+        runtime = try IceSelectedRuntime([own,binding.owner,neighborItem.process]+(binding.layoutDestination.map{[$0.process]} ?? []))
         if let liveRelative {relativeRuntime = try IceSelectedRuntime([own,binding.owner,neighborItem.process]+liveRelative.protectedProcesses)} else {relativeRuntime = nil}
         originalPeers = Self.peerFacts(publicRows)
         diagnostics("runtime-check",["next":"fullSignaturesAndPublicWindowOwnership"])
@@ -99,17 +107,17 @@ import Darwin
         try runtime.check()
         // This public C API takes raw CGWindowID values, not CFNumber objects.
         // Foundation bridging [UInt32] as CFArray produces an empty description.
-        var rawIDs=[binding.target.id,binding.neighbor.id,binding.anchor.id].map {UnsafeRawPointer(bitPattern:UInt($0))}
+        var rawIDs=Array(Set([binding.target.id,binding.neighbor.id,binding.anchor.id]+(binding.layoutDestination.map{[$0.id]} ?? []))).map {UnsafeRawPointer(bitPattern:UInt($0))}
         let ids=rawIDs.withUnsafeMutableBufferPointer {CFArrayCreate(kCFAllocatorDefault,$0.baseAddress,$0.count,nil)!}
         let display = NSScreen.screens.count == 1 ? (NSScreen.screens.first?.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber)?.uint32Value ?? 0 : 0
         let space = windows.activeSpace(windows.connection())
         guard display == binding.display, space == binding.space,
-              let rows = CGWindowListCreateDescriptionFromArray(ids) as? [[String:Any]], rows.count == 3 else { throw IceSelectedFailure.binding }
+              let rows = CGWindowListCreateDescriptionFromArray(ids) as? [[String:Any]], rows.count == rawIDs.count else { throw IceSelectedFailure.binding }
         guard validateWindowOwnership(rows) else { throw IceSelectedFailure.binding }
         return (display,space)
     }
     func validateWindowOwnership(_ rows:[[String:Any]]) -> Bool {
-        Self.windowOwnershipMatches(rows,items:[binding.target,binding.neighbor,binding.anchor])
+        Self.windowOwnershipMatches(rows,items:[binding.target,binding.neighbor,binding.anchor]+(binding.layoutDestination.map{[$0]} ?? []))
     }
     static func windowOwnershipMatches(_ rows:[[String:Any]],items:[IceSelectedBinding.Item]) -> Bool {
         items.allSatisfy { item in

@@ -1,0 +1,99 @@
+{
+  "binding" : {
+    "anchor" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 29,
+        "x" : 1508,
+        "y" : 0
+      },
+      "id" : 365278,
+      "process" : {
+        "executable" : "\/Applications\/MacTools.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+        "identifier" : "com.ryanai.mactools",
+        "launch" : 1791575247.6388919,
+        "pid" : 59953,
+        "sha256" : "a4411c4c975eb5b2d8b5fb4ef4ca0e369a0c07d3e228094558ba370468811b07",
+        "team" : "58TJ64422P"
+      }
+    },
+    "area" : {
+      "height" : 37,
+      "width" : 772,
+      "x" : 956,
+      "y" : 0
+    },
+    "controller" : {
+      "executable" : "\/Applications\/MacTools.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+      "identifier" : "com.ryanai.mactools",
+      "launch" : 1791575247.6388919,
+      "pid" : 59953,
+      "sha256" : "a4411c4c975eb5b2d8b5fb4ef4ca0e369a0c07d3e228094558ba370468811b07",
+      "team" : "58TJ64422P"
+    },
+    "display" : 1,
+    "layoutDestination" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 29,
+        "x" : 527,
+        "y" : 0
+      },
+      "id" : 365247,
+      "process" : {
+        "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/docs\/evidence\/menu-bar-ice-flow-first-2026-10-09\/panel-drag-20261010\/PanelLayoutFixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+        "identifier" : "com.ryanai.mactools.layoutfixture",
+        "launch" : 1791575230.8068759,
+        "pid" : 59661,
+        "sha256" : "176e64f634a9fbf776080a82f008accfcfacc2e6737c0dbc7f6459cc6bd7838f",
+        "team" : "58TJ64422P"
+      }
+    },
+    "layoutOnLeft" : false,
+    "neighbor" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 29,
+        "x" : 527,
+        "y" : 0
+      },
+      "id" : 365247,
+      "process" : {
+        "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/docs\/evidence\/menu-bar-ice-flow-first-2026-10-09\/panel-drag-20261010\/PanelLayoutFixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+        "identifier" : "com.ryanai.mactools.layoutfixture",
+        "launch" : 1791575230.8068759,
+        "pid" : 59661,
+        "sha256" : "176e64f634a9fbf776080a82f008accfcfacc2e6737c0dbc7f6459cc6bd7838f",
+        "team" : "58TJ64422P"
+      }
+    },
+    "nonce" : "46446B2A-7ED7-41CB-AE2E-939B3FF78BAC",
+    "owner" : {
+      "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/docs\/evidence\/menu-bar-ice-flow-first-2026-10-09\/panel-drag-20261010\/PanelLayoutFixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+      "identifier" : "com.ryanai.mactools.layoutfixture",
+      "launch" : 1791575230.8068759,
+      "pid" : 59661,
+      "sha256" : "176e64f634a9fbf776080a82f008accfcfacc2e6737c0dbc7f6459cc6bd7838f",
+      "team" : "58TJ64422P"
+    },
+    "returnOnLeft" : true,
+    "space" : 4634,
+    "target" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 30,
+        "x" : 497,
+        "y" : 0
+      },
+      "id" : 365248,
+      "process" : {
+        "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/docs\/evidence\/menu-bar-ice-flow-first-2026-10-09\/panel-drag-20261010\/PanelLayoutFixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+        "identifier" : "com.ryanai.mactools.layoutfixture",
+        "launch" : 1791575230.8068759,
+        "pid" : 59661,
+        "sha256" : "176e64f634a9fbf776080a82f008accfcfacc2e6737c0dbc7f6459cc6bd7838f",
+        "team" : "58TJ64422P"
+      }
+    }
+  }
+}

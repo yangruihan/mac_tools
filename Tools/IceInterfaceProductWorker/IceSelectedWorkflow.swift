@@ -154,4 +154,36 @@ import AppKit
                     "interfaceLeaseDiagnostics":interfaceLease?.diagnostics() as Any? ?? NSNull(),"journal":coordinator.diagnostics(),"nonce":plan.binding.nonce.uuidString,"scope":"singleScreenExactSelectedIcon"]
         }
     }
+    static func runLayout(_ plan:IceSelectedPlan,journal:IceSelectedJournal,onCoordinator:(IceSelectedCoordinator)->Void)async throws->[String:Any] {
+        let b=plan.binding
+        guard let destination=b.layoutDestination,let left=b.layoutOnLeft else{throw IceSelectedFailure.policy}
+        try plan.runtime.checkFullSignatures()
+        let coordinator=IceSelectedCoordinator(journal:journal,binding:b,contract:.ordinaryIceLayoutV10,
+            deadline:ProcessInfo.processInfo.systemUptime+15)
+        onCoordinator(coordinator);var native:IceSelectedNative?,evidence:Any=NSNull()
+        let validation=IceSynchronousDispatchValidation(read:{try plan.verifiedRuntimeScope()},scope:{plan.scope()},final:{try plan.finalRuntimeScope()},trace:{native?.note("dispatch-runtime-snapshot",$0)})
+        do {
+            try await coordinator.run {
+                let transport=try coordinator.performAux("layout-transport-create") {
+                    IceSelectedNative(windows:plan.windows,pid:b.owner.pid,identity:{try validation.validateBeforePost()},withDispatchValidation:{try validation.perform($0)})
+                }
+                native=transport;defer{transport.stopMonitoring()}
+                try transport.bindCandidate(coordinator)
+                let engine=IceBaselineEngine(transport,budget:15);try coordinator.attach(engine)
+                try await coordinator.advance(.moving)
+                try await engine.move(plan.item(b.target),to:left ? .left(plan.item(destination)) : .right(plan.item(destination)))
+                let proof=try await IceSelectedLayoutProof.capture(plan)
+                evidence=try JSONSerialization.jsonObject(with:proof.data)
+                try await coordinator.confirmPlacement(proof)
+            }
+            return ["layoutVerified":true,"realClosedLoopVerified":false,"posts":native?.posts ?? 0,"events":native?.events ?? [],
+                    "journal":coordinator.diagnostics(),"placementEvidence":evidence,"nonce":b.nonce.uuidString,
+                    "persistent":true,"openedInterface":false,"automaticReturn":false]
+        } catch {
+            native?.stopMonitoring()
+            return ["layoutVerified":false,"realClosedLoopVerified":false,"posts":native?.posts ?? 0,"events":native?.events ?? [],
+                    "journal":coordinator.diagnostics(),"nonce":b.nonce.uuidString,"failure":String(describing:error)]
+        }
+    }
+
 }

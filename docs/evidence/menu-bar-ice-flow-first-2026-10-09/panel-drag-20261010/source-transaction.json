@@ -1,0 +1,34 @@
+{
+  "baselineHashes": {
+    "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": "0d0485c6ab8b9249a05294dba8f70801ac54626a0fe8c1ec7ccb5bcad60fee5c",
+    "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceSelectedTarget.swift": "3b0bcdcecc14eff53fa374865b6ab82b723c17a874cbab32b5341683b7c379b4",
+    "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductBridge.swift": "d7003d76ad87a9f26cffc2a78deea6d1588240c870fb01b521c09e6472da8ec2",
+    "Tools/IceSelectedQuickInterface/IceSelectedJournal.swift": "e642cef03c8978de646a4174fbfa583c68c4982efb67d8e5cdabfde1e0547851",
+    "Tools/IceSelectedQuickInterface/IceSelectedCoordinator.swift": "745f3330ee3cf937809ed9b281df9bf946027fb91de919a73a734714c81294f8",
+    "Tools/IceSelectedQuickInterface/IceSelectedLiveRelative.swift": "73aa5c2de00986eb17aa146c8c5341fc3568305da520d1e43f829e321a17e9b8",
+    "Tools/IceInterfaceProductWorker/IceSelectedPlan.swift": "7e20451562f589a6d08ff610b74c143618aeeb641502a676b3a0de1ec1617c1e",
+    "Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift": "a860fc34b9c4652edea3f5e96fc6286e6f0edee7c0cdc6f6426ef1ab73ccacc6",
+    "Tools/IceInterfaceProductWorker/IceSelectedController.swift": "1347651ad156439b970ca5fae1ff8bd7ec1a477d0cd470a33fb04f1b9e698b88",
+    "Tools/IceInterfaceProductWorker/IceInterfaceChecks.swift": "bc04de25edf43048d8d7b3fdbba174a1ad28c19ee1dc30450730b660e380b711",
+    "scripts/build-ice-interface-product-candidate.sh": "867a1b52b81bb1183db94070cc88cc588fe221589cbf1593e514d438043c5c11"
+  },
+  "modifiedHashes": {
+    "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": "024cf79b878f8701f8a40ae7b79e389efc0cff2256c1e5282fdbd127ae107329",
+    "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceSelectedTarget.swift": "9373464e1306f576ab3278ae9a2d9f7af077a916549f0a876ab57f84bfd3c225",
+    "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductBridge.swift": "c090a43fa35e61f85f6ee899cf2246841715b90b34c3560bfa574a7d540f52bf",
+    "Tools/IceSelectedQuickInterface/IceSelectedJournal.swift": "6ced6f34485b18bd054d0d6d094c55ed6e58b6f67f4fa006447354112d775fa4",
+    "Tools/IceSelectedQuickInterface/IceSelectedCoordinator.swift": "0acbee7380d75c945215e7efde43b39029900b44356a1edf9d33c2d696246db1",
+    "Tools/IceSelectedQuickInterface/IceSelectedLiveRelative.swift": "8a89ef3f73770ccebbcead5d5b34225f3ff50b86516c276d8f823f532dfa8018",
+    "Tools/IceInterfaceProductWorker/IceSelectedPlan.swift": "9b9a1fb77bcc59ea798b77d87473952de33875d1e34ec2782af165bae3f553bb",
+    "Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift": "3512d97e55b174114b8960168388f55e3bd7fec7881b590e95e1f9cea5181e3e",
+    "Tools/IceInterfaceProductWorker/IceSelectedController.swift": "1991c37e9116784d162f33543ec3e729010d316c266177768efa1b7da001f7df",
+    "Tools/IceInterfaceProductWorker/IceInterfaceChecks.swift": "42c2ab70c77371bf232b7486358a8c401a6fd3328b26d1d4f00a2050de62b5f4",
+    "scripts/build-ice-interface-product-candidate.sh": "f7c484c382a63c63a9e8b440fabb6bebcbe6b3b78228183d7aa1775b0efb15f6"
+  },
+  "patchReconstructsAll11": true,
+  "sourceRollbackHashesEqual": true,
+  "workerRollbackExit": 0,
+  "appRollbackExit": 0,
+  "restoredWorkerSHA": "c13cb6284e48ae944528e446cb6cdb58a2035c25e9dbcebca6c367465a42be6b",
+  "restoredAppSHA": "3e7df2686b2f315818aad072f9a585b2649c043730a5c6e6570f33cc921a3429"
+}

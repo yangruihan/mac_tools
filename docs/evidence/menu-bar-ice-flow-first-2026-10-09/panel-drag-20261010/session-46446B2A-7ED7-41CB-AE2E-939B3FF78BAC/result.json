@@ -1,0 +1,1093 @@
+{
+  "automaticReturn" : false,
+  "diagnosticUserEscObservations" : [
+
+  ],
+  "events" : [
+    {
+      "elapsedMS" : 1.8450000789016485,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889559.9869602919
+    },
+    {
+      "elapsedMS" : 0.23962510749697685,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889559.9872110835
+    },
+    {
+      "elapsedMS" : 0.2640832681208849,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889559.9912985833
+    },
+    {
+      "elapsedMS" : 0.35345833748579025,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889559.9957537502
+    },
+    {
+      "elapsedMS" : 0.21225004456937313,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889559.9960249586
+    },
+    {
+      "phase" : "cursor-hide",
+      "uptime" : 1889559.9997822917
+    },
+    {
+      "elapsedMS" : 0.23612496443092823,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0000599169
+    },
+    {
+      "attempt" : 1,
+      "phase" : "move-attempt",
+      "target" : 365248,
+      "uptime" : 1889560.0000642084
+    },
+    {
+      "elapsedMS" : 0.19250018522143364,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0002597084
+    },
+    {
+      "elapsedMS" : 0.24441676214337349,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0049785418
+    },
+    {
+      "elapsedMS" : 0.70708314888179302,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0109978751
+    },
+    {
+      "elapsedMS" : 0.18450012430548668,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0111887918
+    },
+    {
+      "phase" : "ice-permit-all-zero-suppression",
+      "uptime" : 1889560.0112139168
+    },
+    {
+      "elapsedMS" : 0.17324998043477535,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0113897917
+    },
+    {
+      "elapsedMS" : 0.15887501649558544,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0115517501
+    },
+    {
+      "elapsedMS" : 0.23291655816137791,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0153904168
+    },
+    {
+      "elapsedMS" : 0.19754166714847088,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0155955001
+    },
+    {
+      "phase" : "routing-taps-prepare-start",
+      "uptime" : 1889560.0155982501
+    },
+    {
+      "elapsedMS" : 0.38245832547545433,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0217290001
+    },
+    {
+      "elapsedMS" : 0.23091654293239117,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0219645002
+    },
+    {
+      "elapsedMS" : 0.19625015556812286,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0223547919
+    },
+    {
+      "elapsedMS" : 0.2029582392424345,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0225604167
+    },
+    {
+      "elapsedMS" : 7.4080000631511211,
+      "nativePosts" : 0,
+      "phase" : "routing-taps-prepared-disabled",
+      "uptime" : 1889560.0225623334
+    },
+    {
+      "deadlineUptime" : 1889560.0739472918,
+      "kind" : "scromble",
+      "marker" : 462,
+      "phase" : "route-start",
+      "prepared" : true,
+      "uptime" : 1889560.0239767085
+    },
+    {
+      "deadlineUptime" : 1889560.0739472918,
+      "phase" : "route-taps-enabled",
+      "uptime" : 1889560.0241118751
+    },
+    {
+      "display" : 1,
+      "elapsedMS" : 0.25999988429248333,
+      "phase" : "dispatch-runtime-snapshot",
+      "scope" : "oneSynchronousActualPost",
+      "sharedAcrossPosts" : false,
+      "space" : 4634,
+      "uptime" : 1889560.024407
+    },
+    {
+      "elapsedMS" : 0.083666760474443436,
+      "phase" : "identity-validated",
+      "synchronousPost" : true,
+      "uptime" : 1889560.0244982918
+    },
+    {
+      "clickState" : 0,
+      "flags" : 0,
+      "marker" : 462,
+      "phase" : "post-intent",
+      "pid" : 0,
+      "route" : "PID 59661",
+      "timestamp" : 0,
+      "type" : 0,
+      "uptime" : 1889560.0245027083,
+      "window" : 0,
+      "x" : 1402.3515625,
+      "y" : 944.58203125
+    },
+    {
+      "marker" : 462,
+      "phase" : "post-call-enter",
+      "route" : "PID 59661",
+      "type" : 0,
+      "uptime" : 1889560.0245048751
+    },
+    {
+      "elapsedMS" : 0.62829162925481796,
+      "marker" : 462,
+      "phase" : "post-call-exit",
+      "returnedNormally" : true,
+      "uptime" : 1889560.0251337918
+    },
+    {
+      "marker" : 462,
+      "phase" : "tap-disable-notice",
+      "reason" : "userInput",
+      "remainingMS" : 48.796291695907712,
+      "route" : "pid-null",
+      "tapEnabled" : true,
+      "type" : 4294967295,
+      "uptime" : 1889560.0251528334
+    },
+    {
+      "action" : "alreadyEnabledNoop",
+      "phase" : "tap-stale-disable-notice",
+      "route" : "pid-null",
+      "uptime" : 1889560.0251549585
+    },
+    {
+      "marker" : 462,
+      "phase" : "tap-disable-notice",
+      "reason" : "userInput",
+      "remainingMS" : 48.788083484396338,
+      "route" : "session-real",
+      "tapEnabled" : true,
+      "type" : 4294967295,
+      "uptime" : 1889560.0251604584
+    },
+    {
+      "action" : "alreadyEnabledNoop",
+      "phase" : "tap-stale-disable-notice",
+      "route" : "session-real",
+      "uptime" : 1889560.0251624584
+    },
+    {
+      "consumerDelayMS" : 0.56879175826907158,
+      "deadlineUptime" : 1889560.0739472918,
+      "endpoint" : "C01C4CE4-0CBF-4753-A670-457BA1D6434B",
+      "phase" : "raw-receipt-bound",
+      "postedAtUptime" : 1889560.02451825,
+      "rawPostMS" : 0.086291693150997162,
+      "receivedAtUptime" : 1889560.0246045417,
+      "routeToken" : "806C4FFE-67D9-4DBD-A85F-5B54955DBF99",
+      "uptime" : 1889560.025174875
+    },
+    {
+      "phase" : "null-received",
+      "pid" : 59661,
+      "uptime" : 1889560.025203875
+    },
+    {
+      "display" : 1,
+      "elapsedMS" : 0.28495839796960354,
+      "phase" : "dispatch-runtime-snapshot",
+      "scope" : "oneSynchronousActualPost",
+      "sharedAcrossPosts" : false,
+      "space" : 4634,
+      "uptime" : 1889560.0254969168
+    },
+    {
+      "elapsedMS" : 0.049374997615814209,
+      "phase" : "identity-validated",
+      "synchronousPost" : true,
+      "uptime" : 1889560.0255506667
+    },
+    {
+      "clickState" : 1,
+      "flags" : 1048576,
+      "marker" : 462,
+      "phase" : "post-intent",
+      "pid" : 59661,
+      "route" : "session event tap",
+      "timestamp" : 0,
+      "type" : 1,
+      "uptime" : 1889560.0255538751,
+      "window" : 365248,
+      "x" : 20000,
+      "y" : 20000
+    },
+    {
+      "marker" : 462,
+      "phase" : "post-call-enter",
+      "route" : "session event tap",
+      "type" : 1,
+      "uptime" : 1889560.0255552086
+    },
+    {
+      "elapsedMS" : 0.012208241969347,
+      "marker" : 462,
+      "phase" : "post-call-exit",
+      "returnedNormally" : true,
+      "uptime" : 1889560.0255675835
+    },
+    {
+      "clickState" : 1,
+      "flags" : 537919488,
+      "marker" : 462,
+      "phase" : "session-received",
+      "pid" : 59836,
+      "timestamp" : 1889560025578791,
+      "type" : 1,
+      "uptime" : 1889560.0279692085,
+      "window" : 365248,
+      "x" : 20000,
+      "y" : 20000
+    },
+    {
+      "consumerDelayMS" : 2.1153751295059919,
+      "deadlineUptime" : 1889560.0739472918,
+      "endpoint" : "6C540A90-FBCF-4FE5-BA4E-388A47C8021D",
+      "phase" : "raw-receipt-bound",
+      "postedAtUptime" : 1889560.0255564167,
+      "rawPostMS" : 0.30120834708213806,
+      "receivedAtUptime" : 1889560.0258576251,
+      "routeToken" : "806C4FFE-67D9-4DBD-A85F-5B54955DBF99",
+      "uptime" : 1889560.0279748752
+    },
+    {
+      "display" : 1,
+      "elapsedMS" : 0.36070821806788445,
+      "phase" : "dispatch-runtime-snapshot",
+      "scope" : "oneSynchronousActualPost",
+      "sharedAcrossPosts" : false,
+      "space" : 4634,
+      "uptime" : 1889560.0283421667
+    },
+    {
+      "elapsedMS" : 0.063208397477865219,
+      "phase" : "identity-validated",
+      "synchronousPost" : true,
+      "uptime" : 1889560.0284115418
+    },
+    {
+      "clickState" : 1,
+      "flags" : 1048576,
+      "marker" : 462,
+      "phase" : "post-intent",
+      "pid" : 59661,
+      "route" : "PID 59661",
+      "timestamp" : 0,
+      "type" : 1,
+      "uptime" : 1889560.0284145419,
+      "window" : 365248,
+      "x" : 20000,
+      "y" : 20000
+    },
+    {
+      "marker" : 462,
+      "phase" : "post-call-enter",
+      "route" : "PID 59661",
+      "type" : 1,
+      "uptime" : 1889560.0284157917
+    },
+    {
+      "elapsedMS" : 0.010749790817499161,
+      "marker" : 462,
+      "phase" : "post-call-exit",
+      "returnedNormally" : true,
+      "uptime" : 1889560.0284264584
+    },
+    {
+      "acceptedAtUptime" : 1889560.0284283333,
+      "phase" : "route-receipt-continuation-resumed",
+      "resumedAfterDeadline" : false,
+      "settlementCount" : 1,
+      "uptime" : 1889560.0284470418
+    },
+    {
+      "closed" : true,
+      "phase" : "receiver-closed",
+      "uptime" : 1889560.0387827917
+    },
+    {
+      "closed" : true,
+      "phase" : "receiver-closed",
+      "uptime" : 1889560.0494255419
+    },
+    {
+      "elapsedMS" : 2.17037508264184,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0529637919
+    },
+    {
+      "elapsedMS" : 0.22004172205924988,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0531878334
+    },
+    {
+      "elapsedMS" : 0.24070846848189831,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.057154875
+    },
+    {
+      "elapsedMS" : 0.18937489949166775,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0573478751
+    },
+    {
+      "elapsedMS" : 0.26133330538868904,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0615385
+    },
+    {
+      "elapsedMS" : 0.19516656175255775,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0617371667
+    },
+    {
+      "phase" : "routing-taps-prepare-start",
+      "uptime" : 1889560.0617383751
+    },
+    {
+      "elapsedMS" : 0.23420830257236958,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0621380417
+    },
+    {
+      "elapsedMS" : 0.18416647799313068,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0623246252
+    },
+    {
+      "elapsedMS" : 0.29850006103515625,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0627821251
+    },
+    {
+      "elapsedMS" : 0.1784998457878828,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0629628336
+    },
+    {
+      "elapsedMS" : 1.6913749277591705,
+      "nativePosts" : 3,
+      "phase" : "routing-taps-prepared-disabled",
+      "uptime" : 1889560.0629645418
+    },
+    {
+      "deadlineUptime" : 1889560.1143841252,
+      "kind" : "scromble",
+      "marker" : 463,
+      "phase" : "route-start",
+      "prepared" : true,
+      "uptime" : 1889560.0643862502
+    },
+    {
+      "deadlineUptime" : 1889560.1143841252,
+      "phase" : "route-taps-enabled",
+      "uptime" : 1889560.0644890834
+    },
+    {
+      "display" : 1,
+      "elapsedMS" : 0.19962480291724205,
+      "phase" : "dispatch-runtime-snapshot",
+      "scope" : "oneSynchronousActualPost",
+      "sharedAcrossPosts" : false,
+      "space" : 4634,
+      "uptime" : 1889560.0647005418
+    },
+    {
+      "elapsedMS" : 0.049499794840812683,
+      "phase" : "identity-validated",
+      "synchronousPost" : true,
+      "uptime" : 1889560.064754375
+    },
+    {
+      "clickState" : 0,
+      "flags" : 537919488,
+      "marker" : 462,
+      "phase" : "post-intent",
+      "pid" : 0,
+      "route" : "PID 59661",
+      "timestamp" : 0,
+      "type" : 0,
+      "uptime" : 1889560.0647571669,
+      "window" : 0,
+      "x" : 1727.984375,
+      "y" : 1116.984375
+    },
+    {
+      "marker" : 462,
+      "phase" : "post-call-enter",
+      "route" : "PID 59661",
+      "type" : 0,
+      "uptime" : 1889560.0647585418
+    },
+    {
+      "elapsedMS" : 0.011625001206994057,
+      "marker" : 462,
+      "phase" : "post-call-exit",
+      "returnedNormally" : true,
+      "uptime" : 1889560.0647700417
+    },
+    {
+      "marker" : 463,
+      "phase" : "tap-disable-notice",
+      "reason" : "userInput",
+      "remainingMS" : 49.60266686975956,
+      "route" : "pid-null",
+      "tapEnabled" : true,
+      "type" : 4294967295,
+      "uptime" : 1889560.0647830002
+    },
+    {
+      "action" : "alreadyEnabledNoop",
+      "phase" : "tap-stale-disable-notice",
+      "route" : "pid-null",
+      "uptime" : 1889560.0647845
+    },
+    {
+      "marker" : 463,
+      "phase" : "tap-disable-notice",
+      "reason" : "userInput",
+      "remainingMS" : 49.595958553254604,
+      "route" : "session-real",
+      "tapEnabled" : true,
+      "type" : 4294967295,
+      "uptime" : 1889560.0647890836
+    },
+    {
+      "action" : "alreadyEnabledNoop",
+      "phase" : "tap-stale-disable-notice",
+      "route" : "session-real",
+      "uptime" : 1889560.0647903334
+    },
+    {
+      "consumerDelayMS" : 0.048291636630892754,
+      "deadlineUptime" : 1889560.1143841252,
+      "endpoint" : "358128B7-25B2-40B6-98BE-21AB0858C643",
+      "phase" : "raw-receipt-bound",
+      "postedAtUptime" : 1889560.0647594584,
+      "rawPostMS" : 0.057958299294114113,
+      "receivedAtUptime" : 1889560.0648174167,
+      "routeToken" : "F0DBAD92-250B-47CA-9146-742D149AC0A3",
+      "uptime" : 1889560.0648690418
+    },
+    {
+      "phase" : "null-received",
+      "pid" : 59661,
+      "uptime" : 1889560.0648945419
+    },
+    {
+      "display" : 1,
+      "elapsedMS" : 0.3234583418816328,
+      "phase" : "dispatch-runtime-snapshot",
+      "scope" : "oneSynchronousActualPost",
+      "sharedAcrossPosts" : false,
+      "space" : 4634,
+      "uptime" : 1889560.0652233751
+    },
+    {
+      "elapsedMS" : 0.048124929890036583,
+      "phase" : "identity-validated",
+      "synchronousPost" : true,
+      "uptime" : 1889560.0652755417
+    },
+    {
+      "clickState" : 0,
+      "flags" : 0,
+      "marker" : 463,
+      "phase" : "post-intent",
+      "pid" : 59661,
+      "route" : "session event tap",
+      "timestamp" : 0,
+      "type" : 2,
+      "uptime" : 1889560.0652777918,
+      "window" : 365247,
+      "x" : 556,
+      "y" : 18.5
+    },
+    {
+      "marker" : 463,
+      "phase" : "post-call-enter",
+      "route" : "session event tap",
+      "type" : 2,
+      "uptime" : 1889560.0652789169
+    },
+    {
+      "elapsedMS" : 0.0095833092927932739,
+      "marker" : 463,
+      "phase" : "post-call-exit",
+      "returnedNormally" : true,
+      "uptime" : 1889560.0652885418
+    },
+    {
+      "clickState" : 0,
+      "flags" : 536870912,
+      "marker" : 463,
+      "phase" : "session-received",
+      "pid" : 59836,
+      "timestamp" : 1889560065296541,
+      "type" : 2,
+      "uptime" : 1889560.0655968334,
+      "window" : 365247,
+      "x" : 556,
+      "y" : 18.5
+    },
+    {
+      "consumerDelayMS" : 0.10508345440030098,
+      "deadlineUptime" : 1889560.1143841252,
+      "endpoint" : "272C5EB5-1C46-4F2F-A32C-A2339C75D79F",
+      "phase" : "raw-receipt-bound",
+      "postedAtUptime" : 1889560.0652799169,
+      "rawPostMS" : 0.21420815028250217,
+      "receivedAtUptime" : 1889560.065494125,
+      "routeToken" : "F0DBAD92-250B-47CA-9146-742D149AC0A3",
+      "uptime" : 1889560.0656005836
+    },
+    {
+      "display" : 1,
+      "elapsedMS" : 1.9999581854790449,
+      "phase" : "dispatch-runtime-snapshot",
+      "scope" : "oneSynchronousActualPost",
+      "sharedAcrossPosts" : false,
+      "space" : 4634,
+      "uptime" : 1889560.0676067502
+    },
+    {
+      "elapsedMS" : 0.072083203122019768,
+      "phase" : "identity-validated",
+      "synchronousPost" : true,
+      "uptime" : 1889560.0676857918
+    },
+    {
+      "clickState" : 0,
+      "flags" : 0,
+      "marker" : 463,
+      "phase" : "post-intent",
+      "pid" : 59661,
+      "route" : "PID 59661",
+      "timestamp" : 0,
+      "type" : 2,
+      "uptime" : 1889560.0676891669,
+      "window" : 365247,
+      "x" : 556,
+      "y" : 18.5
+    },
+    {
+      "marker" : 463,
+      "phase" : "post-call-enter",
+      "route" : "PID 59661",
+      "type" : 2,
+      "uptime" : 1889560.0676906251
+    },
+    {
+      "elapsedMS" : 0.011791707947850227,
+      "marker" : 463,
+      "phase" : "post-call-exit",
+      "returnedNormally" : true,
+      "uptime" : 1889560.0677019584
+    },
+    {
+      "acceptedAtUptime" : 1889560.0677041668,
+      "phase" : "route-receipt-continuation-resumed",
+      "resumedAfterDeadline" : false,
+      "settlementCount" : 1,
+      "uptime" : 1889560.067727125
+    },
+    {
+      "closed" : true,
+      "phase" : "receiver-closed",
+      "uptime" : 1889560.0755767918
+    },
+    {
+      "closed" : true,
+      "phase" : "receiver-closed",
+      "uptime" : 1889560.0756508335
+    },
+    {
+      "elapsedMS" : 0.87012490257620811,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0778715834
+    },
+    {
+      "elapsedMS" : 0.19416678696870804,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0780696252
+    },
+    {
+      "elapsedMS" : 0.26799994520843029,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0821452918
+    },
+    {
+      "elapsedMS" : 0.3735001664608717,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0868998335
+    },
+    {
+      "elapsedMS" : 0.2285416703671217,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0906913751
+    },
+    {
+      "elapsedMS" : 0.25599985383450985,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1889560.0946934584
+    },
+    {
+      "phase" : "cursor-warp",
+      "uptime" : 1889560.0947825834,
+      "x" : 1402.3515625,
+      "y" : 944.58203125
+    },
+    {
+      "phase" : "cursor-show",
+      "uptime" : 1889560.09478625
+    }
+  ],
+  "journal" : {
+    "acknowledgments" : [
+      {
+        "atUptime" : 1889559.9835403333,
+        "hasPossibleEffect" : false,
+        "phase" : "prepared",
+        "recordSHA256" : "25d14d25bf91073d8541070a6a7a24f1b4d6c3546537ccb14d3a32c2708b5aff",
+        "revision" : 0,
+        "unconfirmedDown" : false
+      },
+      {
+        "atUptime" : 1889559.9850002085,
+        "hasPossibleEffect" : false,
+        "phase" : "moving",
+        "recordSHA256" : "858e8ba8312a51c8cdca01eb4755d39294cfc89b77fb2b3c7c5d7e16ad54c72c",
+        "revision" : 1,
+        "unconfirmedDown" : false
+      },
+      {
+        "atUptime" : 1889560.0101682502,
+        "hasPossibleEffect" : false,
+        "phase" : "moving",
+        "recordSHA256" : "1a9424ee9fd9a74aedd18fc3d44852c827b0a735b83d8d357c0ab27618fcc6e0",
+        "revision" : 2,
+        "unconfirmedDown" : false
+      },
+      {
+        "atUptime" : 1889560.0238215835,
+        "hasPossibleEffect" : true,
+        "phase" : "moving",
+        "recordSHA256" : "b769bdf7967e8050d9aeeb890bb5b5f44bf8f5e844d1247ed35540b28b025927",
+        "revision" : 3,
+        "unconfirmedDown" : true
+      },
+      {
+        "atUptime" : 1889560.0506682917,
+        "hasPossibleEffect" : true,
+        "phase" : "moving",
+        "recordSHA256" : "b086e75ba9e4a9af85d45d90a24cb95bae92184387527c5aa0ebf08978717d61",
+        "revision" : 4,
+        "unconfirmedDown" : true
+      },
+      {
+        "atUptime" : 1889560.0642465835,
+        "hasPossibleEffect" : true,
+        "phase" : "moving",
+        "recordSHA256" : "1329de7ce5b48335f3f4b9ebd518c8c5ae574d599fa1c12b90aff8d2c6a69eea",
+        "revision" : 5,
+        "unconfirmedDown" : true
+      },
+      {
+        "atUptime" : 1889560.0768222918,
+        "hasPossibleEffect" : true,
+        "phase" : "moving",
+        "recordSHA256" : "a4a8840e5a0ac1c6bca77f19db7446e6c91d496009c0a2718ff7999a0f5fd95f",
+        "revision" : 6,
+        "unconfirmedDown" : false
+      },
+      {
+        "atUptime" : 1889560.2807437917,
+        "hasPossibleEffect" : true,
+        "phase" : "placed",
+        "recordSHA256" : "35f66593af106ff78042e09a9c488a081ffad5d2a38f06a75631954dd14d6689",
+        "revision" : 7,
+        "unconfirmedDown" : false
+      }
+    ],
+    "clearAdmitted" : true,
+    "completed" : true,
+    "contract" : "ordinaryIceLayoutV10",
+    "durableRecord" : {
+      "binding" : {
+        "anchor" : {
+          "frame" : {
+            "height" : 37,
+            "width" : 29,
+            "x" : 1508,
+            "y" : 0
+          },
+          "id" : 365278,
+          "process" : {
+            "executable" : "\/Applications\/MacTools.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+            "identifier" : "com.ryanai.mactools",
+            "launch" : 1791575247.6388919,
+            "pid" : 59953,
+            "sha256" : "a4411c4c975eb5b2d8b5fb4ef4ca0e369a0c07d3e228094558ba370468811b07",
+            "team" : "58TJ64422P"
+          }
+        },
+        "area" : {
+          "height" : 37,
+          "width" : 772,
+          "x" : 956,
+          "y" : 0
+        },
+        "controller" : {
+          "executable" : "\/Applications\/MacTools.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+          "identifier" : "com.ryanai.mactools",
+          "launch" : 1791575247.6388919,
+          "pid" : 59953,
+          "sha256" : "a4411c4c975eb5b2d8b5fb4ef4ca0e369a0c07d3e228094558ba370468811b07",
+          "team" : "58TJ64422P"
+        },
+        "display" : 1,
+        "layoutDestination" : {
+          "frame" : {
+            "height" : 37,
+            "width" : 29,
+            "x" : 527,
+            "y" : 0
+          },
+          "id" : 365247,
+          "process" : {
+            "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/docs\/evidence\/menu-bar-ice-flow-first-2026-10-09\/panel-drag-20261010\/PanelLayoutFixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+            "identifier" : "com.ryanai.mactools.layoutfixture",
+            "launch" : 1791575230.8068759,
+            "pid" : 59661,
+            "sha256" : "176e64f634a9fbf776080a82f008accfcfacc2e6737c0dbc7f6459cc6bd7838f",
+            "team" : "58TJ64422P"
+          }
+        },
+        "layoutOnLeft" : false,
+        "neighbor" : {
+          "frame" : {
+            "height" : 37,
+            "width" : 29,
+            "x" : 527,
+            "y" : 0
+          },
+          "id" : 365247,
+          "process" : {
+            "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/docs\/evidence\/menu-bar-ice-flow-first-2026-10-09\/panel-drag-20261010\/PanelLayoutFixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+            "identifier" : "com.ryanai.mactools.layoutfixture",
+            "launch" : 1791575230.8068759,
+            "pid" : 59661,
+            "sha256" : "176e64f634a9fbf776080a82f008accfcfacc2e6737c0dbc7f6459cc6bd7838f",
+            "team" : "58TJ64422P"
+          }
+        },
+        "nonce" : "46446B2A-7ED7-41CB-AE2E-939B3FF78BAC",
+        "owner" : {
+          "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/docs\/evidence\/menu-bar-ice-flow-first-2026-10-09\/panel-drag-20261010\/PanelLayoutFixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+          "identifier" : "com.ryanai.mactools.layoutfixture",
+          "launch" : 1791575230.8068759,
+          "pid" : 59661,
+          "sha256" : "176e64f634a9fbf776080a82f008accfcfacc2e6737c0dbc7f6459cc6bd7838f",
+          "team" : "58TJ64422P"
+        },
+        "returnOnLeft" : true,
+        "space" : 4634,
+        "target" : {
+          "frame" : {
+            "height" : 37,
+            "width" : 30,
+            "x" : 497,
+            "y" : 0
+          },
+          "id" : 365248,
+          "process" : {
+            "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/docs\/evidence\/menu-bar-ice-flow-first-2026-10-09\/panel-drag-20261010\/PanelLayoutFixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+            "identifier" : "com.ryanai.mactools.layoutfixture",
+            "launch" : 1791575230.8068759,
+            "pid" : 59661,
+            "sha256" : "176e64f634a9fbf776080a82f008accfcfacc2e6737c0dbc7f6459cc6bd7838f",
+            "team" : "58TJ64422P"
+          }
+        }
+      },
+      "contract" : "ordinaryIceLayoutV10",
+      "generation" : "E5C00BDC-CD98-4077-95EC-FA66130452F9",
+      "gestures" : [
+        {
+          "down" : {
+            "click" : 1,
+            "flags" : 1048576,
+            "handlingWindow" : 365248,
+            "marker" : 462,
+            "number" : 0,
+            "pid" : 59661,
+            "pointerWindow" : 365248,
+            "sourcePID" : 59953,
+            "sourceState" : 1,
+            "timestamp" : 0,
+            "type" : 1,
+            "window" : 365248,
+            "x" : 20000,
+            "y" : 20000
+          },
+          "id" : "7ACC31A8-F638-43BA-BF90-B77B90A23DFB",
+          "routes" : [
+            {
+              "destination" : "PID 59661",
+              "id" : "D7904D0E-0C15-4E15-8FF5-117958053D07",
+              "packet" : {
+                "click" : 0,
+                "flags" : 0,
+                "handlingWindow" : 0,
+                "marker" : 462,
+                "number" : 0,
+                "pid" : 0,
+                "pointerWindow" : 0,
+                "sourcePID" : 59953,
+                "sourceState" : 0,
+                "timestamp" : 0,
+                "type" : 0,
+                "window" : 0,
+                "x" : 1402.3515625,
+                "y" : 944.58203125
+              }
+            },
+            {
+              "destination" : "session event tap",
+              "id" : "7AE6CE3C-CB39-4B26-BA4A-EE38AC7FC8D8",
+              "packet" : {
+                "click" : 1,
+                "flags" : 1048576,
+                "handlingWindow" : 365248,
+                "marker" : 462,
+                "number" : 0,
+                "pid" : 59661,
+                "pointerWindow" : 365248,
+                "sourcePID" : 59953,
+                "sourceState" : 1,
+                "timestamp" : 0,
+                "type" : 1,
+                "window" : 365248,
+                "x" : 20000,
+                "y" : 20000
+              }
+            },
+            {
+              "destination" : "PID 59661",
+              "id" : "BED95ABC-F565-4798-9416-B3C86FD1BEB1",
+              "packet" : {
+                "click" : 1,
+                "flags" : 1048576,
+                "handlingWindow" : 365248,
+                "marker" : 462,
+                "number" : 0,
+                "pid" : 59661,
+                "pointerWindow" : 365248,
+                "sourcePID" : 59953,
+                "sourceState" : 1,
+                "timestamp" : 0,
+                "type" : 1,
+                "window" : 365248,
+                "x" : 20000,
+                "y" : 20000
+              }
+            },
+            {
+              "destination" : "PID 59661",
+              "id" : "9AF607D2-3C32-4EFE-8F9A-F26B54CEF6FC",
+              "packet" : {
+                "click" : 0,
+                "flags" : 537919488,
+                "handlingWindow" : 0,
+                "marker" : 462,
+                "number" : 0,
+                "pid" : 0,
+                "pointerWindow" : 0,
+                "sourcePID" : 59953,
+                "sourceState" : 0,
+                "timestamp" : 0,
+                "type" : 0,
+                "window" : 0,
+                "x" : 1727.984375,
+                "y" : 1116.984375
+              }
+            },
+            {
+              "destination" : "session event tap",
+              "id" : "3164EC60-8688-464F-BDC8-A778BC199E4D",
+              "packet" : {
+                "click" : 0,
+                "flags" : 0,
+                "handlingWindow" : 365247,
+                "marker" : 463,
+                "number" : 0,
+                "pid" : 59661,
+                "pointerWindow" : 365247,
+                "sourcePID" : 59953,
+                "sourceState" : 1,
+                "timestamp" : 0,
+                "type" : 2,
+                "window" : 365247,
+                "x" : 556,
+                "y" : 18.5
+              }
+            },
+            {
+              "destination" : "PID 59661",
+              "id" : "160D216B-9870-4C71-8725-4A8E6C644426",
+              "packet" : {
+                "click" : 0,
+                "flags" : 0,
+                "handlingWindow" : 365247,
+                "marker" : 463,
+                "number" : 0,
+                "pid" : 59661,
+                "pointerWindow" : 365247,
+                "sourcePID" : 59953,
+                "sourceState" : 1,
+                "timestamp" : 0,
+                "type" : 2,
+                "window" : 365247,
+                "x" : 556,
+                "y" : 18.5
+              }
+            }
+          ],
+          "status" : "pairedTransportReturned",
+          "up" : {
+            "click" : 0,
+            "flags" : 0,
+            "handlingWindow" : 365247,
+            "marker" : 463,
+            "number" : 0,
+            "pid" : 59661,
+            "pointerWindow" : 365247,
+            "sourcePID" : 59953,
+            "sourceState" : 1,
+            "timestamp" : 0,
+            "type" : 2,
+            "window" : 365247,
+            "x" : 556,
+            "y" : 18.5
+          }
+        }
+      ],
+      "phase" : "placed",
+      "placementEvidenceSHA256" : "5a3c7719e5b3cf5d680e2db4b6d47a70648e43a94166b95c1cd188c10d22f7e0",
+      "revision" : 7,
+      "schemaVersion" : 5,
+      "transaction" : "B17B98D3-A9FA-4F28-9DE3-2FA7F8767CD4"
+    },
+    "effectsAdmitted" : 17,
+    "generation" : "E5C00BDC-CD98-4077-95EC-FA66130452F9",
+    "journalOutcomeUncertain" : false,
+    "pendingRecovery" : false,
+    "phase" : "placed",
+    "physicalReleaseProven" : false,
+    "possibleDown" : false,
+    "stopReason" : null,
+    "transaction" : "B17B98D3-A9FA-4F28-9DE3-2FA7F8767CD4",
+    "uncertainProposal" : null
+  },
+  "layoutVerified" : true,
+  "nonce" : "46446B2A-7ED7-41CB-AE2E-939B3FF78BAC",
+  "openedInterface" : false,
+  "persistent" : true,
+  "placementEvidence" : {
+    "atUptime" : 1889560.2776054584,
+    "criterion" : "icePersistentNeighborEdgeV10",
+    "display" : 1,
+    "first" : {
+      "destinationFrame" : "{{497, 0}, {29, 37}}",
+      "destinationID" : 365247,
+      "onLeft" : false,
+      "targetFrame" : "{{526, 0}, {30, 37}}",
+      "targetID" : 365248
+    },
+    "nativeObservation" : true,
+    "nonce" : "46446B2A-7ED7-41CB-AE2E-939B3FF78BAC",
+    "second" : {
+      "destinationFrame" : "{{497, 0}, {29, 37}}",
+      "destinationID" : 365247,
+      "onLeft" : false,
+      "targetFrame" : "{{526, 0}, {30, 37}}",
+      "targetID" : 365248
+    },
+    "space" : 4634
+  },
+  "posts" : 6,
+  "realClosedLoopVerified" : false
+}

@@ -3,6 +3,7 @@ import Carbon
 import ScreenCaptureKit
 import ApplicationServices
 import Combine
+import UniformTypeIdentifiers
 
 struct ShelfIcon: Identifiable {
     let id: CGWindowID
@@ -15,6 +16,16 @@ struct ShelfIcon: Identifiable {
 enum ShelfDropAction: Equatable {
     case move(CGWindowID, Bool)
     case reorder(CGWindowID, CGWindowID)
+}
+
+struct ShelfDragPayload: Codable {
+    static let typeIdentifier = "com.ryanai.mactools.menu-bar-icon"
+    let id: CGWindowID, generation: UUID
+    static func decode(_ data:Data,generation:UUID,known:Set<CGWindowID>)->Self? {
+        guard data.count<4096,let value=try? JSONDecoder().decode(Self.self,from:data),
+              value.generation==generation,known.contains(value.id) else{return nil}
+        return value
+    }
 }
 
 final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPopoverDelegate {
@@ -45,6 +56,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
     private var control: NSStatusItem?
     private var divider: NSStatusItem?
     private var shelfPopover: NSPopover?
+    private var shelfWindow: NSPanel?
     private var popoverMonitors: [Any] = []
     private var popoverDeactivateObserver: NSObjectProtocol?
     private var work: Task<Void, Never>?
@@ -67,7 +79,12 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
     // ToolPlugin lifecycle/UI callbacks run on the main thread. Keep this
     // boundary explicit without changing actor isolation of pure layout helpers.
     private var activationBlocksLayout: Bool {
-        nativeRevealBlocksLayout || MainActor.assumeIsolated { operationCoordinator?.blocksLayout == true }
+        nativeRevealBlocksLayout || MainActor.assumeIsolated {
+            #if ICE_MENU_BAR_INTEGRATED
+            if iceActivation != nil || iceLaunch?.isRunning == true { return true }
+            #endif
+            return operationCoordinator?.blocksLayout == true
+        }
     }
 
     static func prepareMainStatusPosition(defaults: UserDefaults = .standard) {
@@ -350,7 +367,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         guard isOrganizing else { return }
         guard !nativeRevealBlocksLayout else { status = "请先完成或取消临时露出。"; return }
         MainActor.assumeIsolated { operationCoordinator?.releaseUnmovedInteraction() }
-        if shelfPopover != nil { dismissShelf() }
+        if shelfPopover != nil || shelfWindow != nil { dismissShelf() }
         else if isCapturing { expand() }
         else { hideIntoPanel() }
     }
@@ -513,9 +530,91 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
     func postDrag(from source: CGPoint, to destination: CGPoint, token moveToken: UUID) async -> Bool {
         automaticLayoutUnsupported(); return false
     }
-    func moveIcon(_ id: CGWindowID, intoShelf: Bool) { automaticLayoutUnsupported() }
+    func moveIcon(_ id: CGWindowID, intoShelf: Bool) {
+        #if ICE_MENU_BAR_INTEGRATED
+        placePanelIcon(id,destination:nil,onLeft:intoShelf,intoShelf:intoShelf)
+        #else
+        automaticLayoutUnsupported()
+        #endif
+    }
     func applyVisibleLimit() { automaticLayoutUnsupported() }
-    func reorderIcon(_ id: CGWindowID, nextTo targetID: CGWindowID) { automaticLayoutUnsupported() }
+    func reorderIcon(_ id: CGWindowID, nextTo targetID: CGWindowID) {
+        #if ICE_MENU_BAR_INTEGRATED
+        guard let source=(icons+visibleIcons).first(where:{$0.id==id}),
+              let target=(icons+visibleIcons).first(where:{$0.id==targetID}) else{return}
+        placePanelIcon(id,destination:targetID,onLeft:source.frame.midX>target.frame.midX,intoShelf:icons.contains{$0.id==targetID})
+        #else
+        automaticLayoutUnsupported()
+        #endif
+    }
+    func acceptPanelDrop(_ data:Data,destination:CGWindowID?,onLeft:Bool,intoShelf:Bool) {
+        #if ICE_MENU_BAR_INTEGRATED
+        guard let payload=ShelfDragPayload.decode(data,generation:token,known:Set((icons+visibleIcons).map(\.id))) else{return}
+        placePanelIcon(payload.id,destination:destination,onLeft:onLeft,intoShelf:intoShelf)
+        #endif
+    }
+    #if ICE_MENU_BAR_INTEGRATED
+    private func exactLayoutTarget(_ identity:MenuBarIconIdentity)throws->MenuBarIceSelectedTarget {
+        guard let original=identity.application,MenuBarApplicationIdentity.current(pid:identity.pid)==original else{throw MenuBarIceSelectedTarget.Failure.identity}
+        let directory=try MenuBarIceSelectedTarget.readDirectory()
+        guard let row=directory.rows.first(where:{$0.id==identity.windowID && $0.pid==identity.pid}) else{throw MenuBarIceSelectedTarget.Failure.missing}
+        let target=try MenuBarIceSelectedTarget.capture(row,from:directory)
+        guard target.owner.launch==original.launch,target.owner.identifier==original.bundleID else{throw MenuBarIceSelectedTarget.Failure.identity}
+        return target
+    }
+    private func placePanelIcon(_ id:CGWindowID,destination:CGWindowID?,onLeft:Bool,intoShelf:Bool) {
+        guard isOrganizing,isCollapsed,!activationBlocksLayout,id != destination,
+              let source=(icons+visibleIcons).first(where:{$0.id==id})?.identity else{return}
+        let peer=destination.flatMap{key in (icons+visibleIcons).first(where:{$0.id==key})?.identity}
+        guard destination==nil || peer != nil else{return}
+        expand()
+        status="正在保存拖放后的真实排列…"
+        iceActivation=Task { @MainActor [weak self] in
+            guard let self else{return};defer{self.iceActivation=nil}
+            do {
+                try await Task.sleep(nanoseconds:350_000_000)
+                guard self.isOrganizing else{throw MenuBarIceSelectedTarget.Failure.changed}
+                let target=try self.exactLayoutTarget(source)
+                let desired:MenuBarIceSelectedTarget
+                if let peer { desired=try self.exactLayoutTarget(peer) }
+                else {
+                    guard let number=self.divider?.button?.window?.windowNumber,number>0 else{throw MenuBarIceSelectedTarget.Failure.missing}
+                    let directory=try MenuBarIceSelectedTarget.readDirectory(includeOwn:true)
+                    guard let row=directory.rows.first(where:{$0.id==UInt32(number) && $0.pid==ProcessInfo.processInfo.processIdentifier}) else{throw MenuBarIceSelectedTarget.Failure.missing}
+                    desired=try MenuBarIceSelectedTarget.capture(row,from:directory,includeOwn:true)
+                }
+                guard let geometry=self.placement(),
+                      peer==nil || (intoShelf ? desired.originalFrame.maxX<=geometry.divider.minX+1 : desired.originalFrame.minX>=geometry.divider.maxX-1) else{throw MenuBarIceSelectedTarget.Failure.changed}
+                let session=try MenuBarIceInterfaceProductBridge.prepare(target)
+                guard let nonce=UUID(uuidString:String(session.lastPathComponent.dropFirst(8))) else{throw MenuBarIceSelectedTarget.Failure.changed}
+                let request=MenuBarIceLayoutRequest(nonce:nonce,destination:desired,onLeft:peer==nil ? intoShelf : onLeft)
+                try Task.checkCancellation()
+                let launch=try await MenuBarIceInterfaceProductBridge.launch(session,target:target,production:true,layout:request)
+                self.iceLaunch=launch
+                do {
+                    while !FileManager.default.fileExists(atPath:session.appendingPathComponent("result.json").path) {
+                        guard launch.isRunning else{throw MenuBarIceInterfaceProductBridge.Failure.unknown(session)}
+                        try await Task.sleep(nanoseconds:100_000_000)
+                    }
+                    let bytes=try Data(contentsOf:session.appendingPathComponent("result.json"))
+                    guard bytes.count<2_000_000,let value=try JSONSerialization.jsonObject(with:bytes) as? [String:Any] else{throw MenuBarIceSelectedTarget.Failure.changed}
+                    guard try MenuBarIceInterfaceProductBridge.layoutResult(value,request:request,sourceID:target.windowID) else{
+                        self.status="拖放未完成；恢复记录保留，不自动重试。";return
+                    }
+                    while launch.isRunning {try await Task.sleep(nanoseconds:100_000_000)}
+                    let cleanupBytes=try Data(contentsOf:session.appendingPathComponent("cleanup.json"))
+                    guard let clean=try JSONSerialization.jsonObject(with:cleanupBytes) as? [String:Any],clean["journalPending"] as? Bool==false else{throw MenuBarIceSelectedTarget.Failure.changed}
+                    self.iceLaunch=nil
+                    self.status="真实排列已保存，正在刷新缩略图。"
+                    DispatchQueue.main.async { [weak self] in self?.hideIntoPanel() }
+                } catch {
+                    if Task.isCancelled,launch.isRunning,(try? MenuBarProcessSignature.read(launch.proof.pid))==launch.proof{launch.application.terminate()}
+                    throw error
+                }
+            } catch {self.status="拖放未完成：\(error.localizedDescription)。未自动重试。"}
+        }
+    }
+    #endif
     private func removePopoverMonitors() {
         popoverMonitors.forEach(NSEvent.removeMonitor); popoverMonitors = []
         if let popoverDeactivateObserver { NotificationCenter.default.removeObserver(popoverDeactivateObserver) }
@@ -528,6 +627,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
     }
     private func dismissPopoverOnly() {
         removePopoverMonitors()
+        shelfWindow?.orderOut(nil);shelfWindow?.contentView=nil;shelfWindow=nil
         let popover = shelfPopover; shelfPopover = nil
         popover?.delegate = nil; popover?.close(); popover?.contentViewController = nil
     }
@@ -583,6 +683,26 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         controller.view.window?.title = "菜单栏收纳"
         NSApp.activate(ignoringOtherApps: true)
         controller.view.window?.makeKey()
+    }
+    private func showDragPanel(_ content:AnyView,width:CGFloat) {
+        guard let anchor=control?.button?.window,let screen=screen(for:anchor.frame),!environment.sleeping else{expand();return}
+        let view=NSHostingView(rootView:content.frame(width:width).padding(10).background(.regularMaterial))
+        view.layoutSubtreeIfNeeded()
+        let size=NSSize(width:width+20,height:max(80,view.fittingSize.height))
+        let panel=ShelfDragPanel(contentRect:NSRect(origin:.zero,size:size),styleMask:[.borderless],backing:.buffered,defer:false)
+        panel.title="菜单栏收纳";panel.level = .floating;panel.hidesOnDeactivate=false
+        panel.isReleasedWhenClosed=false;panel.isMovableByWindowBackground=false;panel.contentView=view
+        panel.setFrameOrigin(NSPoint(x:min(max(anchor.frame.midX-size.width/2,screen.minX+8),screen.maxX-size.width-8),
+                                     y:anchor.frame.minY-size.height-4))
+        shelfWindow=panel
+        if let monitor=NSEvent.addLocalMonitorForEvents(matching:[.leftMouseDown,.rightMouseDown,.keyDown],handler:{[weak self,weak panel] event in
+            guard let self,let panel,self.shelfWindow===panel else{return event}
+            if event.type == .keyDown {if event.keyCode==53{self.dismissShelf();return nil};return event}
+            if event.window===panel || event.window===self.control?.button?.window{return event}
+            self.dismissShelf();return event
+        }) {popoverMonitors.append(monitor)}
+        if let monitor=NSEvent.addGlobalMonitorForEvents(matching:[.leftMouseDown,.rightMouseDown],handler:{[weak self] _ in self?.dismissShelf()}) {popoverMonitors.append(monitor)}
+        panel.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true)
     }
     private func showHelpPanel() {
         guard let frame = control?.button?.window?.frame, let screen = screen(for: frame) else { expand(); return }
@@ -696,11 +816,16 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         guard isCollapsed, let geometry = placement(), !icons.isEmpty else { expand(); return }
         dismissPopoverOnly()
         let width = MenuBarPopoverLayout.width(iconCount: max(icons.count, visibleIcons.count), screenWidth: geometry.screen.width)
-        let view = ShelfPanelView(icons: icons, outside: visibleIcons, width: width,
+        let view = ShelfPanelView(icons: icons, outside: visibleIcons, width: width, generation: token,
+            onDrop: { [weak self] data,id,left,hidden in self?.acceptPanelDrop(data,destination:id,onLeft:left,intoShelf:hidden) },
             onExpand: { [weak self] in self?.arrangeNativeIcons() },
             onClick: { [weak self] id in Task { @MainActor in self?.activateIcon(id) } },
             onOpenToolbox: { [weak self] in self?.openToolbox() })
+        #if ICE_MENU_BAR_INTEGRATED
+        showDragPanel(AnyView(view),width:width)
+        #else
         showPopover(AnyView(view), width: width)
+        #endif
     }
     func openToolbox() {
         expand(); showsAdvancedOptions = true
@@ -899,12 +1024,39 @@ private struct OrganizerHelpView: View {
     }
 }
 
+private final class ShelfDragPanel: NSPanel {
+    override var canBecomeKey:Bool {true}
+    override var canBecomeMain:Bool {false}
+}
+
+private struct ShelfIconFrames: PreferenceKey {
+    static var defaultValue:[CGWindowID:CGRect]=[:]
+    static func reduce(value:inout [CGWindowID:CGRect],nextValue:()->[CGWindowID:CGRect]){value.merge(nextValue(),uniquingKeysWith:{$1})}
+}
+private struct ShelfRowFrames: PreferenceKey {
+    static var defaultValue:[Bool:CGRect]=[:]
+    static func reduce(value:inout [Bool:CGRect],nextValue:()->[Bool:CGRect]){value.merge(nextValue(),uniquingKeysWith:{$1})}
+}
+
 private struct ShelfPanelView: View {
     @State private var hiddenPage = 0
     @State private var visiblePage = 0
+    @State private var draggedID:CGWindowID?
+    @State private var dragPoint=CGPoint.zero
+    @State private var iconFrames:[CGWindowID:CGRect]=[:]
+    @State private var rowFrames:[Bool:CGRect]=[:]
     let icons: [ShelfIcon]
     let outside: [ShelfIcon]
     let width: CGFloat
+    private var dragEnabled: Bool {
+        #if ICE_MENU_BAR_INTEGRATED
+        return true
+        #else
+        return false
+        #endif
+    }
+    let generation: UUID
+    let onDrop: (Data,CGWindowID?,Bool,Bool) -> Void
     let onExpand: () -> Void
     let onClick: (CGWindowID) -> Void
     let onOpenToolbox: () -> Void
@@ -921,6 +1073,23 @@ private struct ShelfPanelView: View {
         }.buttonStyle(.plain)
             .accessibilityLabel("\(hidden ? "收纳" : "可见")图标 \(index + 1)")
             .accessibilityIdentifier("menu-bar-icon-\(icon.id)")
+            .background(GeometryReader { proxy in Color.clear.preference(key:ShelfIconFrames.self,value:[icon.id:proxy.frame(in:.named("shelf-drag"))]) })
+            .opacity(draggedID==icon.id ? 0.45 : 1)
+            .highPriorityGesture(DragGesture(minimumDistance:6,coordinateSpace:.named("shelf-drag"))
+                .onChanged { value in
+                    guard dragEnabled else{return}
+                    draggedID=icon.id;dragPoint=value.location
+                }
+                .onEnded { value in
+                    guard dragEnabled else{return}
+                    defer{draggedID=nil}
+                    guard let targetHidden=rowFrames.first(where:{$0.value.contains(value.location)})?.key else{return}
+                    let candidates=targetHidden ? icons : outside
+                    let target=candidates.first{ $0.id != icon.id && iconFrames[$0.id]?.contains(value.location)==true }
+                    let left=target.flatMap{iconFrames[$0.id]}.map{targetHidden ? value.location.x<$0.midX : value.location.x>=$0.midX} ?? targetHidden
+                    guard let data=try? JSONEncoder().encode(ShelfDragPayload(id:icon.id,generation:generation)) else{return}
+                    onDrop(data,target?.id,left,targetHidden)
+                })
             .overlay(alignment: .bottomTrailing) {
                 if icon.availability == .occluded {
                     Image(systemName: "exclamationmark.triangle.fill").font(.caption2).foregroundStyle(.orange)
@@ -956,20 +1125,22 @@ private struct ShelfPanelView: View {
         let page = hidden ? hiddenPage : visiblePage
         let range = MenuBarPopoverLayout.pageRange(count: items.count, page: page, columns: columns)
         return VStack(spacing: 4) {
+            if items.isEmpty { Text("拖到此处").frame(maxWidth:.infinity,minHeight:MenuBarPopoverLayout.tile) }
             iconGrid(items, range: range, columns: columns, hidden: hidden)
             if items.count > columns * 2 { pageControls(count: items.count, page: page, columns: columns, hidden: hidden) }
-        }
+        }.contentShape(Rectangle())
+            .background(GeometryReader { proxy in Color.clear.preference(key:ShelfRowFrames.self,value:[hidden:proxy.frame(in:.named("shelf-drag"))]) })
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("收纳区 · \(icons.count)").font(.caption.weight(.medium)).foregroundStyle(.secondary)
             row(icons, hidden: true)
-            if !outside.isEmpty {
+            if !outside.isEmpty || !icons.isEmpty {
                 Divider()
                 Text("常驻图标 · \(outside.count)").font(.caption2).foregroundStyle(.secondary)
                 row(outside, hidden: false)
             }
-            Text("打开会临时露出原图标；界面不再占用15秒后回到原邻边。排列请用原生 ⌘ 拖拽。")
+            Text("拖动缩略图可换序；跨分区拖动改变收纳归属。点击打开后仍按15秒归位。")
                 .font(.caption2).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
             Divider()
             HStack {
@@ -978,7 +1149,17 @@ private struct ShelfPanelView: View {
                 Spacer()
                 Button("打开工具箱") { onOpenToolbox() }
             }.controlSize(.small)
-        }.padding(10).accessibilityIdentifier("menu-bar-shelf-popover")
+        }.padding(10)
+            .coordinateSpace(name:"shelf-drag")
+            .onPreferenceChange(ShelfIconFrames.self){iconFrames=$0}
+            .onPreferenceChange(ShelfRowFrames.self){rowFrames=$0}
+            .overlay(alignment:.topLeading) {
+                if let id=draggedID,let icon=(icons+outside).first(where:{$0.id==id}),let image=icon.image {
+                    Image(decorative:image,scale:2).resizable().aspectRatio(contentMode:.fit)
+                        .frame(width:44,height:44).position(dragPoint).allowsHitTesting(false)
+                }
+            }
+            .accessibilityIdentifier("menu-bar-shelf-popover")
     }
 }
 
@@ -1088,7 +1269,7 @@ private struct MenuBarOrganizerView: View {
                                 Button("辅助功能权限") { plugin.requestAccessibilityPermission() }
                             }
                         }
-                        Text("排列请展开原生菜单栏，按住 ⌘ 手动拖动；本版本不按数量自动整理。")
+                        Text("排列请展开原生菜单栏，按住 ⌘ 手动拖动；可在缩略图面板拖放换序或改变收纳归属；不按数量自动整理。")
                             .font(.caption).foregroundStyle(.secondary)
                     }.padding(.top, 8)
                 }

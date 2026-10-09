@@ -76,6 +76,35 @@ import AppKit
                 try check(refused,"unobserved existing interface cannot authorize return")
             }
         }
+        scenarios+=1
+        var layoutBinding=b
+        layoutBinding.layoutDestination=b.neighbor
+        layoutBinding.layoutOnLeft=false
+        try layoutBinding.validate()
+        let layout=IceSelectedRecord(binding:layoutBinding,generation:UUID(),contract:.ordinaryIceLayoutV10)
+        try layout.validate()
+        try check(layout.schemaVersion==5,"layout uses a separate durable contract, not temporary return")
+        var placed=layout;placed.revision=1;placed.phase = .moving
+        try placed.validate()
+        placed.revision+=1;placed.phase = .placed;placed.placementEvidenceSHA256=String(repeating:"a",count:64)
+        try placed.validate()
+        try check(placed.gestures.isEmpty && !placed.needsRelease,"already-at-destination no-op needs no input")
+        var invalid=placed;invalid.placementEvidenceSHA256=nil
+        var refused=false;do{try invalid.validate()}catch{refused=true}
+        try check(refused,"layout terminal requires durable placement evidence")
+        let oldContract=IceSelectedRecord(binding:layoutBinding,generation:UUID(),contract:.ordinaryIceInterfaceV9)
+        refused=false;do{try oldContract.validate()}catch{refused=true}
+        try check(refused,"temporary workflow refuses layout intent")
+        let noIntent=IceSelectedRecord(binding:b,generation:UUID(),contract:.ordinaryIceLayoutV10)
+        refused=false;do{try noIntent.validate()}catch{refused=true}
+        try check(refused,"persistent layout refuses missing destination")
+        scenarios+=1
+        let generation=UUID(),payload=ShelfDragPayload(id:99,generation:generation)
+        let data=try JSONEncoder().encode(payload)
+        try check(ShelfDragPayload.decode(data,generation:generation,known:[99]) != nil,"own current panel drag accepted")
+        try check(ShelfDragPayload.decode(data,generation:UUID(),known:[99]) == nil,"stale panel rejected")
+        try check(ShelfDragPayload.decode(data,generation:generation,known:[100]) == nil,"foreign source rejected")
+        try check(ShelfDragPayload.decode(Data(repeating:0,count:4096),generation:generation,known:[99]) == nil,"oversize payload rejected")
         for name in ["cancelObserved","cancelDelay","unknown","multiple","rebuild","reopenedDuringReturn","forgedReturn"] {try await workflow(name,b)}
         return(scenarios,assertions)
     }

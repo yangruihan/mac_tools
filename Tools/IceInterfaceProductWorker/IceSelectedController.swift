@@ -3,7 +3,8 @@ import AppKit
 
 @MainActor final class IceSelectedController: NSObject, NSApplicationDelegate, NSWindowDelegate {
     let directory: URL, prepared: IceSelectedSession.Prepared
-    var production: Bool { CommandLine.arguments.contains("--production-session") }
+    var production: Bool { CommandLine.arguments.contains("--production-session") || CommandLine.arguments.contains("--layout-session") }
+    var layoutMode: Bool { CommandLine.arguments.contains("--layout-session") }
     let autoOwned: Bool
     var window: NSWindow!, status: NSTextField!, start: NSButton!, cancelButton: NSButton!
     let journal: IceSelectedJournal
@@ -76,7 +77,7 @@ import AppKit
             if prepared.selfOwned {try await launchFixture()}
             try Task.checkCancellation();guard !cancelled,!quitting else{throw IceBaselineError.cancelled}
             try mark("ready");start.isEnabled=true;status.stringValue="已就绪；只运行一次，按 Ice 邻居边缘归位；完整队列仅诊断。"
-            try save("ready.json",["nonce":prepared.nonce.uuidString,"pid":ProcessInfo.processInfo.processIdentifier,"fixturePID":fixturePID as Any? ?? NSNull(),"strictANYRequired":false,"hitTestRequired":false,"nativePosts":0,"windowNumber":window.windowNumber,"windowVisible":window.isVisible,"productionMode":production,"automaticStart":production,"windowKey":window.isKeyWindow,"frontPID":NSWorkspace.shared.frontmostApplication?.processIdentifier ?? -1])
+            try save("ready.json",["nonce":prepared.nonce.uuidString,"pid":ProcessInfo.processInfo.processIdentifier,"fixturePID":fixturePID as Any? ?? NSNull(),"strictANYRequired":false,"hitTestRequired":false,"nativePosts":0,"windowNumber":window.windowNumber,"windowVisible":window.isVisible,"productionMode":production,"layoutMode":layoutMode,"automaticStart":production,"windowKey":window.isKeyWindow,"frontPID":NSWorkspace.shared.frontmostApplication?.processIdentifier ?? -1])
             if CommandLine.arguments.contains("--owned-entry-cancel-check") {cancelButton.performClick(nil)}
             else if autoOwned || production {begin()}
         } catch {await finish(["realClosedLoopVerified":false,"posts":0,"stage":stage,"failure":String(describing:error)])}}
@@ -156,12 +157,25 @@ import AppKit
             let windows=try IceBaselineWindows(),first=try selectedTarget()
             try await Task.sleep(nanoseconds:150_000_000)
             let second=try selectedTarget();guard first==second else{throw IceBaselineError.geometry}
-            let plan=try IceSelectedPlan(selected:second,anchorID:UInt32(id),windows:windows,quick:true,diagnostics:{name,facts in try? self.save("plan-"+name+".json",facts)})
+            var layout:MenuBarIceLayoutRequest?
+            if layoutMode {
+                let bytes=try Data(contentsOf:directory.appendingPathComponent("layout-request.json"))
+                guard bytes.count<65_536 else{throw IceSelectedFailure.policy}
+                let request=try JSONDecoder().decode(MenuBarIceLayoutRequest.self,from:bytes)
+                guard request.nonce==prepared.nonce,!prepared.selfOwned else{throw IceSelectedFailure.policy}
+                layout=request
+            }
+            let plan=try IceSelectedPlan(selected:second,anchorID:UInt32(id),windows:windows,quick:true,layout:layout,diagnostics:{name,facts in try? self.save("plan-"+name+".json",facts)})
             try save("plan.json",try JSONSerialization.jsonObject(with:JSONEncoder().encode(plan.binding)))
             try save("setup.json",["selectionBeforeAnchor":prepared.selected.map{try! JSONSerialization.jsonObject(with:JSONEncoder().encode($0))} as Any? ?? NSNull(),"activeBaseline":try JSONSerialization.jsonObject(with:JSONEncoder().encode(second)),"inputPolicy":"iceMouseTracking","strictANYRequired":false,"hitTestRequired":false])
             if prepared.selfOwned {try await lifetime("begin")}
             guard !cancelled else{throw IceBaselineError.cancelled}
             try save("action-consumed.json",["nonce":prepared.nonce.uuidString,"atUnix":Date().timeIntervalSince1970,"selfOwned":prepared.selfOwned]);try mark("execute")
+            if layoutMode {
+                status.stringValue="正在保存拖放后的真实图标位置…"
+                let result=try await IceSelectedWorkflow.runLayout(plan,journal:journal,onCoordinator:{self.operation=$0})
+                await finish(result);return
+            }
             status.stringValue=prepared.selfOwned ? "正在验证自建 T 闭环…" : "正在搬出图标；界面出现后请关闭或切换至其他应用。"
             let close:(() async throws -> Void)? = prepared.selfOwned ? { [self] in
                 if (CommandLine.arguments.contains("--self-owned-window-run") || CommandLine.arguments.contains("--owned-window-session")) {
@@ -213,7 +227,7 @@ import AppKit
         if !prepared.selfOwned,let record=try? journal.inspect(),record.phase == .stopped {
             try? save("result.json",value);recoveryPending=true;task=nil
             status.stringValue=record.needsRelease ? "投递配对未确认；已停止并保留责任，不能自动清除。" : "已停止。正常关闭菜单、松开鼠标；按Command仅拖回选定图标至原邻居同一侧，再确认归位。"
-            if [.ordinaryIceQuickV4, .ordinaryIceInterfaceV9].contains(record.contract) {
+            if [.ordinaryIceQuickV4, .ordinaryIceInterfaceV9, .ordinaryIceLayoutV10].contains(record.contract) {
                 status.stringValue=record.needsRelease ? "本轮已停止，投递配对未确认；原始记录已保留。" : "本轮已停止，未完成Ice归位；原始记录已保留。"
                 start.title="本轮已结束";start.isEnabled=false
             } else {
@@ -313,10 +327,10 @@ import AppKit
             let autoOwned=args.count==2 && ["--self-owned-run","--self-owned-receiver-lag-run","--self-owned-window-run"].contains(args[1])
             let directory:URL
             if autoOwned {directory=try IceSelectedSession.prepare(windowID:nil)}
-            else if (args.count==3 || (args.count==4 && ["--owned-entry-cancel-check","--owned-window-session","--production-session"].contains(args[3]))),args[1]=="--session" {directory=URL(fileURLWithPath:args[2])}
+            else if (args.count==3 || (args.count==4 && ["--owned-entry-cancel-check","--owned-window-session","--production-session","--layout-session"].contains(args[3]))),args[1]=="--session" {directory=URL(fileURLWithPath:args[2])}
             else{throw IceSelectedFailure.policy}
             let prepared=try IceSelectedSession.load(directory)
-            guard !args.contains("--production-session") || (!prepared.selfOwned && prepared.selected != nil) else{throw IceSelectedFailure.policy}
+            guard (!args.contains("--production-session") && !args.contains("--layout-session")) || (!prepared.selfOwned && prepared.selected != nil) else{throw IceSelectedFailure.policy}
             guard !autoOwned || prepared.selfOwned else{throw IceSelectedFailure.policy}
             guard !args.contains("--owned-window-session") || prepared.selfOwned else{throw IceSelectedFailure.policy}
             if args.contains("--owned-entry-cancel-check"),!prepared.selfOwned {
@@ -326,7 +340,7 @@ import AppKit
                       target.owner.sha256==m["productTargetSHA256"] as? String else{throw IceSelectedFailure.policy}
             }
             try emit(["session":directory.path,"selfOwned":prepared.selfOwned,"autoStart":autoOwned])
-            let app=NSApplication.shared;app.setActivationPolicy(args.contains("--production-session") ? .accessory : .regular)
+            let app=NSApplication.shared;app.setActivationPolicy((args.contains("--production-session") || args.contains("--layout-session")) ? .accessory : .regular)
             let delegate=IceSelectedController(directory:directory,prepared:prepared,autoOwned:autoOwned);app.delegate=delegate
             withExtendedLifetime(delegate){app.run()}
         }catch{fputs("selected candidate: \(error)\n",stderr);exit(1)}

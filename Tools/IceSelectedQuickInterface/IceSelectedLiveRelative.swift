@@ -159,3 +159,33 @@ import AppKit
         return .init(plan:plan,data:data,atUptime:last.uptime)
     }
 }
+
+// Only this live sampler can issue the persistent-layout completion proof.
+@MainActor struct IceSelectedLayoutProof {
+    let binding: IceSelectedBinding, data: Data, at: Double
+    private init(binding:IceSelectedBinding,data:Data,at:Double){self.binding=binding;self.data=data;self.at=at}
+    func validate(binding expected:IceSelectedBinding,now:Double)throws {
+        guard binding==expected,expected.layoutDestination != nil,now>=at,now-at<0.25,!data.isEmpty else{throw IceSelectedFailure.binding}
+    }
+    static func capture(_ plan:IceSelectedPlan)async throws->Self {
+        let b=plan.binding
+        guard let destination=b.layoutDestination,let left=b.layoutOnLeft,
+              plan.runtime.processes.contains(destination.process) else{throw IceSelectedFailure.policy}
+        func sample()throws->[String:Any] {
+            try plan.runtime.checkFullSignatures();try plan.verifyRuntime()
+            let t=try plan.windows.frame(plan.item(b.target)),d=try plan.windows.frame(plan.item(destination))
+            guard abs((left ? t.maxX-d.minX : t.minX-d.maxX))<=1,
+                  t.minY==d.minY,t.height==d.height else{throw IceBaselineError.geometry}
+            return ["targetID":b.target.id,"destinationID":destination.id,"onLeft":left,
+                    "targetFrame":NSStringFromRect(t),"destinationFrame":NSStringFromRect(d)]
+        }
+        let first=try sample();try await Task.sleep(nanoseconds:120_000_000)
+        let second=try sample();try Task.checkCancellation()
+        guard first["targetFrame"] as? String==second["targetFrame"] as? String,
+              first["destinationFrame"] as? String==second["destinationFrame"] as? String else{throw IceBaselineError.geometry}
+        let at=ProcessInfo.processInfo.systemUptime
+        let data=try JSONSerialization.data(withJSONObject:["criterion":"icePersistentNeighborEdgeV10","nonce":b.nonce.uuidString,
+            "display":b.display,"space":b.space,"nativeObservation":true,"first":first,"second":second,"atUptime":at],options:.sortedKeys)
+        return .init(binding:b,data:data,at:at)
+    }
+}
