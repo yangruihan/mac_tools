@@ -1,0 +1,31 @@
+{
+  "allCompiledSourceHashesMatch": true,
+  "originalAcceptedWorkerUnchanged": true,
+  "installedFormalAppUnchanged": true,
+  "acceptedLogicUnchangedExceptFixturePackagePath": true,
+  "fourRolesReopened": {
+    "MODIFIED_FILE": {
+      "path": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/MODIFIED_FILE.swift",
+      "bytes": 11903,
+      "sha256": "2f734a3a12287213b65d0a9d8e0c65ace6c05e17c535e179c15d8f1791f95bd1"
+    },
+    "DIFF_FILE": {
+      "path": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/DIFF_FILE.patch",
+      "bytes": 17604,
+      "sha256": "a1f72270cbf68c5ad284b85c7c0472486a082ef768b07ff841277ba4e0e13535"
+    },
+    "VERIFICATION": {
+      "path": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/VERIFICATION.txt",
+      "bytes": 295059,
+      "sha256": "77f2fe8f3997bee6d1671acaa2aa722f4377f3f3b435e4f8a25389e3677717bf"
+    },
+    "ROLLBACK": {
+      "path": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+      "bytes": 1241,
+      "sha256": "9b0f02c6dcd654676b749a80833045136351f663b58535c92b863099fa5c2604"
+    }
+  },
+  "normalHostSHA256": "b4fc4782cf9e9c916857812465a9e9239c4d8fb19f8219d49bc9f80ea7d060fb",
+  "normalWorkerSHA256": "f3e5ae2bf953b19761ea4a072a6b4f3626f07215a046ea441306b96ff9f420be",
+  "normalManifestSHA256": "8533e4be7d0e38e0a9fe4b89216fe073d81eda05f9cc3dd0ab48365a6d845cbc"
+}

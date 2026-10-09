@@ -1,0 +1,81 @@
+{
+  "binding" : {
+    "anchor" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 29,
+        "x" : 1516,
+        "y" : 0
+      },
+      "id" : 356226,
+      "process" : {
+        "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/ice-interface-product\/MacTools Ice Interface Candidate.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+        "identifier" : "com.ryanai.mactools",
+        "launch" : 1791530645.5988591,
+        "pid" : 59919,
+        "sha256" : "f3e5ae2bf953b19761ea4a072a6b4f3626f07215a046ea441306b96ff9f420be",
+        "team" : "58TJ64422P"
+      }
+    },
+    "area" : {
+      "height" : 37,
+      "width" : 772,
+      "x" : 956,
+      "y" : 0
+    },
+    "controller" : {
+      "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/ice-interface-product\/MacTools Ice Interface Candidate.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+      "identifier" : "com.ryanai.mactools",
+      "launch" : 1791530645.5988591,
+      "pid" : 59919,
+      "sha256" : "f3e5ae2bf953b19761ea4a072a6b4f3626f07215a046ea441306b96ff9f420be",
+      "team" : "58TJ64422P"
+    },
+    "display" : 1,
+    "neighbor" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 38,
+        "x" : 1241,
+        "y" : 0
+      },
+      "id" : 354357,
+      "process" : {
+        "executable" : "\/Applications\/WeChat.app\/Contents\/MacOS\/WeChat",
+        "identifier" : "com.tencent.xinWeChat",
+        "launch" : 1791519333.5285189,
+        "pid" : 63458,
+        "sha256" : "0e80b6c94ee804038031d5c285f864c434a5629abbf3c8655a9c0b1b09d8662e",
+        "team" : "5A4RE8SF68"
+      }
+    },
+    "nonce" : "A9E0D82D-0653-4AAF-A843-28B9A30E29E7",
+    "owner" : {
+      "executable" : "\/Applications\/QQ.app\/Contents\/MacOS\/QQ",
+      "identifier" : "com.tencent.qq",
+      "launch" : 1791499568.5659599,
+      "pid" : 58349,
+      "sha256" : "35453afefbecb877a3b7c3e81111b3ea2debec75e263a0e4ac1e0338659dedbd",
+      "team" : "FN2V63AD2J"
+    },
+    "returnOnLeft" : true,
+    "space" : 4634,
+    "target" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 32,
+        "x" : 1209,
+        "y" : 0
+      },
+      "id" : 351689,
+      "process" : {
+        "executable" : "\/Applications\/QQ.app\/Contents\/MacOS\/QQ",
+        "identifier" : "com.tencent.qq",
+        "launch" : 1791499568.5659599,
+        "pid" : 58349,
+        "sha256" : "35453afefbecb877a3b7c3e81111b3ea2debec75e263a0e4ac1e0338659dedbd",
+        "team" : "FN2V63AD2J"
+      }
+    }
+  }
+}

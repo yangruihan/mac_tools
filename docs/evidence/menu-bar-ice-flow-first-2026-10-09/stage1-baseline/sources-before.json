@@ -1,0 +1,66 @@
+{
+  "Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift": {
+    "sha256": "9a033598ba0c7251bea98c7a10d2c95d5a2107d19378f19bc4fbcc8327765f7b",
+    "bytes": 12624
+  },
+  "Tools/IceInterfaceProductWorker/IceSelectedPlan.swift": {
+    "sha256": "60f07e11c893c22e4f6fb4aa47101934b63d5d6b221f4050414ba562ce1f9fe7",
+    "bytes": 13940
+  },
+  "Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift": {
+    "sha256": "25479d1abb9eb50c39ff14248812e781f3c6bb3b911230c62d4563f648793db8",
+    "bytes": 7775
+  },
+  "Tools/IceInterfaceProductWorker/IceRehideDelayChecks.swift": {
+    "sha256": "afa04120a6d00cd90683ae114bba9e69cf02c178beae39c9d857f9018f1d30c5",
+    "bytes": 2113
+  },
+  "Tools/IceInterfaceProductWorker/IceInterfaceChecks.swift": null,
+  "Tools/IceInterfaceProductWorker/IceSelectedSession.swift": {
+    "sha256": "38ec2f8086a62184c812a538c96842254c8a84b9b1767cb0f67db07f47dd8e9d",
+    "bytes": 8247
+  },
+  "Tools/IceInterfaceProductWorker/IceSelectedController.swift": {
+    "sha256": "5fc3e6891fc64d2fca2a096d49332b1d8284b23cde8ebd0c5e70a1f35b615b33",
+    "bytes": 28189
+  },
+  "Tools/IceInterfaceProductWorker/IceSelectedOwnedRecovery.swift": {
+    "sha256": "215bdbd18322c25072cd44f6d9381445f41979dddeefd0bde9445ce6221f2240",
+    "bytes": 12973
+  },
+  "Tools/IceInterfaceProductWorker/FixtureDiagnostic.swift": {
+    "sha256": "52aa060b84ce12f2ddbfb6bbb9d4766414494bb01d7efa34ecefc551f86f5046",
+    "bytes": 8576
+  },
+  "Tools/IceInterfaceProductWorker/IceProductStopChecks.swift": {
+    "sha256": "b24524709e14b95f02883806f19ac60dd69d02351c6de35bed7ba74b7a19b348",
+    "bytes": 5848
+  },
+  "Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift": {
+    "sha256": "070d324b3e0c604318ed7b3b167fe06d2013c8bee4d3f2649e008e0e255c1013",
+    "bytes": 15634
+  },
+  "Tools/IceInterfaceProduct/MenuBarIceInterfaceProductNativeChecks.swift": {
+    "sha256": "32c034ad5e148c9a15dee7815bb1ac66edba72190eada8587b0d8522e9e016ae",
+    "bytes": 7318
+  },
+  "Tools/IceInterfaceProduct/MacTools.swift": {
+    "sha256": "92eae46b75711843cc3d8ebc969e963f39cc8ebd1c651a13b59538608caeb89b",
+    "bytes": 7699
+  },
+  "scripts/build-ice-interface-product-worker.sh": {
+    "sha256": "16c59fa7adf7d893cde2349bcf7e6c00beca37f79d91bbeef8607cb009cc08b9",
+    "bytes": 6475
+  },
+  "scripts/build-ice-interface-product-candidate.sh": {
+    "sha256": "89a9e18726287ef00e547fecc69011bb6806add533ec46f02a06c25ddc8b007a",
+    "bytes": 4291
+  },
+  "Tools/IceInterfaceProduct/Fixtures/accepted-ordinary-window.json": null,
+  "Tools/IceInterfaceProductWorker/Fixtures/menu-bar-ice-v9-interface-self-window-stop-2026-10-09.json": null,
+  "Tools/IceInterfaceProductWorker/Fixtures/menu-bar-ice-v9-interface-self-window-scope-stop-2026-10-09.json": null,
+  "docs/MENUBAR_ICE_INTERFACE_PRODUCT_CANDIDATE.md": {
+    "sha256": "622cb52e7d3c3bbd2c95afeb648fd8dc7b95e3e69a5af3236035e991ede29dda",
+    "bytes": 14467
+  }
+}

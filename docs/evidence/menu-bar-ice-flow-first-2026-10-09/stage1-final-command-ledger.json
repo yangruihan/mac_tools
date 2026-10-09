@@ -1,0 +1,82 @@
+[
+  {
+    "label": "stage1-final-BASELINE",
+    "command": [
+      "python3",
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage1-source-check.py",
+      "/Users/yangruihan/Library/Caches/MacTools-stage1-transaction-2bd3e279-0534-479b-860a-95379ba2ea55"
+    ],
+    "exit": 1,
+    "stdout": "{\n  \"passed\": false,\n  \"issues\": [\n    \"scripts/build-ice-interface-product-worker.sh: depends on dated temporary candidate\",\n    \"scripts/build-ice-interface-product-candidate.sh: depends on dated temporary candidate\",\n    \"Tools/IceInterfaceProductWorker/IceSelectedSession.swift: depends on dated temporary candidate\",\n    \"Tools/IceInterfaceProductWorker/IceSelectedSession.swift: depends on developer workspace at runtime\",\n    \"Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift: depends on dated temporary candidate\",\n    \"Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift: depends on developer workspace at runtime\",\n    \"worker resource root not executable-relative\",\n    \"host worker root not packaged resource\",\n    \"persistent state not separated from build resources\"\n  ],\n  \"checkedFiles\": [\n    \"scripts/build-ice-interface-product-worker.sh\",\n    \"scripts/build-ice-interface-product-candidate.sh\",\n    \"Tools/IceInterfaceProductWorker/IceSelectedSession.swift\",\n    \"Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift\"\n  ],\n  \"nativePosts\": 0\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "stage1-final-MODIFIED",
+    "command": [
+      "python3",
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage1-source-check.py",
+      "/Users/yangruihan/Library/Caches/MacTools-stage1-transaction-2bd3e279-0534-479b-860a-95379ba2ea55"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"passed\": true,\n  \"issues\": [],\n  \"checkedFiles\": [\n    \"scripts/build-ice-interface-product-worker.sh\",\n    \"scripts/build-ice-interface-product-candidate.sh\",\n    \"Tools/IceInterfaceProductWorker/IceSelectedSession.swift\",\n    \"Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift\"\n  ],\n  \"nativePosts\": 0\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "stage1-final-ROLLBACK-execute",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+      "--stage1",
+      "/Users/yangruihan/Library/Caches/MacTools-stage1-transaction-2bd3e279-0534-479b-860a-95379ba2ea55"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "label": "stage1-final-ROLLBACK",
+    "command": [
+      "python3",
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage1-source-check.py",
+      "/Users/yangruihan/Library/Caches/MacTools-stage1-transaction-2bd3e279-0534-479b-860a-95379ba2ea55"
+    ],
+    "exit": 1,
+    "stdout": "{\n  \"passed\": false,\n  \"issues\": [\n    \"scripts/build-ice-interface-product-worker.sh: depends on dated temporary candidate\",\n    \"scripts/build-ice-interface-product-candidate.sh: depends on dated temporary candidate\",\n    \"Tools/IceInterfaceProductWorker/IceSelectedSession.swift: depends on dated temporary candidate\",\n    \"Tools/IceInterfaceProductWorker/IceSelectedSession.swift: depends on developer workspace at runtime\",\n    \"Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift: depends on dated temporary candidate\",\n    \"Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift: depends on developer workspace at runtime\",\n    \"worker resource root not executable-relative\",\n    \"host worker root not packaged resource\",\n    \"persistent state not separated from build resources\"\n  ],\n  \"checkedFiles\": [\n    \"scripts/build-ice-interface-product-worker.sh\",\n    \"scripts/build-ice-interface-product-candidate.sh\",\n    \"Tools/IceInterfaceProductWorker/IceSelectedSession.swift\",\n    \"Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift\"\n  ],\n  \"nativePosts\": 0\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "stage1-final-reapply",
+    "command": [
+      "patch",
+      "-p1",
+      "-d",
+      "/Users/yangruihan/Library/Caches/MacTools-stage1-transaction-2bd3e279-0534-479b-860a-95379ba2ea55",
+      "-i",
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage1-sources.patch"
+    ],
+    "exit": 0,
+    "stdout": "patching file 'Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift'\npatching file 'Tools/IceInterfaceProductWorker/IceSelectedPlan.swift'\npatching file 'Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift'\npatching file 'Tools/IceInterfaceProductWorker/IceRehideDelayChecks.swift'\npatching file 'Tools/IceInterfaceProductWorker/IceInterfaceChecks.swift'\npatching file 'Tools/IceInterfaceProductWorker/IceSelectedSession.swift'\npatching file 'Tools/IceInterfaceProductWorker/IceSelectedController.swift'\npatching file 'Tools/IceInterfaceProductWorker/IceSelectedOwnedRecovery.swift'\npatching file 'Tools/IceInterfaceProductWorker/FixtureDiagnostic.swift'\npatching file 'Tools/IceInterfaceProductWorker/IceProductStopChecks.swift'\npatching file 'Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift'\npatching file 'Tools/IceInterfaceProduct/MenuBarIceInterfaceProductNativeChecks.swift'\npatching file 'Tools/IceInterfaceProduct/MacTools.swift'\npatching file 'scripts/build-ice-interface-product-worker.sh'\npatching file 'scripts/build-ice-interface-product-candidate.sh'\npatching file 'Tools/IceInterfaceProduct/Fixtures/accepted-ordinary-window.json'\npatching file 'Tools/IceInterfaceProductWorker/Fixtures/menu-bar-ice-v9-interface-self-window-stop-2026-10-09.json'\npatching file 'Tools/IceInterfaceProductWorker/Fixtures/menu-bar-ice-v9-interface-self-window-scope-stop-2026-10-09.json'\npatching file 'docs/MENUBAR_ICE_INTERFACE_PRODUCT_CANDIDATE.md'\n",
+    "stderr": ""
+  },
+  {
+    "label": "stage1-final-MODIFIED-reapplied",
+    "command": [
+      "python3",
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage1-source-check.py",
+      "/Users/yangruihan/Library/Caches/MacTools-stage1-transaction-2bd3e279-0534-479b-860a-95379ba2ea55"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"passed\": true,\n  \"issues\": [],\n  \"checkedFiles\": [\n    \"scripts/build-ice-interface-product-worker.sh\",\n    \"scripts/build-ice-interface-product-candidate.sh\",\n    \"Tools/IceInterfaceProductWorker/IceSelectedSession.swift\",\n    \"Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift\"\n  ],\n  \"nativePosts\": 0\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "stage1-final-ROLLBACK-unrelated-edit-rejected",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+      "--stage1",
+      "/Users/yangruihan/Library/Caches/MacTools-stage1-transaction-2bd3e279-0534-479b-860a-95379ba2ea55"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": "changed source: Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift; nothing restored\n"
+  }
+]

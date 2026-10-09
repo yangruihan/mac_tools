@@ -1,0 +1,45 @@
+[
+  {
+    "label": "stage1-final-signature",
+    "command": [
+      "codesign",
+      "--verify",
+      "--deep",
+      "--strict",
+      "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "label": "stage1-final-preflight",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app/Contents/MacOS/MacTools",
+      "--ice-candidate-preflight"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"automaticStart\" : false,\n  \"contract\" : \"ordinaryIceInterfaceV9\",\n  \"journalPending\" : false,\n  \"mousePosts\" : 0,\n  \"ordinaryEntryConnected\" : true,\n  \"permissionRequests\" : 0,\n  \"windowsOpened\" : 0,\n  \"workerRevision\" : \"ordinary-Ice-product-stage1\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "stage1-final-offline",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app/Contents/Resources/IceWorker/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
+      "--offline-tests"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"assertions\" : 510,\n  \"cursorEffects\" : 0,\n  \"interfaceAssertions\" : 83,\n  \"interfaceScenarios\" : 21,\n  \"legacyAssertions\" : 427,\n  \"legacyScenarios\" : 42,\n  \"nativePosts\" : 0,\n  \"nativeTaps\" : 0,\n  \"passed\" : true,\n  \"provenance\" : \"isolatedReplayWithInjectedSenderAndTaps\",\n  \"receiverAssertions\" : 20,\n  \"scenarios\" : 63\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "stage1-final-recovery",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app/Contents/Resources/IceWorker/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
+      "--inspect-recovery"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"journalPending\" : false,\n  \"nonce\" : null,\n  \"recordSHA256\" : null,\n  \"unconfirmedDown\" : false\n}\n",
+    "stderr": ""
+  }
+]

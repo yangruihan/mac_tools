@@ -1,0 +1,95 @@
+{
+  "restoredOriginalHashes": true,
+  "reappliedEqualsNormalSourceBytes": true,
+  "unrelatedEditPreserved": true,
+  "fileCount": 19,
+  "copy": "/Users/yangruihan/Library/Caches/MacTools-stage1-transaction-2bd3e279-0534-479b-860a-95379ba2ea55",
+  "patchSHA256": "080dc4175d7c567b80a82c7385f905db90a49c719af1f0bb575864430e5b1212",
+  "modifiedSHA256": {
+    "Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift": "03cbc31aad1dc7a67c4fc13d3cee48c48126a7c7771db4fbea8f21c45ee23420",
+    "Tools/IceInterfaceProductWorker/IceSelectedPlan.swift": "7e20451562f589a6d08ff610b74c143618aeeb641502a676b3a0de1ec1617c1e",
+    "Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift": "654a03caf4193c9e0f81cf48b5fd4fab5e1d478e2fd203fdb39a2816694d42f9",
+    "Tools/IceInterfaceProductWorker/IceRehideDelayChecks.swift": "b7537d539711367110475ab3cd0ffb323daa79b5079cf3b9148040bc7b151270",
+    "Tools/IceInterfaceProductWorker/IceInterfaceChecks.swift": "109fdf7f128fb9857750fbaebec67b2d9ca3418478657828c51fec78a7fc9c6e",
+    "Tools/IceInterfaceProductWorker/IceSelectedSession.swift": "4490fb485b2d1b4a710be8e7bfe913b52dd9f6ceed5cddd4a4e7dbe99a1bfc13",
+    "Tools/IceInterfaceProductWorker/IceSelectedController.swift": "8745abf2401f34610d30755cb9ee34520e1cf644181f29b8eaccc068b4fb0510",
+    "Tools/IceInterfaceProductWorker/IceSelectedOwnedRecovery.swift": "250556aee20c013f0230dc443a150d9da3a583f64dd116095db22dad6db5f00e",
+    "Tools/IceInterfaceProductWorker/FixtureDiagnostic.swift": "e3e19f059656060ca5f550590b4572affb1b432345d4351607cb0bda4efa7fc2",
+    "Tools/IceInterfaceProductWorker/IceProductStopChecks.swift": "81983c3dc49926652d547bf36d51fb3b6aa54e1901b55db5310e420e6abf32f0",
+    "Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift": "fb8c3d645725b52bc4cda0afccd08ec2a845f4749b913859258fbe87fa2ca2e7",
+    "Tools/IceInterfaceProduct/MenuBarIceInterfaceProductNativeChecks.swift": "3d32be730862a4b3ae21c07de13a4e5740022ce5af16d3108cf4070d6c0d1286",
+    "Tools/IceInterfaceProduct/MacTools.swift": "bd6303561cbde8d33edb6f877388d53a35b707945a668ee1b0d9681ef97df974",
+    "scripts/build-ice-interface-product-worker.sh": "1c805595218014031d59851d51188c89cf0af0ca0e33231bc266c9bb2e091c25",
+    "scripts/build-ice-interface-product-candidate.sh": "1afacbbe88d94a9914651523dc0bfd787af2083eeb19247b94fee346fb1fa769",
+    "Tools/IceInterfaceProduct/Fixtures/accepted-ordinary-window.json": "f4a27a59f9868653ac6ddc0a9136003f10d4ae9167bda5bd2f2e6775d61969c2",
+    "Tools/IceInterfaceProductWorker/Fixtures/menu-bar-ice-v9-interface-self-window-stop-2026-10-09.json": "77490739a7bbc26c4fedbc39ef43efabd71636da30f267ffebfb40bfde27b1f4",
+    "Tools/IceInterfaceProductWorker/Fixtures/menu-bar-ice-v9-interface-self-window-scope-stop-2026-10-09.json": "7ebeb29d7897d8f75526175eae718ee1d98ab2f727f99b2f17a7bd575f4c7ea4",
+    "docs/MENUBAR_ICE_INTERFACE_PRODUCT_CANDIDATE.md": "1c3c65a640e3b801ef212cbe4ffcafe8151149cbc6c2e42f9e8225a9f4bfd3c9"
+  },
+  "originalSHA256": {
+    "Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift": {
+      "sha256": "9a033598ba0c7251bea98c7a10d2c95d5a2107d19378f19bc4fbcc8327765f7b",
+      "bytes": 12624
+    },
+    "Tools/IceInterfaceProductWorker/IceSelectedPlan.swift": {
+      "sha256": "60f07e11c893c22e4f6fb4aa47101934b63d5d6b221f4050414ba562ce1f9fe7",
+      "bytes": 13940
+    },
+    "Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift": {
+      "sha256": "25479d1abb9eb50c39ff14248812e781f3c6bb3b911230c62d4563f648793db8",
+      "bytes": 7775
+    },
+    "Tools/IceInterfaceProductWorker/IceRehideDelayChecks.swift": {
+      "sha256": "afa04120a6d00cd90683ae114bba9e69cf02c178beae39c9d857f9018f1d30c5",
+      "bytes": 2113
+    },
+    "Tools/IceInterfaceProductWorker/IceInterfaceChecks.swift": null,
+    "Tools/IceInterfaceProductWorker/IceSelectedSession.swift": {
+      "sha256": "38ec2f8086a62184c812a538c96842254c8a84b9b1767cb0f67db07f47dd8e9d",
+      "bytes": 8247
+    },
+    "Tools/IceInterfaceProductWorker/IceSelectedController.swift": {
+      "sha256": "5fc3e6891fc64d2fca2a096d49332b1d8284b23cde8ebd0c5e70a1f35b615b33",
+      "bytes": 28189
+    },
+    "Tools/IceInterfaceProductWorker/IceSelectedOwnedRecovery.swift": {
+      "sha256": "215bdbd18322c25072cd44f6d9381445f41979dddeefd0bde9445ce6221f2240",
+      "bytes": 12973
+    },
+    "Tools/IceInterfaceProductWorker/FixtureDiagnostic.swift": {
+      "sha256": "52aa060b84ce12f2ddbfb6bbb9d4766414494bb01d7efa34ecefc551f86f5046",
+      "bytes": 8576
+    },
+    "Tools/IceInterfaceProductWorker/IceProductStopChecks.swift": {
+      "sha256": "b24524709e14b95f02883806f19ac60dd69d02351c6de35bed7ba74b7a19b348",
+      "bytes": 5848
+    },
+    "Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift": {
+      "sha256": "070d324b3e0c604318ed7b3b167fe06d2013c8bee4d3f2649e008e0e255c1013",
+      "bytes": 15634
+    },
+    "Tools/IceInterfaceProduct/MenuBarIceInterfaceProductNativeChecks.swift": {
+      "sha256": "32c034ad5e148c9a15dee7815bb1ac66edba72190eada8587b0d8522e9e016ae",
+      "bytes": 7318
+    },
+    "Tools/IceInterfaceProduct/MacTools.swift": {
+      "sha256": "92eae46b75711843cc3d8ebc969e963f39cc8ebd1c651a13b59538608caeb89b",
+      "bytes": 7699
+    },
+    "scripts/build-ice-interface-product-worker.sh": {
+      "sha256": "16c59fa7adf7d893cde2349bcf7e6c00beca37f79d91bbeef8607cb009cc08b9",
+      "bytes": 6475
+    },
+    "scripts/build-ice-interface-product-candidate.sh": {
+      "sha256": "89a9e18726287ef00e547fecc69011bb6806add533ec46f02a06c25ddc8b007a",
+      "bytes": 4291
+    },
+    "Tools/IceInterfaceProduct/Fixtures/accepted-ordinary-window.json": null,
+    "Tools/IceInterfaceProductWorker/Fixtures/menu-bar-ice-v9-interface-self-window-stop-2026-10-09.json": null,
+    "Tools/IceInterfaceProductWorker/Fixtures/menu-bar-ice-v9-interface-self-window-scope-stop-2026-10-09.json": null,
+    "docs/MENUBAR_ICE_INTERFACE_PRODUCT_CANDIDATE.md": {
+      "sha256": "622cb52e7d3c3bbd2c95afeb648fd8dc7b95e3e69a5af3236035e991ede29dda",
+      "bytes": 14467
+    }
+  }
+}

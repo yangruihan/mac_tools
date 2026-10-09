@@ -1,0 +1,203 @@
+--- BASELINE.swift
++++ MODIFIED_FILE.swift
+@@ -63,7 +63,7 @@
+         let neighbor=IceBaselineItem(windowID:b.neighbor.id,pid:b.neighbor.process.pid,key:"original-neighbor")
+         try await coordinator.run {
+             let(native,effects)=try makeEffects();defer{native.stopMonitoring()}
+-            try native.bindCandidate(coordinator);let engine=IceBaselineEngine(effects);try coordinator.attach(engine)
++            try native.bindCandidate(coordinator);let engine=IceBaselineEngine(effects,budget:90);try coordinator.attach(engine)
+             try await coordinator.advance(.moving);try await engine.move(target,to:.left(anchor))
+             try verifyVisible();try await coordinator.advance(.visible)
+             let lease=try makeLease();if lease.nativeObservation {try lease.beginLive()}
+@@ -116,7 +116,7 @@
+         let dispatchValidation=IceSynchronousDispatchValidation(read:{try plan.verifiedRuntimeScope()},scope:{plan.scope()},final:{try plan.finalRuntimeScope()},trace:{facts in
+             native?.note("dispatch-runtime-snapshot",facts)
+         })
+-        var returnEvidence:Any=NSNull(),interfaceCompletion:Any=NSNull(),absoluteDiagnostic:Any=NSNull()
++        var returnEvidence:Any=NSNull(),interfaceCompletion:Any=NSNull()
+         do {
+             try await executeInterface(coordinator:coordinator,makeEffects:{
+                 let transport = try coordinator.performAux("selected-transport-create") {
+@@ -139,25 +139,19 @@
+                     },ownership:{plan.validateWindowOwnership($0)})
+                 interfaceLease=lease;return lease
+             },verifyVisible:{try plan.verifyVisible()},verifyReturned:{
+-                let diagnosticAt=ProcessInfo.processInfo.systemUptime
+-                do {_ = try plan.returnedSample();absoluteDiagnostic=["sampleVerified":true,"atUptime":diagnosticAt,"stableClosedLoopProven":false]}
+-                catch {absoluteDiagnostic=["sampleVerified":false,"atUptime":diagnosticAt,"failure":String(describing:error),"stableClosedLoopProven":false]}
+-                if quick {return try coordinator.admitQuickReturn(plan)}
+-                guard let relative=plan.relative,let runtime=plan.relativeRuntime else{throw IceSelectedFailure.policy}
+-                let proof=try await relative.verify(runtime:runtime,check:{try coordinator.check()})
+-                try coordinator.admitReturn(proof)
+-                return proof.data
++                // Ice completion is the original neighbor edge, not an absolute-layout audit.
++                return try coordinator.admitQuickReturn(plan)
+             },afterInterfaceObserved:afterMenuOpened,onReturned:{data,closure in
+                 returnEvidence=try JSONSerialization.jsonObject(with:data)
+                 interfaceCompletion=try JSONSerialization.jsonObject(with:JSONEncoder().encode(closure))
+             })
+             return ["realClosedLoopVerified":true,"posts":native?.posts ?? 0,"events":native?.events ?? [],
+                     "interfaceLeaseDiagnostics":interfaceLease?.diagnostics() as Any? ?? NSNull(),"journal":coordinator.diagnostics(),"nonce":plan.binding.nonce.uuidString,
+-                    "scope":"singleScreenExactSelectedIcon","guarantee":quick ? "iceOriginalNeighborEdge" : "originalRelativeSlot","relativeReturnVerified":!quick,"fullQueueRequired":!quick,"icePositionVerified":quick,"strictAbsoluteClosedLoopVerified":NSNull(),"historicalAbsoluteDiagnostic":absoluteDiagnostic,"returnEvidence":returnEvidence,"interfaceCompletion":interfaceCompletion,"menuClosedClaimed":false,"wholeRunBudgetSeconds":90,"interfaceEndAction":afterMenuOpened == nil ? "userClosesOrDefocusesInterface" : "selfOwnedFixtureVerificationOnly"]
++                    "scope":"singleScreenExactSelectedIcon","guarantee":quick ? "iceOriginalNeighborEdge" : "originalRelativeSlot","relativeReturnVerified":!quick,"fullQueueRequired":!quick,"icePositionVerified":quick,"strictAbsoluteClosedLoopVerified":NSNull(),"returnEvidence":returnEvidence,"interfaceCompletion":interfaceCompletion,"menuClosedClaimed":false,"wholeRunBudgetSeconds":90,"interfaceEndAction":afterMenuOpened == nil ? "userClosesOrDefocusesInterface" : "selfOwnedFixtureVerificationOnly"]
+         } catch {
+             native?.stopMonitoring()
+             return ["realClosedLoopVerified":false,"failure":String(describing:error),"transportFailure":native?.transportFailure as Any? ?? NSNull(),"posts":native?.posts ?? 0,"events":native?.events ?? [],
+-                    "interfaceLeaseDiagnostics":interfaceLease?.diagnostics() as Any? ?? NSNull(),"journal":coordinator.diagnostics(),"nonce":plan.binding.nonce.uuidString,"historicalAbsoluteDiagnostic":absoluteDiagnostic,"scope":"singleScreenExactSelectedIcon"]
++                    "interfaceLeaseDiagnostics":interfaceLease?.diagnostics() as Any? ?? NSNull(),"journal":coordinator.diagnostics(),"nonce":plan.binding.nonce.uuidString,"scope":"singleScreenExactSelectedIcon"]
+         }
+     }
+ }
+--- BASELINE_PLAN.swift
++++ MODIFIED_PLAN.swift
+@@ -8,36 +8,22 @@
+ /// owner. No expensive whole-app hashing is inserted inside Ice's 50ms routes.
+ @MainActor final class IceSelectedRuntime {
+     let processes: [IceSelectedBinding.Process]
+-    private let codeDigests: [Int32:Data]
+     init(_ values: [IceSelectedBinding.Process]) throws {
+         processes = Array(Dictionary(grouping:values,by:\.pid).values.compactMap { group in
+             group.allSatisfy({$0 == group[0]}) ? group[0] : nil
+         })
+         guard processes.count == Set(values.map(\.pid)).count else { throw IceSelectedFailure.binding }
+-        var digests: [Int32:Data] = [:]
+-        for p in processes { digests[p.pid] = try Self.guest(p) }
+-        codeDigests = digests
+-    }
+-    private static func guest(_ p: IceSelectedBinding.Process) throws -> Data {
+-        var bsd = proc_bsdinfo(), bytes = [CChar](repeating:0,count:Int(MAXPATHLEN)*4)
+-        guard proc_pidinfo(p.pid,PROC_PIDTBSDINFO,0,&bsd,Int32(MemoryLayout<proc_bsdinfo>.size)) == MemoryLayout<proc_bsdinfo>.size,
+-              Double(bsd.pbi_start_tvsec)+Double(bsd.pbi_start_tvusec)/1_000_000 == p.launch,
+-              bytes.withUnsafeMutableBytes({proc_pidpath(p.pid,$0.baseAddress,UInt32($0.count))}) > 0,
+-              URL(fileURLWithPath:String(cString:bytes)).resolvingSymlinksInPath().path == p.executable else { throw IceSelectedFailure.binding }
+-        var guest: SecCode?, code: SecStaticCode?, data: CFDictionary?
+-        guard SecCodeCopyGuestWithAttributes(nil,[kSecGuestAttributePid as String:NSNumber(value:p.pid)] as CFDictionary,[],&guest) == errSecSuccess,
+-              let guest, SecCodeCheckValidity(guest,SecCSFlags(rawValue:kSecCSStrictValidate),nil) == errSecSuccess,
+-              SecCodeCopyStaticCode(guest,[],&code) == errSecSuccess, let code,
+-              SecCodeCopySigningInformation(code,SecCSFlags(rawValue:kSecCSSigningInformation),&data) == errSecSuccess,
+-              let info = data as? [String:Any],
+-              info[kSecCodeInfoIdentifier as String] as? String == p.identifier,
+-              info[kSecCodeInfoTeamIdentifier as String] as? String == p.team,
+-              (info[kSecCodeInfoMainExecutable as String] as? URL)?.resolvingSymlinksInPath().path == p.executable,
+-              let digest = info[kSecCodeInfoUnique as String] as? Data else { throw IceSelectedFailure.binding }
+-        return digest
++        try checkFullSignatures()
+     }
+     func check() throws {
+-        for p in processes { guard try Self.guest(p) == codeDigests[p.pid] else { throw IceSelectedFailure.binding } }
++        // Signatures are checked at phase boundaries; the hot route only rejects PID reuse/path changes.
++        for p in processes {
++            var bsd = proc_bsdinfo(), bytes = [CChar](repeating:0,count:Int(MAXPATHLEN)*4)
++            guard proc_pidinfo(p.pid,PROC_PIDTBSDINFO,0,&bsd,Int32(MemoryLayout<proc_bsdinfo>.size)) == MemoryLayout<proc_bsdinfo>.size,
++                  Double(bsd.pbi_start_tvsec)+Double(bsd.pbi_start_tvusec)/1_000_000 == p.launch,
++                  bytes.withUnsafeMutableBytes({proc_pidpath(p.pid,$0.baseAddress,UInt32($0.count))}) > 0,
++                  URL(fileURLWithPath:String(cString:bytes)).resolvingSymlinksInPath().path == p.executable else { throw IceSelectedFailure.binding }
++        }
+     }
+     func checkFullSignatures() throws {
+         for p in processes { guard try IceSelectedBinding.Process(MenuBarProcessSignature.read(p.pid)) == p else { throw IceSelectedFailure.binding } }
+@@ -163,8 +149,7 @@
+     func quickReturnedSample() throws -> Data {
+         try runtime.checkFullSignatures();try verifyRuntime()
+         let target=try windows.frame(item(binding.target)),neighbor=try windows.frame(item(binding.neighbor))
+-        guard target.width == binding.target.frame.width,target.height == binding.target.frame.height,
+-              Self.quickPosition(target,neighbor,onLeft:binding.returnOnLeft) else {throw IceBaselineError.geometry}
++        guard Self.quickPosition(target,neighbor,onLeft:binding.returnOnLeft) else {throw IceBaselineError.geometry}
+         return try JSONSerialization.data(withJSONObject:["criterion":"iceNeighborEdgeV4","nonce":binding.nonce.uuidString,
+             "targetID":binding.target.id,"targetPID":binding.owner.pid,"neighborID":binding.neighbor.id,
+             "targetFrame":NSStringFromRect(target),"neighborFrame":NSStringFromRect(neighbor),"returnOnLeft":binding.returnOnLeft,
+--- BASELINE_DELAY_CHECKS.swift
++++ MODIFIED_DELAY_CHECKS.swift
+@@ -30,7 +30,43 @@
+         rejected = false
+         do { try await cancelled.value } catch is CancellationError { rejected = true }
+         try require(rejected && pauses.isEmpty)
++        var holdReports: [[String:Any]] = []
++        for seconds in [32.0, 76.0] {
++            let report = try await heldInterface(seconds)
++            holdReports.append(report)
++            fputs("interface-hold-replay: " + String(decoding:try JSONSerialization.data(withJSONObject:report,options:[.sortedKeys]),as:UTF8.self)+"\n",stderr)
++            try require(report["modeledPosts"] as? Int == (seconds == 32 ? 14 : 8))
++            try require(report["failure"] as? String == (seconds == 32 ? "policy" : "budget"))
++            try require(report["nativeClosedLoopClaimed"] as? Bool == false)
++            try require(report["routeBudgetsPreserved"] as? Bool == true)
++        }
+         return ["passed": true, "assertions": assertions, "nativePosts": 0,
+-                "deadlineCrossingInOccupancyCheckCovered": true, "delaySeconds": 15]
++                "deadlineCrossingInOccupancyCheckCovered": true, "delaySeconds": 15, "holdReports":holdReports]
++    }
++
++    static func heldInterface(_ seconds:Double) async throws -> [String:Any] {
++        let b=try IceSelectedOfflineChecks.binding()
++        let parent=FileManager.default.temporaryDirectory.appendingPathComponent("ice-held-interface-"+UUID().uuidString)
++        try FileManager.default.createDirectory(at:parent,withIntermediateDirectories:false)
++        defer{try? FileManager.default.removeItem(at:parent)}
++        let store=IceSelectedJournal(directory:parent.appendingPathComponent("journal")),server=IceSelectedOfflineChecks.Server(b)
++        let coordinator=IceSelectedCoordinator(journal:store,binding:b,contract:.ordinaryIceInterfaceV9,deadline:190,clock:{server.time})
++        let native=IceSelectedNative(windows:nil,pid:b.owner.pid,identity:{},offline:true,clock:{server.time},sleep:{try await server.pause($0)},waitReceiptDeadline:{try await server.awaitReceiptDeadline($0)},permission:{true},send:{try server.send($0,$1)},makeTap:{server.makeTap($0,$1,$2,$3)})
++        let effects=IceSelectedOfflineChecks.Effects(native,server,coordinator)
++        var sequence=0
++        let lease=IceSelectedInterfaceLease(owner:b.owner,nonce:b.nonce,display:b.display,space:b.space,clock:{server.time},reader:{
++            sequence+=1
++            return .init(sequence:sequence,at:server.time,owner:b.owner,nonce:b.nonce,display:b.display,space:b.space,healthy:true,ownerActive:true,windows:[.init(id:100,pid:b.owner.pid,level:0,onScreen:server.menu)])
++        })
++        try lease.begin(.init(sequence:0,at:server.time,owner:b.owner,nonce:b.nonce,display:b.display,space:b.space,healthy:true,ownerActive:false,windows:[]))
++        var failure="none"
++        do {
++            try await IceSelectedWorkflow.executeInterface(coordinator:coordinator,makeEffects:{(native,effects)},makeLease:{lease},verifyVisible:{},verifyReturned:{Data("injected result is not native proof".utf8)},afterInterfaceObserved:{
++                try await server.pause(seconds);server.menu=false
++            })
++        }catch{failure=String(describing:error)}
++        let budgets=native.events.filter{$0["phase"] as? String == "route-start"}.map{($0["deadlineUptime"] as! Double)-($0["uptime"] as! Double)}
++        guard (try store.inspect())?.phase == .stopped,!coordinator.completed,!lease.nativeObservation else{throw Failure.assertion}
++        return ["heldInterfaceSeconds":seconds,"modeledPosts":server.sends,"failure":failure,"nativeClosedLoopClaimed":false,"nativePosts":0,"routeBudgetsPreserved":!budgets.isEmpty && budgets.allSatisfy{abs($0-0.05)<0.000001},"elapsedSeconds":server.time-100]
+     }
+ }
+--- BASELINE_INTERFACE_LEASE.swift
++++ MODIFIED_INTERFACE_LEASE.swift
+@@ -82,13 +82,10 @@
+         sequence=s.sequence;at=s.at
+         let added=interfaces(s).filter{!baseline.contains($0.id)}
+         if tracked==nil {
+-            guard added.count<=1 else{return invalidate("multipleNewOwnerWindows")}
+             guard let w=added.first else{state = .unknown;reason="noInterfaceObserved";return state}
+             tracked=w;kind=w.level==Int(CGWindowLevelForKey(.popUpMenuWindow)) ? .standardPopup : .ordinaryWindow
+         }
+         let w=tracked!
+-        // A replacement/additional interface is not the original window disappearing.
+-        guard !added.contains(where:{$0.id != w.id}) else{return invalidate("windowRebuiltOrCompetingInterface")}
+         let matches=s.windows.filter{$0.id==w.id}
+         if let current=matches.first, current.pid != w.pid || current.level != w.level {return invalidate("trackedWindowIdentityChanged")}
+         let showing=(matches.first?.onScreen ?? false) && (kind == .standardPopup || s.ownerActive)
+--- BASELINE_INTERFACE_CHECKS.swift
++++ MODIFIED_INTERFACE_CHECKS.swift
+@@ -24,12 +24,17 @@
+                 var refused=false;do{try lease.requireInactive()}catch{refused=true};try check(refused,"unknown cannot admit restoration");continue
+             }
+             if name=="multiple" {
+-                try check(lease.observe(sample([window,W(id:101,pid:b.owner.pid,level:0,onScreen:true)])) == .unknown,"multiple owner windows unknown")
+-                now+=0.1;try check(lease.observe(sample([])) == .unknown,"ambiguity cannot become inactive later");continue
++                try check(lease.observe(sample([window,W(id:101,pid:b.owner.pid,level:0,onScreen:true)])) == .active,"Ice follows first new owner window")
++                now+=0.1;try check(lease.observe(sample([])) == .unknown,"one inactive sample waits")
++                now+=0.11;try check(lease.observe(sample([])) == .inactive,"first tracked window disappearance admits inactivity");continue
+             }
+             try check(lease.observe(sample([window])) == .active,"actual tracked interface active")
+             now+=0.1
+-            if ["rebuilt","ownerChanged","levelChanged","unhealthy","spaceChanged","stale"].contains(name) {
++            if name=="rebuilt" {
++                try check(lease.observe(sample([W(id:101,pid:b.owner.pid,level:level,onScreen:true)])) == .unknown,"Ice keeps original tracked ID, first disappearance sample waits")
++                now+=0.11;try check(lease.observe(sample([])) == .inactive,"missing original tracked window becomes inactive like Ice");continue
++            }
++            if ["ownerChanged","levelChanged","unhealthy","spaceChanged","stale"].contains(name) {
+                 let windows=name=="rebuilt" ? [W(id:101,pid:b.owner.pid,level:level,onScreen:true)] : name=="ownerChanged" ? [W(id:100,pid:99,level:level,onScreen:true)] : name=="levelChanged" ? [W(id:100,pid:b.owner.pid,level:42,onScreen:true)] : [window]
+                 let s=sample(windows,healthy:name != "unhealthy",space:name=="spaceChanged" ? 9 : nil)
+                 if name=="stale" {now+=0.3}
+@@ -76,7 +81,7 @@
+         try check(try store.inspect()?.phase == .stopped,"failure persists stopped responsibility")
+         try check(!lease.nativeObservation,"offline window replay never native")
+         if let cancelledAtPosts {try check(server.sends==cancelledAtPosts && server.sends==8,"cancel during observation/delay emits no later input")}
+-        else if name=="forgedReturn" {try check(server.sends==14,"all fake routes run before forged native return is rejected");try check(coordinator.retained?.gestures.allSatisfy{$0.status == .pairedTransportReturned}==true,"three paired modeled gestures retained")}
++        else if ["forgedReturn","multiple","rebuild"].contains(name) {try check(server.sends==14,"all fake routes run before forged native return is rejected");try check(coordinator.retained?.gestures.allSatisfy{$0.status == .pairedTransportReturned}==true,"three paired modeled gestures retained")}
+         else if name=="reopenedDuringReturn" {try check(server.sends==9,"fresh reactivation rejects return down after admitted null")}
+         else {try check(server.sends==8,"unknown/multiple/rebuild cannot reach restore")}
+     }

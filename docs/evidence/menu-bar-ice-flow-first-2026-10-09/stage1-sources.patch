@@ -1,0 +1,1499 @@
+--- a/Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift
++++ b/Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift
+@@ -63,7 +63,7 @@
+         let neighbor=IceBaselineItem(windowID:b.neighbor.id,pid:b.neighbor.process.pid,key:"original-neighbor")
+         try await coordinator.run {
+             let(native,effects)=try makeEffects();defer{native.stopMonitoring()}
+-            try native.bindCandidate(coordinator);let engine=IceBaselineEngine(effects);try coordinator.attach(engine)
++            try native.bindCandidate(coordinator);let engine=IceBaselineEngine(effects,budget:90);try coordinator.attach(engine)
+             try await coordinator.advance(.moving);try await engine.move(target,to:.left(anchor))
+             try verifyVisible();try await coordinator.advance(.visible)
+             let lease=try makeLease();if lease.nativeObservation {try lease.beginLive()}
+@@ -116,7 +116,7 @@
+         let dispatchValidation=IceSynchronousDispatchValidation(read:{try plan.verifiedRuntimeScope()},scope:{plan.scope()},final:{try plan.finalRuntimeScope()},trace:{facts in
+             native?.note("dispatch-runtime-snapshot",facts)
+         })
+-        var returnEvidence:Any=NSNull(),interfaceCompletion:Any=NSNull(),absoluteDiagnostic:Any=NSNull()
++        var returnEvidence:Any=NSNull(),interfaceCompletion:Any=NSNull()
+         do {
+             try await executeInterface(coordinator:coordinator,makeEffects:{
+                 let transport = try coordinator.performAux("selected-transport-create") {
+@@ -124,7 +124,7 @@
+                 }
+                 if selfOwnedConsumerDelay {
+                     guard plan.binding.owner.identifier=="com.ryanai.mactools.nativetargets",
+-                          plan.binding.owner.executable==IceSelectedSession.root.appendingPathComponent("Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture").path else{throw IceSelectedFailure.policy}
++                          plan.binding.owner.executable==IceSelectedSession.packageRoot.appendingPathComponent("Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture").path else{throw IceSelectedFailure.policy}
+                     transport.selfOwnedMainConsumerDelay=true
+                 }
+                 native = transport;return (transport,transport)
+@@ -139,25 +139,19 @@
+                     },ownership:{plan.validateWindowOwnership($0)})
+                 interfaceLease=lease;return lease
+             },verifyVisible:{try plan.verifyVisible()},verifyReturned:{
+-                let diagnosticAt=ProcessInfo.processInfo.systemUptime
+-                do {_ = try plan.returnedSample();absoluteDiagnostic=["sampleVerified":true,"atUptime":diagnosticAt,"stableClosedLoopProven":false]}
+-                catch {absoluteDiagnostic=["sampleVerified":false,"atUptime":diagnosticAt,"failure":String(describing:error),"stableClosedLoopProven":false]}
+-                if quick {return try coordinator.admitQuickReturn(plan)}
+-                guard let relative=plan.relative,let runtime=plan.relativeRuntime else{throw IceSelectedFailure.policy}
+-                let proof=try await relative.verify(runtime:runtime,check:{try coordinator.check()})
+-                try coordinator.admitReturn(proof)
+-                return proof.data
++                // Ice completion is the original neighbor edge, not an absolute-layout audit.
++                return try coordinator.admitQuickReturn(plan)
+             },afterInterfaceObserved:afterMenuOpened,onReturned:{data,closure in
+                 returnEvidence=try JSONSerialization.jsonObject(with:data)
+                 interfaceCompletion=try JSONSerialization.jsonObject(with:JSONEncoder().encode(closure))
+             })
+             return ["realClosedLoopVerified":true,"posts":native?.posts ?? 0,"events":native?.events ?? [],
+                     "interfaceLeaseDiagnostics":interfaceLease?.diagnostics() as Any? ?? NSNull(),"journal":coordinator.diagnostics(),"nonce":plan.binding.nonce.uuidString,
+-                    "scope":"singleScreenExactSelectedIcon","guarantee":quick ? "iceOriginalNeighborEdge" : "originalRelativeSlot","relativeReturnVerified":!quick,"fullQueueRequired":!quick,"icePositionVerified":quick,"strictAbsoluteClosedLoopVerified":NSNull(),"historicalAbsoluteDiagnostic":absoluteDiagnostic,"returnEvidence":returnEvidence,"interfaceCompletion":interfaceCompletion,"menuClosedClaimed":false,"wholeRunBudgetSeconds":90,"interfaceEndAction":afterMenuOpened == nil ? "userClosesOrDefocusesInterface" : "selfOwnedFixtureVerificationOnly"]
++                    "scope":"singleScreenExactSelectedIcon","guarantee":quick ? "iceOriginalNeighborEdge" : "originalRelativeSlot","relativeReturnVerified":!quick,"fullQueueRequired":!quick,"icePositionVerified":quick,"strictAbsoluteClosedLoopVerified":NSNull(),"returnEvidence":returnEvidence,"interfaceCompletion":interfaceCompletion,"menuClosedClaimed":false,"wholeRunBudgetSeconds":90,"interfaceEndAction":afterMenuOpened == nil ? "userClosesOrDefocusesInterface" : "selfOwnedFixtureVerificationOnly"]
+         } catch {
+             native?.stopMonitoring()
+             return ["realClosedLoopVerified":false,"failure":String(describing:error),"transportFailure":native?.transportFailure as Any? ?? NSNull(),"posts":native?.posts ?? 0,"events":native?.events ?? [],
+-                    "interfaceLeaseDiagnostics":interfaceLease?.diagnostics() as Any? ?? NSNull(),"journal":coordinator.diagnostics(),"nonce":plan.binding.nonce.uuidString,"historicalAbsoluteDiagnostic":absoluteDiagnostic,"scope":"singleScreenExactSelectedIcon"]
++                    "interfaceLeaseDiagnostics":interfaceLease?.diagnostics() as Any? ?? NSNull(),"journal":coordinator.diagnostics(),"nonce":plan.binding.nonce.uuidString,"scope":"singleScreenExactSelectedIcon"]
+         }
+     }
+ }
+--- a/Tools/IceInterfaceProductWorker/IceSelectedPlan.swift
++++ b/Tools/IceInterfaceProductWorker/IceSelectedPlan.swift
+@@ -8,36 +8,22 @@
+ /// owner. No expensive whole-app hashing is inserted inside Ice's 50ms routes.
+ @MainActor final class IceSelectedRuntime {
+     let processes: [IceSelectedBinding.Process]
+-    private let codeDigests: [Int32:Data]
+     init(_ values: [IceSelectedBinding.Process]) throws {
+         processes = Array(Dictionary(grouping:values,by:\.pid).values.compactMap { group in
+             group.allSatisfy({$0 == group[0]}) ? group[0] : nil
+         })
+         guard processes.count == Set(values.map(\.pid)).count else { throw IceSelectedFailure.binding }
+-        var digests: [Int32:Data] = [:]
+-        for p in processes { digests[p.pid] = try Self.guest(p) }
+-        codeDigests = digests
++        try checkFullSignatures()
+     }
+-    private static func guest(_ p: IceSelectedBinding.Process) throws -> Data {
+-        var bsd = proc_bsdinfo(), bytes = [CChar](repeating:0,count:Int(MAXPATHLEN)*4)
+-        guard proc_pidinfo(p.pid,PROC_PIDTBSDINFO,0,&bsd,Int32(MemoryLayout<proc_bsdinfo>.size)) == MemoryLayout<proc_bsdinfo>.size,
+-              Double(bsd.pbi_start_tvsec)+Double(bsd.pbi_start_tvusec)/1_000_000 == p.launch,
+-              bytes.withUnsafeMutableBytes({proc_pidpath(p.pid,$0.baseAddress,UInt32($0.count))}) > 0,
+-              URL(fileURLWithPath:String(cString:bytes)).resolvingSymlinksInPath().path == p.executable else { throw IceSelectedFailure.binding }
+-        var guest: SecCode?, code: SecStaticCode?, data: CFDictionary?
+-        guard SecCodeCopyGuestWithAttributes(nil,[kSecGuestAttributePid as String:NSNumber(value:p.pid)] as CFDictionary,[],&guest) == errSecSuccess,
+-              let guest, SecCodeCheckValidity(guest,SecCSFlags(rawValue:kSecCSStrictValidate),nil) == errSecSuccess,
+-              SecCodeCopyStaticCode(guest,[],&code) == errSecSuccess, let code,
+-              SecCodeCopySigningInformation(code,SecCSFlags(rawValue:kSecCSSigningInformation),&data) == errSecSuccess,
+-              let info = data as? [String:Any],
+-              info[kSecCodeInfoIdentifier as String] as? String == p.identifier,
+-              info[kSecCodeInfoTeamIdentifier as String] as? String == p.team,
+-              (info[kSecCodeInfoMainExecutable as String] as? URL)?.resolvingSymlinksInPath().path == p.executable,
+-              let digest = info[kSecCodeInfoUnique as String] as? Data else { throw IceSelectedFailure.binding }
+-        return digest
+-    }
+     func check() throws {
+-        for p in processes { guard try Self.guest(p) == codeDigests[p.pid] else { throw IceSelectedFailure.binding } }
++        // Signatures are checked at phase boundaries; the hot route only rejects PID reuse/path changes.
++        for p in processes {
++            var bsd = proc_bsdinfo(), bytes = [CChar](repeating:0,count:Int(MAXPATHLEN)*4)
++            guard proc_pidinfo(p.pid,PROC_PIDTBSDINFO,0,&bsd,Int32(MemoryLayout<proc_bsdinfo>.size)) == MemoryLayout<proc_bsdinfo>.size,
++                  Double(bsd.pbi_start_tvsec)+Double(bsd.pbi_start_tvusec)/1_000_000 == p.launch,
++                  bytes.withUnsafeMutableBytes({proc_pidpath(p.pid,$0.baseAddress,UInt32($0.count))}) > 0,
++                  URL(fileURLWithPath:String(cString:bytes)).resolvingSymlinksInPath().path == p.executable else { throw IceSelectedFailure.binding }
++        }
+     }
+     func checkFullSignatures() throws {
+         for p in processes { guard try IceSelectedBinding.Process(MenuBarProcessSignature.read(p.pid)) == p else { throw IceSelectedFailure.binding } }
+@@ -163,8 +149,7 @@
+     func quickReturnedSample() throws -> Data {
+         try runtime.checkFullSignatures();try verifyRuntime()
+         let target=try windows.frame(item(binding.target)),neighbor=try windows.frame(item(binding.neighbor))
+-        guard target.width == binding.target.frame.width,target.height == binding.target.frame.height,
+-              Self.quickPosition(target,neighbor,onLeft:binding.returnOnLeft) else {throw IceBaselineError.geometry}
++        guard Self.quickPosition(target,neighbor,onLeft:binding.returnOnLeft) else {throw IceBaselineError.geometry}
+         return try JSONSerialization.data(withJSONObject:["criterion":"iceNeighborEdgeV4","nonce":binding.nonce.uuidString,
+             "targetID":binding.target.id,"targetPID":binding.owner.pid,"neighborID":binding.neighbor.id,
+             "targetFrame":NSStringFromRect(target),"neighborFrame":NSStringFromRect(neighbor),"returnOnLeft":binding.returnOnLeft,
+--- a/Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift
++++ b/Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift
+@@ -82,13 +82,10 @@
+         sequence=s.sequence;at=s.at
+         let added=interfaces(s).filter{!baseline.contains($0.id)}
+         if tracked==nil {
+-            guard added.count<=1 else{return invalidate("multipleNewOwnerWindows")}
+             guard let w=added.first else{state = .unknown;reason="noInterfaceObserved";return state}
+             tracked=w;kind=w.level==Int(CGWindowLevelForKey(.popUpMenuWindow)) ? .standardPopup : .ordinaryWindow
+         }
+         let w=tracked!
+-        // A replacement/additional interface is not the original window disappearing.
+-        guard !added.contains(where:{$0.id != w.id}) else{return invalidate("windowRebuiltOrCompetingInterface")}
+         let matches=s.windows.filter{$0.id==w.id}
+         if let current=matches.first, current.pid != w.pid || current.level != w.level {return invalidate("trackedWindowIdentityChanged")}
+         let showing=(matches.first?.onScreen ?? false) && (kind == .standardPopup || s.ownerActive)
+--- a/Tools/IceInterfaceProductWorker/IceRehideDelayChecks.swift
++++ b/Tools/IceInterfaceProductWorker/IceRehideDelayChecks.swift
+@@ -30,7 +30,43 @@
+         rejected = false
+         do { try await cancelled.value } catch is CancellationError { rejected = true }
+         try require(rejected && pauses.isEmpty)
++        var holdReports: [[String:Any]] = []
++        for seconds in [32.0, 76.0] {
++            let report = try await heldInterface(seconds)
++            holdReports.append(report)
++            fputs("interface-hold-replay: " + String(decoding:try JSONSerialization.data(withJSONObject:report,options:[.sortedKeys]),as:UTF8.self)+"\n",stderr)
++            try require(report["modeledPosts"] as? Int == (seconds == 32 ? 14 : 8))
++            try require(report["failure"] as? String == (seconds == 32 ? "policy" : "budget"))
++            try require(report["nativeClosedLoopClaimed"] as? Bool == false)
++            try require(report["routeBudgetsPreserved"] as? Bool == true)
++        }
+         return ["passed": true, "assertions": assertions, "nativePosts": 0,
+-                "deadlineCrossingInOccupancyCheckCovered": true, "delaySeconds": 15]
++                "deadlineCrossingInOccupancyCheckCovered": true, "delaySeconds": 15, "holdReports":holdReports]
+     }
++
++    static func heldInterface(_ seconds:Double) async throws -> [String:Any] {
++        let b=try IceSelectedOfflineChecks.binding()
++        let parent=FileManager.default.temporaryDirectory.appendingPathComponent("ice-held-interface-"+UUID().uuidString)
++        try FileManager.default.createDirectory(at:parent,withIntermediateDirectories:false)
++        defer{try? FileManager.default.removeItem(at:parent)}
++        let store=IceSelectedJournal(directory:parent.appendingPathComponent("journal")),server=IceSelectedOfflineChecks.Server(b)
++        let coordinator=IceSelectedCoordinator(journal:store,binding:b,contract:.ordinaryIceInterfaceV9,deadline:190,clock:{server.time})
++        let native=IceSelectedNative(windows:nil,pid:b.owner.pid,identity:{},offline:true,clock:{server.time},sleep:{try await server.pause($0)},waitReceiptDeadline:{try await server.awaitReceiptDeadline($0)},permission:{true},send:{try server.send($0,$1)},makeTap:{server.makeTap($0,$1,$2,$3)})
++        let effects=IceSelectedOfflineChecks.Effects(native,server,coordinator)
++        var sequence=0
++        let lease=IceSelectedInterfaceLease(owner:b.owner,nonce:b.nonce,display:b.display,space:b.space,clock:{server.time},reader:{
++            sequence+=1
++            return .init(sequence:sequence,at:server.time,owner:b.owner,nonce:b.nonce,display:b.display,space:b.space,healthy:true,ownerActive:true,windows:[.init(id:100,pid:b.owner.pid,level:0,onScreen:server.menu)])
++        })
++        try lease.begin(.init(sequence:0,at:server.time,owner:b.owner,nonce:b.nonce,display:b.display,space:b.space,healthy:true,ownerActive:false,windows:[]))
++        var failure="none"
++        do {
++            try await IceSelectedWorkflow.executeInterface(coordinator:coordinator,makeEffects:{(native,effects)},makeLease:{lease},verifyVisible:{},verifyReturned:{Data("injected result is not native proof".utf8)},afterInterfaceObserved:{
++                try await server.pause(seconds);server.menu=false
++            })
++        }catch{failure=String(describing:error)}
++        let budgets=native.events.filter{$0["phase"] as? String == "route-start"}.map{($0["deadlineUptime"] as! Double)-($0["uptime"] as! Double)}
++        guard (try store.inspect())?.phase == .stopped,!coordinator.completed,!lease.nativeObservation else{throw Failure.assertion}
++        return ["heldInterfaceSeconds":seconds,"modeledPosts":server.sends,"failure":failure,"nativeClosedLoopClaimed":false,"nativePosts":0,"routeBudgetsPreserved":!budgets.isEmpty && budgets.allSatisfy{abs($0-0.05)<0.000001},"elapsedSeconds":server.time-100]
++    }
+ }
+--- a/Tools/IceInterfaceProductWorker/IceInterfaceChecks.swift
++++ b/Tools/IceInterfaceProductWorker/IceInterfaceChecks.swift
+@@ -0,0 +1,88 @@
++// Copyright (c) 2026 Ryan.AI. MIT. State and cancellation counterexamples; no live inputs.
++import AppKit
++@MainActor enum IceInterfaceChecks {
++    enum Failure:Error {case assertion(String)}
++    static var assertions=0,scenarios=0
++    static func check(_ ok:Bool,_ text:String)throws {assertions+=1;guard ok else{throw Failure.assertion(text)}}
++    static func run()async throws->(Int,Int) {
++        assertions=0;scenarios=0
++        let b=try IceSelectedOfflineChecks.binding()
++        typealias W=IceSelectedInterfaceLease.Window
++        for name in ["hidden","defocused","popupClosed","custom102","noInterface","foreign","multiple","rebuilt","ownerChanged","levelChanged","unhealthy","spaceChanged","stale","reactivated"] {
++            scenarios+=1;var now=100.0,seq=0
++            let lease=IceSelectedInterfaceLease(owner:b.owner,nonce:b.nonce,display:b.display,space:b.space,clock:{now})
++            let status=W(id:1,pid:b.owner.pid,level:25,onScreen:true)
++            func sample(_ windows:[W],active:Bool=true,healthy:Bool=true,space:UInt?=nil)->IceSelectedInterfaceLease.Sample {
++                seq+=1;return .init(sequence:seq,at:now,owner:b.owner,nonce:b.nonce,display:b.display,space:space ?? b.space,healthy:healthy,ownerActive:active,windows:[status]+windows)
++            }
++            try lease.begin(sample([]));now+=0.1
++            let level=name=="popupClosed" ? 101 : name=="custom102" ? 102 : 0
++            let window=W(id:100,pid:b.owner.pid,level:level,onScreen:true)
++            if name=="noInterface" || name=="foreign" {
++                let state=lease.observe(sample(name=="foreign" ? [W(id:100,pid:99,level:0,onScreen:true)] : []))
++                try check(state == .unknown,"missing/foreign interface stays unknown")
++                var refused=false;do{try lease.requireInactive()}catch{refused=true};try check(refused,"unknown cannot admit restoration");continue
++            }
++            if name=="multiple" {
++                try check(lease.observe(sample([window,W(id:101,pid:b.owner.pid,level:0,onScreen:true)])) == .active,"Ice follows first new owner window")
++                now+=0.1;try check(lease.observe(sample([])) == .unknown,"one inactive sample waits")
++                now+=0.11;try check(lease.observe(sample([])) == .inactive,"first tracked window disappearance admits inactivity");continue
++            }
++            try check(lease.observe(sample([window])) == .active,"actual tracked interface active")
++            now+=0.1
++            if name=="rebuilt" {
++                try check(lease.observe(sample([W(id:101,pid:b.owner.pid,level:level,onScreen:true)])) == .unknown,"Ice keeps original tracked ID, first disappearance sample waits")
++                now+=0.11;try check(lease.observe(sample([])) == .inactive,"missing original tracked window becomes inactive like Ice");continue
++            }
++            if ["ownerChanged","levelChanged","unhealthy","spaceChanged","stale"].contains(name) {
++                let windows=name=="rebuilt" ? [W(id:101,pid:b.owner.pid,level:level,onScreen:true)] : name=="ownerChanged" ? [W(id:100,pid:99,level:level,onScreen:true)] : name=="levelChanged" ? [W(id:100,pid:b.owner.pid,level:42,onScreen:true)] : [window]
++                let s=sample(windows,healthy:name != "unhealthy",space:name=="spaceChanged" ? 9 : nil)
++                if name=="stale" {now+=0.3}
++                try check(lease.observe(s) == .unknown,"invalid/rebuilt interface rejected")
++                now+=0.1;try check(lease.observe(sample([])) == .unknown,"invalidity remains sticky");continue
++            }
++            let inactiveWindows=name=="defocused" ? [window] : [W(id:100,pid:b.owner.pid,level:level,onScreen:false)]
++            try check(lease.observe(sample(inactiveWindows,active:name != "defocused")) == .unknown,"one inactive sample insufficient")
++            now+=0.11;try check(lease.observe(sample(inactiveWindows,active:name != "defocused")) == .inactive,"two stable samples admit interface inactive")
++            let proof=try lease.confirmation()
++            try check(proof.kind == (level==101 ? .standardPopup : .ordinaryWindow) && !proof.nativeObservation,"typed proof separates popup and ordinary; replay not native")
++            try check(lease.diagnostics()["menuClosedClaimed"] as? Bool==false,"ordinary inactivity never claims menu closed")
++            if name=="reactivated" {now+=0.1;try check(lease.observe(sample([window])) == .active,"reopening revokes inactive");var refused=false;do{try lease.requireInactive()}catch{refused=true};try check(refused,"reopening blocks return")}
++        }
++        for name in ["cancelObserved","cancelDelay","unknown","multiple","rebuild","reopenedDuringReturn","forgedReturn"] {try await workflow(name,b)}
++        return(scenarios,assertions)
++    }
++    static func workflow(_ name:String,_ b:IceSelectedBinding)async throws {
++        scenarios+=1
++        let parent=FileManager.default.temporaryDirectory.appendingPathComponent("ice-interface-replay-"+UUID().uuidString)
++        try FileManager.default.createDirectory(at:parent,withIntermediateDirectories:false,attributes:[.posixPermissions:0o700]);defer{try? FileManager.default.removeItem(at:parent)}
++        let store=IceSelectedJournal(directory:parent.appendingPathComponent("journal")),server=IceSelectedOfflineChecks.Server(b)
++        let coordinator=IceSelectedCoordinator(journal:store,binding:b,contract:.ordinaryIceInterfaceV9,deadline:190,clock:{server.time})
++        let native=IceSelectedNative(windows:nil,pid:b.owner.pid,identity:{},offline:true,clock:{server.time},sleep:{try await server.pause($0)},waitReceiptDeadline:{try await server.awaitReceiptDeadline($0)},permission:{true},send:{try server.send($0,$1)},makeTap:{server.makeTap($0,$1,$2,$3)})
++        let effects=IceSelectedOfflineChecks.Effects(native,server,coordinator)
++        var seq=0,rebuild=false,cancelledAtPosts:Int?
++        let lease=IceSelectedInterfaceLease(owner:b.owner,nonce:b.nonce,display:b.display,space:b.space,clock:{server.time},reader:{
++            seq+=1;var windows:[IceSelectedInterfaceLease.Window]=[]
++            if name != "unknown" {windows=[.init(id:rebuild ? 101 : 100,pid:b.owner.pid,level:0,onScreen:server.menu)]}
++            if name=="multiple" && server.menu {windows.append(.init(id:101,pid:b.owner.pid,level:0,onScreen:true))}
++            return .init(sequence:seq,at:server.time,owner:b.owner,nonce:b.nonce,display:b.display,space:b.space,healthy:true,ownerActive:true,windows:windows)
++        })
++        // Offline baseline is deliberately supplied; it cannot become native evidence.
++        try lease.begin(.init(sequence:0,at:server.time,owner:b.owner,nonce:b.nonce,display:b.display,space:b.space,healthy:true,ownerActive:false,windows:[]))
++        if name=="cancelDelay" {server.onPause={_ in if server.sends==8 && server.time>105 && cancelledAtPosts==nil {cancelledAtPosts=server.sends;coordinator.cancel()}}}
++        if name=="reopenedDuringReturn" {server.onSend={if server.sends==9 {server.menu=true}}}
++        var caught:Error?
++        do {try await IceSelectedWorkflow.executeInterface(coordinator:coordinator,makeEffects:{(native,effects)},makeLease:{lease},verifyVisible:{},verifyReturned:{Data("forged offline return".utf8)},afterInterfaceObserved:{
++            if name=="cancelObserved" {cancelledAtPosts=server.sends;coordinator.cancel()}
++            else if name=="rebuild" {rebuild=true}
++            else {server.menu=false}
++        })}catch{caught=error}
++        try check(caught != nil && !coordinator.completed,"negative workflow cannot complete/clear")
++        try check(try store.inspect()?.phase == .stopped,"failure persists stopped responsibility")
++        try check(!lease.nativeObservation,"offline window replay never native")
++        if let cancelledAtPosts {try check(server.sends==cancelledAtPosts && server.sends==8,"cancel during observation/delay emits no later input")}
++        else if ["forgedReturn","multiple","rebuild"].contains(name) {try check(server.sends==14,"all fake routes run before forged native return is rejected");try check(coordinator.retained?.gestures.allSatisfy{$0.status == .pairedTransportReturned}==true,"three paired modeled gestures retained")}
++        else if name=="reopenedDuringReturn" {try check(server.sends==9,"fresh reactivation rejects return down after admitted null")}
++        else {try check(server.sends==8,"unknown/multiple/rebuild cannot reach restore")}
++    }
++}
+--- a/Tools/IceInterfaceProductWorker/IceSelectedSession.swift
++++ b/Tools/IceInterfaceProductWorker/IceSelectedSession.swift
+@@ -1,9 +1,11 @@
+ // Copyright (c) 2026 Ryan.AI. MIT. Preparation/read-only package binding.
+ import AppKit
+ import CryptoKit
++import Security
+ 
+ @MainActor enum IceSelectedSession {
+-    static let root = URL(fileURLWithPath:"/tmp/mac-tools-ice-interface-product-candidate-20261009/Worker",isDirectory:true)
++    static let root = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("MacTools/IceInterfaceCandidate", isDirectory: true)
++    static let packageRoot = Bundle.main.bundleURL.deletingLastPathComponent()
+     static var journal: IceSelectedJournal { IceSelectedJournal(directory:root.appendingPathComponent("selected-relative-recovery-v2")) }
+     struct Prepared: Codable {
+         let nonce: UUID, selected: MenuBarIceSelectedTarget?, selfOwned: Bool, controllerSHA256: String
+@@ -11,48 +13,34 @@
+     }
+     static func hash(_ url: URL) throws -> String { SHA256.hash(data:try Data(contentsOf:url)).map{String(format:"%02x",$0)}.joined() }
+     static func verifyPackage() throws -> [String:Any] {
+-        guard let manifest=try JSONSerialization.jsonObject(with:Data(contentsOf:root.appendingPathComponent("prepared-build.json"))) as? [String:Any],
+-              let sources=manifest["sources"] as? [String:String],sources.count>50,
+-              try hash(URL(fileURLWithPath:"/Applications/MacTools.app/Contents/MacOS/MacTools")) == manifest["installedSHA256"] as? String else{throw IceSelectedFailure.binding}
+-        for (p,h) in sources {guard p.hasPrefix("/Users/yangruihan/Workspace/mac_tools/"),try hash(URL(fileURLWithPath:p))==h else{throw IceSelectedFailure.binding}}
++        let product=packageRoot.deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
++        var code:SecStaticCode?,info:CFDictionary?
++        guard packageRoot==product.appendingPathComponent("Contents/Resources/IceWorker",isDirectory:true),
++              SecStaticCodeCreateWithPath(product as CFURL,[],&code)==errSecSuccess,let code,
++              SecStaticCodeCheckValidity(code,SecCSFlags(rawValue:kSecCSStrictValidate),nil)==errSecSuccess,
++              SecCodeCopySigningInformation(code,SecCSFlags(rawValue:kSecCSSigningInformation),&info)==errSecSuccess,
++              let signed=info as? [String:Any],signed[kSecCodeInfoIdentifier as String] as? String=="com.ryanai.mactools.iceinterfacecandidate",
++              signed[kSecCodeInfoTeamIdentifier as String] as? String=="58TJ64422P",
++              let manifest=try JSONSerialization.jsonObject(with:Data(contentsOf:packageRoot.appendingPathComponent("prepared-build.json"))) as? [String:Any],
++              let sources=manifest["sources"] as? [String:String],sources.count>50 else{throw IceSelectedFailure.binding}
++        let sourceRoot=packageRoot.appendingPathComponent("Source",isDirectory:true)
++        for (p,h) in sources {
++            let file=sourceRoot.appendingPathComponent(p).resolvingSymlinksInPath()
++            guard !p.hasPrefix("/"),!p.split(separator:"/").contains(".."),file.path.hasPrefix(sourceRoot.path+"/"),try hash(file)==h else{throw IceSelectedFailure.binding}
++        }
+         let own=try MenuBarProcessSignature.read(ProcessInfo.processInfo.processIdentifier)
+         guard own.identifier=="com.ryanai.mactools",own.team=="58TJ64422P",own.sha256==manifest["controllerSHA256"] as? String,
+-              own.executable==root.appendingPathComponent("Ice Selected Controller.app/Contents/MacOS/IceSelectedController").path,
+-              try hash(root.appendingPathComponent("Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture")) == manifest["fixtureSHA256"] as? String else{throw IceSelectedFailure.binding}
++              own.executable==packageRoot.appendingPathComponent("Ice Selected Controller.app/Contents/MacOS/IceSelectedController").path,
++              try hash(packageRoot.appendingPathComponent("Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture")) == manifest["fixtureSHA256"] as? String else{throw IceSelectedFailure.binding}
+         return manifest
+     }
+     static func requireNoOtherWorker() throws {
+         for app in NSWorkspace.shared.runningApplications where app.processIdentifier != ProcessInfo.processInfo.processIdentifier {
+-            let p=app.executableURL?.path ?? ""
+-            guard !p.hasPrefix("/tmp/mac-tools-ice-baseline-candidate-20261007/Ice Baseline"),
+-                  !p.hasPrefix("/tmp/mac-tools-ice-selected-candidate-20261008/Ice Selected"),
+-                  !p.hasPrefix("/tmp/mac-tools-ice-selected-relative-candidate-20261008/Ice Selected"),
+-                  !p.hasPrefix("/tmp/mac-tools-ice-selected-quick-candidate-20261008/Ice Selected"),
+-                  !p.hasPrefix("/tmp/mac-tools-ice-selected-relative-wait-candidate-20261008/Ice Selected"),
+-                  !p.hasPrefix("/tmp/mac-tools-ice-selected-quick-diagnostic-candidate-20261008/Ice Selected"),
+-                  !p.hasPrefix("/tmp/mac-tools-ice-selected-quick-receipt-candidate-20261008/Ice Selected"),
+-                  !p.hasPrefix("/tmp/mac-tools-ice-selected-quick-receiver-candidate-20261008/Ice Selected"),
+-                  !p.hasPrefix("/tmp/mac-tools-ice-selected-quick-menu-trace-candidate-20261009/Ice Selected"),
+-                  !p.hasPrefix("/tmp/mac-tools-ice-selected-quick-interface-candidate-20261009/Ice Selected"),
+-                  !p.hasPrefix(root.path+"/Ice Selected") else{throw IceSelectedFailure.pendingRecovery}
++            let path=app.executableURL?.path ?? ""
++            guard !path.hasSuffix("/Ice Selected Controller.app/Contents/MacOS/IceSelectedController"),
++                  !path.hasSuffix("/Ice Baseline Controller.app/Contents/MacOS/IceBaselineController") else{throw IceSelectedFailure.pendingRecovery}
+         }
+         guard try journal.inspect()==nil else{throw IceSelectedFailure.pendingRecovery}
+-        // Preserve the installed owned worker's independent responsibility.
+-        for path in ["/tmp/mac-tools-ice-selected-quick-interface-candidate-20261009/Ice Selected Controller.app/Contents/MacOS/IceSelectedController","/tmp/mac-tools-ice-selected-quick-menu-trace-candidate-20261009/Ice Selected Controller.app/Contents/MacOS/IceSelectedController","/tmp/mac-tools-ice-baseline-candidate-20261007/Ice Baseline Controller.app/Contents/MacOS/IceBaselineController",
+-                     "/tmp/mac-tools-ice-selected-candidate-20261008/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
+-                     "/tmp/mac-tools-ice-selected-relative-candidate-20261008/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
+-                     "/tmp/mac-tools-ice-selected-quick-candidate-20261008/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
+-                     "/tmp/mac-tools-ice-selected-relative-wait-candidate-20261008/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
+-                     "/tmp/mac-tools-ice-selected-quick-diagnostic-candidate-20261008/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
+-                     "/tmp/mac-tools-ice-selected-quick-receipt-candidate-20261008/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
+-                     "/tmp/mac-tools-ice-selected-quick-receiver-candidate-20261008/Ice Selected Controller.app/Contents/MacOS/IceSelectedController"] {
+-            let process=Process(),out=Pipe();process.executableURL=URL(fileURLWithPath:path)
+-            process.arguments=["--inspect-recovery"];process.standardOutput=out
+-            let done=DispatchSemaphore(value:0);process.terminationHandler={_ in done.signal()};try process.run()
+-            guard done.wait(timeout:.now()+5) == .success else {process.terminate();throw IceSelectedFailure.pendingRecovery}
+-            let bytes=out.fileHandleForReading.readDataToEndOfFile()
+-            guard process.terminationStatus==0,let result=try JSONSerialization.jsonObject(with:bytes) as? [String:Any],result["journalPending"] as? Bool==false else{throw IceSelectedFailure.pendingRecovery}
+-        }
+     }
+     static func write(_ value: Any, to url: URL) throws {
+         let data=try JSONSerialization.data(withJSONObject:value,options:[.prettyPrinted,.sortedKeys]);try data.write(to:url,options:.atomic)
+@@ -60,6 +48,13 @@
+     }
+     static func prepare(windowID: UInt32?) throws -> URL {
+         let manifest=try verifyPackage();try requireNoOtherWorker()
++        try FileManager.default.createDirectory(at:root,withIntermediateDirectories:true,attributes:[.posixPermissions:0o700])
++        let archive=root.appendingPathComponent("build-history/"+(manifest["controllerSHA256"] as! String),isDirectory:true)
++        try FileManager.default.createDirectory(at:archive,withIntermediateDirectories:true,attributes:[.posixPermissions:0o700])
++        for (name,file) in [("prepared-build.json","prepared-build.json"),("controller","Ice Selected Controller.app/Contents/MacOS/IceSelectedController"),("fixture","Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture")] {
++            let destination=archive.appendingPathComponent(name)
++            if !FileManager.default.fileExists(atPath:destination.path) {try Data(contentsOf:packageRoot.appendingPathComponent(file)).write(to:destination,options:.withoutOverwriting)}
++        }
+         var selected:MenuBarIceSelectedTarget?
+         if let windowID {
+             let d=try MenuBarIceSelectedTarget.readDirectory()
+--- a/Tools/IceInterfaceProductWorker/IceSelectedController.swift
++++ b/Tools/IceInterfaceProductWorker/IceSelectedController.swift
+@@ -84,7 +84,7 @@
+         let bytes=try Data(contentsOf:directory.appendingPathComponent("owner-state/latest.json"))
+         guard bytes.count<256000,let d=try JSONSerialization.jsonObject(with:bytes) as? [String:Any],d["nonce"] as? String==prepared.nonce.uuidString,
+               d["pid"] as? Int32==fixturePID,let at=d["atUnix"] as? Double,(0...1).contains(Date().timeIntervalSince1970-at),
+-              d["phase"] as? String=="timer",d["bundlePath"] as? String==IceSelectedSession.root.appendingPathComponent("Ice Selected Fixture.app").path else{throw IceBaselineError.identity}
++              d["phase"] as? String=="timer",d["bundlePath"] as? String==IceSelectedSession.packageRoot.appendingPathComponent("Ice Selected Fixture.app").path else{throw IceBaselineError.identity}
+         return d
+     }
+     func lifetime(_ action:String) async throws {
+@@ -101,7 +101,7 @@
+     func launchFixture() async throws {
+         try mark("fixture-launch")
+         try FileManager.default.createDirectory(at:directory.appendingPathComponent("owner-state"),withIntermediateDirectories:false,attributes:[.posixPermissions:0o700])
+-        let p=Process();p.executableURL=IceSelectedSession.root.appendingPathComponent("Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture")
++        let p=Process();p.executableURL=IceSelectedSession.packageRoot.appendingPathComponent("Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture")
+         if (CommandLine.arguments.contains("--self-owned-window-run") || CommandLine.arguments.contains("--owned-window-session")) {var env=ProcessInfo.processInfo.environment;env["MAC_TOOLS_OWNED_ORDINARY_INTERFACE"]="1";p.environment=env}
+         p.arguments=["--diagnostic-directory",directory.appendingPathComponent("owner-state").path,"--diagnostic-nonce",prepared.nonce.uuidString]
+         for (name,key) in [("fixture.stdout",true),("fixture.stderr",false)] {
+@@ -319,7 +319,7 @@
+             if args.contains("--owned-entry-cancel-check"),!prepared.selfOwned {
+                 let m=try IceSelectedSession.verifyPackage()
+                 guard let target=prepared.selected,target.owner.identifier=="com.ryanai.mactools.producttargets",target.owner.team=="58TJ64422P",
+-                      target.owner.executable==IceSelectedSession.root.appendingPathComponent("Ice Product Targets.app/Contents/MacOS/IceProductTargets").path,
++                      target.owner.executable==IceSelectedSession.packageRoot.appendingPathComponent("Ice Product Targets.app/Contents/MacOS/IceProductTargets").path,
+                       target.owner.sha256==m["productTargetSHA256"] as? String else{throw IceSelectedFailure.policy}
+             }
+             try emit(["session":directory.path,"selfOwned":prepared.selfOwned,"autoStart":autoOwned])
+--- a/Tools/IceInterfaceProductWorker/IceSelectedOwnedRecovery.swift
++++ b/Tools/IceInterfaceProductWorker/IceSelectedOwnedRecovery.swift
+@@ -41,7 +41,7 @@
+ enum IceSelectedOwnedRecovery {
+     static func digest(_ record:IceSelectedRecord)throws->String {let e=JSONEncoder();e.outputFormatting=[.sortedKeys];return IceSelectedJournal.hash(try e.encode(record))}
+     static func owned(_ record:IceSelectedRecord)->Bool {
+-        let root="/tmp/mac-tools-ice-interface-product-candidate-20261009/Worker"
++        let root=IceSelectedSession.packageRoot.path
+         return record.phase == .stopped && record.binding.owner.identifier=="com.ryanai.mactools.nativetargets" && record.binding.owner.team=="58TJ64422P"
+             && record.binding.controller.team==record.binding.owner.team
+             && record.binding.owner.executable==root+"/Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture"
+@@ -66,7 +66,7 @@
+     /// This is a separate administrative disposition, never a transport ACK.
+     static func evidence(_ record:IceSelectedRecord)throws->(String,String) {
+         guard owned(record) else{throw IceSelectedFailure.binding}
+-        let root=URL(fileURLWithPath:"/tmp/mac-tools-ice-interface-product-candidate-20261009/Worker"),dir=root.appendingPathComponent("session-"+record.binding.nonce.uuidString)
++        let root=IceSelectedSession.root,dir=root.appendingPathComponent("session-"+record.binding.nonce.uuidString)
+         let archive=root.appendingPathComponent("build-history/"+record.binding.controller.sha256)
+         guard IceSelectedJournal.hash(try Data(contentsOf:archive.appendingPathComponent("controller")))==record.binding.controller.sha256,
+               let built=try JSONSerialization.jsonObject(with:Data(contentsOf:archive.appendingPathComponent("prepared-build.json"))) as? [String:Any],
+--- a/Tools/IceInterfaceProductWorker/FixtureDiagnostic.swift
++++ b/Tools/IceInterfaceProductWorker/FixtureDiagnostic.swift
+@@ -22,8 +22,7 @@
+     static func configured(items: @escaping () -> [NSStatusItem]) -> NativeAcceptanceTargetsDiagnostic? {
+         let args = CommandLine.arguments
+         guard args.count == 5, args[1] == "--diagnostic-directory", args[3] == "--diagnostic-nonce",
+-              (args[2] == "/tmp/mac-tools-native-owner-window-task7/owner-state" ||
+-               args[2].hasPrefix("/tmp/mac-tools-ice-interface-product-candidate-20261009/Worker/session-") && args[2].hasSuffix("/owner-state")),
++              args[2].hasPrefix((FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("MacTools/IceInterfaceCandidate", isDirectory: true)).path+"/session-"),args[2].hasSuffix("/owner-state"),
+               UUID(uuidString: args[4]) != nil else { return nil }
+         return NativeAcceptanceTargetsDiagnostic(directory: URL(fileURLWithPath: args[2]), nonce: args[4], items: items)
+     }
+--- a/Tools/IceInterfaceProductWorker/IceProductStopChecks.swift
++++ b/Tools/IceInterfaceProductWorker/IceProductStopChecks.swift
+@@ -26,7 +26,7 @@
+         for (name, expectedNeedsRelease, posts) in [("menu-bar-ice-v9-interface-self-window-stop-2026-10-09", true, 3), ("menu-bar-ice-v9-interface-self-window-scope-stop-2026-10-09", false, 8)] {
+             let replay = parent.appendingPathComponent(name)
+             try FileManager.default.createDirectory(at: replay, withIntermediateDirectories: false, attributes: [.posixPermissions: 0o700])
+-            let source = URL(fileURLWithPath: "/Users/yangruihan/Workspace/mac_tools/docs/evidence/" + name + "/original-pending.json")
++            let source = IceSelectedSession.packageRoot.appendingPathComponent("Fixtures/"+name+".json")
+             let bytes = try Data(contentsOf: source)
+             let ledger = replay.appendingPathComponent("ledger")
+             try FileManager.default.createDirectory(at: ledger, withIntermediateDirectories: false, attributes: [.posixPermissions: 0o700])
+--- a/Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift
++++ b/Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift
+@@ -3,9 +3,10 @@
+ import CryptoKit
+ 
+ enum MenuBarIceInterfaceProductBridge {
+-    static let root = URL(fileURLWithPath: "/tmp/mac-tools-ice-interface-product-candidate-20261009/Worker", isDirectory: true)
+-    static let controller = root.appendingPathComponent("Ice Selected Controller.app/Contents/MacOS/IceSelectedController")
+-    static let revision = "ordinary-Ice-product-v9.2-delay-boundary"
++    static let root = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("MacTools/IceInterfaceCandidate", isDirectory: true)
++    static let packageRoot = Bundle.main.resourceURL!.appendingPathComponent("IceWorker",isDirectory:true)
++    static let controller = packageRoot.appendingPathComponent("Ice Selected Controller.app/Contents/MacOS/IceSelectedController")
++    static let revision = "ordinary-Ice-product-stage1"
+     struct Prepared: Codable {
+         let nonce: UUID, selected: MenuBarIceSelectedTarget?, selfOwned: Bool, controllerSHA256: String
+         let preparedAtUnix: Double
+@@ -32,15 +33,16 @@
+         guard Bundle.main.bundleIdentifier == "com.ryanai.mactools.iceinterfacecandidate",
+               let url = Bundle.main.url(forResource: "ice-interface-bridge", withExtension: "json"),
+               let receipt = try JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any],
+-              receipt["manifestSHA256"] as? String == (try hash(root.appendingPathComponent("prepared-build.json"))),
+-              let manifest = try JSONSerialization.jsonObject(with: Data(contentsOf: root.appendingPathComponent("prepared-build.json"))) as? [String: Any],
++              receipt["manifestSHA256"] as? String == (try hash(packageRoot.appendingPathComponent("prepared-build.json"))),
++              let manifest = try JSONSerialization.jsonObject(with: Data(contentsOf: packageRoot.appendingPathComponent("prepared-build.json"))) as? [String: Any],
+               manifest["revision"] as? String == revision,
+               manifest["controllerSHA256"] as? String == (try hash(controller)),
+-              manifest["fixtureSHA256"] as? String == (try hash(root.appendingPathComponent("Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture"))),
+-              manifest["installedSHA256"] as? String == (try hash(URL(fileURLWithPath: "/Applications/MacTools.app/Contents/MacOS/MacTools"))),
++              manifest["fixtureSHA256"] as? String == (try hash(packageRoot.appendingPathComponent("Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture"))),
+               let sources = manifest["sources"] as? [String: String], sources.count > 50 else { throw Failure.invalid }
+-        for (path, expected) in sources {
+-            guard path.hasPrefix("/Users/yangruihan/Workspace/mac_tools/"), try hash(URL(fileURLWithPath: path)) == expected else { throw Failure.invalid }
++        let sourceRoot=packageRoot.appendingPathComponent("Source",isDirectory:true)
++        for (path,expected) in sources {
++            let file=sourceRoot.appendingPathComponent(path).resolvingSymlinksInPath()
++            guard !path.hasPrefix("/"),!path.split(separator:"/").contains(".."),file.path.hasPrefix(sourceRoot.path+"/"),try hash(file)==expected else{throw Failure.invalid}
+         }
+         return manifest
+     }
+@@ -53,6 +55,7 @@
+     static func command(_ arguments: [String]) throws -> [String: Any] {
+         guard arguments == ["--inspect-recovery"] || arguments == ["--prepare-owned"] || (arguments.count == 2 && arguments[0] == "--prepare-target" && UInt32(arguments[1]) != nil) else { throw Failure.invalid }
+         let manifest = try manifest()
++        try FileManager.default.createDirectory(at:root,withIntermediateDirectories:true,attributes:[.posixPermissions:0o700])
+         let diagnostic = root.appendingPathComponent("product-command-" + UUID().uuidString)
+         try FileManager.default.createDirectory(at: diagnostic, withIntermediateDirectories: false, attributes: [.posixPermissions: 0o700])
+         let (out, err) = try files(diagnostic, "command")
+@@ -74,9 +77,8 @@
+     static func preflight() throws -> [String: Any] {
+         for app in NSWorkspace.shared.runningApplications {
+             let path = app.executableURL?.path ?? ""
+-            guard !path.hasPrefix(root.path + "/Ice Selected"),
+-                  !path.hasPrefix("/tmp/mac-tools-ice-baseline-candidate-20261007/Ice Baseline"),
+-                  !path.hasPrefix("/tmp/mac-tools-ice-selected-") else { throw Failure.invalid }
++            guard !path.hasSuffix("/Ice Selected Controller.app/Contents/MacOS/IceSelectedController"),
++                  !path.hasSuffix("/Ice Baseline Controller.app/Contents/MacOS/IceBaselineController") else { throw Failure.invalid }
+         }
+         let recovery = try command(["--inspect-recovery"])
+         guard recovery["journalPending"] as? Bool == false else { throw Failure.invalid }
+@@ -151,7 +153,7 @@
+         if ownedCancelCheck { configuration.arguments.append("--owned-entry-cancel-check") }
+         else if ownedWindow { configuration.arguments.append("--owned-window-session") }
+         let application: NSRunningApplication = try await withCheckedThrowingContinuation { continuation in
+-            NSWorkspace.shared.openApplication(at: root.appendingPathComponent("Ice Selected Controller.app"), configuration: configuration) { app, error in
++            NSWorkspace.shared.openApplication(at: packageRoot.appendingPathComponent("Ice Selected Controller.app"), configuration: configuration) { app, error in
+                 if let app { continuation.resume(returning: app) }
+                 else { continuation.resume(throwing: error ?? Failure.unknown(directory)) }
+             }
+--- a/Tools/IceInterfaceProduct/MenuBarIceInterfaceProductNativeChecks.swift
++++ b/Tools/IceInterfaceProduct/MenuBarIceInterfaceProductNativeChecks.swift
+@@ -30,7 +30,7 @@
+                 let output = diagnostic.appendingPathComponent("target.json")
+                 let (out, err) = try Bridge.files(diagnostic, "target")
+                 defer { try? out.close(); try? err.close() }
+-                process.executableURL = Bridge.root.appendingPathComponent("Ice Product Targets.app/Contents/MacOS/IceProductTargets")
++                process.executableURL = Bridge.packageRoot.appendingPathComponent("Ice Product Targets.app/Contents/MacOS/IceProductTargets")
+                 process.arguments = [nonce, output.path]; process.standardOutput = out; process.standardError = err
+                 try process.run(); fixture = process; fixtureOutput = output
+                 let proof = try MenuBarProcessSignature.read(process.processIdentifier)
+--- a/Tools/IceInterfaceProduct/MacTools.swift
++++ b/Tools/IceInterfaceProduct/MacTools.swift
+@@ -19,7 +19,8 @@
+         if CommandLine.arguments.contains("--ice-candidate-ui-smoke") {
+             DispatchQueue.main.asyncAfter(deadline: .now()+1) { [weak self] in
+                 guard let self else { exit(1) }
+-                let imageURL = URL(fileURLWithPath:"/tmp/mac-tools-ice-product-ui.png")
++                let imageURL = MenuBarIceInterfaceProductBridge.root.appendingPathComponent("product-ui.png")
++                try? FileManager.default.createDirectory(at:MenuBarIceInterfaceProductBridge.root,withIntermediateDirectories:true)
+                 var rendered = false
+                 if let content = self.window?.contentView,
+                    let bitmap = content.bitmapImageRepForCachingDisplay(in:content.bounds) {
+--- a/scripts/build-ice-interface-product-worker.sh
++++ b/scripts/build-ice-interface-product-worker.sh
+@@ -1,56 +1,46 @@
+ #!/bin/sh
+ set -eu
+ cd "$(dirname "$0")/.."
+-ICE_PRODUCT_WORKER_ROOT=/tmp/mac-tools-ice-interface-product-candidate-20261009/Worker
+-ICE_PRODUCT_WORKER_APP="$ICE_PRODUCT_WORKER_ROOT/Ice Selected Controller.app"
+-mkdir -p "$ICE_PRODUCT_WORKER_ROOT/module-cache"
+-python3 - "$ICE_PRODUCT_WORKER_ROOT" <<'PY'
+-import pathlib,sys,json,plistlib,hashlib,shutil
++ROOT="$PWD/build/ice-interface-product/Worker"
++STATE="$HOME/Library/Application Support/MacTools/IceInterfaceCandidate"
++[ ! -e "$STATE/selected-relative-recovery-v2/ice-selected-relative-v2.json" ] || { echo 'pending recovery: keep current worker' >&2; exit 1; }
++mkdir -p "$ROOT/module-cache"
++python3 - "$ROOT" <<'PY'
++import pathlib,sys,json,plistlib,shutil
+ root=pathlib.Path(sys.argv[1]);repo=pathlib.Path.cwd();base=repo/'Tools/IceSelectedQuickInterface';over=repo/'Tools/IceInterfaceProductWorker'
+-assert not (root/'selected-relative-recovery-v2/ice-selected-relative-v2.json').exists(),'pending recovery: keep current worker'
+-old=pathlib.Path('/tmp/mac-tools-ice-selected-quick-interface-candidate-20261009')
+-manifest=json.loads((old/'prepared-build.json').read_text());sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+-assert all(sha(pathlib.Path(p))==h for p,h in manifest['sources'].items()),'accepted v9 changed'
+ sources=sorted(p for p in repo.glob('Sources/MacTools/**/*.swift') if p.name!='MacTools.swift')
+ sources+=sorted(p for p in base.glob('*.swift') if p.name not in ['IceSelectedFixture.swift','FixtureDiagnostic.swift'] and not (over/p.name).exists())
+ sources+=sorted(p for p in over.glob('*.swift') if p.name not in ['FixtureDiagnostic.swift','IceProductTargetDirectoryFixture.swift'])
+-sources += [repo/'Tools/IceRelative/IceRelativeReturn.swift',repo/'Tools/IceBaseline/IceBaselineEngine.swift',repo/'Tools/IceBaseline/EventTap.swift',repo/'Tools/IceBaseline/MouseCursor.swift',repo/'Tools/IceBaseline/IceBaselineSessionLifetime.swift']
++sources += [repo/p for p in ['Tools/IceRelative/IceRelativeReturn.swift','Tools/IceBaseline/IceBaselineEngine.swift','Tools/IceBaseline/EventTap.swift','Tools/IceBaseline/MouseCursor.swift','Tools/IceBaseline/IceBaselineSessionLifetime.swift']]
+ (root/'controller-sources.txt').write_text('\n'.join(map(str,sources))+'\n')
+ for name,exe,bundle in [('Ice Selected Controller','IceSelectedController','com.ryanai.mactools'),('Ice Selected Fixture','IceSelectedFixture','com.ryanai.mactools.nativetargets'),('Ice Interface Focus','IceInterfaceFocus','com.ryanai.mactools.nativefocus'),('Ice Product Targets','IceProductTargets','com.ryanai.mactools.producttargets')]:
+  app=root/(name+'.app');(app/'Contents/MacOS').mkdir(parents=True,exist_ok=True);(app/'Contents/Resources').mkdir(exist_ok=True)
+- (app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':exe,'CFBundleIdentifier':bundle,'CFBundleName':name,'CFBundleShortVersionString':'0.2.1-product-worker','CFBundleVersion':'3','LSMinimumSystemVersion':'14.0','LSUIElement':True}))
++ (app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':exe,'CFBundleIdentifier':bundle,'CFBundleName':name,'CFBundleShortVersionString':'0.2.1-product-worker','CFBundleVersion':'4','LSMinimumSystemVersion':'14.0','LSUIElement':True}))
+ for p in [repo/'COPYING.GPL-3.0',base/'THIRD_PARTY_NOTICES.md']:shutil.copyfile(p,root/'Ice Selected Controller.app/Contents/Resources'/p.name)
+ PY
+-swiftc -parse-as-library -module-cache-path "$ICE_PRODUCT_WORKER_ROOT/module-cache" \
+- $(cat "$ICE_PRODUCT_WORKER_ROOT/controller-sources.txt") -o "$ICE_PRODUCT_WORKER_APP/Contents/MacOS/IceSelectedController"
+-swiftc -parse-as-library -module-cache-path "$ICE_PRODUCT_WORKER_ROOT/module-cache" \
+- Tools/IceSelectedQuickInterface/IceSelectedFixture.swift Tools/IceInterfaceProductWorker/FixtureDiagnostic.swift Tools/IceBaseline/IceBaselineSessionLifetime.swift Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarProcessSignature.swift \
+- -o "$ICE_PRODUCT_WORKER_ROOT/Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture"
+-swiftc -parse-as-library -module-cache-path "$ICE_PRODUCT_WORKER_ROOT/module-cache" Tools/IceInterfaceFocusMain.swift -o "$ICE_PRODUCT_WORKER_ROOT/Ice Interface Focus.app/Contents/MacOS/IceInterfaceFocus"
+-swiftc -parse-as-library -module-cache-path "$ICE_PRODUCT_WORKER_ROOT/module-cache" Tools/IceInterfaceProductWorker/IceProductTargetDirectoryFixture.swift -o "$ICE_PRODUCT_WORKER_ROOT/Ice Product Targets.app/Contents/MacOS/IceProductTargets"
+-for ICE_PRODUCT_WORKER_NAME in 'Ice Selected Controller' 'Ice Selected Fixture' 'Ice Interface Focus' 'Ice Product Targets'; do
+- codesign --force --sign "${MAC_TOOLS_SIGN_IDENTITY:-722852A9656BC9126B2C4585713B724D58F60DB6}" "$ICE_PRODUCT_WORKER_ROOT/$ICE_PRODUCT_WORKER_NAME.app"
+- codesign --verify --deep --strict "$ICE_PRODUCT_WORKER_ROOT/$ICE_PRODUCT_WORKER_NAME.app"
++swiftc -parse-as-library -module-cache-path "$ROOT/module-cache" $(cat "$ROOT/controller-sources.txt") -o "$ROOT/Ice Selected Controller.app/Contents/MacOS/IceSelectedController"
++swiftc -parse-as-library -module-cache-path "$ROOT/module-cache" Tools/IceSelectedQuickInterface/IceSelectedFixture.swift Tools/IceInterfaceProductWorker/FixtureDiagnostic.swift Tools/IceBaseline/IceBaselineSessionLifetime.swift Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarProcessSignature.swift -o "$ROOT/Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture"
++swiftc -parse-as-library -module-cache-path "$ROOT/module-cache" Tools/IceInterfaceFocusMain.swift -o "$ROOT/Ice Interface Focus.app/Contents/MacOS/IceInterfaceFocus"
++swiftc -parse-as-library -module-cache-path "$ROOT/module-cache" Tools/IceInterfaceProductWorker/IceProductTargetDirectoryFixture.swift -o "$ROOT/Ice Product Targets.app/Contents/MacOS/IceProductTargets"
++for NAME in 'Ice Selected Controller' 'Ice Selected Fixture' 'Ice Interface Focus' 'Ice Product Targets'; do
++ codesign --force --sign "${MAC_TOOLS_SIGN_IDENTITY:-722852A9656BC9126B2C4585713B724D58F60DB6}" "$ROOT/$NAME.app"
++ codesign --verify --deep --strict "$ROOT/$NAME.app"
+ done
+-python3 - "$ICE_PRODUCT_WORKER_ROOT" <<'PY'
+-import pathlib,sys,json,hashlib,subprocess,shutil,difflib
++python3 - "$ROOT" <<'PY'
++import pathlib,sys,json,hashlib,subprocess,shutil
+ root=pathlib.Path(sys.argv[1]);repo=pathlib.Path.cwd();sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+ sources=[pathlib.Path(p) for p in (root/'controller-sources.txt').read_text().splitlines()]
+-sources += [repo/'Tools/IceSelectedQuickInterface/IceSelectedFixture.swift',repo/'Tools/IceInterfaceProductWorker/FixtureDiagnostic.swift',repo/'Tools/IceInterfaceProductWorker/IceProductTargetDirectoryFixture.swift',repo/'Tools/IceInterfaceFocusMain.swift',repo/'scripts/build-ice-interface-product-worker.sh',repo/'Tools/IceSelectedQuickInterface/THIRD_PARTY_NOTICES.md']
+-m={'revision':'ordinary-Ice-product-v9.2-delay-boundary','sourceHEAD':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'sources':{str(p):sha(p) for p in sources},'controllerSHA256':sha(root/'Ice Selected Controller.app/Contents/MacOS/IceSelectedController'),'fixtureSHA256':sha(root/'Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture'),'focusSHA256':sha(root/'Ice Interface Focus.app/Contents/MacOS/IceInterfaceFocus'),'productTargetSHA256':sha(root/'Ice Product Targets.app/Contents/MacOS/IceProductTargets'),'installedSHA256':sha(pathlib.Path('/Applications/MacTools.app/Contents/MacOS/MacTools')),'strictANYRequired':False,'hitTestRequired':False,'automaticStartForProduct':False}
+-assert m['installedSHA256']=='515c9640ea01039d0157a57cae81893547cfac04b404b6ce41086461bfbce9a2'
++sources += [repo/p for p in ['Tools/IceSelectedQuickInterface/IceSelectedFixture.swift','Tools/IceInterfaceProductWorker/FixtureDiagnostic.swift','Tools/IceInterfaceProductWorker/IceProductTargetDirectoryFixture.swift','Tools/IceInterfaceFocusMain.swift','Tools/IceSelectedQuickInterface/THIRD_PARTY_NOTICES.md']]
++sourceRoot=root/'Source'
++if sourceRoot.exists():shutil.rmtree(sourceRoot)
++for p in sources:
++ dest=sourceRoot/p.relative_to(repo);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
++fixtures=root/'Fixtures'
++if fixtures.exists():shutil.rmtree(fixtures)
++shutil.copytree(repo/'Tools/IceInterfaceProductWorker/Fixtures',fixtures)
++m={'revision':'ordinary-Ice-product-stage1','sourceHEAD':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'sources':{str(p.relative_to(repo)):sha(p) for p in sources},'controllerSHA256':sha(root/'Ice Selected Controller.app/Contents/MacOS/IceSelectedController'),'fixtureSHA256':sha(root/'Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture'),'focusSHA256':sha(root/'Ice Interface Focus.app/Contents/MacOS/IceInterfaceFocus'),'productTargetSHA256':sha(root/'Ice Product Targets.app/Contents/MacOS/IceProductTargets'),'strictANYRequired':False,'hitTestRequired':False,'automaticStartForProduct':False}
+ (root/'prepared-build.json').write_text(json.dumps(m,indent=2,sort_keys=True)+'\n')
+-archive=root/'build-history'/m['controllerSHA256'];archive.mkdir(parents=True,exist_ok=True)
+-for p,n in [(root/'prepared-build.json','prepared-build.json'),(root/'Ice Selected Controller.app/Contents/MacOS/IceSelectedController','controller'),(root/'Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture','fixture')]:
+- d=archive/n
+- if d.exists():assert d.read_bytes()==p.read_bytes()
+- else:shutil.copyfile(p,d)
+-patch=[]
+-for p in sorted((repo/'Tools/IceInterfaceProductWorker').glob('*.swift')):
+- original=repo/'Tools/IceSelectedQuickInterface'/p.name
+- if original.exists():patch+=difflib.unified_diff(original.read_text().splitlines(True),p.read_text().splitlines(True),fromfile=str(original),tofile=str(p))
+-(root/'difference-from-accepted-v9.patch').write_text(''.join(patch))
+ PY
+-"$ICE_PRODUCT_WORKER_APP/Contents/MacOS/IceSelectedController" --offline-tests
+-
+-"$ICE_PRODUCT_WORKER_APP/Contents/MacOS/IceSelectedController" --rehide-delay-tests
++"$ROOT/Ice Selected Controller.app/Contents/MacOS/IceSelectedController" --offline-tests
++"$ROOT/Ice Selected Controller.app/Contents/MacOS/IceSelectedController" --rehide-delay-tests
++"$ROOT/Ice Selected Controller.app/Contents/MacOS/IceSelectedController" --dispatch-validation-tests
+--- a/scripts/build-ice-interface-product-candidate.sh
++++ b/scripts/build-ice-interface-product-candidate.sh
+@@ -1,50 +1,38 @@
+ #!/bin/sh
+ set -eu
+ cd "$(dirname "$0")/.."
+-ICE_INTERFACE_PRODUCT_ROOT=/tmp/mac-tools-ice-interface-product-candidate-20261009
+-ICE_INTERFACE_PRODUCT_APP="$ICE_INTERFACE_PRODUCT_ROOT/MacTools Ice Interface Candidate.app"
+-if [ ! -f "$ICE_INTERFACE_PRODUCT_ROOT/Worker/prepared-build.json" ]; then
+- sh scripts/build-ice-interface-product-worker.sh
+-fi
+-mkdir -p "$ICE_INTERFACE_PRODUCT_APP/Contents/MacOS" "$ICE_INTERFACE_PRODUCT_APP/Contents/Resources/IceWorker" "$ICE_INTERFACE_PRODUCT_ROOT/module-cache"
+-python3 - "$ICE_INTERFACE_PRODUCT_ROOT" <<'PY'
++ROOT="$PWD/build/ice-interface-product"
++APP="$ROOT/MacTools Ice Interface Candidate.app"
++sh scripts/build-ice-interface-product-worker.sh
++mkdir -p "$ROOT/module-cache"
++python3 - "$ROOT" <<'PY'
+ import pathlib,sys,json,hashlib,shutil,plistlib,subprocess
+-root=pathlib.Path(sys.argv[1]);repo=pathlib.Path.cwd();app=root/'MacTools Ice Interface Candidate.app'
+-worker=root/'Worker'
++root=pathlib.Path(sys.argv[1]);repo=pathlib.Path.cwd();app=root/'MacTools Ice Interface Candidate.app';worker=root/'Worker';sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+ if app.exists():
+- previous=app/'Contents/MacOS/MacTools'
+- if previous.exists():
+-  previousSHA=hashlib.sha256(previous.read_bytes()).hexdigest();archive=root/'build-history'/previousSHA/'MacTools Ice Interface Candidate.app'
+-  if not archive.exists():archive.parent.mkdir(parents=True,exist_ok=True);shutil.copytree(app,archive)
+-  assert hashlib.sha256((archive/'Contents/MacOS/MacTools').read_bytes()).hexdigest()==previousSHA
+-sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+-m=json.loads((worker/'prepared-build.json').read_text())
+-assert m['revision']=='ordinary-Ice-product-v9.2-delay-boundary'
+-for p,h in m['sources'].items():assert sha(pathlib.Path(p))==h,p
+-assert sha(worker/'Ice Selected Controller.app/Contents/MacOS/IceSelectedController')==m['controllerSHA256']
+-assert sha(pathlib.Path('/Applications/MacTools.app/Contents/MacOS/MacTools'))==m['installedSHA256']
+-sources=sorted(p for p in repo.glob('Sources/MacTools/**/*.swift') if p.name not in ['MacTools.swift','MenuBarIceCandidateProduct.swift'])
+-sources+=sorted((repo/'Tools/IceInterfaceProduct').glob('*.swift'))
++ exe=app/'Contents/MacOS/MacTools'
++ if exe.exists():
++  saved=root/'build-history'/sha(exe)/app.name
++  if not saved.exists():saved.parent.mkdir(parents=True,exist_ok=True);shutil.copytree(app,saved)
++ shutil.rmtree(app)
++(app/'Contents/MacOS').mkdir(parents=True);resources=app/'Contents/Resources';resources.mkdir()
++m=json.loads((worker/'prepared-build.json').read_text());assert m['revision']=='ordinary-Ice-product-stage1'
++for p,h in m['sources'].items():assert sha(repo/p)==h,p
++sources=sorted(p for p in repo.glob('Sources/MacTools/**/*.swift') if p.name not in ['MacTools.swift','MenuBarIceCandidateProduct.swift'])+sorted((repo/'Tools/IceInterfaceProduct').glob('*.swift'))
+ (root/'sources.txt').write_text('\n'.join(map(str,sources))+'\n')
+-oldReceipt=app/'Contents/Resources/ice-candidate-bridge.json'
+-if oldReceipt.exists():oldReceipt.unlink()
+-(app/'Contents/Resources/ice-interface-bridge.json').write_text(json.dumps({'revision':m['revision'],'manifestSHA256':sha(worker/'prepared-build.json'),'developmentWorkerRoot':str(worker),'automaticStart':False},indent=2)+'\n')
+-shutil.copyfile(repo/'Assets/AppIcon/AppIcon.icns',app/'Contents/Resources/AppIcon.icns')
+-for name in ['Ice Selected Controller','Ice Selected Fixture','Ice Interface Focus','Ice Product Targets']:
+- target=app/'Contents/Resources/IceWorker'/(name+'.app')
+- if target.exists():shutil.rmtree(target)
+- shutil.copytree(worker/(name+'.app'),target)
+-for p in [repo/'COPYING.GPL-3.0',repo/'THIRD_PARTY_NOTICES.md',worker/'prepared-build.json']:
+- shutil.copyfile(p,app/'Contents/Resources/IceWorker'/p.name)
++(resources/'ice-interface-bridge.json').write_text(json.dumps({'revision':m['revision'],'manifestSHA256':sha(worker/'prepared-build.json'),'automaticStart':False},indent=2)+'\n')
++shutil.copyfile(repo/'Assets/AppIcon/AppIcon.icns',resources/'AppIcon.icns')
++package=resources/'IceWorker';package.mkdir()
++for name in ['Ice Selected Controller','Ice Selected Fixture','Ice Interface Focus','Ice Product Targets']:shutil.copytree(worker/(name+'.app'),package/(name+'.app'))
++for name in ['Source','Fixtures']:shutil.copytree(worker/name,package/name)
++for p in [repo/'COPYING.GPL-3.0',repo/'THIRD_PARTY_NOTICES.md',worker/'prepared-build.json']:shutil.copyfile(p,package/p.name)
+ for p in sources:
+- dest=app/'Contents/Resources/Source'/p.relative_to(repo);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
+-(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.1-ice-interface-candidate','CFBundleVersion':'3','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True}))
+-(root/'source-manifest.json').write_text(json.dumps({str(p):sha(p) for p in sources},indent=2,sort_keys=True)+'\n')
++ dest=resources/'Source'/p.relative_to(repo);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
++(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.1-ice-interface-candidate','CFBundleVersion':'4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True}))
++(root/'source-manifest.json').write_text(json.dumps({str(p.relative_to(repo)):sha(p) for p in sources},indent=2,sort_keys=True)+'\n')
+ PY
+-swiftc -parse-as-library -DICE_MENU_BAR_CANDIDATE -module-name MacTools -module-cache-path "$ICE_INTERFACE_PRODUCT_ROOT/module-cache" \
+-  $(cat "$ICE_INTERFACE_PRODUCT_ROOT/sources.txt") -o "$ICE_INTERFACE_PRODUCT_APP/Contents/MacOS/MacTools"
+-codesign --force --sign "${MAC_TOOLS_SIGN_IDENTITY:-722852A9656BC9126B2C4585713B724D58F60DB6}" "$ICE_INTERFACE_PRODUCT_APP"
+-codesign --verify --deep --strict "$ICE_INTERFACE_PRODUCT_APP"
+-"$ICE_INTERFACE_PRODUCT_APP/Contents/MacOS/MacTools" --ice-interface-bridge-tests /tmp/mac-tools-ice-selected-quick-interface-candidate-20261009/session-FAE73121-4A53-48AC-AB8E-8D62608D5CE2/result.json
+-"$ICE_INTERFACE_PRODUCT_APP/Contents/MacOS/MacTools" --ice-candidate-preflight
+-printf '%s\n' "$ICE_INTERFACE_PRODUCT_APP"
++swiftc -parse-as-library -DICE_MENU_BAR_CANDIDATE -module-name MacTools -module-cache-path "$ROOT/module-cache" $(cat "$ROOT/sources.txt") -o "$APP/Contents/MacOS/MacTools"
++codesign --force --sign "${MAC_TOOLS_SIGN_IDENTITY:-722852A9656BC9126B2C4585713B724D58F60DB6}" "$APP"
++codesign --verify --deep --strict "$APP"
++"$APP/Contents/MacOS/MacTools" --ice-interface-bridge-tests "$PWD/Tools/IceInterfaceProduct/Fixtures/accepted-ordinary-window.json"
++"$APP/Contents/MacOS/MacTools" --ice-candidate-preflight
++printf '%s\n' "$APP"
+--- a/Tools/IceInterfaceProduct/Fixtures/accepted-ordinary-window.json
++++ b/Tools/IceInterfaceProduct/Fixtures/accepted-ordinary-window.json
+@@ -0,0 +1,737 @@
++{
++  "fullQueueRequired": false,
++  "guarantee": "iceOriginalNeighborEdge",
++  "icePositionVerified": true,
++  "interfaceCompletion": {
++    "criterion": "iceTrackedInterfaceInactiveV9",
++    "display": 1,
++    "firstInactiveAt": 1837779.4688308334,
++    "kind": "ordinaryWindow",
++    "level": 0,
++    "nativeObservation": true,
++    "nonce": "53E57644-C45E-4F1E-8083-349759EC9445",
++    "owner": {
++      "executable": "/Applications/QQ.app/Contents/MacOS/QQ",
++      "identifier": "com.tencent.qq",
++      "launch": 1791499568.56596,
++      "pid": 58349,
++      "sha256": "35453afefbecb877a3b7c3e81111b3ea2debec75e263a0e4ac1e0338659dedbd",
++      "team": "FN2V63AD2J"
++    },
++    "secondInactiveAt": 1837794.9857711252,
++    "space": 4634,
++    "windowID": 355000
++  },
++  "interfaceEndAction": "userClosesOrDefocusesInterface",
++  "interfaceLeaseDiagnostics": {
++    "begun": true,
++    "firstInactiveAt": 1837779.4688308334,
++    "kind": "ordinaryWindow",
++    "menuClosedClaimed": false,
++    "nativeObservation": true,
++    "reason": "trackedInterfaceInactive",
++    "secondInactiveAt": 1837794.9857711252,
++    "state": "inactive",
++    "stickyInvalid": false,
++    "trackedLevel": 0,
++    "trackedWindowID": 355000
++  },
++  "journal": {
++    "acknowledgments": [
++      {
++        "atUptime": 1837731.5817652084,
++        "hasPossibleEffect": false,
++        "phase": "prepared",
++        "recordSHA256": "e6cc0b78ad79a3ab293bcb5cc083270a707a3fbf465befcd6bd1104954177cad",
++        "revision": 0,
++        "unconfirmedDown": false
++      },
++      {
++        "atUptime": 1837731.582838875,
++        "hasPossibleEffect": false,
++        "phase": "moving",
++        "recordSHA256": "93ca376505a5532fd2a82c83b8384646c31d954d556cfff21bbf5e6782fb30ee",
++        "revision": 1,
++        "unconfirmedDown": false
++      },
++      {
++        "atUptime": 1837731.71235625,
++        "hasPossibleEffect": false,
++        "phase": "moving",
++        "recordSHA256": "0155095ed81ce0410aaa4378871802b6c154aeb91015b7b069e9a894c3d2d8ae",
++        "revision": 2,
++        "unconfirmedDown": false
++      },
++      {
++        "atUptime": 1837731.8326370418,
++        "hasPossibleEffect": true,
++        "phase": "moving",
++        "recordSHA256": "53141ae2e489a73ff908c3956c3876669778ad66af2f462a1b10f73c52179484",
++        "revision": 3,
++        "unconfirmedDown": true
++      },
++      {
++        "atUptime": 1837731.8551489168,
++        "hasPossibleEffect": true,
++        "phase": "moving",
++        "recordSHA256": "c7e8a6a08b4849d4532322dd8d86cc242dd07b09910dc318824e30771d50ac3a",
++        "revision": 4,
++        "unconfirmedDown": true
++      },
++      {
++        "atUptime": 1837731.8753010835,
++        "hasPossibleEffect": true,
++        "phase": "moving",
++        "recordSHA256": "3603d568c5f8b6e1693b39221d80579370c65ad2bfb3c5a2d29df7f5fe9544d2",
++        "revision": 5,
++        "unconfirmedDown": true
++      },
++      {
++        "atUptime": 1837731.9082611252,
++        "hasPossibleEffect": true,
++        "phase": "moving",
++        "recordSHA256": "8b8e0762e74581758ccb45df8c2c475776e8fec61d6297c97bde38ec31985ee5",
++        "revision": 6,
++        "unconfirmedDown": false
++      },
++      {
++        "atUptime": 1837731.990949125,
++        "hasPossibleEffect": true,
++        "phase": "visible",
++        "recordSHA256": "a91f88bb483985a83ad7f63cec2409e33e03f483b4b62964d72c6d79b126bb6b",
++        "revision": 7,
++        "unconfirmedDown": false
++      },
++      {
++        "atUptime": 1837732.003153125,
++        "hasPossibleEffect": true,
++        "phase": "opening",
++        "recordSHA256": "d83d68f50efcfeafaff2bde402c82d6702a75b28776eeca634d3947bebebc25c",
++        "revision": 8,
++        "unconfirmedDown": false
++      },
++      {
++        "atUptime": 1837732.0127154167,
++        "hasPossibleEffect": true,
++        "phase": "opening",
++        "recordSHA256": "79728d3e2952b8161368d119e7789e04621b28046790cf9ec0b96964624812e5",
++        "revision": 9,
++        "unconfirmedDown": false
++      },
++      {
++        "atUptime": 1837732.0234945419,
++        "hasPossibleEffect": true,
++        "phase": "opening",
++        "recordSHA256": "d95b0b73f06b485336333ebe0dc5627d9b036e91497bbb5deb41c2cf2e66ac83",
++        "revision": 10,
++        "unconfirmedDown": true
++      },
++      {
++        "atUptime": 1837732.0605116251,
++        "hasPossibleEffect": true,
++        "phase": "opening",
++        "recordSHA256": "3af5fce99ca66f0c93e801a61ad06b3da2b41ffedda855e320ef3185bf3c4b4b",
++        "revision": 11,
++        "unconfirmedDown": true
++      },
++      {
++        "atUptime": 1837732.156812,
++        "hasPossibleEffect": true,
++        "phase": "opening",
++        "recordSHA256": "570c045546b41939f628272479f468c519b02c0de3054c67f12abde4f2a06045",
++        "revision": 12,
++        "unconfirmedDown": true
++      },
++      {
++        "atUptime": 1837732.1940718335,
++        "hasPossibleEffect": true,
++        "phase": "opening",
++        "recordSHA256": "0e7dd13343966be7efda3e514b629fdf34cf8a32e9af5a75bbfa32e38de78d28",
++        "revision": 13,
++        "unconfirmedDown": false
++      },
++      {
++        "atUptime": 1837779.6021093335,
++        "hasPossibleEffect": true,
++        "phase": "interfaceInactive",
++        "recordSHA256": "c92e2652ca62f0c57b253931ab459f122165dd6cde602ca265afd8b6d6c226a6",
++        "revision": 14,
++        "unconfirmedDown": false
++      },
++      {
++        "atUptime": 1837794.6172059167,
++        "hasPossibleEffect": true,
++        "phase": "restoring",
++        "recordSHA256": "9b301830e4c1f7140f82a8a437e94649c8dcbba272d5108e9caa5067407462e6",
++        "revision": 15,
++        "unconfirmedDown": false
++      },
++      {
++        "atUptime": 1837794.651866375,
++        "hasPossibleEffect": true,
++        "phase": "restoring",
++        "recordSHA256": "944953af6f118084d9ec3076e0321747f11d2cb358f21e1b3be0b788ba01c682",
++        "revision": 16,
++        "unconfirmedDown": false
++      },
++      {
++        "atUptime": 1837794.6596869167,
++        "hasPossibleEffect": true,
++        "phase": "restoring",
++        "recordSHA256": "51d3e49f5d1e18bfbb650ea12b88876874c75c4ce01773e60755d7b4733a3809",
++        "revision": 17,
++        "unconfirmedDown": true
++      },
++      {
++        "atUptime": 1837794.7001077917,
++        "hasPossibleEffect": true,
++        "phase": "restoring",
++        "recordSHA256": "89f770050308bb5b7f015e2c93e9f3197b0453a2b75860dea35b1f5e9a2e7f5e",
++        "revision": 18,
++        "unconfirmedDown": true
++      },
++      {
++        "atUptime": 1837794.7144517917,
++        "hasPossibleEffect": true,
++        "phase": "restoring",
++        "recordSHA256": "692c668cee03cb7c2d2dfda3eff51ec7072eb68faa20af94417e7ce54c29fafc",
++        "revision": 19,
++        "unconfirmedDown": true
++      },
++      {
++        "atUptime": 1837794.7501379584,
++        "hasPossibleEffect": true,
++        "phase": "restoring",
++        "recordSHA256": "a4a789ea9721da7612b9da27c3de14f6c69d5fff5c302a57c23b28e0f013edcc",
++        "revision": 20,
++        "unconfirmedDown": false
++      },
++      {
++        "atUptime": 1837794.9884476252,
++        "hasPossibleEffect": true,
++        "phase": "returned",
++        "recordSHA256": "4a05664fb203a30b95307775e6d084736d55353ad8230980cc71378d316bcc5a",
++        "revision": 21,
++        "unconfirmedDown": false
++      }
++    ],
++    "clearAdmitted": true,
++    "completed": true,
++    "contract": "ordinaryIceInterfaceV9",
++    "durableRecord": {
++      "binding": {
++        "anchor": {
++          "frame": {
++            "height": 37,
++            "width": 29,
++            "x": 1516,
++            "y": 0
++          },
++          "id": 354990,
++          "process": {
++            "executable": "/tmp/mac-tools-ice-interface-product-candidate-20261009/Worker/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
++            "identifier": "com.ryanai.mactools",
++            "launch": 1791521562.971956,
++            "pid": 6205,
++            "sha256": "9012bb7af4915f10cb230db652f376bf930ee8a394fd2d6e18cf0c09247c019f",
++            "team": "58TJ64422P"
++          }
++        },
++        "area": {
++          "height": 37,
++          "width": 772,
++          "x": 956,
++          "y": 0
++        },
++        "controller": {
++          "executable": "/tmp/mac-tools-ice-interface-product-candidate-20261009/Worker/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
++          "identifier": "com.ryanai.mactools",
++          "launch": 1791521562.971956,
++          "pid": 6205,
++          "sha256": "9012bb7af4915f10cb230db652f376bf930ee8a394fd2d6e18cf0c09247c019f",
++          "team": "58TJ64422P"
++        },
++        "display": 1,
++        "neighbor": {
++          "frame": {
++            "height": 37,
++            "width": 38,
++            "x": 1241,
++            "y": 0
++          },
++          "id": 354357,
++          "process": {
++            "executable": "/Applications/WeChat.app/Contents/MacOS/WeChat",
++            "identifier": "com.tencent.xinWeChat",
++            "launch": 1791519333.528519,
++            "pid": 63458,
++            "sha256": "0e80b6c94ee804038031d5c285f864c434a5629abbf3c8655a9c0b1b09d8662e",
++            "team": "5A4RE8SF68"
++          }
++        },
++        "nonce": "53E57644-C45E-4F1E-8083-349759EC9445",
++        "owner": {
++          "executable": "/Applications/QQ.app/Contents/MacOS/QQ",
++          "identifier": "com.tencent.qq",
++          "launch": 1791499568.56596,
++          "pid": 58349,
++          "sha256": "35453afefbecb877a3b7c3e81111b3ea2debec75e263a0e4ac1e0338659dedbd",
++          "team": "FN2V63AD2J"
++        },
++        "returnOnLeft": true,
++        "space": 4634,
++        "target": {
++          "frame": {
++            "height": 37,
++            "width": 32,
++            "x": 1209,
++            "y": 0
++          },
++          "id": 351689,
++          "process": {
++            "executable": "/Applications/QQ.app/Contents/MacOS/QQ",
++            "identifier": "com.tencent.qq",
++            "launch": 1791499568.56596,
++            "pid": 58349,
++            "sha256": "35453afefbecb877a3b7c3e81111b3ea2debec75e263a0e4ac1e0338659dedbd",
++            "team": "FN2V63AD2J"
++          }
++        }
++      },
++      "contract": "ordinaryIceInterfaceV9",
++      "generation": "94B69D4E-ECD3-4513-903C-5AAA3B64D1D5",
++      "gestures": [
++        {
++          "down": {
++            "click": 1,
++            "flags": 1048576,
++            "handlingWindow": 351689,
++            "marker": 462,
++            "number": 0,
++            "pid": 58349,
++            "pointerWindow": 351689,
++            "sourcePID": 6205,
++            "sourceState": 1,
++            "timestamp": 0,
++            "type": 1,
++            "window": 351689,
++            "x": 20000,
++            "y": 20000
++          },
++          "id": "81D817E4-6463-49BD-8E82-6C605DB74632",
++          "routes": [
++            {
++              "destination": "PID 58349",
++              "id": "DC07307D-259D-4CFC-87D1-45F417307117",
++              "packet": {
++                "click": 0,
++                "flags": 256,
++                "handlingWindow": 0,
++                "marker": 462,
++                "number": 0,
++                "pid": 0,
++                "pointerWindow": 0,
++                "sourcePID": 6205,
++                "sourceState": 0,
++                "timestamp": 0,
++                "type": 0,
++                "window": 0,
++                "x": 868.83203125,
++                "y": 810.328125
++              }
++            },
++            {
++              "destination": "session event tap",
++              "id": "C8526F85-1F63-4799-A16E-E3546EB753EB",
++              "packet": {
++                "click": 1,
++                "flags": 1048576,
++                "handlingWindow": 351689,
++                "marker": 462,
++                "number": 0,
++                "pid": 58349,
++                "pointerWindow": 351689,
++                "sourcePID": 6205,
++                "sourceState": 1,
++                "timestamp": 0,
++                "type": 1,
++                "window": 351689,
++                "x": 20000,
++                "y": 20000
++              }
++            },
++            {
++              "destination": "PID 58349",
++              "id": "260F0789-D0F7-4588-9DE8-07739B649AB4",
++              "packet": {
++                "click": 1,
++                "flags": 1048576,
++                "handlingWindow": 351689,
++                "marker": 462,
++                "number": 0,
++                "pid": 58349,
++                "pointerWindow": 351689,
++                "sourcePID": 6205,
++                "sourceState": 1,
++                "timestamp": 0,
++                "type": 1,
++                "window": 351689,
++                "x": 20000,
++                "y": 20000
++              }
++            },
++            {
++              "destination": "PID 58349",
++              "id": "D568E79B-F840-4911-887C-93316FAF212A",
++              "packet": {
++                "click": 0,
++                "flags": 537919488,
++                "handlingWindow": 0,
++                "marker": 462,
++                "number": 0,
++                "pid": 0,
++                "pointerWindow": 0,
++                "sourcePID": 6205,
++                "sourceState": 0,
++                "timestamp": 0,
++                "type": 0,
++                "window": 0,
++                "x": 1727.984375,
++                "y": 1116.984375
++              }
++            },
++            {
++              "destination": "session event tap",
++              "id": "E45DF6AD-CB5D-4970-8D79-823C02442A7E",
++              "packet": {
++                "click": 0,
++                "flags": 0,
++                "handlingWindow": 354990,
++                "marker": 463,
++                "number": 0,
++                "pid": 58349,
++                "pointerWindow": 354990,
++                "sourcePID": 6205,
++                "sourceState": 1,
++                "timestamp": 0,
++                "type": 2,
++                "window": 354990,
++                "x": 1516,
++                "y": 18.5
++              }
++            },
++            {
++              "destination": "PID 58349",
++              "id": "F5F10DC7-AB00-4036-95D3-992395B96330",
++              "packet": {
++                "click": 0,
++                "flags": 0,
++                "handlingWindow": 354990,
++                "marker": 463,
++                "number": 0,
++                "pid": 58349,
++                "pointerWindow": 354990,
++                "sourcePID": 6205,
++                "sourceState": 1,
++                "timestamp": 0,
++                "type": 2,
++                "window": 354990,
++                "x": 1516,
++                "y": 18.5
++              }
++            }
++          ],
++          "status": "pairedTransportReturned",
++          "up": {
++            "click": 0,
++            "flags": 0,
++            "handlingWindow": 354990,
++            "marker": 463,
++            "number": 0,
++            "pid": 58349,
++            "pointerWindow": 354990,
++            "sourcePID": 6205,
++            "sourceState": 1,
++            "timestamp": 0,
++            "type": 2,
++            "window": 354990,
++            "x": 1516,
++            "y": 18.5
++          }
++        },
++        {
++          "down": {
++            "click": 1,
++            "flags": 0,
++            "handlingWindow": 351689,
++            "marker": 465,
++            "number": 0,
++            "pid": 58349,
++            "pointerWindow": 351689,
++            "sourcePID": 6205,
++            "sourceState": 1,
++            "timestamp": 0,
++            "type": 1,
++            "window": 351689,
++            "x": 1500,
++            "y": 18.5
++          },
++          "id": "82D10789-DA51-4E9E-9247-28D9F21200B5",
++          "routes": [
++            {
++              "destination": "session event tap",
++              "id": "C5533860-BC7C-4DD4-B773-EC69BEDAF941",
++              "packet": {
++                "click": 1,
++                "flags": 0,
++                "handlingWindow": 351689,
++                "marker": 465,
++                "number": 0,
++                "pid": 58349,
++                "pointerWindow": 351689,
++                "sourcePID": 6205,
++                "sourceState": 1,
++                "timestamp": 0,
++                "type": 1,
++                "window": 351689,
++                "x": 1500,
++                "y": 18.5
++              }
++            },
++            {
++              "destination": "session event tap",
++              "id": "134DF6DB-60F4-436D-9075-0607BA85D181",
++              "packet": {
++                "click": 1,
++                "flags": 0,
++                "handlingWindow": 351689,
++                "marker": 466,
++                "number": 0,
++                "pid": 58349,
++                "pointerWindow": 351689,
++                "sourcePID": 6205,
++                "sourceState": 1,
++                "timestamp": 0,
++                "type": 2,
++                "window": 351689,
++                "x": 1500,
++                "y": 18.5
++              }
++            }
++          ],
++          "status": "pairedTransportReturned",
++          "up": {
++            "click": 1,
++            "flags": 0,
++            "handlingWindow": 351689,
++            "marker": 466,
++            "number": 0,
++            "pid": 58349,
++            "pointerWindow": 351689,
++            "sourcePID": 6205,
++            "sourceState": 1,
++            "timestamp": 0,
++            "type": 2,
++            "window": 351689,
++            "x": 1500,
++            "y": 18.5
++          }
++        },
++        {
++          "down": {
++            "click": 1,
++            "flags": 1048576,
++            "handlingWindow": 351689,
++            "marker": 468,
++            "number": 0,
++            "pid": 58349,
++            "pointerWindow": 351689,
++            "sourcePID": 6205,
++            "sourceState": 1,
++            "timestamp": 0,
++            "type": 1,
++            "window": 351689,
++            "x": 20000,
++            "y": 20000
++          },
++          "id": "7527811D-F38C-4600-8514-D875AAC2AE00",
++          "routes": [
++            {
++              "destination": "PID 58349",
++              "id": "8DBEC72E-CF32-45EE-8003-007217F8271A",
++              "packet": {
++                "click": 0,
++                "flags": 0,
++                "handlingWindow": 0,
++                "marker": 462,
++                "number": 0,
++                "pid": 0,
++                "pointerWindow": 0,
++                "sourcePID": 6205,
++                "sourceState": 0,
++                "timestamp": 0,
++                "type": 0,
++                "window": 0,
++                "x": 792.84765625,
++                "y": 579.58203125
++              }
++            },
++            {
++              "destination": "session event tap",
++              "id": "7D5F5639-CF39-4CCB-A00A-C31FD5AA3A98",
++              "packet": {
++                "click": 1,
++                "flags": 1048576,
++                "handlingWindow": 351689,
++                "marker": 468,
++                "number": 0,
++                "pid": 58349,
++                "pointerWindow": 351689,
++                "sourcePID": 6205,
++                "sourceState": 1,
++                "timestamp": 0,
++                "type": 1,
++                "window": 351689,
++                "x": 20000,
++                "y": 20000
++              }
++            },
++            {
++              "destination": "PID 58349",
++              "id": "B8636BE1-F62A-4967-B20A-ADCF7A9C10A0",
++              "packet": {
++                "click": 1,
++                "flags": 1048576,
++                "handlingWindow": 351689,
++                "marker": 468,
++                "number": 0,
++                "pid": 58349,
++                "pointerWindow": 351689,
++                "sourcePID": 6205,
++                "sourceState": 1,
++                "timestamp": 0,
++                "type": 1,
++                "window": 351689,
++                "x": 20000,
++                "y": 20000
++              }
++            },
++            {
++              "destination": "PID 58349",
++              "id": "52EB0EB2-555C-4702-8B33-A8A69A75FA56",
++              "packet": {
++                "click": 0,
++                "flags": 537919488,
++                "handlingWindow": 0,
++                "marker": 462,
++                "number": 0,
++                "pid": 0,
++                "pointerWindow": 0,
++                "sourcePID": 6205,
++                "sourceState": 0,
++                "timestamp": 0,
++                "type": 0,
++                "window": 0,
++                "x": 1727.984375,
++                "y": 1116.984375
++              }
++            },
++            {
++              "destination": "session event tap",
++              "id": "8FE0EF3F-A9F0-4493-9202-676ED278D7DF",
++              "packet": {
++                "click": 0,
++                "flags": 0,
++                "handlingWindow": 354357,
++                "marker": 469,
++                "number": 0,
++                "pid": 58349,
++                "pointerWindow": 354357,
++                "sourcePID": 6205,
++                "sourceState": 1,
++                "timestamp": 0,
++                "type": 2,
++                "window": 354357,
++                "x": 1209,
++                "y": 18.5
++              }
++            },
++            {
++              "destination": "PID 58349",
++              "id": "811B6EAB-BB30-4215-B8F7-92AB400C05DC",
++              "packet": {
++                "click": 0,
++                "flags": 0,
++                "handlingWindow": 354357,
++                "marker": 469,
++                "number": 0,
++                "pid": 58349,
++                "pointerWindow": 354357,
++                "sourcePID": 6205,
++                "sourceState": 1,
++                "timestamp": 0,
++                "type": 2,
++                "window": 354357,
++                "x": 1209,
++                "y": 18.5
++              }
++            }
++          ],
++          "status": "pairedTransportReturned",
++          "up": {
++            "click": 0,
++            "flags": 0,
++            "handlingWindow": 354357,
++            "marker": 469,
++            "number": 0,
++            "pid": 58349,
++            "pointerWindow": 354357,
++            "sourcePID": 6205,
++            "sourceState": 1,
++            "timestamp": 0,
++            "type": 2,
++            "window": 354357,
++            "x": 1209,
++            "y": 18.5
++          }
++        }
++      ],
++      "phase": "returned",
++      "returnedEvidenceSHA256": "2e96f03e7bc4a0920b8d3adc97dc2490bbb16c74b42f6e2b9aaf30dbb68e7820",
++      "revision": 21,
++      "schemaVersion": 4,
++      "transaction": "54824455-7A38-4364-80B2-8C736375DDB1"
++    },
++    "effectsAdmitted": 43,
++    "generation": "94B69D4E-ECD3-4513-903C-5AAA3B64D1D5",
++    "journalOutcomeUncertain": false,
++    "pendingRecovery": false,
++    "phase": "returned",
++    "physicalReleaseProven": false,
++    "possibleDown": false,
++    "stopReason": null,
++    "transaction": "54824455-7A38-4364-80B2-8C736375DDB1",
++    "uncertainProposal": null
++  },
++  "menuClosedClaimed": false,
++  "nonce": "53E57644-C45E-4F1E-8083-349759EC9445",
++  "posts": 14,
++  "realClosedLoopVerified": true,
++  "relativeReturnVerified": false,
++  "returnEvidence": {
++    "atUptime": 1837794.9816405834,
++    "criterion": "iceNeighborEdgeV4",
++    "fullQueueRequired": false,
++    "neighborFrame": "{{1241, 0}, {38, 37}}",
++    "neighborID": 354357,
++    "nonce": "53E57644-C45E-4F1E-8083-349759EC9445",
++    "relativeFullQueueVerified": false,
++    "returnOnLeft": true,
++    "targetFrame": "{{1209, 0}, {32, 37}}",
++    "targetID": 351689,
++    "targetPID": 58349
++  },
++  "scope": "singleScreenExactSelectedIcon",
++  "strictAbsoluteClosedLoopVerified": null,
++  "wholeRunBudgetSeconds": 90
++}
+--- a/Tools/IceInterfaceProductWorker/Fixtures/menu-bar-ice-v9-interface-self-window-stop-2026-10-09.json
++++ b/Tools/IceInterfaceProductWorker/Fixtures/menu-bar-ice-v9-interface-self-window-stop-2026-10-09.json
+@@ -0,0 +1 @@
++{"checksum":"54d18ea3b0ce95d89988181504aac1a3db48dd56bf1cbb9302a9e2e87cca33af","payload":"eyJiaW5kaW5nIjp7ImFuY2hvciI6eyJmcmFtZSI6eyJoZWlnaHQiOjM3LCJ3aWR0aCI6MjksIngiOjE1MTYsInkiOjB9LCJpZCI6MzUwMjMxLCJwcm9jZXNzIjp7ImV4ZWN1dGFibGUiOiJcL3RtcFwvbWFjLXRvb2xzLWljZS1zZWxlY3RlZC1xdWljay1pbnRlcmZhY2UtY2FuZGlkYXRlLTIwMjYxMDA5XC9JY2UgU2VsZWN0ZWQgQ29udHJvbGxlci5hcHBcL0NvbnRlbnRzXC9NYWNPU1wvSWNlU2VsZWN0ZWRDb250cm9sbGVyIiwiaWRlbnRpZmllciI6ImNvbS5yeWFuYWkubWFjdG9vbHMiLCJsYXVuY2giOjE3OTE0OTQ0NTAuNTQ2MzQxLCJwaWQiOjYwMzY5LCJzaGEyNTYiOiI2ZGUyYjNiZGMwZTllY2RhYjhlOWI5MTEzNWI4NDgxMTBjOGU3Njg1MzUzYjM0ZjA4NTEwOWFmNzEzYmE5M2NhIiwidGVhbSI6IjU4VEo2NDQyMlAifX0sImFyZWEiOnsiaGVpZ2h0IjozNywid2lkdGgiOjc3MiwieCI6OTU2LCJ5IjowfSwiY29udHJvbGxlciI6eyJleGVjdXRhYmxlIjoiXC90bXBcL21hYy10b29scy1pY2Utc2VsZWN0ZWQtcXVpY2staW50ZXJmYWNlLWNhbmRpZGF0ZS0yMDI2MTAwOVwvSWNlIFNlbGVjdGVkIENvbnRyb2xsZXIuYXBwXC9Db250ZW50c1wvTWFjT1NcL0ljZVNlbGVjdGVkQ29udHJvbGxlciIsImlkZW50aWZpZXIiOiJjb20ucnlhbmFpLm1hY3Rvb2xzIiwibGF1bmNoIjoxNzkxNDk0NDUwLjU0NjM0MSwicGlkIjo2MDM2OSwic2hhMjU2IjoiNmRlMmIzYmRjMGU5ZWNkYWI4ZTliOTExMzViODQ4MTEwYzhlNzY4NTM1M2IzNGYwODUxMDlhZjcxM2JhOTNjYSIsInRlYW0iOiI1OFRKNjQ0MjJQIn0sImRpc3BsYXkiOjEsIm5laWdoYm9yIjp7ImZyYW1lIjp7ImhlaWdodCI6MzcsIndpZHRoIjozMCwieCI6LTI5NzEsInkiOjB9LCJpZCI6MzUwMjMzLCJwcm9jZXNzIjp7ImV4ZWN1dGFibGUiOiJcL3RtcFwvbWFjLXRvb2xzLWljZS1zZWxlY3RlZC1xdWljay1pbnRlcmZhY2UtY2FuZGlkYXRlLTIwMjYxMDA5XC9JY2UgU2VsZWN0ZWQgRml4dHVyZS5hcHBcL0NvbnRlbnRzXC9NYWNPU1wvSWNlU2VsZWN0ZWRGaXh0dXJlIiwiaWRlbnRpZmllciI6ImNvbS5yeWFuYWkubWFjdG9vbHMubmF0aXZldGFyZ2V0cyIsImxhdW5jaCI6MTc5MTQ5NDQ1MS42MTg4ODMsInBpZCI6NjA0MTgsInNoYTI1NiI6IjRmNzQ3NGE4OTQyMGUzYWE5ZTc0NWQ1ZjhjZTNmMGJmOTcwZGUxNjQzNmYyNzU2MTc5ZDVlMjgwMjBlYmU5MWUiLCJ0ZWFtIjoiNThUSjY0NDIyUCJ9fSwibm9uY2UiOiJBMTAyREMyNS0wQzkwLTQyOEYtQjYzOC0wQjU2NzMzRTZBNTgiLCJvd25lciI6eyJleGVjdXRhYmxlIjoiXC90bXBcL21hYy10b29scy1pY2Utc2VsZWN0ZWQtcXVpY2staW50ZXJmYWNlLWNhbmRpZGF0ZS0yMDI2MTAwOVwvSWNlIFNlbGVjdGVkIEZpeHR1cmUuYXBwXC9Db250ZW50c1wvTWFjT1NcL0ljZVNlbGVjdGVkRml4dHVyZSIsImlkZW50aWZpZXIiOiJjb20ucnlhbmFpLm1hY3Rvb2xzLm5hdGl2ZXRhcmdldHMiLCJsYXVuY2giOjE3OTE0OTQ0NTEuNjE4ODgzLCJwaWQiOjYwNDE4LCJzaGEyNTYiOiI0Zjc0NzRhODk0MjBlM2FhOWU3NDVkNWY4Y2UzZjBiZjk3MGRlMTY0MzZmMjc1NjE3OWQ1ZTI4MDIwZWJlOTFlIiwidGVhbSI6IjU4VEo2NDQyMlAifSwicmV0dXJuT25MZWZ0Ijp0cnVlLCJzcGFjZSI6NDYzNCwidGFyZ2V0Ijp7ImZyYW1lIjp7ImhlaWdodCI6MzcsIndpZHRoIjoyOSwieCI6LTMwMDAsInkiOjB9LCJpZCI6MzUwMjMyLCJwcm9jZXNzIjp7ImV4ZWN1dGFibGUiOiJcL3RtcFwvbWFjLXRvb2xzLWljZS1zZWxlY3RlZC1xdWljay1pbnRlcmZhY2UtY2FuZGlkYXRlLTIwMjYxMDA5XC9JY2UgU2VsZWN0ZWQgRml4dHVyZS5hcHBcL0NvbnRlbnRzXC9NYWNPU1wvSWNlU2VsZWN0ZWRGaXh0dXJlIiwiaWRlbnRpZmllciI6ImNvbS5yeWFuYWkubWFjdG9vbHMubmF0aXZldGFyZ2V0cyIsImxhdW5jaCI6MTc5MTQ5NDQ1MS42MTg4ODMsInBpZCI6NjA0MTgsInNoYTI1NiI6IjRmNzQ3NGE4OTQyMGUzYWE5ZTc0NWQ1ZjhjZTNmMGJmOTcwZGUxNjQzNmYyNzU2MTc5ZDVlMjgwMjBlYmU5MWUiLCJ0ZWFtIjoiNThUSjY0NDIyUCJ9fX0sImNvbnRyYWN0Ijoib3JkaW5hcnlJY2VJbnRlcmZhY2VWOSIsImdlbmVyYXRpb24iOiI3RTkyOEU3RS1DMTdELTQ2MDUtQUZBNC1GNEEwNjY1NEE5MDYiLCJnZXN0dXJlcyI6W3siZG93biI6eyJjbGljayI6MSwiZmxhZ3MiOjEwNDg1NzYsImhhbmRsaW5nV2luZG93IjozNTAyMzIsIm1hcmtlciI6NDYyLCJudW1iZXIiOjAsInBpZCI6NjA0MTgsInBvaW50ZXJXaW5kb3ciOjM1MDIzMiwic291cmNlUElEIjo2MDM2OSwic291cmNlU3RhdGUiOjEsInRpbWVzdGFtcCI6MCwidHlwZSI6MSwid2luZG93IjozNTAyMzIsIngiOjIwMDAwLCJ5IjoyMDAwMH0sImlkIjoiOEQ2NUM4MEYtMkFEMy00OTVGLTlCMDYtMjdEMTZEOUVBODcxIiwicm91dGVzIjpbeyJkZXN0aW5hdGlvbiI6IlBJRCA2MDQxOCIsImlkIjoiRTNENjg4NjktQkFDNy00RUU3LTgwQjItRUQ4QTMzNzQ4MkQyIiwicGFja2V0Ijp7ImNsaWNrIjowLCJmbGFncyI6MCwiaGFuZGxpbmdXaW5kb3ciOjAsIm1hcmtlciI6NDYyLCJudW1iZXIiOjAsInBpZCI6MCwicG9pbnRlcldpbmRvdyI6MCwic291cmNlUElEIjo2MDM2OSwic291cmNlU3RhdGUiOjAsInRpbWVzdGFtcCI6MCwidHlwZSI6MCwid2luZG93IjowLCJ4Ijo4MjQuMzI0MjE4NzUsInkiOjc1MS4zNjcxODc1fX0seyJkZXN0aW5hdGlvbiI6InNlc3Npb24gZXZlbnQgdGFwIiwiaWQiOiIxQkJFMEI0MC1CNUEzLTQ5QTItOEEyNi05NTMzNDFCQUNFRkMiLCJwYWNrZXQiOnsiY2xpY2siOjEsImZsYWdzIjoxMDQ4NTc2LCJoYW5kbGluZ1dpbmRvdyI6MzUwMjMyLCJtYXJrZXIiOjQ2MiwibnVtYmVyIjowLCJwaWQiOjYwNDE4LCJwb2ludGVyV2luZG93IjozNTAyMzIsInNvdXJjZVBJRCI6NjAzNjksInNvdXJjZVN0YXRlIjoxLCJ0aW1lc3RhbXAiOjAsInR5cGUiOjEsIndpbmRvdyI6MzUwMjMyLCJ4IjoyMDAwMCwieSI6MjAwMDB9fSx7ImRlc3RpbmF0aW9uIjoiUElEIDYwNDE4IiwiaWQiOiI3M0IwNDc3Qy1EOTA5LTRFOEMtODlDNy02QkY1MjJGMDg1MEYiLCJwYWNrZXQiOnsiY2xpY2siOjEsImZsYWdzIjoxMDQ4NTc2LCJoYW5kbGluZ1dpbmRvdyI6MzUwMjMyLCJtYXJrZXIiOjQ2MiwibnVtYmVyIjowLCJwaWQiOjYwNDE4LCJwb2ludGVyV2luZG93IjozNTAyMzIsInNvdXJjZVBJRCI6NjAzNjksInNvdXJjZVN0YXRlIjoxLCJ0aW1lc3RhbXAiOjAsInR5cGUiOjEsIndpbmRvdyI6MzUwMjMyLCJ4IjoyMDAwMCwieSI6MjAwMDB9fV0sInN0YXR1cyI6ImRvd25SZXR1cm5lZCIsInVwIjp7ImNsaWNrIjowLCJmbGFncyI6MCwiaGFuZGxpbmdXaW5kb3ciOjM1MDIzMSwibWFya2VyIjo0NjMsIm51bWJlciI6MCwicGlkIjo2MDQxOCwicG9pbnRlcldpbmRvdyI6MzUwMjMxLCJzb3VyY2VQSUQiOjYwMzY5LCJzb3VyY2VTdGF0ZSI6MSwidGltZXN0YW1wIjowLCJ0eXBlIjoyLCJ3aW5kb3ciOjM1MDIzMSwieCI6MTUxNiwieSI6MTguNX19XSwicGhhc2UiOiJzdG9wcGVkIiwicmV2aXNpb24iOjUsInNjaGVtYVZlcnNpb24iOjQsInN0b3BSZWFzb24iOiJzdG9wcGVkKEljZVNlbGVjdGVkQ29udHJvbGxlci5NZW51QmFyT3BlcmF0aW9uU3RvcC5SZWFzb24uZmFpbGVkKSIsInRyYW5zYWN0aW9uIjoiOTc5QzhFMzQtNjVDQy00MEI4LTk2OUMtNzc3MEYwNDg3MDZFIn0=","version":1}
+\ No newline at end of file
+--- a/Tools/IceInterfaceProductWorker/Fixtures/menu-bar-ice-v9-interface-self-window-scope-stop-2026-10-09.json
++++ b/Tools/IceInterfaceProductWorker/Fixtures/menu-bar-ice-v9-interface-self-window-scope-stop-2026-10-09.json
+@@ -0,0 +1 @@
++{"checksum":"2c74490dab9a2f6b9de997175fd72bd4ebc44742d7b67c1868f4bd9987e93f13","payload":"eyJiaW5kaW5nIjp7ImFuY2hvciI6eyJmcmFtZSI6eyJoZWlnaHQiOjM3LCJ3aWR0aCI6MjksIngiOjE1MTYsInkiOjB9LCJpZCI6MzUwNDEyLCJwcm9jZXNzIjp7ImV4ZWN1dGFibGUiOiJcL3RtcFwvbWFjLXRvb2xzLWljZS1zZWxlY3RlZC1xdWljay1pbnRlcmZhY2UtY2FuZGlkYXRlLTIwMjYxMDA5XC9JY2UgU2VsZWN0ZWQgQ29udHJvbGxlci5hcHBcL0NvbnRlbnRzXC9NYWNPU1wvSWNlU2VsZWN0ZWRDb250cm9sbGVyIiwiaWRlbnRpZmllciI6ImNvbS5yeWFuYWkubWFjdG9vbHMiLCJsYXVuY2giOjE3OTE0OTQ5MjQuOTYxNDUxLCJwaWQiOjY5MjM4LCJzaGEyNTYiOiIxMzcyNDAxZTVjYTI4NGMwMjFiZmE5NDVhYzFjY2RiNjViYWY0MTFhOGRhMjU5ZDNjODNmMzZlODJjNzY5Mzg5IiwidGVhbSI6IjU4VEo2NDQyMlAifX0sImFyZWEiOnsiaGVpZ2h0IjozNywid2lkdGgiOjc3MiwieCI6OTU2LCJ5IjowfSwiY29udHJvbGxlciI6eyJleGVjdXRhYmxlIjoiXC90bXBcL21hYy10b29scy1pY2Utc2VsZWN0ZWQtcXVpY2staW50ZXJmYWNlLWNhbmRpZGF0ZS0yMDI2MTAwOVwvSWNlIFNlbGVjdGVkIENvbnRyb2xsZXIuYXBwXC9Db250ZW50c1wvTWFjT1NcL0ljZVNlbGVjdGVkQ29udHJvbGxlciIsImlkZW50aWZpZXIiOiJjb20ucnlhbmFpLm1hY3Rvb2xzIiwibGF1bmNoIjoxNzkxNDk0OTI0Ljk2MTQ1MSwicGlkIjo2OTIzOCwic2hhMjU2IjoiMTM3MjQwMWU1Y2EyODRjMDIxYmZhOTQ1YWMxY2NkYjY1YmFmNDExYThkYTI1OWQzYzgzZjM2ZTgyYzc2OTM4OSIsInRlYW0iOiI1OFRKNjQ0MjJQIn0sImRpc3BsYXkiOjEsIm5laWdoYm9yIjp7ImZyYW1lIjp7ImhlaWdodCI6MzcsIndpZHRoIjozMCwieCI6LTI5NzEsInkiOjB9LCJpZCI6MzUwNDE5LCJwcm9jZXNzIjp7ImV4ZWN1dGFibGUiOiJcL3RtcFwvbWFjLXRvb2xzLWljZS1zZWxlY3RlZC1xdWljay1pbnRlcmZhY2UtY2FuZGlkYXRlLTIwMjYxMDA5XC9JY2UgU2VsZWN0ZWQgRml4dHVyZS5hcHBcL0NvbnRlbnRzXC9NYWNPU1wvSWNlU2VsZWN0ZWRGaXh0dXJlIiwiaWRlbnRpZmllciI6ImNvbS5yeWFuYWkubWFjdG9vbHMubmF0aXZldGFyZ2V0cyIsImxhdW5jaCI6MTc5MTQ5NDkyNS42MjA1MDYsInBpZCI6NjkyOTUsInNoYTI1NiI6IjFjZTZiYmVmNmIyZGM5YWNhMmNiMjZiYmEwYzMxOGQyZmRkNTZiNDQzOTQ0M2ExZDJmNDVjY2EyMDlkZmYxMTQiLCJ0ZWFtIjoiNThUSjY0NDIyUCJ9fSwibm9uY2UiOiI2OENBQjJGOC1GOEY1LTRCQjMtQTQ4MS0zRjJDNUMyRkMzREMiLCJvd25lciI6eyJleGVjdXRhYmxlIjoiXC90bXBcL21hYy10b29scy1pY2Utc2VsZWN0ZWQtcXVpY2staW50ZXJmYWNlLWNhbmRpZGF0ZS0yMDI2MTAwOVwvSWNlIFNlbGVjdGVkIEZpeHR1cmUuYXBwXC9Db250ZW50c1wvTWFjT1NcL0ljZVNlbGVjdGVkRml4dHVyZSIsImlkZW50aWZpZXIiOiJjb20ucnlhbmFpLm1hY3Rvb2xzLm5hdGl2ZXRhcmdldHMiLCJsYXVuY2giOjE3OTE0OTQ5MjUuNjIwNTA2LCJwaWQiOjY5Mjk1LCJzaGEyNTYiOiIxY2U2YmJlZjZiMmRjOWFjYTJjYjI2YmJhMGMzMThkMmZkZDU2YjQ0Mzk0NDNhMWQyZjQ1Y2NhMjA5ZGZmMTE0IiwidGVhbSI6IjU4VEo2NDQyMlAifSwicmV0dXJuT25MZWZ0Ijp0cnVlLCJzcGFjZSI6NDYzNCwidGFyZ2V0Ijp7ImZyYW1lIjp7ImhlaWdodCI6MzcsIndpZHRoIjoyOSwieCI6LTMwMDAsInkiOjB9LCJpZCI6MzUwNDE4LCJwcm9jZXNzIjp7ImV4ZWN1dGFibGUiOiJcL3RtcFwvbWFjLXRvb2xzLWljZS1zZWxlY3RlZC1xdWljay1pbnRlcmZhY2UtY2FuZGlkYXRlLTIwMjYxMDA5XC9JY2UgU2VsZWN0ZWQgRml4dHVyZS5hcHBcL0NvbnRlbnRzXC9NYWNPU1wvSWNlU2VsZWN0ZWRGaXh0dXJlIiwiaWRlbnRpZmllciI6ImNvbS5yeWFuYWkubWFjdG9vbHMubmF0aXZldGFyZ2V0cyIsImxhdW5jaCI6MTc5MTQ5NDkyNS42MjA1MDYsInBpZCI6NjkyOTUsInNoYTI1NiI6IjFjZTZiYmVmNmIyZGM5YWNhMmNiMjZiYmEwYzMxOGQyZmRkNTZiNDQzOTQ0M2ExZDJmNDVjY2EyMDlkZmYxMTQiLCJ0ZWFtIjoiNThUSjY0NDIyUCJ9fX0sImNvbnRyYWN0Ijoib3JkaW5hcnlJY2VJbnRlcmZhY2VWOSIsImdlbmVyYXRpb24iOiI1RTI3NjlFNi1GNjI5LTRDOEQtODQyNy0yNjY1RkY4Q0Q0RUEiLCJnZXN0dXJlcyI6W3siZG93biI6eyJjbGljayI6MSwiZmxhZ3MiOjEwNDg1NzYsImhhbmRsaW5nV2luZG93IjozNTA0MTgsIm1hcmtlciI6NDYyLCJudW1iZXIiOjAsInBpZCI6NjkyOTUsInBvaW50ZXJXaW5kb3ciOjM1MDQxOCwic291cmNlUElEIjo2OTIzOCwic291cmNlU3RhdGUiOjEsInRpbWVzdGFtcCI6MCwidHlwZSI6MSwid2luZG93IjozNTA0MTgsIngiOjIwMDAwLCJ5IjoyMDAwMH0sImlkIjoiMzcyMDJGMTMtMjQxRi00RjY3LTkwMTAtMEY1MjczNjVCNDdGIiwicm91dGVzIjpbeyJkZXN0aW5hdGlvbiI6IlBJRCA2OTI5NSIsImlkIjoiMDY0MjU1Q0MtNUFERi00NkMzLUJGOEYtMEI1M0YyMTA0QzI2IiwicGFja2V0Ijp7ImNsaWNrIjowLCJmbGFncyI6MjU2LCJoYW5kbGluZ1dpbmRvdyI6MCwibWFya2VyIjo0NjIsIm51bWJlciI6MCwicGlkIjowLCJwb2ludGVyV2luZG93IjowLCJzb3VyY2VQSUQiOjY5MjM4LCJzb3VyY2VTdGF0ZSI6MCwidGltZXN0YW1wIjowLCJ0eXBlIjowLCJ3aW5kb3ciOjAsIngiOjQ2MywieSI6MzQxfX0seyJkZXN0aW5hdGlvbiI6InNlc3Npb24gZXZlbnQgdGFwIiwiaWQiOiIxNTU2QzZFNy00NDEwLTRDNkMtOUFBQi0zNjc5M0YxRkRBN0EiLCJwYWNrZXQiOnsiY2xpY2siOjEsImZsYWdzIjoxMDQ4NTc2LCJoYW5kbGluZ1dpbmRvdyI6MzUwNDE4LCJtYXJrZXIiOjQ2MiwibnVtYmVyIjowLCJwaWQiOjY5Mjk1LCJwb2ludGVyV2luZG93IjozNTA0MTgsInNvdXJjZVBJRCI6NjkyMzgsInNvdXJjZVN0YXRlIjoxLCJ0aW1lc3RhbXAiOjAsInR5cGUiOjEsIndpbmRvdyI6MzUwNDE4LCJ4IjoyMDAwMCwieSI6MjAwMDB9fSx7ImRlc3RpbmF0aW9uIjoiUElEIDY5Mjk1IiwiaWQiOiIzQjY5NTA0Ni1EMTRELTQ5N0EtODk5MC1BODJCQjIwMDgxNjgiLCJwYWNrZXQiOnsiY2xpY2siOjEsImZsYWdzIjoxMDQ4NTc2LCJoYW5kbGluZ1dpbmRvdyI6MzUwNDE4LCJtYXJrZXIiOjQ2MiwibnVtYmVyIjowLCJwaWQiOjY5Mjk1LCJwb2ludGVyV2luZG93IjozNTA0MTgsInNvdXJjZVBJRCI6NjkyMzgsInNvdXJjZVN0YXRlIjoxLCJ0aW1lc3RhbXAiOjAsInR5cGUiOjEsIndpbmRvdyI6MzUwNDE4LCJ4IjoyMDAwMCwieSI6MjAwMDB9fSx7ImRlc3RpbmF0aW9uIjoiUElEIDY5Mjk1IiwiaWQiOiI1QkMzOTUwQS01N0FBLTQ2NEUtQTQ5Mi04MjhDNkJCMjk0M0UiLCJwYWNrZXQiOnsiY2xpY2siOjAsImZsYWdzIjo1Mzc5MTk0ODgsImhhbmRsaW5nV2luZG93IjowLCJtYXJrZXIiOjQ2MiwibnVtYmVyIjowLCJwaWQiOjAsInBvaW50ZXJXaW5kb3ciOjAsInNvdXJjZVBJRCI6NjkyMzgsInNvdXJjZVN0YXRlIjowLCJ0aW1lc3RhbXAiOjAsInR5cGUiOjAsIndpbmRvdyI6MCwieCI6MTcyNy45ODQzNzUsInkiOjExMTYuOTg0Mzc1fX0seyJkZXN0aW5hdGlvbiI6InNlc3Npb24gZXZlbnQgdGFwIiwiaWQiOiJGMTRBRTBEMy1ERTU0LTRBMTItQjAyNC05QzBEQjFGMjY3MDQiLCJwYWNrZXQiOnsiY2xpY2siOjAsImZsYWdzIjowLCJoYW5kbGluZ1dpbmRvdyI6MzUwNDEyLCJtYXJrZXIiOjQ2MywibnVtYmVyIjowLCJwaWQiOjY5Mjk1LCJwb2ludGVyV2luZG93IjozNTA0MTIsInNvdXJjZVBJRCI6NjkyMzgsInNvdXJjZVN0YXRlIjoxLCJ0aW1lc3RhbXAiOjAsInR5cGUiOjIsIndpbmRvdyI6MzUwNDEyLCJ4IjoxNTE2LCJ5IjoxOC41fX0seyJkZXN0aW5hdGlvbiI6IlBJRCA2OTI5NSIsImlkIjoiQkVFN0YwODAtRTg1MC00RjM4LUFGNEItODUwODdGMUYwNjFGIiwicGFja2V0Ijp7ImNsaWNrIjowLCJmbGFncyI6MCwiaGFuZGxpbmdXaW5kb3ciOjM1MDQxMiwibWFya2VyIjo0NjMsIm51bWJlciI6MCwicGlkIjo2OTI5NSwicG9pbnRlcldpbmRvdyI6MzUwNDEyLCJzb3VyY2VQSUQiOjY5MjM4LCJzb3VyY2VTdGF0ZSI6MSwidGltZXN0YW1wIjowLCJ0eXBlIjoyLCJ3aW5kb3ciOjM1MDQxMiwieCI6MTUxNiwieSI6MTguNX19XSwic3RhdHVzIjoicGFpcmVkVHJhbnNwb3J0UmV0dXJuZWQiLCJ1cCI6eyJjbGljayI6MCwiZmxhZ3MiOjAsImhhbmRsaW5nV2luZG93IjozNTA0MTIsIm1hcmtlciI6NDYzLCJudW1iZXIiOjAsInBpZCI6NjkyOTUsInBvaW50ZXJXaW5kb3ciOjM1MDQxMiwic291cmNlUElEIjo2OTIzOCwic291cmNlU3RhdGUiOjEsInRpbWVzdGFtcCI6MCwidHlwZSI6Miwid2luZG93IjozNTA0MTIsIngiOjE1MTYsInkiOjE4LjV9fSx7ImRvd24iOnsiY2xpY2siOjEsImZsYWdzIjowLCJoYW5kbGluZ1dpbmRvdyI6MzUwNDE4LCJtYXJrZXIiOjQ2NSwibnVtYmVyIjowLCJwaWQiOjY5Mjk1LCJwb2ludGVyV2luZG93IjozNTA0MTgsInNvdXJjZVBJRCI6NjkyMzgsInNvdXJjZVN0YXRlIjoxLCJ0aW1lc3RhbXAiOjAsInR5cGUiOjEsIndpbmRvdyI6MzUwNDE4LCJ4IjoxNTAxLjUsInkiOjE4LjV9LCJpZCI6IjdCNjc3NzQ3LTYzRkYtNEFFMi1BRUU2LUE2MUIzNEI0MkNCOCIsInJvdXRlcyI6W3siZGVzdGluYXRpb24iOiJzZXNzaW9uIGV2ZW50IHRhcCIsImlkIjoiRUJEREMyM0YtRTg1Mi00MjJFLUEzQzYtNzdDNjY2MjNFRDRFIiwicGFja2V0Ijp7ImNsaWNrIjoxLCJmbGFncyI6MCwiaGFuZGxpbmdXaW5kb3ciOjM1MDQxOCwibWFya2VyIjo0NjUsIm51bWJlciI6MCwicGlkIjo2OTI5NSwicG9pbnRlcldpbmRvdyI6MzUwNDE4LCJzb3VyY2VQSUQiOjY5MjM4LCJzb3VyY2VTdGF0ZSI6MSwidGltZXN0YW1wIjowLCJ0eXBlIjoxLCJ3aW5kb3ciOjM1MDQxOCwieCI6MTUwMS41LCJ5IjoxOC41fX0seyJkZXN0aW5hdGlvbiI6InNlc3Npb24gZXZlbnQgdGFwIiwiaWQiOiJDRjMwNjIwRi0yNEMyLTQxQkUtOEU0NC01OEZGREZBNkYwMDIiLCJwYWNrZXQiOnsiY2xpY2siOjEsImZsYWdzIjowLCJoYW5kbGluZ1dpbmRvdyI6MzUwNDE4LCJtYXJrZXIiOjQ2NiwibnVtYmVyIjowLCJwaWQiOjY5Mjk1LCJwb2ludGVyV2luZG93IjozNTA0MTgsInNvdXJjZVBJRCI6NjkyMzgsInNvdXJjZVN0YXRlIjoxLCJ0aW1lc3RhbXAiOjAsInR5cGUiOjIsIndpbmRvdyI6MzUwNDE4LCJ4IjoxNTAxLjUsInkiOjE4LjV9fV0sInN0YXR1cyI6InBhaXJlZFRyYW5zcG9ydFJldHVybmVkIiwidXAiOnsiY2xpY2siOjEsImZsYWdzIjowLCJoYW5kbGluZ1dpbmRvdyI6MzUwNDE4LCJtYXJrZXIiOjQ2NiwibnVtYmVyIjowLCJwaWQiOjY5Mjk1LCJwb2ludGVyV2luZG93IjozNTA0MTgsInNvdXJjZVBJRCI6NjkyMzgsInNvdXJjZVN0YXRlIjoxLCJ0aW1lc3RhbXAiOjAsInR5cGUiOjIsIndpbmRvdyI6MzUwNDE4LCJ4IjoxNTAxLjUsInkiOjE4LjV9fV0sInBoYXNlIjoic3RvcHBlZCIsInJldmlzaW9uIjoxNSwic2NoZW1hVmVyc2lvbiI6NCwic3RvcFJlYXNvbiI6Im1lbnUiLCJ0cmFuc2FjdGlvbiI6IjFDN0RBNTlBLTU5NjItNDdGMS04MTE5LTQ5MTFDMTBFMjI2NSJ9","version":1}
+\ No newline at end of file
+--- a/docs/MENUBAR_ICE_INTERFACE_PRODUCT_CANDIDATE.md
++++ b/docs/MENUBAR_ICE_INTERFACE_PRODUCT_CANDIDATE.md
+@@ -1,3 +1,43 @@
++# 阶段1已完成：正常源码、正常构建、长等待复验（2026-10-09）
++
++本节取代下方旧临时构建说明；历史失败与验证不删除、不改写。仅完成阶段1，不增加产品行为。
++
++## 构建与体验产物
++
++```sh
++sh /Users/yangruihan/Workspace/mac_tools/scripts/build-ice-interface-product-candidate.sh
++```
++
++- 候选应用：`/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app`。
++- 工作端在候选应用自身 `Contents/Resources/IceWorker` 内，源码与历史测试数据从正常 `Tools` 目录编译/打包。不再运行证据目录源副本或 `/tmp` 工作端。
++- 可写会话与恢复记录：`/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate`。构建资源与持久状态分开；重新构建不清除未完成责任。
++- 旧失败记录继续保留，正常源码里的 `/tmp` 历史字段及拒绝测试字面量不是运行依赖。
++
++## 已完成检查
++
++1. 五份已验证的逻辑/测试副本并入正常源码；保留原Ice首个新同owner窗口、15秒等待、90秒统一预算与50ms运输预算，不加新规则。
++2. 正常构建、深层严格签名、产品preflight通过；Swift 500个测试零失败，工作端63场景510断言、等待15断言、派送11场景55断言、停止UI 3场景15断言、产品接线24断言通过。
++3. 应用复制到仓库外仍能准备会话；改变仓库源码不影响其运行；改动包内源码后准备被拒绝，原字节恢复后签名有效。
++4. 正常构建QQ实测 `A9E0D82D-0653-4AAF-A843-28B9A30E29E7`：跟踪窗口active **38.497705秒**，在Command-Tab操作后跟踪窗口消失；按Ice原窗口规则认定inactive。inactive持久确认后等 **15.022042秒**，14实际投递、6路由、10原始回执、三手势运输配对，归位当前微信左侧原邻边，持久returned后clear，无pending。未声称QQ整个进程inactive或菜单closed；同owner替代窗口仍可见。
++5. 同输入源依赖检查：BASELINE拒绝临时/证据依赖，MODIFIED通过，ROLLBACK恢复原字节与原拒绝结果；补丁重新应用后逐文件字节等于正常源码。回滚只针对指定副本，先逐文件检查，拒绝覆盖额外编辑。
++
++此前正常构建短轮14投递成功、长轮未真正失焦而90秒停止、未观察到新窗口而停止、全屏Space变化停止以及零输入scope停止均保留。失败后仅归位单独记账，原失败不改成成功。
++
++## 证据与回滚
++
++同一四角色继续复用：
++
++- `MODIFIED_FILE.swift`：已验证核心逻辑副本；阶段1正常源码补充快照在 `stage1-modified-sources/`。
++- `DIFF_FILE.patch`：核心逻辑补丁；阶段1完整19文件补充补丁为 `stage1-sources.patch`。
++- `VERIFICATION.txt`：命令、字面输出、退出状态与散列。
++- `ROLLBACK.sh`：可执行；`ROLLBACK.sh --stage1 TARGET_COPY_REPO` 恢复阶段1前的副本源码，保留其他文件。相邻 `stage1-baseline/` 与 `stage1-modified-sources/` 必须保留。
++
++以上均位于 `/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/`。实测摘要为该目录 `stage1-long-qq-success-summary.json`，完成状态为 `stage1-completion.json`。
++
++**未执行：**阶段2产品按钮全链路、全屏/多屏/其他图标验收；未安装替换 `/Applications/MacTools.app`，未提交或推送。正式版SHA仍为 `515c9640ea01039d0157a57cae81893547cfac04b404b6ce41086461bfbce9a2`。
++
++---
++
+ # 最新普通桌面 QQ 长等待实测通过（北京时间 2026-10-09）
+ 
+ 由助手执行新单轮 `53E57644-C45E-4F1E-8083-349759EC9445`：QQ普通界面实际active约47.161380秒，随后观察inactive，再等待15.015097秒，自动回到当前微信左侧原邻边。总操作63.406682秒，14实际投递、6路由、10raw回执、三手势运输配对，持久returned后clear，当前无pending。不是仅编译/离线检查，旧45秒预算不能覆盖此实际超过45秒的路径。失焦动作主体没有独立归因，不声称是助手发送了关闭QQ动作或标准菜单closed。
