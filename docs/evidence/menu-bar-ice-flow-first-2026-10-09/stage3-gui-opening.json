@@ -1,0 +1,12 @@
+{
+  "candidateRunningFromFrozenPath": [
+    "54426 /Users/yangruihan/Documents/MacTools体验候选/2026-10-09-stage2-729293d0/MacTools Ice Interface Candidate.app/Contents/MacOS/MacTools"
+  ],
+  "nativeWorkerRunning": false,
+  "autoStartedSession": false,
+  "newNativeMousePostsThisTurn": 0,
+  "pendingRecovery": false,
+  "CuaObservedWindow": "MacTools · Ice 候选",
+  "CuaObservedInitialStatus": "请选择具体应用图标，核验身份后打开单轮控制窗口。",
+  "guideOpenRequestStatus": "queued by open_in_codex, actual panel visibility not independently confirmed"
+}

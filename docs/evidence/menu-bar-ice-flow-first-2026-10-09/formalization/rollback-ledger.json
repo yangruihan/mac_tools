@@ -1,0 +1,18 @@
+{
+  "rollbackCommand": [
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+    "--production-home-app",
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/rollback-test/MacTools.app"
+  ],
+  "exit": 0,
+  "stdout": "restored old app; changed copy preserved at /Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/rollback-test/MacTools.app.before-rollback-74553; settings and recovery records untouched\n",
+  "stderr": "",
+  "sameInputCommand": [
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/rollback-test/MacTools.app/Contents/MacOS/MacTools",
+    "--ice-candidate-ui-smoke"
+  ],
+  "sameInputExit": 0,
+  "sameInputStdout": "{\"imagePath\":\"\\/Users\\/yangruihan\\/Library\\/Application Support\\/MacTools\\/IceInterfaceCandidate\\/product-ui.png\",\"mousePosts\":0,\"ownedSessionsStarted\":0,\"permissionRequests\":0,\"registeredPluginCount\":5,\"selectedPlugin\":\"menu-bar-organizer\",\"semanticAXReadbackClaimed\":false,\"uiRenderPassed\":true,\"windowTitle\":\"Mac \u5de5\u5177\u7bb1\"}\n",
+  "sameInputStderr": "",
+  "originalAppHashRestored": true
+}

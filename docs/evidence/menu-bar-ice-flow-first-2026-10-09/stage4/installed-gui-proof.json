@@ -1,0 +1,19 @@
+{
+  "formalRunning": [
+    "94211 /Applications/MacTools.app/Contents/MacOS/MacTools"
+  ],
+  "uiTitle": "Mac 工具箱",
+  "sidebarPlugins": [
+    "快捷控制",
+    "保持唤醒",
+    "屏蔽内置触控板",
+    "窗口悬浮预览",
+    "菜单栏收纳"
+  ],
+  "oldSettingsDisclosureVisible": true,
+  "quickControlsOriginalPresetsObserved": true,
+  "initialQQEntryReadyForExperience": true,
+  "sourceBinarySHA256": "c2b12a9f7fd6067079703f3558862f18593964883944e41cbba70a50b668a782",
+  "nativePostsThisTurn": 0,
+  "nativeWorkerRunning": false
+}

@@ -1,0 +1,19 @@
+{
+  "criticalOriginalKeysPreserved": [
+    "app.windowShortcut",
+    "plugin.keep-awake.enabled",
+    "plugin.menu-bar-organizer.optedIn",
+    "plugin.menu-bar-organizer.presentationMode",
+    "plugin.menu-bar-organizer.priorMainPosition",
+    "plugin.menu-bar-organizer.visibleLimit",
+    "plugin.quick-controls.presets",
+    "plugin.quick-controls.unlockShortcut",
+    "plugin.window-preview.frameRate",
+    "presets",
+    "unlockShortcut",
+    "windowShortcut"
+  ],
+  "criticalValuesEqual": true,
+  "missingOriginalCriticalKeys": [],
+  "volatileWindowStatusPositionsComparedAsSettings": false
+}

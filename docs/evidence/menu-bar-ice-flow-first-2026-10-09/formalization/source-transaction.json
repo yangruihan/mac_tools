@@ -1,0 +1,29 @@
+{
+  "originalHashesRestored": true,
+  "patchReappliedExact": true,
+  "commands": [
+    {
+      "command": [
+        "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+        "--production-home-source",
+        "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/source-rollback-copy"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "patch",
+        "-p1",
+        "-d",
+        "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/source-rollback-copy",
+        "-i",
+        "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/source.patch"
+      ],
+      "exit": 0,
+      "stdout": "patching file 'Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift'\npatching file 'scripts/build-ice-interface-product-candidate.sh'\n",
+      "stderr": ""
+    }
+  ]
+}

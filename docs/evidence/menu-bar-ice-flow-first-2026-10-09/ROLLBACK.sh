@@ -1,5 +1,38 @@
 #!/bin/sh
 set -eu
+if [ "${1:-}" = "--production-home-source" ]; then
+ [ "$#" -eq 2 ] && [ -d "$2" ] && [ ! -L "$2" ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ for REL in Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift scripts/build-ice-interface-product-candidate.sh; do
+  [ ! -L "$2/$REL" ] && cmp -s "$DIR/formalization/modified-sources/$REL" "$2/$REL" || { echo 'changed production source: nothing restored' >&2; exit 1; }
+ done
+ for REL in Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift scripts/build-ice-interface-product-candidate.sh; do
+  cp "$DIR/formalization/baseline/Source/$REL" "$2/$REL"
+ done
+ exit 0
+fi
+if [ "${1:-}" = "--production-home-app" ]; then
+ [ "$#" -eq 2 ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ exec "$DIR/formalization/rollback/ROLLBACK_APP.sh" "$2"
+fi
+if [ "${1:-}" = "--stage4-source" ]; then
+ [ "$#" -eq 2 ] && [ -d "$2" ] && [ ! -L "$2" ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ TAB=$(printf '\t')
+ while IFS="$TAB" read -r action rel; do
+  [ ! -L "$2/$rel" ] && cmp -s "$DIR/stage4/modified-sources/$rel" "$2/$rel" || { echo "changed stage4 source: $rel; nothing restored" >&2; exit 1; }
+ done < "$DIR/stage4/paths.tsv"
+ while IFS="$TAB" read -r action rel; do
+  if [ "$action" = restore ]; then cp "$DIR/stage4/baseline/Source/$rel" "$2/$rel"; else rm -f "$2/$rel"; fi
+ done < "$DIR/stage4/paths.tsv"
+ exit 0
+fi
+if [ "${1:-}" = "--stage4-app" ]; then
+ [ "$#" -eq 2 ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ exec "$DIR/stage4/rollback/ROLLBACK_APP.sh" "$2"
+fi
 case "${1:-}" in
  --stage2|--stage2-product|--stage2-doc|--stage2-lease|--stage2-workflow|--stage2-native-checks)
  [ "$#" -eq 2 ] && [ -f "$2" ] && [ ! -L "$2" ] || exit 2

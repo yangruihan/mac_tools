@@ -1,0 +1,38 @@
+{
+  "MODIFIED_FILE": {
+    "path": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/MODIFIED_FILE.swift",
+    "bytes": 11903,
+    "sha256": "2f734a3a12287213b65d0a9d8e0c65ace6c05e17c535e179c15d8f1791f95bd1"
+  },
+  "DIFF_FILE": {
+    "path": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/DIFF_FILE.patch",
+    "bytes": 17604,
+    "sha256": "a1f72270cbf68c5ad284b85c7c0472486a082ef768b07ff841277ba4e0e13535"
+  },
+  "VERIFICATION": {
+    "path": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/VERIFICATION.txt",
+    "bytes": 1122843,
+    "sha256": "8ec2fff072d113ac7f2a2c61ab8dba2d07be923721b7e4a379265f5c6f82b6a2"
+  },
+  "ROLLBACK": {
+    "path": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+    "bytes": 3754,
+    "sha256": "18c1eb0847ab9261d11984fbef7dec6d8e4860af2a7a0fc8c6f16c5ea61d76e0"
+  },
+  "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/completion.json": {
+    "bytes": 1629,
+    "sha256": "c9e89324e1139ab75c5d4a2bfd652fcab4e77ce0b2704c47d7fe3bc83d4f2cd8"
+  },
+  "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/source.patch": {
+    "bytes": 3431,
+    "sha256": "7d7b5096e79a7768f7292a1302afeb800cc0815844f50cb0775489dc9aa55ff6"
+  },
+  "/Users/yangruihan/Documents/MacTools\u6b63\u5f0f\u7248\u56de\u6eda/2026-10-09-before-production-home-c2b12a9f/ROLLBACK_APP.sh": {
+    "bytes": 1456,
+    "sha256": "090a85424aff9bc846be006fdb6d3cf3e9312dd95ecee6d3e44b2bf5194ead0d"
+  },
+  "/Users/yangruihan/Workspace/mac_tools/docs/MENUBAR_NATIVE_PRODUCTION_HOME.txt": {
+    "bytes": 1150,
+    "sha256": "2422d0195061abd6b999aee2cd49db5031a877b5480f6a8ec2bf53dc4ab13940"
+  }
+}

@@ -1,0 +1,10 @@
+正式原生收纳首页（2026-10-09）
+
+MacTools0.2.2(7)已替换并打开。原生收纳和编辑布局直接位于首页；单轮验证折叠到“开发诊断 · 单轮验证（仅排障）”，托盘菜单移除重复试用入口。五插件与原设置保留。
+
+用法：点编辑布局，在屏幕顶部按住Command拖动真实图标；分隔符左侧收纳、右侧常驻，同侧换序。松开Command后点完成并收起。本轮已进入编辑模式，没有替用户实际拖动图标，也没有实现面板内拖放。
+
+已取消的旧试用记录原字节保留。本次原常规构建因pending拒绝，转为仅编译宿主界面并复用原签名工作组件；没有清除记录、绕过工作端构建防护、改变合同或启动新工作端。
+
+旧版和设置备份：/Users/yangruihan/Documents/MacTools正式版回滚/2026-10-09-before-production-home-c2b12a9f
+备份目录ROLLBACK_APP.sh接受退出后的目标应用副本，保留被替换版本、不清设置/恢复记录。源码补丁、回滚和验收记录：/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization

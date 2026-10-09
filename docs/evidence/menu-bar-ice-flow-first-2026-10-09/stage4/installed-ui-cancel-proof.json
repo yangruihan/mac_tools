@@ -1,0 +1,32 @@
+{
+  "session": "/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/session-582D30B2-299C-48CC-98CD-C228432FE1BA",
+  "nonce": "582D30B2-299C-48CC-98CD-C228432FE1BA",
+  "ready": {
+    "fixturePID": null,
+    "frontPID": 93149,
+    "hitTestRequired": false,
+    "nativePosts": 0,
+    "nonce": "582D30B2-299C-48CC-98CD-C228432FE1BA",
+    "pid": 93149,
+    "strictANYRequired": false,
+    "windowKey": true,
+    "windowNumber": 358288,
+    "windowVisible": true
+  },
+  "result": {
+    "diagnosticUserEscObservations": [],
+    "failure": "cancelledBeforeStart",
+    "nonce": "582D30B2-299C-48CC-98CD-C228432FE1BA",
+    "posts": 0,
+    "realClosedLoopVerified": false,
+    "stage": "ready"
+  },
+  "cleanup": {
+    "atUnix": 1791545126.9822068,
+    "fixtureExited": true,
+    "installedSHA256": "c2b12a9f7fd6067079703f3558862f18593964883944e41cbba70a50b668a782",
+    "journalPending": false
+  },
+  "productEntryViaCUA": true,
+  "StartPressed": false
+}

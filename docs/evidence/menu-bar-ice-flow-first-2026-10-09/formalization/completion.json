@@ -1,0 +1,36 @@
+{
+  "status": "complete-native-home-formalized",
+  "changedSymbols": [
+    "MenuBarOrganizerPlugin.makeView",
+    "MenuBarOrganizerPlugin.makeMenuItems"
+  ],
+  "installed": {
+    "version": "0.2.2",
+    "build": "7",
+    "app": "/Applications/MacTools.app",
+    "newHostSHA256": "bcd0d5d4ab7c8c95425a8dd9c805c9f3ec909ed97fd8e6c553e8f8ede0bb70a2",
+    "workerResourceTreeUnchanged": true,
+    "pendingRawBytesUnchanged": true,
+    "oldActualApp": "/Users/yangruihan/Documents/MacTools正式版回滚/2026-10-09-before-production-home-c2b12a9f/actual-installed-before.app"
+  },
+  "running": [
+    "76992 /Applications/MacTools.app/Contents/MacOS/MacTools"
+  ],
+  "nativeHomeObserved": true,
+  "developerDiagnosticsInitiallyCollapsed": true,
+  "nativeEditorButtonClicked": true,
+  "literalEditorStatus": "手动编辑：在屏幕顶部按住 ⌘ 拖动；│ 左侧收纳、右侧常驻，同侧拖动换序。完成后点击收起。",
+  "actualCommandDragPerformedByAgent": false,
+  "panelDropImplemented": false,
+  "legacyPendingRecordPreserved": true,
+  "oldTrialNonce": "0A81E3AD-5B0E-458C-BF2C-5F5A6A30D198",
+  "workerResourceTreeUnchanged": true,
+  "baselineModifiedRollbackSameSmokeCommandExit0": true,
+  "appRollbackPristineHashVerified": true,
+  "sourceRollbackPristineHashAndPatchReapplyVerified": true,
+  "swiftTests": 500,
+  "swiftFailures": 0,
+  "backup": "/Users/yangruihan/Documents/MacTools正式版回滚/2026-10-09-before-production-home-c2b12a9f",
+  "appRollback": "/Users/yangruihan/Documents/MacTools正式版回滚/2026-10-09-before-production-home-c2b12a9f/ROLLBACK_APP.sh",
+  "notCommittedOrPushed": true
+}

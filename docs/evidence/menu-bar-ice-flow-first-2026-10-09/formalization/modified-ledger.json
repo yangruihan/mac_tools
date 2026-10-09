@@ -1,0 +1,10 @@
+{
+  "label": "MODIFIED",
+  "command": [
+    "/Users/yangruihan/Workspace/mac_tools/build/formal-production/MacTools.app/Contents/MacOS/MacTools",
+    "--ice-candidate-ui-smoke"
+  ],
+  "exit": 0,
+  "stdout": "{\"imagePath\":\"\\/Users\\/yangruihan\\/Library\\/Application Support\\/MacTools\\/IceInterfaceCandidate\\/product-ui.png\",\"mousePosts\":0,\"ownedSessionsStarted\":0,\"permissionRequests\":0,\"registeredPluginCount\":5,\"selectedPlugin\":\"menu-bar-organizer\",\"semanticAXReadbackClaimed\":false,\"uiRenderPassed\":true,\"windowTitle\":\"Mac \u5de5\u5177\u7bb1\"}\n",
+  "stderr": ""
+}

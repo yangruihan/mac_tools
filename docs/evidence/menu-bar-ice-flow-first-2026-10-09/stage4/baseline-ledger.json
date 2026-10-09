@@ -1,0 +1,22 @@
+[
+  {
+    "label": "existing-selected-recovery",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app/Contents/Resources/IceWorker/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
+      "--inspect-recovery"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"journalPending\" : false,\n  \"nonce\" : null,\n  \"recordSHA256\" : null,\n  \"unconfirmedDown\" : false\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "old-baseline-recovery",
+    "command": [
+      "/tmp/mac-tools-ice-baseline-candidate-20261007/Ice Baseline Controller.app/Contents/MacOS/IceBaselineController",
+      "--inspect-recovery"
+    ],
+    "exit": 0,
+    "stdout": "{\"hasPossibleEffect\":false,\"journalPending\":false,\"nativeEffects\":0,\"nonce\":null,\"phase\":null,\"physicalReleaseProven\":false,\"recordSHA256\":null,\"recoveryDisposition\":null,\"unconfirmedDown\":false}\n",
+    "stderr": ""
+  }
+]

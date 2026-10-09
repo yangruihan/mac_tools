@@ -1,0 +1,127 @@
+[
+  {
+    "label": "stage3-BASELINE-preflight",
+    "command": [
+      "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app/Contents/MacOS/MacTools",
+      "--ice-candidate-preflight"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"automaticStart\" : false,\n  \"contract\" : \"ordinaryIceInterfaceV9\",\n  \"journalPending\" : false,\n  \"mousePosts\" : 0,\n  \"ordinaryEntryConnected\" : true,\n  \"permissionRequests\" : 0,\n  \"windowsOpened\" : 0,\n  \"workerRevision\" : \"ordinary-Ice-product-stage1\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "stage3-freeze",
+    "command": [
+      "ditto",
+      "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/MacTools Ice Interface Candidate.app",
+      "/Users/yangruihan/Documents/MacTools\u4f53\u9a8c\u5019\u9009/2026-10-09-stage2-729293d0/MacTools Ice Interface Candidate.app"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "label": "stage3-signature",
+    "command": [
+      "codesign",
+      "--verify",
+      "--deep",
+      "--strict",
+      "/Users/yangruihan/Documents/MacTools\u4f53\u9a8c\u5019\u9009/2026-10-09-stage2-729293d0/MacTools Ice Interface Candidate.app"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "label": "stage3-MODIFIED-frozen-preflight",
+    "command": [
+      "/Users/yangruihan/Documents/MacTools\u4f53\u9a8c\u5019\u9009/2026-10-09-stage2-729293d0/MacTools Ice Interface Candidate.app/Contents/MacOS/MacTools",
+      "--ice-candidate-preflight"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"automaticStart\" : false,\n  \"contract\" : \"ordinaryIceInterfaceV9\",\n  \"journalPending\" : false,\n  \"mousePosts\" : 0,\n  \"ordinaryEntryConnected\" : true,\n  \"permissionRequests\" : 0,\n  \"windowsOpened\" : 0,\n  \"workerRevision\" : \"ordinary-Ice-product-stage1\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "stage3-permissions",
+    "command": [
+      "/Users/yangruihan/Documents/MacTools\u4f53\u9a8c\u5019\u9009/2026-10-09-stage2-729293d0/MacTools Ice Interface Candidate.app/Contents/Resources/IceWorker/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
+      "--permissions"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"ax\" : true,\n  \"listen\" : true,\n  \"permissionRequests\" : 0,\n  \"post\" : true\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "stage3-backup",
+    "command": [
+      "ditto",
+      "-c",
+      "-k",
+      "--keepParent",
+      "/Users/yangruihan/Documents/MacTools\u4f53\u9a8c\u5019\u9009/2026-10-09-stage2-729293d0/MacTools Ice Interface Candidate.app",
+      "/Users/yangruihan/Documents/MacTools\u4f53\u9a8c\u5019\u9009/2026-10-09-stage2-729293d0/\u5019\u9009\u5907\u4efd.zip"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "label": "stage3-archive-restore",
+    "command": [
+      "ditto",
+      "-x",
+      "-k",
+      "/Users/yangruihan/Documents/MacTools\u4f53\u9a8c\u5019\u9009/2026-10-09-stage2-729293d0/\u5019\u9009\u5907\u4efd.zip",
+      "/Users/yangruihan/Library/Caches/MacTools-stage3-restore-0be7adfb-efe2-49e0-9476-0778229df9b6"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "label": "stage3-restored-signature",
+    "command": [
+      "codesign",
+      "--verify",
+      "--deep",
+      "--strict",
+      "/Users/yangruihan/Library/Caches/MacTools-stage3-restore-0be7adfb-efe2-49e0-9476-0778229df9b6/MacTools Ice Interface Candidate.app"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "label": "stage3-ROLLBACK-restored-preflight",
+    "command": [
+      "/Users/yangruihan/Library/Caches/MacTools-stage3-restore-0be7adfb-efe2-49e0-9476-0778229df9b6/MacTools Ice Interface Candidate.app/Contents/MacOS/MacTools",
+      "--ice-candidate-preflight"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"automaticStart\" : false,\n  \"contract\" : \"ordinaryIceInterfaceV9\",\n  \"journalPending\" : false,\n  \"mousePosts\" : 0,\n  \"ordinaryEntryConnected\" : true,\n  \"permissionRequests\" : 0,\n  \"windowsOpened\" : 0,\n  \"workerRevision\" : \"ordinary-Ice-product-stage1\"\n}\n",
+    "stderr": ""
+  },
+  {
+    "label": "stage3-source-rollback-portability",
+    "command": [
+      "/Users/yangruihan/Documents/MacTools\u4f53\u9a8c\u5019\u9009/2026-10-09-stage2-729293d0/\u56de\u6eda\u8d44\u6599/ROLLBACK.sh",
+      "--stage2-workflow",
+      "/Users/yangruihan/Library/Caches/MacTools-stage3-restore-0be7adfb-efe2-49e0-9476-0778229df9b6/workflow-copy.swift"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "label": "stage3-signed-worker-package-prepare-zero-input",
+    "command": [
+      "/Users/yangruihan/Documents/MacTools\u4f53\u9a8c\u5019\u9009/2026-10-09-stage2-729293d0/MacTools Ice Interface Candidate.app/Contents/Resources/IceWorker/Ice Selected Controller.app/Contents/MacOS/IceSelectedController",
+      "--prepare-owned"
+    ],
+    "exit": 0,
+    "stdout": "{\n  \"posts\" : 0,\n  \"session\" : \"\\/Users\\/yangruihan\\/Library\\/Application Support\\/MacTools\\/IceInterfaceCandidate\\/session-2083E8C6-4858-481B-93B5-594FB607802D\"\n}\n",
+    "stderr": ""
+  }
+]

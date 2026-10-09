@@ -41,5 +41,18 @@
   "stage2BaselineDirectory": "docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-baseline",
   "stage2CurrentSamplerTarget": "/Users/yangruihan/Workspace/mac_tools/Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift",
   "stage2Completion": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage2-completion.json",
-  "stage2StatusValue": "complete"
+  "stage2StatusValue": "complete",
+  "stage3App": "/Users/yangruihan/Documents/MacTools体验候选/2026-10-09-stage2-729293d0/MacTools Ice Interface Candidate.app",
+  "stage3Guide": "/Users/yangruihan/Documents/MacTools体验候选/2026-10-09-stage2-729293d0/使用指引.txt",
+  "stage3Backup": "/Users/yangruihan/Documents/MacTools体验候选/2026-10-09-stage2-729293d0/候选备份.zip",
+  "stage3Rollback": "/Users/yangruihan/Documents/MacTools体验候选/2026-10-09-stage2-729293d0/回滚资料/ROLLBACK.sh",
+  "stage3Completion": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage3-completion.json",
+  "stage4Completion": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage4/completion.json",
+  "stage4SourcePatch": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage4/source.patch",
+  "stage4InstalledPath": "/Applications/MacTools.app",
+  "stage4AppRollback": "/Users/yangruihan/Documents/MacTools正式版回滚/2026-10-09-before-stage4-515c9640/ROLLBACK_APP.sh",
+  "productionHomeCompletion": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/completion.json",
+  "productionHomePatch": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/source.patch",
+  "productionHomeBaseline": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/baseline/Source",
+  "productionHomeModified": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/formalization/modified-sources"
 }

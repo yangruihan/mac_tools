@@ -1,0 +1,38 @@
+{
+  "Sources/MacTools/MacTools.swift": {
+    "exists": true,
+    "sha256": "2f5835070fe200effa47cd469cd86dd2771e2da2d057808e21dd1a5bc13e07a8"
+  },
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift": {
+    "exists": true,
+    "sha256": "9ee9730b7023b9fc069d74c3e75c158f2cd6912089e68a9b8d4c56c641cb6d42"
+  },
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductBridge.swift": {
+    "exists": false,
+    "sha256": null
+  },
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductChecks.swift": {
+    "exists": false,
+    "sha256": null
+  },
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductNativeChecks.swift": {
+    "exists": false,
+    "sha256": null
+  },
+  "Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift": {
+    "exists": true,
+    "sha256": "fb8c3d645725b52bc4cda0afccd08ec2a845f4749b913859258fbe87fa2ca2e7"
+  },
+  "Tools/IceInterfaceProductWorker/IceSelectedSession.swift": {
+    "exists": true,
+    "sha256": "4490fb485b2d1b4a710be8e7bfe913b52dd9f6ceed5cddd4a4e7dbe99a1bfc13"
+  },
+  "scripts/build-ice-interface-product-candidate.sh": {
+    "exists": true,
+    "sha256": "1afacbbe88d94a9914651523dc0bfd787af2083eeb19247b94fee346fb1fa769"
+  },
+  "scripts/build-app.sh": {
+    "exists": true,
+    "sha256": "d2b8664bafe100838412b876f93308872fb4de9abfeb28ffc274cd56c88bcf45"
+  }
+}

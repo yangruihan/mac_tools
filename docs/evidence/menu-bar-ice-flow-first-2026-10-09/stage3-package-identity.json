@@ -1,0 +1,995 @@
+{
+  "candidateLabel": "2026-10-09-stage2-729293d0",
+  "createdFromSourceCommit": "fbf2c4a63023b1e24cbd0433f60a2cdfb02a9b1c",
+  "compiledIdentity": {
+    "hostSHA256": "729293d0501fdfd107b73d4b1f869c27e60e513be97138d4ec7373d5f368f171",
+    "controllerSHA256": "908ff5857c0b6d065f9a033af79c63de065f2d7ce1388f40124a677c47a071dc",
+    "fixtureSHA256": "15da9c69fbda83a441261a1d5f1b88dc2e891a21a1a6be9a971d97112a9c8cd3",
+    "sourceHEAD": "6ca604791159a21aa1c95d96a6fdfc6ee0d3598c",
+    "sourcesMatchCompiledManifestAndPackage": true,
+    "uncommittedSource": true,
+    "formalAppUnchanged": true
+  },
+  "runtimeBytesUnchanged": true,
+  "app": "/Users/yangruihan/Documents/MacTools体验候选/2026-10-09-stage2-729293d0/MacTools Ice Interface Candidate.app",
+  "guide": "/Users/yangruihan/Documents/MacTools体验候选/2026-10-09-stage2-729293d0/使用指引.txt",
+  "backup": "/Users/yangruihan/Documents/MacTools体验候选/2026-10-09-stage2-729293d0/候选备份.zip",
+  "sourceRollback": "/Users/yangruihan/Documents/MacTools体验候选/2026-10-09-stage2-729293d0/回滚资料/ROLLBACK.sh",
+  "stateRoot": "/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate",
+  "allFiles": {
+    "Contents/Info.plist": {
+      "sha256": "c21b492aac5bfb1fb7f264c3bdadf01b80d75c7ee2d2d72fe99c1b920890a28d",
+      "bytes": 935,
+      "mode": 420
+    },
+    "Contents/MacOS/MacTools": {
+      "sha256": "729293d0501fdfd107b73d4b1f869c27e60e513be97138d4ec7373d5f368f171",
+      "bytes": 8333552,
+      "mode": 493
+    },
+    "Contents/Resources/AppIcon.icns": {
+      "sha256": "9cb8ea0b56d8a26cd89c2cbb18349bdad254003ec0f3a869ae128a24adf8ea34",
+      "bytes": 1919583,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/COPYING.GPL-3.0": {
+      "sha256": "a22c5d2fd0877cf9b7069bb011c50e496732c03c93ec62f4b66620e13966b264",
+      "bytes": 35100,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Fixtures/menu-bar-ice-v9-interface-self-window-scope-stop-2026-10-09.json": {
+      "sha256": "7ebeb29d7897d8f75526175eae718ee1d98ab2f727f99b2f17a7bd575f4c7ea4",
+      "bytes": 7476,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Fixtures/menu-bar-ice-v9-interface-self-window-stop-2026-10-09.json": {
+      "sha256": "77490739a7bbc26c4fedbc39ef43efabd71636da30f267ffebfb40bfde27b1f4",
+      "bytes": 5008,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Ice Interface Focus.app/Contents/Info.plist": {
+      "sha256": "1b6be623c3b49ae0680de758994736e2d3e780d79ee833717ad92c2299a8e54c",
+      "bytes": 616,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Ice Interface Focus.app/Contents/MacOS/IceInterfaceFocus": {
+      "sha256": "8018663131a6a05ac231855b7a54cc643d3969bbfe9f6e8734edf3014bf24722",
+      "bytes": 112080,
+      "mode": 493
+    },
+    "Contents/Resources/IceWorker/Ice Interface Focus.app/Contents/_CodeSignature/CodeResources": {
+      "sha256": "6686de10a28a2fe11b36cbb86dcbacc827cfc4ea116b4dabf1845e5aee629e9b",
+      "bytes": 2200,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Ice Product Targets.app/Contents/Info.plist": {
+      "sha256": "f25727fb624b582d63310b3907dd49137265a6d59f9bd4c18ff2f9449174adc1",
+      "bytes": 619,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Ice Product Targets.app/Contents/MacOS/IceProductTargets": {
+      "sha256": "75a2de832f54467feb8e3266c53ddd1c7155d166c47bb9b0cafeb0d1fc898eea",
+      "bytes": 143664,
+      "mode": 493
+    },
+    "Contents/Resources/IceWorker/Ice Product Targets.app/Contents/_CodeSignature/CodeResources": {
+      "sha256": "6686de10a28a2fe11b36cbb86dcbacc827cfc4ea116b4dabf1845e5aee629e9b",
+      "bytes": 2200,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Ice Selected Controller.app/Contents/Info.plist": {
+      "sha256": "363d39b25542ba4d40473a0f66f24a44b01cfb22eb6e939ccec09710e7db293f",
+      "bytes": 612,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Ice Selected Controller.app/Contents/MacOS/IceSelectedController": {
+      "sha256": "908ff5857c0b6d065f9a033af79c63de065f2d7ce1388f40124a677c47a071dc",
+      "bytes": 11121520,
+      "mode": 493
+    },
+    "Contents/Resources/IceWorker/Ice Selected Controller.app/Contents/Resources/COPYING.GPL-3.0": {
+      "sha256": "a22c5d2fd0877cf9b7069bb011c50e496732c03c93ec62f4b66620e13966b264",
+      "bytes": 35100,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Ice Selected Controller.app/Contents/Resources/THIRD_PARTY_NOTICES.md": {
+      "sha256": "e9661ea840b5e7379ba051962c219b068df56d3863a97055685206e5b0e2f18a",
+      "bytes": 823,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Ice Selected Controller.app/Contents/_CodeSignature/CodeResources": {
+      "sha256": "040f7b9d61e89e0a7b934d934ed5b4a2d563b0903945d0182274b6b01e20953f",
+      "bytes": 2702,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Ice Selected Fixture.app/Contents/Info.plist": {
+      "sha256": "73ff9bac8271b4abb9041012efcb1c26bba30c34405ced2c71f60aa543a0f4cc",
+      "bytes": 620,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture": {
+      "sha256": "15da9c69fbda83a441261a1d5f1b88dc2e891a21a1a6be9a971d97112a9c8cd3",
+      "bytes": 418880,
+      "mode": 493
+    },
+    "Contents/Resources/IceWorker/Ice Selected Fixture.app/Contents/_CodeSignature/CodeResources": {
+      "sha256": "6686de10a28a2fe11b36cbb86dcbacc827cfc4ea116b4dabf1845e5aee629e9b",
+      "bytes": 2200,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/AppModel.swift": {
+      "sha256": "9e9517739f81589a0c550327573ab1c7d625da1bb6e4c06c8bbd48970d28c76c",
+      "bytes": 4298,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Core/HotKeyService.swift": {
+      "sha256": "b2bc1bb21cf386973553abf930c5e1122936b1a846df311bff575d65efcc2592",
+      "bytes": 4129,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Core/ToolPlugin.swift": {
+      "sha256": "defae670a77f0eb7c7e3e03397c06b759cfb93f01c8554391ab6fdd5c783be62",
+      "bytes": 4803,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/KeepAwake/KeepAwakePlugin.swift": {
+      "sha256": "84eb96aa9e542e831e453da7da225c99435538e67ec9ede5772ca9f1ec53b965",
+      "bytes": 6682,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/IceCompat/IceMenuBarClassification.swift": {
+      "sha256": "792de6e97fc97ab41b12059e53d5d8417ac4421f58c61af33f46b8e1b4c57938",
+      "bytes": 3076,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/IceCompat/IceMenuBarReadAdapter.swift": {
+      "sha256": "5e0487de9c17923a80b4e30f7f319407b6fae8f9c2a658e41ce42ff9a4aa4abc",
+      "bytes": 4079,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/IceCompat/IceOwnedMouseEvent.swift": {
+      "sha256": "cc660deb35f188411db1c5df5c40e9165bea1a79c96182b488c5155b8fdc9db4",
+      "bytes": 2005,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/IceCompat/IcePrivateWindowAPI.swift": {
+      "sha256": "9652c646f82e4513ad014462a2fa843b8989da6a0175c93d90a351ae8a151273",
+      "bytes": 6790,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarAXActivator.swift": {
+      "sha256": "3986a1673c94ebedb80835c598f959f68b8860189c6923943bea464248b6249d",
+      "bytes": 9418,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarAcceptanceStopNotice.swift": {
+      "sha256": "0d927a4367a94f282761563f14a66d07d4a3dd83afc09a0811363449bcd12d16",
+      "bytes": 5403,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarDestinationAdmissionDiagnostic.swift": {
+      "sha256": "28e1f6d99401240e4e38c062268824c144efbb93a3c21339a841e6ca51f21911",
+      "bytes": 2772,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarDispatchWitness.swift": {
+      "sha256": "f5afb2da4d91b5fa9f928c3f52d998e5d6573fe19a926816a5625506ea3550ca",
+      "bytes": 4279,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarEnvironment.swift": {
+      "sha256": "0bb0fdf9c78f2e8676cd84651447e9cac0fd1e8d4d88bc45f2f5099198232e35",
+      "bytes": 4785,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarHiddenInterferenceSource.swift": {
+      "sha256": "81da8a7476b85d803a750b07328368933fd83853c2d47474fcdf3b9364a63bb3",
+      "bytes": 367,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarHiddenMoveCoordinator.swift": {
+      "sha256": "3efea9568eac92d77d8de6ffa017f70cde8068f85e124d39e92ea9e500f1e6a2",
+      "bytes": 12676,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarHiddenMoveJournal.swift": {
+      "sha256": "1aef80d24742d31dd1b063ae512cdb3d1c67da8641a8a25fde686c3e264414fa",
+      "bytes": 11074,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarHiddenMoveModel.swift": {
+      "sha256": "5de132a12e6528c51bd4c3667543defe80ab01c479ccf456614697919662f2ed",
+      "bytes": 13804,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift": {
+      "sha256": "9ee9730b7023b9fc069d74c3e75c158f2cd6912089e68a9b8d4c56c641cb6d42",
+      "bytes": 12723,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceSelectedTarget.swift": {
+      "sha256": "3b0bcdcecc14eff53fa374865b6ab82b723c17a874cbab32b5341683b7c379b4",
+      "bytes": 8709,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIconActivation.swift": {
+      "sha256": "6b35baead118aafa96debff266dd1988aab101a5091df64a4f345fac6bf21660",
+      "bytes": 1886,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIconIdentity.swift": {
+      "sha256": "ef0470198d13e68f1719e7fe822afbd1a4794a618a35d15bfa7fae827af023f0",
+      "bytes": 6759,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarInputAttribution.swift": {
+      "sha256": "057557c9312d4cf48f21feaa67999419f276fc5fd97bcc49433a673f2fbbe908",
+      "bytes": 3565,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarItemDirectory.swift": {
+      "sha256": "921be1c827ccc78191aff7c7eee8b388a3e92c9edac576aeffd694ae71ec567a",
+      "bytes": 3882,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarListenOnlyInterferenceSource.swift": {
+      "sha256": "7a651ca13412036595bafbccd0438dd496f45aaa3ae3f489994419bd0d3372b6",
+      "bytes": 28361,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLiveOperationDriver.swift": {
+      "sha256": "2fdf1af817b59aae579fd5c13045cee1ce9667c2477f9bb103f0afb6265f9225",
+      "bytes": 3083,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalAcceptanceGate.swift": {
+      "sha256": "67049494f88f6951fc6b8d9c7f48ab6dd8c8e9f4e042383fbe2db0d3c4fddb2a",
+      "bytes": 2474,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalContinuityLedger.swift": {
+      "sha256": "2b86e1b67d4a48d78f4b1cc8339962770ac61b3159d10c804eaaefd91ba3c23a",
+      "bytes": 28859,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalDiagnosticReceipt.swift": {
+      "sha256": "197d17b5ee9f1eab27a4c6af91da7ccc668110468b087441523aa13220df2706",
+      "bytes": 1264,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalNoMoveInput.swift": {
+      "sha256": "1549858b2403ab8b394c4199b63342791617312b182691c1d4ffa45ba89d2e63",
+      "bytes": 12119,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalNoMovePreparation.swift": {
+      "sha256": "e6fa758199742908cfda36c6cea54c595c7a6bb285b2a6d9393ecf5ad297ff18",
+      "bytes": 4220,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalObservationBudget.swift": {
+      "sha256": "8e222b404507558f17c31d1d046be8888656c38d722fd6de140bc7ad10d7dfcc",
+      "bytes": 1519,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalReceiptWriter.swift": {
+      "sha256": "78e0d4094d661bccfeac9a4ccfb8ef3cfd067f032876c4941b1fd9cb860d6bdf",
+      "bytes": 1076,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalStartReceipt.swift": {
+      "sha256": "af40073b7c6d59873004545fd85459f750961c156b334d9c14bee22b01928565",
+      "bytes": 6621,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalUIReadback.swift": {
+      "sha256": "7863f7686bec5cb3fc5965f74978204a5601ca4968fe8db01e4bc157a7fd6ea5",
+      "bytes": 5333,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarMoveInterference.swift": {
+      "sha256": "e08969432c9eddeaaa26ade673cd4621299afe1e0b27058ea6f92293f45c2e9d",
+      "bytes": 5807,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarMoveStageRecorder.swift": {
+      "sha256": "924711d8725c2c33086ede946de4794007d6ee5520dfedb189a4204dc9fa1f4c",
+      "bytes": 2564,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarNativeEditingView.swift": {
+      "sha256": "0bebb526e8404d3b0532910d913d953288b4f91a63a465e4b43cc78261bb4429",
+      "bytes": 1491,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarNativeObservation.swift": {
+      "sha256": "8e67ec05c3daa03abe3efa1ff593deeae7370867bdb48a5b70a0a4b3aecb8414",
+      "bytes": 23522,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarNativeRevealController.swift": {
+      "sha256": "b1c83ddbd4811d3d4a97f955b212cd450db1cd0189e8b426dc7ad6b12e96641c",
+      "bytes": 16752,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarNativeRevealDiagnostic.swift": {
+      "sha256": "e3f8beb4b1724d867a2bb16bc9c46ab156621ade885a1bae77da336dc62d1891",
+      "bytes": 8898,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarNativeRevealPlan.swift": {
+      "sha256": "95810b90a4421701368c47910a8747aa8c6594470eb62b03eaf2f700bbc6a568",
+      "bytes": 9049,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOperation.swift": {
+      "sha256": "486d765369abf867769cb0b14493bb4d7e600241551ded4216069a4497b8161e",
+      "bytes": 11074,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOperationStop.swift": {
+      "sha256": "8f0e923bce639a917918841dbab25311cb4f1493c0fb4c0df926e33f11c9dfcb",
+      "bytes": 2987,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": {
+      "sha256": "e375b05b6a15a472dd8c46b30b501d9015ce9cb2b85403fd2a5c20e26e7193a2",
+      "bytes": 64519,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOwnedFixtureMoveDriver.swift": {
+      "sha256": "8bbc167d7084b12d3e770cacc4021c546b9ee5df74f831c55c7f0e7d39835e28",
+      "bytes": 8229,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOwnedMouseTransport.swift": {
+      "sha256": "9b95288df7443632e9e1af22c3f796f23fdebd548a1c3a95d9eedb73d5ae5d7e",
+      "bytes": 12690,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOwnedStatusItemWidthDriver.swift": {
+      "sha256": "628ba57bf2b58a6aecacdbad9c70571c330fb236fffbf993f09fae85bd44d8c7",
+      "bytes": 4137,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOwnedTargetHit.swift": {
+      "sha256": "2b800dbb400cd6aebef997a73759381d89d6c78fbe843d79b99118ee77ce7ca5",
+      "bytes": 3484,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOwnedWidthJournal.swift": {
+      "sha256": "4d78ff825b4e73853050083d0a212a13e37e4aa878b0f4a9a9aafed7a11f523f",
+      "bytes": 2485,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarProcessSignature.swift": {
+      "sha256": "5f0f77c2a7f00f2052e2f4f08092dbf4bbe784463f749bfda06dafa013d85972",
+      "bytes": 4938,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarRealActionConsumption.swift": {
+      "sha256": "99763477b029405ec5b124042482df7a2de9e10d8f23de147792797f899a25da",
+      "bytes": 1641,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarRealInputDiagnosticScope.swift": {
+      "sha256": "86438dffb32e3ffc071dd502806dd05bed8ce0e0acf90e7ce1baae8f409d572c",
+      "bytes": 1301,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarRealLocalAuthorization.swift": {
+      "sha256": "4deb86628d6f3324b174048544e7e1d524bf76e064d933ade7383b2a884e1748",
+      "bytes": 25788,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarRealRunControl.swift": {
+      "sha256": "37de1be5e741dc48b18501ae402c8811486b2add2af63d45aca94cd0157e45f7",
+      "bytes": 1826,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarRecoveryJournal.swift": {
+      "sha256": "18ea5d878283ee274eb1d566ce522f1c0bc3fbdf4e249fb6149da8daf22ce0fb",
+      "bytes": 3132,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarTemporaryMoveJournal.swift": {
+      "sha256": "3ef75757e9f0341d851f8ed059bdf37ee044d66dc9386e7a4ab9eb17ca08f1d3",
+      "bytes": 9591,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarTemporaryMoveModel.swift": {
+      "sha256": "3f024c92472edb652cd97429d064fad555051d21212df0abd18ab2f4f5fbd78d",
+      "bytes": 20941,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarVisibility.swift": {
+      "sha256": "d5cb8cc42962bdc7d7ec4db39bea185d2e0734b3c53670a018bc9e99cea50d40",
+      "bytes": 5524,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/QuickControls/Hardware.swift": {
+      "sha256": "56f34026dfe702c136382d9a7798711e526944f76ba36bad2393d4e3570b483f",
+      "bytes": 4415,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/QuickControls/QuickControlsPlugin.swift": {
+      "sha256": "5d413457f0e5bb65938a9ae97725aed77f732e7b2bd1869a1b3e5abacffe6013",
+      "bytes": 6121,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/QuickControls/QuickControlsView.swift": {
+      "sha256": "430244544fe31cc2b9a4c5082ed3ea745615f3c9b2b39fcf76fbb3aaae59b53f",
+      "bytes": 6075,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/Trackpad/TrackpadPlugin.swift": {
+      "sha256": "a8e00111704aaf308b8936e7b92527c4decbad5b56c60196f6882a49f14bc105",
+      "bytes": 4601,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/WindowPreview/FloatingPreview.swift": {
+      "sha256": "426f55bd5253660b69fb861ce588e935f2cb0259e4ddabf98579452972fd8497",
+      "bytes": 12363,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/Plugins/WindowPreview/WindowPreviewPlugin.swift": {
+      "sha256": "2a8f635ac77decfcfe74029d4adf1cf4aa7a21f65a7e457e66feed564ad46201",
+      "bytes": 11304,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/UI/ContentView.swift": {
+      "sha256": "fb8963c4630d6917b1a148cfe2ba4f0b5b4b119888034fbec1addcdf13d75615",
+      "bytes": 6468,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Sources/MacTools/UI/SharedControls.swift": {
+      "sha256": "e05b475ca67227c3172ad1a7f7d8be009102f7ba5e52eebdfb5d17c32d02c923",
+      "bytes": 2719,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceBaseline/EventTap.swift": {
+      "sha256": "269d50b88f3e498ebe6be1a6e460fc8471b8df654299ee1d8742ec3c0d4bdec6",
+      "bytes": 8404,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceBaseline/IceBaselineEngine.swift": {
+      "sha256": "d88389bc1c407bd8592e4ae3776b3e51f958ce28d558acd95633931ecc3973aa",
+      "bytes": 11934,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceBaseline/IceBaselineSessionLifetime.swift": {
+      "sha256": "3d9cd8d16b6f1ba0639bc1dc5eca78d5f82a9b73a27a158947779f78d9edc430",
+      "bytes": 4492,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceBaseline/MouseCursor.swift": {
+      "sha256": "5ba8b7dde896aba3f4e6b897f63f1b8e3cb0b5662718d4416a14f0065d42015c",
+      "bytes": 2378,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceFocusMain.swift": {
+      "sha256": "834c9f08338f110dfb64f4fe16f409655b32c5b7fab8b509b573c46039064e77",
+      "bytes": 1338,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceProductWorker/FixtureDiagnostic.swift": {
+      "sha256": "e3e19f059656060ca5f550590b4572affb1b432345d4351607cb0bda4efa7fc2",
+      "bytes": 8592,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceProductWorker/IceDispatchValidationChecks.swift": {
+      "sha256": "2652abe15eeb64147f7b58374887d544946a5f76551fef55fdec11a40a5a39b4",
+      "bytes": 10807,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceProductWorker/IceInterfaceChecks.swift": {
+      "sha256": "109fdf7f128fb9857750fbaebec67b2d9ca3418478657828c51fec78a7fc9c6e",
+      "bytes": 8434,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceProductWorker/IceInterfaceRehideDelay.swift": {
+      "sha256": "5a17d151bfc6c88aca99f3532bfbbb45efc6c18f0b9bda0c9c6866380f04a388",
+      "bytes": 688,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceProductWorker/IceProductStopChecks.swift": {
+      "sha256": "81983c3dc49926652d547bf36d51fb3b6aa54e1901b55db5310e420e6abf32f0",
+      "bytes": 5817,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceProductWorker/IceProductTargetDirectoryFixture.swift": {
+      "sha256": "8e2750a894dfda869e3d28b73a2f14de57df19792277dfb4303a908f198c7cfd",
+      "bytes": 2527,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceProductWorker/IceRehideDelayChecks.swift": {
+      "sha256": "b7537d539711367110475ab3cd0ffb323daa79b5079cf3b9148040bc7b151270",
+      "bytes": 5402,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceProductWorker/IceSelectedController.swift": {
+      "sha256": "8745abf2401f34610d30755cb9ee34520e1cf644181f29b8eaccc068b4fb0510",
+      "bytes": 28210,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceProductWorker/IceSelectedInterfaceLease.swift": {
+      "sha256": "f26be9ffef74132bee5c085afa2e97a2c264a02d5268b07f0ec00269566c3968",
+      "bytes": 8243,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceProductWorker/IceSelectedNative.swift": {
+      "sha256": "cc694125b1dc89be44c1dfd0c3aad58bfb82190e8902b976f0261125ea5605db",
+      "bytes": 32326,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceProductWorker/IceSelectedOwnedRecovery.swift": {
+      "sha256": "250556aee20c013f0230dc443a150d9da3a583f64dd116095db22dad6db5f00e",
+      "bytes": 12882,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceProductWorker/IceSelectedPlan.swift": {
+      "sha256": "7e20451562f589a6d08ff610b74c143618aeeb641502a676b3a0de1ec1617c1e",
+      "bytes": 12656,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceProductWorker/IceSelectedSession.swift": {
+      "sha256": "4490fb485b2d1b4a710be8e7bfe913b52dd9f6ceed5cddd4a4e7dbe99a1bfc13",
+      "bytes": 7088,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift": {
+      "sha256": "a860fc34b9c4652edea3f5e96fc6286e6f0edee7c0cdc6f6426ef1ab73ccacc6",
+      "bytes": 11969,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceInterfaceProductWorker/IceSynchronousDispatchValidation.swift": {
+      "sha256": "c66cdcf27e432c52a2d16b7f7c3cf4960f3b6ab58c8fd880535317f151035037",
+      "bytes": 1714,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceRelative/IceRelativeReturn.swift": {
+      "sha256": "706967f2913ad70e362457382dc046b059b8a2d7fde5d5c9910eeddc6e9b1888",
+      "bytes": 11024,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceSelectedQuickInterface/IceInterfaceNativeChecks.swift": {
+      "sha256": "4535d1b03437ae008f7b0ce1d8796e0b9b39e5fa2527cc5c5c5254995e13accd",
+      "bytes": 6828,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceSelectedQuickInterface/IceReceiverChecks.swift": {
+      "sha256": "ffd2d0e1a29ce6a9be3b87f74fb071d5834a45b9b57c75d39d9c585fd92f62c6",
+      "bytes": 5877,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceSelectedQuickInterface/IceSelectedCoordinator.swift": {
+      "sha256": "745f3330ee3cf937809ed9b281df9bf946027fb91de919a73a734714c81294f8",
+      "bytes": 15280,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceSelectedQuickInterface/IceSelectedFixture.swift": {
+      "sha256": "fc9ef0bd66c8a1e70a63c87e3e7d4f3a327b39c12716ac5e81694dcde259f405",
+      "bytes": 11516,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceSelectedQuickInterface/IceSelectedJournal.swift": {
+      "sha256": "e642cef03c8978de646a4174fbfa583c68c4982efb67d8e5cdabfde1e0547851",
+      "bytes": 26840,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceSelectedQuickInterface/IceSelectedLiveRelative.swift": {
+      "sha256": "73aa5c2de00986eb17aa146c8c5341fc3568305da520d1e43f829e321a17e9b8",
+      "bytes": 12417,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceSelectedQuickInterface/IceSelectedManualRecovery.swift": {
+      "sha256": "5abfa55fdd6fbccf8e349a5d6b24477127e0ba4bd7bbb58715189e1055fcf6dd",
+      "bytes": 6981,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceSelectedQuickInterface/IceSelectedMenuLease.swift": {
+      "sha256": "e1693f72d854333856f79d2db49cf920f61c551d05af28437125fb6e3cabbcbe",
+      "bytes": 7319,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceSelectedQuickInterface/IceSelectedOfflineChecks.swift": {
+      "sha256": "cb6b6442bee3dd1170016110d85cb0eb9d875c6080a4f0f65c09f35ac1949480",
+      "bytes": 35084,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceSelectedQuickInterface/IceSelectedReceiptWait.swift": {
+      "sha256": "4a5f23e06765f77321273cc45c013dbf5568502fa5b4fab64f0d01da3c753680",
+      "bytes": 2048,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceSelectedQuickInterface/IceSelectedReceiver.swift": {
+      "sha256": "6fc3c1996d7f7bb5096cf51783755a8d9b47bfd28bf0112b349fc763d9fd9943",
+      "bytes": 10692,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceSelectedQuickInterface/IceTapLifecycleObservation.swift": {
+      "sha256": "7ecbe091a3e9402efc1a946d375179a6efd7616ac7d6287ccc168e1fafec2850",
+      "bytes": 2331,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/Source/Tools/IceSelectedQuickInterface/THIRD_PARTY_NOTICES.md": {
+      "sha256": "e9661ea840b5e7379ba051962c219b068df56d3863a97055685206e5b0e2f18a",
+      "bytes": 823,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/THIRD_PARTY_NOTICES.md": {
+      "sha256": "f8679c7a4bd0d20fd8f4259826d19c11dab68f9fa8791d7f9de53dea77c0a99f",
+      "bytes": 2594,
+      "mode": 420
+    },
+    "Contents/Resources/IceWorker/prepared-build.json": {
+      "sha256": "14081b55eb8efb0fc426b1bba25b0c32adb892c60f5096d667f251e331190a5e",
+      "bytes": 14635,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/AppModel.swift": {
+      "sha256": "9e9517739f81589a0c550327573ab1c7d625da1bb6e4c06c8bbd48970d28c76c",
+      "bytes": 4298,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Core/HotKeyService.swift": {
+      "sha256": "b2bc1bb21cf386973553abf930c5e1122936b1a846df311bff575d65efcc2592",
+      "bytes": 4129,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Core/ToolPlugin.swift": {
+      "sha256": "defae670a77f0eb7c7e3e03397c06b759cfb93f01c8554391ab6fdd5c783be62",
+      "bytes": 4803,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/KeepAwake/KeepAwakePlugin.swift": {
+      "sha256": "84eb96aa9e542e831e453da7da225c99435538e67ec9ede5772ca9f1ec53b965",
+      "bytes": 6682,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/IceCompat/IceMenuBarClassification.swift": {
+      "sha256": "792de6e97fc97ab41b12059e53d5d8417ac4421f58c61af33f46b8e1b4c57938",
+      "bytes": 3076,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/IceCompat/IceMenuBarReadAdapter.swift": {
+      "sha256": "5e0487de9c17923a80b4e30f7f319407b6fae8f9c2a658e41ce42ff9a4aa4abc",
+      "bytes": 4079,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/IceCompat/IceOwnedMouseEvent.swift": {
+      "sha256": "cc660deb35f188411db1c5df5c40e9165bea1a79c96182b488c5155b8fdc9db4",
+      "bytes": 2005,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/IceCompat/IcePrivateWindowAPI.swift": {
+      "sha256": "9652c646f82e4513ad014462a2fa843b8989da6a0175c93d90a351ae8a151273",
+      "bytes": 6790,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarAXActivator.swift": {
+      "sha256": "3986a1673c94ebedb80835c598f959f68b8860189c6923943bea464248b6249d",
+      "bytes": 9418,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarAcceptanceStopNotice.swift": {
+      "sha256": "0d927a4367a94f282761563f14a66d07d4a3dd83afc09a0811363449bcd12d16",
+      "bytes": 5403,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarDestinationAdmissionDiagnostic.swift": {
+      "sha256": "28e1f6d99401240e4e38c062268824c144efbb93a3c21339a841e6ca51f21911",
+      "bytes": 2772,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarDispatchWitness.swift": {
+      "sha256": "f5afb2da4d91b5fa9f928c3f52d998e5d6573fe19a926816a5625506ea3550ca",
+      "bytes": 4279,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarEnvironment.swift": {
+      "sha256": "0bb0fdf9c78f2e8676cd84651447e9cac0fd1e8d4d88bc45f2f5099198232e35",
+      "bytes": 4785,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarHiddenInterferenceSource.swift": {
+      "sha256": "81da8a7476b85d803a750b07328368933fd83853c2d47474fcdf3b9364a63bb3",
+      "bytes": 367,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarHiddenMoveCoordinator.swift": {
+      "sha256": "3efea9568eac92d77d8de6ffa017f70cde8068f85e124d39e92ea9e500f1e6a2",
+      "bytes": 12676,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarHiddenMoveJournal.swift": {
+      "sha256": "1aef80d24742d31dd1b063ae512cdb3d1c67da8641a8a25fde686c3e264414fa",
+      "bytes": 11074,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarHiddenMoveModel.swift": {
+      "sha256": "5de132a12e6528c51bd4c3667543defe80ab01c479ccf456614697919662f2ed",
+      "bytes": 13804,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceSelectedTarget.swift": {
+      "sha256": "3b0bcdcecc14eff53fa374865b6ab82b723c17a874cbab32b5341683b7c379b4",
+      "bytes": 8709,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIconActivation.swift": {
+      "sha256": "6b35baead118aafa96debff266dd1988aab101a5091df64a4f345fac6bf21660",
+      "bytes": 1886,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIconIdentity.swift": {
+      "sha256": "ef0470198d13e68f1719e7fe822afbd1a4794a618a35d15bfa7fae827af023f0",
+      "bytes": 6759,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarInputAttribution.swift": {
+      "sha256": "057557c9312d4cf48f21feaa67999419f276fc5fd97bcc49433a673f2fbbe908",
+      "bytes": 3565,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarItemDirectory.swift": {
+      "sha256": "921be1c827ccc78191aff7c7eee8b388a3e92c9edac576aeffd694ae71ec567a",
+      "bytes": 3882,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarListenOnlyInterferenceSource.swift": {
+      "sha256": "7a651ca13412036595bafbccd0438dd496f45aaa3ae3f489994419bd0d3372b6",
+      "bytes": 28361,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLiveOperationDriver.swift": {
+      "sha256": "2fdf1af817b59aae579fd5c13045cee1ce9667c2477f9bb103f0afb6265f9225",
+      "bytes": 3083,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalAcceptanceGate.swift": {
+      "sha256": "67049494f88f6951fc6b8d9c7f48ab6dd8c8e9f4e042383fbe2db0d3c4fddb2a",
+      "bytes": 2474,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalContinuityLedger.swift": {
+      "sha256": "2b86e1b67d4a48d78f4b1cc8339962770ac61b3159d10c804eaaefd91ba3c23a",
+      "bytes": 28859,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalDiagnosticReceipt.swift": {
+      "sha256": "197d17b5ee9f1eab27a4c6af91da7ccc668110468b087441523aa13220df2706",
+      "bytes": 1264,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalNoMoveInput.swift": {
+      "sha256": "1549858b2403ab8b394c4199b63342791617312b182691c1d4ffa45ba89d2e63",
+      "bytes": 12119,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalNoMovePreparation.swift": {
+      "sha256": "e6fa758199742908cfda36c6cea54c595c7a6bb285b2a6d9393ecf5ad297ff18",
+      "bytes": 4220,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalObservationBudget.swift": {
+      "sha256": "8e222b404507558f17c31d1d046be8888656c38d722fd6de140bc7ad10d7dfcc",
+      "bytes": 1519,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalReceiptWriter.swift": {
+      "sha256": "78e0d4094d661bccfeac9a4ccfb8ef3cfd067f032876c4941b1fd9cb860d6bdf",
+      "bytes": 1076,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalStartReceipt.swift": {
+      "sha256": "af40073b7c6d59873004545fd85459f750961c156b334d9c14bee22b01928565",
+      "bytes": 6621,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarLocalUIReadback.swift": {
+      "sha256": "7863f7686bec5cb3fc5965f74978204a5601ca4968fe8db01e4bc157a7fd6ea5",
+      "bytes": 5333,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarMoveInterference.swift": {
+      "sha256": "e08969432c9eddeaaa26ade673cd4621299afe1e0b27058ea6f92293f45c2e9d",
+      "bytes": 5807,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarMoveStageRecorder.swift": {
+      "sha256": "924711d8725c2c33086ede946de4794007d6ee5520dfedb189a4204dc9fa1f4c",
+      "bytes": 2564,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarNativeEditingView.swift": {
+      "sha256": "0bebb526e8404d3b0532910d913d953288b4f91a63a465e4b43cc78261bb4429",
+      "bytes": 1491,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarNativeObservation.swift": {
+      "sha256": "8e67ec05c3daa03abe3efa1ff593deeae7370867bdb48a5b70a0a4b3aecb8414",
+      "bytes": 23522,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarNativeRevealController.swift": {
+      "sha256": "b1c83ddbd4811d3d4a97f955b212cd450db1cd0189e8b426dc7ad6b12e96641c",
+      "bytes": 16752,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarNativeRevealDiagnostic.swift": {
+      "sha256": "e3f8beb4b1724d867a2bb16bc9c46ab156621ade885a1bae77da336dc62d1891",
+      "bytes": 8898,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarNativeRevealPlan.swift": {
+      "sha256": "95810b90a4421701368c47910a8747aa8c6594470eb62b03eaf2f700bbc6a568",
+      "bytes": 9049,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOperation.swift": {
+      "sha256": "486d765369abf867769cb0b14493bb4d7e600241551ded4216069a4497b8161e",
+      "bytes": 11074,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOperationStop.swift": {
+      "sha256": "8f0e923bce639a917918841dbab25311cb4f1493c0fb4c0df926e33f11c9dfcb",
+      "bytes": 2987,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": {
+      "sha256": "e375b05b6a15a472dd8c46b30b501d9015ce9cb2b85403fd2a5c20e26e7193a2",
+      "bytes": 64519,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOwnedFixtureMoveDriver.swift": {
+      "sha256": "8bbc167d7084b12d3e770cacc4021c546b9ee5df74f831c55c7f0e7d39835e28",
+      "bytes": 8229,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOwnedMouseTransport.swift": {
+      "sha256": "9b95288df7443632e9e1af22c3f796f23fdebd548a1c3a95d9eedb73d5ae5d7e",
+      "bytes": 12690,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOwnedStatusItemWidthDriver.swift": {
+      "sha256": "628ba57bf2b58a6aecacdbad9c70571c330fb236fffbf993f09fae85bd44d8c7",
+      "bytes": 4137,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOwnedTargetHit.swift": {
+      "sha256": "2b800dbb400cd6aebef997a73759381d89d6c78fbe843d79b99118ee77ce7ca5",
+      "bytes": 3484,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOwnedWidthJournal.swift": {
+      "sha256": "4d78ff825b4e73853050083d0a212a13e37e4aa878b0f4a9a9aafed7a11f523f",
+      "bytes": 2485,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarProcessSignature.swift": {
+      "sha256": "5f0f77c2a7f00f2052e2f4f08092dbf4bbe784463f749bfda06dafa013d85972",
+      "bytes": 4938,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarRealActionConsumption.swift": {
+      "sha256": "99763477b029405ec5b124042482df7a2de9e10d8f23de147792797f899a25da",
+      "bytes": 1641,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarRealInputDiagnosticScope.swift": {
+      "sha256": "86438dffb32e3ffc071dd502806dd05bed8ce0e0acf90e7ce1baae8f409d572c",
+      "bytes": 1301,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarRealLocalAuthorization.swift": {
+      "sha256": "4deb86628d6f3324b174048544e7e1d524bf76e064d933ade7383b2a884e1748",
+      "bytes": 25788,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarRealRunControl.swift": {
+      "sha256": "37de1be5e741dc48b18501ae402c8811486b2add2af63d45aca94cd0157e45f7",
+      "bytes": 1826,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarRecoveryJournal.swift": {
+      "sha256": "18ea5d878283ee274eb1d566ce522f1c0bc3fbdf4e249fb6149da8daf22ce0fb",
+      "bytes": 3132,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarTemporaryMoveJournal.swift": {
+      "sha256": "3ef75757e9f0341d851f8ed059bdf37ee044d66dc9386e7a4ab9eb17ca08f1d3",
+      "bytes": 9591,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarTemporaryMoveModel.swift": {
+      "sha256": "3f024c92472edb652cd97429d064fad555051d21212df0abd18ab2f4f5fbd78d",
+      "bytes": 20941,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarVisibility.swift": {
+      "sha256": "d5cb8cc42962bdc7d7ec4db39bea185d2e0734b3c53670a018bc9e99cea50d40",
+      "bytes": 5524,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/QuickControls/Hardware.swift": {
+      "sha256": "56f34026dfe702c136382d9a7798711e526944f76ba36bad2393d4e3570b483f",
+      "bytes": 4415,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/QuickControls/QuickControlsPlugin.swift": {
+      "sha256": "5d413457f0e5bb65938a9ae97725aed77f732e7b2bd1869a1b3e5abacffe6013",
+      "bytes": 6121,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/QuickControls/QuickControlsView.swift": {
+      "sha256": "430244544fe31cc2b9a4c5082ed3ea745615f3c9b2b39fcf76fbb3aaae59b53f",
+      "bytes": 6075,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/Trackpad/TrackpadPlugin.swift": {
+      "sha256": "a8e00111704aaf308b8936e7b92527c4decbad5b56c60196f6882a49f14bc105",
+      "bytes": 4601,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/WindowPreview/FloatingPreview.swift": {
+      "sha256": "426f55bd5253660b69fb861ce588e935f2cb0259e4ddabf98579452972fd8497",
+      "bytes": 12363,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/Plugins/WindowPreview/WindowPreviewPlugin.swift": {
+      "sha256": "2a8f635ac77decfcfe74029d4adf1cf4aa7a21f65a7e457e66feed564ad46201",
+      "bytes": 11304,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/UI/ContentView.swift": {
+      "sha256": "fb8963c4630d6917b1a148cfe2ba4f0b5b4b119888034fbec1addcdf13d75615",
+      "bytes": 6468,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Sources/MacTools/UI/SharedControls.swift": {
+      "sha256": "e05b475ca67227c3172ad1a7f7d8be009102f7ba5e52eebdfb5d17c32d02c923",
+      "bytes": 2719,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Tools/IceInterfaceProduct/MacTools.swift": {
+      "sha256": "bd6303561cbde8d33edb6f877388d53a35b707945a668ee1b0d9681ef97df974",
+      "bytes": 7853,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Tools/IceInterfaceProduct/MenuBarIceCandidateProduct.swift": {
+      "sha256": "ef8216928a22feb817d3ac390e5c73a711ff4ba347f80804875afc5fd66cb6b0",
+      "bytes": 14268,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift": {
+      "sha256": "fb8c3d645725b52bc4cda0afccd08ec2a845f4749b913859258fbe87fa2ca2e7",
+      "bytes": 15969,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Tools/IceInterfaceProduct/MenuBarIceInterfaceProductChecks.swift": {
+      "sha256": "64cd54758461aec0ceacb6ed02762d530f9c96dc2b6bbc68064813f71873ba38",
+      "bytes": 6446,
+      "mode": 420
+    },
+    "Contents/Resources/Source/Tools/IceInterfaceProduct/MenuBarIceInterfaceProductNativeChecks.swift": {
+      "sha256": "3d32be730862a4b3ae21c07de13a4e5740022ce5af16d3108cf4070d6c0d1286",
+      "bytes": 7325,
+      "mode": 420
+    },
+    "Contents/Resources/ice-interface-bridge.json": {
+      "sha256": "dd3701e11f0d5d3dd5d3286be0500579529663c7643edcfee120c86161ade3e4",
+      "bytes": 163,
+      "mode": 420
+    },
+    "Contents/_CodeSignature/CodeResources": {
+      "sha256": "7eb1f99465f25726a881aa24eb086cf8755ef123ed95b5d1aa546b7a98f90997",
+      "bytes": 70850,
+      "mode": 420
+    }
+  },
+  "archiveSHA256": "4a15541077f5a2ab6b952852b55d7df7e10566410c536977226f6242129aaf33",
+  "noInstallationOrNewPermissionRequest": true,
+  "objectiveAcceptanceReusedFromStage2": true,
+  "subjectiveFeedbackStatus": "awaiting user experience, not claimed accepted"
+}

@@ -1,0 +1,23 @@
+{
+  "installedPath": "/Applications/MacTools.app",
+  "version": {
+    "CFBundleExecutable": "MacTools",
+    "CFBundleIconFile": "AppIcon",
+    "CFBundleIdentifier": "com.ryanai.mactools",
+    "CFBundleName": "Mac 工具箱",
+    "CFBundlePackageType": "APPL",
+    "CFBundleShortVersionString": "0.2.2",
+    "CFBundleVersion": "6",
+    "LSMinimumSystemVersion": "14.0",
+    "LSUIElement": true,
+    "MacToolsIceIntegrationEnabled": true,
+    "MacToolsSourceRevision": "fbf2c4a63023b1e24cbd0433f60a2cdfb02a9b1c",
+    "MacToolsUncommittedSource": true,
+    "NSHighResolutionCapable": true
+  },
+  "hostSHA256": "c2b12a9f7fd6067079703f3558862f18593964883944e41cbba70a50b668a782",
+  "oldPristineSHA256": "515c9640ea01039d0157a57cae81893547cfac04b404b6ce41086461bfbce9a2",
+  "oldActualCheckoutMovedTo": "/Users/yangruihan/Documents/MacTools正式版回滚/2026-10-09-before-stage4-515c9640/installed-original.app",
+  "backup": "/Users/yangruihan/Documents/MacTools正式版回滚/2026-10-09-before-stage4-515c9640",
+  "settingsOrRecoveryDeleted": false
+}

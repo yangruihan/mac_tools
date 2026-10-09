@@ -1,0 +1,37 @@
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
+@@ -762,8 +762,9 @@
+         return AnyView(MenuBarIceCandidateProductView())
+         #elseif ICE_MENU_BAR_INTEGRATED
+         return AnyView(VStack(alignment:.leading,spacing:20) {
+-            MenuBarIceCandidateProductView()
+-            DisclosureGroup("原有收纳设置") { MenuBarOrganizerView(plugin: self) }
++            MenuBarOrganizerView(plugin: self)
++            DisclosureGroup("开发诊断 · 单轮验证（仅排障）") { MenuBarIceCandidateProductView() }
++                .accessibilityIdentifier("menu-bar-developer-diagnostics")
+         })
+         #else
+         return AnyView(MenuBarOrganizerView(plugin: self))
+@@ -773,10 +774,7 @@
+         #if ICE_MENU_BAR_CANDIDATE
+         return AnyView(Button("打开 Ice 候选") { self.openToolbox() })
+         #elseif ICE_MENU_BAR_INTEGRATED
+-        return AnyView(VStack {
+-            Button("打开 Ice 菜单栏试用") { self.openToolbox() }
+-            MenuBarOrganizerMenu(plugin: self)
+-        })
++        return AnyView(MenuBarOrganizerMenu(plugin: self))
+         #else
+         return AnyView(MenuBarOrganizerMenu(plugin: self))
+         #endif
+--- a/scripts/build-ice-interface-product-candidate.sh
++++ b/scripts/build-ice-interface-product-candidate.sh
+@@ -34,7 +34,7 @@
+ for p in [repo/'COPYING.GPL-3.0',repo/'THIRD_PARTY_NOTICES.md',worker/'prepared-build.json']:shutil.copyfile(p,package/p.name)
+ for p in sources:
+  dest=resources/'Source'/p.relative_to(repo);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
+-(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'6' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
++(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'7' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
+ (root/'source-manifest.json').write_text(json.dumps({str(p.relative_to(repo)):sha(p) for p in sources},indent=2,sort_keys=True)+'\n')
+ PY
+ swiftc -parse-as-library -D"$FLAG" -module-name MacTools -module-cache-path "$ROOT/module-cache" $(cat "$ROOT/sources.txt") -o "$APP/Contents/MacOS/MacTools"

@@ -19,7 +19,7 @@ import Security
               SecStaticCodeCreateWithPath(product as CFURL,[],&code)==errSecSuccess,let code,
               SecStaticCodeCheckValidity(code,SecCSFlags(rawValue:kSecCSStrictValidate),nil)==errSecSuccess,
               SecCodeCopySigningInformation(code,SecCSFlags(rawValue:kSecCSSigningInformation),&info)==errSecSuccess,
-              let signed=info as? [String:Any],signed[kSecCodeInfoIdentifier as String] as? String=="com.ryanai.mactools.iceinterfacecandidate",
+              let signed=info as? [String:Any],["com.ryanai.mactools.iceinterfacecandidate","com.ryanai.mactools"].contains(signed[kSecCodeInfoIdentifier as String] as? String ?? ""),
               signed[kSecCodeInfoTeamIdentifier as String] as? String=="58TJ64422P",
               let manifest=try JSONSerialization.jsonObject(with:Data(contentsOf:packageRoot.appendingPathComponent("prepared-build.json"))) as? [String:Any],
               let sources=manifest["sources"] as? [String:String],sources.count>50 else{throw IceSelectedFailure.binding}

@@ -1,0 +1,50 @@
+{
+  "status": "deliveryCompleteAwaitingSubjectiveFeedback",
+  "deliveryTasksComplete": true,
+  "subjectiveAcceptanceClaimed": false,
+  "optimizationAfterFeedback": "pending user feedback, no premature edits",
+  "ACTIVE_OBJECT": "Stage3 frozen Ice candidate 2026-10-09-stage2-729293d0",
+  "LAST_CONFIRMED_RESULT": "194 files unchanged, native GUI opened from frozen path, strict signature and baseline/frozen/restored read-only preflight exit0; zero new native posts; no pending",
+  "NEXT_EXECUTABLE_ACTION": "Read user subjective waiting/focus/cursor feedback and apply only justified minimal changes on a new candidate copy; no installation without Stage4 authorization",
+  "delivery": {
+    "app": "/Users/yangruihan/Documents/MacTools体验候选/2026-10-09-stage2-729293d0/MacTools Ice Interface Candidate.app",
+    "guide": "/Users/yangruihan/Documents/MacTools体验候选/2026-10-09-stage2-729293d0/使用指引.txt",
+    "backup": "/Users/yangruihan/Documents/MacTools体验候选/2026-10-09-stage2-729293d0/候选备份.zip",
+    "sourceRollback": "/Users/yangruihan/Documents/MacTools体验候选/2026-10-09-stage2-729293d0/回滚资料/ROLLBACK.sh",
+    "stateRoot": "/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate"
+  },
+  "identity": {
+    "createdFromSourceCommit": "fbf2c4a63023b1e24cbd0433f60a2cdfb02a9b1c",
+    "compiledIdentity": {
+      "hostSHA256": "729293d0501fdfd107b73d4b1f869c27e60e513be97138d4ec7373d5f368f171",
+      "controllerSHA256": "908ff5857c0b6d065f9a033af79c63de065f2d7ce1388f40124a677c47a071dc",
+      "fixtureSHA256": "15da9c69fbda83a441261a1d5f1b88dc2e891a21a1a6be9a971d97112a9c8cd3",
+      "sourceHEAD": "6ca604791159a21aa1c95d96a6fdfc6ee0d3598c",
+      "sourcesMatchCompiledManifestAndPackage": true,
+      "uncommittedSource": true,
+      "formalAppUnchanged": true
+    },
+    "runtimeBytesUnchanged": true,
+    "archiveSHA256": "4a15541077f5a2ab6b952852b55d7df7e10566410c536977226f6242129aaf33"
+  },
+  "opening": {
+    "candidateRunningFromFrozenPath": [
+      "54426 /Users/yangruihan/Documents/MacTools体验候选/2026-10-09-stage2-729293d0/MacTools Ice Interface Candidate.app/Contents/MacOS/MacTools"
+    ],
+    "nativeWorkerRunning": false,
+    "autoStartedSession": false,
+    "newNativeMousePostsThisTurn": 0,
+    "pendingRecovery": false,
+    "CuaObservedWindow": "MacTools · Ice 候选",
+    "CuaObservedInitialStatus": "请选择具体应用图标，核验身份后打开单轮控制窗口。",
+    "guideOpenRequestStatus": "queued by open_in_codex, actual panel visibility not independently confirmed"
+  },
+  "nativePostsThisTurn": 0,
+  "noInstallCommitPush": true,
+  "fourRoles": {
+    "MODIFIED_FILE": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/MODIFIED_FILE.swift",
+    "DIFF_FILE": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/DIFF_FILE.patch",
+    "VERIFICATION": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/VERIFICATION.txt",
+    "ROLLBACK": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh"
+  }
+}

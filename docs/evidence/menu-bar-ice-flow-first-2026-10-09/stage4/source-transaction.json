@@ -1,0 +1,30 @@
+{
+  "fileCount": 9,
+  "originalHashesRestored": true,
+  "patchReappliedExactBytes": true,
+  "commands": [
+    {
+      "command": [
+        "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+        "--stage4-source",
+        "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage4/source-rollback-test"
+      ],
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "patch",
+        "-p1",
+        "-d",
+        "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage4/source-rollback-test",
+        "-i",
+        "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage4/source.patch"
+      ],
+      "exit": 0,
+      "stdout": "patching file 'Sources/MacTools/MacTools.swift'\npatching file 'Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift'\npatching file 'Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductBridge.swift'\npatching file 'Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductChecks.swift'\npatching file 'Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductNativeChecks.swift'\npatching file 'Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift'\npatching file 'Tools/IceInterfaceProductWorker/IceSelectedSession.swift'\npatching file 'scripts/build-ice-interface-product-candidate.sh'\npatching file 'scripts/build-app.sh'\n",
+      "stderr": ""
+    }
+  ]
+}

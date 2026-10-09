@@ -1,0 +1,854 @@
+--- a/Sources/MacTools/MacTools.swift
++++ b/Sources/MacTools/MacTools.swift
+@@ -19,7 +19,8 @@
+         if CommandLine.arguments.contains("--ice-candidate-ui-smoke") {
+             DispatchQueue.main.asyncAfter(deadline: .now()+1) { [weak self] in
+                 guard let self else { exit(1) }
+-                let imageURL = URL(fileURLWithPath:"/tmp/mac-tools-ice-product-ui.png")
++                let imageURL = MenuBarIceInterfaceProductBridge.root.appendingPathComponent("product-ui.png")
++                try? FileManager.default.createDirectory(at:MenuBarIceInterfaceProductBridge.root,withIntermediateDirectories:true)
+                 var rendered = false
+                 if let content = self.window?.contentView,
+                    let bitmap = content.bitmapImageRepForCachingDisplay(in:content.bounds) {
+@@ -85,13 +86,36 @@
+ 
+     init() {
+         #if ICE_MENU_BAR_CANDIDATE || ICE_MENU_BAR_INTEGRATED
++        if CommandLine.arguments.contains("--ice-interface-recovery") {
++            do {
++                let proof = try MenuBarIceInterfaceProductBridge.recovery()
++                let data = try JSONSerialization.data(withJSONObject: proof, options: [.prettyPrinted, .sortedKeys])
++                print(String(decoding: data, as: UTF8.self)); exit(0)
++            } catch { fputs("Recovery inspection failed: \(error)\n", stderr); exit(1) }
++        }
++        if CommandLine.arguments.contains("--ice-interface-owned-entry-check") || CommandLine.arguments.contains("--ice-interface-ordinary-entry-check") {
++            let ordinary = CommandLine.arguments.contains("--ice-interface-ordinary-entry-check")
++            Task { @MainActor in do {
++                let proof = try await MenuBarIceInterfaceProductNativeChecks.run(ordinary: ordinary)
++                let data = try JSONSerialization.data(withJSONObject: proof, options: [.prettyPrinted, .sortedKeys])
++                print(String(decoding: data, as: UTF8.self)); exit(0)
++            } catch { fputs("Owned product-entry check failed: \(error)\n", stderr); exit(1) } }
++            RunLoop.main.run(); return
++        }
++        if let index = CommandLine.arguments.firstIndex(of: "--ice-interface-bridge-tests"), CommandLine.arguments.count == index + 2 {
++            do {
++                let proof = try MenuBarIceInterfaceProductChecks.run(URL(fileURLWithPath: CommandLine.arguments[index + 1]))
++                let data = try JSONSerialization.data(withJSONObject: proof, options: [.sortedKeys])
++                print(String(decoding: data, as: UTF8.self)); exit(0)
++            } catch { fputs("Interface product checks failed: \(error)\n", stderr); exit(1) }
++        }
+         if CommandLine.arguments.contains("--ice-candidate-directory") {
+             do {
+                 let directory = try MenuBarIceSelectedTarget.readDirectory()
+                 let value: [String:Any] = ["display":directory.display,"space":directory.space,
+                     "rows":directory.rows.map { ["windowID":$0.id,"pid":$0.pid,"title":$0.title,
+                         "frame":["x":$0.frame.minX,"y":$0.frame.minY,"width":$0.frame.width,"height":$0.frame.height]] as [String:Any] },
+-                    "readOnly":true,"mousePosts":0,"permissionRequests":0,"ordinaryMovementEnabled":false]
++                    "readOnly":true,"mousePosts":0,"permissionRequests":0,"ordinaryMovementEnabled":false,"ordinaryEntryConnected":true]
+                 let data = try JSONSerialization.data(withJSONObject:value,options:[.prettyPrinted,.sortedKeys])
+                 print(String(decoding:data,as:UTF8.self)); exit(0)
+             } catch { fputs("Ice directory read failed: \(error)\n",stderr); exit(1) }
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift
+@@ -5,91 +5,52 @@
+ /// Product entry into the signed, already verified owned Ice worker.
+ /// This host has no mouse sender; permissions/identity/cancel/return stay in the worker.
+ enum MenuBarIceCandidateProductBridge {
+-    struct Configuration {
+-        let helper: URL, python: URL, receipt: [String: Any]
+-    }
+-    static func configuration() throws -> Configuration {
+-        guard ["com.ryanai.mactools.icecandidate", "com.ryanai.mactools"].contains(Bundle.main.bundleIdentifier ?? ""),
+-              let url = Bundle.main.url(forResource: "ice-candidate-bridge", withExtension: "json"),
+-              let receipt = try JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any],
+-              receipt["hostBundleIdentifier"] as? String == Bundle.main.bundleIdentifier,
+-              receipt["contract"] as? String == "isolatedOwnedQuietV1",
+-              receipt["strictANYRequired"] as? Bool == false,
+-              let helperPath = receipt["helper"] as? String,
+-              let pythonPath = receipt["python"] as? String,
+-              let helperSHA = receipt["helperSHA256"] as? String else { throw Failure.message("候选构建说明不完整，请重新构建。") }
+-        let helper = URL(fileURLWithPath: helperPath), python = URL(fileURLWithPath: pythonPath)
+-        let digest = SHA256.hash(data: try Data(contentsOf: helper)).map { String(format:"%02x",$0) }.joined()
+-        guard digest == helperSHA, FileManager.default.isExecutableFile(atPath: python.path) else {
+-            throw Failure.message("测试组件已改变，请重新构建候选。")
+-        }
+-        return .init(helper:helper, python:python, receipt:receipt)
+-    }
+-    static func command(_ arguments: [String]) throws -> [String: Any] {
+-        let config = try configuration()
+-        let directory = FileManager.default.temporaryDirectory.appendingPathComponent("mactools-ice-command-\(UUID().uuidString)")
+-        try FileManager.default.createDirectory(at:directory, withIntermediateDirectories:false, attributes:[.posixPermissions:0o700])
+-        defer { try? FileManager.default.removeItem(at:directory) }
+-        let output = directory.appendingPathComponent("stdout"), error = directory.appendingPathComponent("stderr")
+-        FileManager.default.createFile(atPath:output.path, contents:nil, attributes:[.posixPermissions:0o600])
+-        FileManager.default.createFile(atPath:error.path, contents:nil, attributes:[.posixPermissions:0o600])
+-        let stdout = try FileHandle(forWritingTo:output), stderr = try FileHandle(forWritingTo:error)
+-        defer { try? stdout.close(); try? stderr.close() }
+-        let process = Process(), finished = DispatchSemaphore(value:0)
+-        process.executableURL = config.python; process.arguments = [config.helper.path] + arguments
+-        process.standardOutput = stdout; process.standardError = stderr
+-        process.terminationHandler = { _ in finished.signal() }
+-        try process.run()
+-        guard finished.wait(timeout:.now()+15) == .success else {
+-            process.terminate()
+-            throw Failure.message("组件启动结果未知。请保留测试窗口并使用其取消按钮，不要重复启动。")
+-        }
+-        guard process.terminationStatus == 0 else {
+-            throw Failure.message("测试组件预检或启动失败；保留已有会话，检查构建或恢复记录。")
+-        }
+-        let data = try Data(contentsOf:output)
+-        guard data.count < 1_048_576,
+-              let value = try JSONSerialization.jsonObject(with:data) as? [String:Any] else { throw Failure.message("组件未返回有效结果。") }
+-        return value
+-    }
+-    static func preflight() throws -> [String: Any] {
+-        let config = try configuration(), value = try command(["--preflight"])
+-        guard value["prepared"] as? Bool == true,
+-              let manifest = value["manifest"] as? [String: Any],
+-              manifest["revision"] as? String == config.receipt["workerRevision"] as? String,
+-              manifest["controllerSHA256"] as? String == config.receipt["controllerSHA256"] as? String,
+-              manifest["fixtureSHA256"] as? String == config.receipt["fixtureSHA256"] as? String,
+-              let recovery = value["recovery"] as? [String:Any], recovery["journalPending"] as? Bool == false else {
+-            throw Failure.message("组件与候选不匹配或仍有待恢复责任。")
+-        }
+-        return ["scope":"ownedTNProductEntry","contract":"isolatedOwnedQuietV1","inputPolicy":"iceMouseTracking",
+-                "strictANYRequired":false,"workerRevision":manifest["revision"]!,"journalPending":false,
+-                "mousePosts":0,"windowsOpened":0,"permissionRequests":0,"thirdPartyMovementEnabled":false,
+-                "hostBackend":"isolatedSignedWorker","installedHostIntegration":Bundle.main.bundleIdentifier == "com.ryanai.mactools"]
+-    }
++    static func preflight() throws -> [String: Any] { try MenuBarIceInterfaceProductBridge.preflight() }
+ }
+ 
+ @MainActor final class MenuBarIceCandidateProductModel: ObservableObject {
+     @Published var status = "已通过本机自建 T/N 的真实搬出、菜单与归位验证。"
+     @Published var busy = false
++    @Published var ownedAttempted = false
+     @Published var session: URL?
+     @Published var ordinaryRows: [MenuBarIceSelectedTarget.Row] = []
+     @Published var ordinaryWindowID: UInt32 = 0
+-    @Published var ordinaryStatus = "可选择一个普通应用图标，仅核验身份；自动搬移尚未接通。"
++    @Published var ordinaryStatus = "请选择具体应用图标，核验身份后打开单轮控制窗口。"
+     private var ordinaryDirectory: MenuBarIceSelectedTarget.Directory?
+     private var ordinaryTarget: MenuBarIceSelectedTarget?
++    var hasOrdinaryTarget: Bool { ordinaryTarget != nil }
++    @Published var ordinarySession: URL?
++    @Published var ordinaryAttempted = false
++    private var ordinaryLaunch: MenuBarIceInterfaceProductBridge.Launch?
++    private var ownedLaunch: MenuBarIceInterfaceProductBridge.Launch?
+     private var controllerPID: Int32?
+     private var controllerProof: MenuBarProcessSignature.Proof?
++    private func activateProductWindow() async throws -> MenuBarIceSelectedTarget.Directory {
++        guard let window = NSApp.windows.first(where: { $0.title == "MacTools · Ice 候选" || $0.title == "Mac 工具箱" }) else { throw MenuBarIceInterfaceProductBridge.Failure.invalid }
++        // Activate our existing ordinary window before capture, not after binding a fullscreen Space.
++        window.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true)
++        let until = ProcessInfo.processInfo.systemUptime + 8
++        while ProcessInfo.processInfo.systemUptime < until {
++            if window.isOnActiveSpace, window.isKeyWindow, NSApp.isActive,
++               let directory = try? MenuBarIceSelectedTarget.readDirectory() { return directory }
++            try await Task.sleep(nanoseconds: 50_000_000)
++        }
++        throw MenuBarIceInterfaceProductBridge.Failure.invalid
++    }
+     func readOrdinaryDirectory() {
+         guard !busy else { return }
+         ordinaryTarget = nil; ordinaryWindowID = 0
+-        do {
+-            let directory = try MenuBarIceSelectedTarget.readDirectory()
+-            ordinaryDirectory = directory; ordinaryRows = directory.rows
+-            ordinaryStatus = "请选择具体图标。刷新列表不会移动图标或打开菜单。"
+-        } catch {
+-            ordinaryDirectory = nil; ordinaryRows = []
+-            ordinaryStatus = "无法读取本机单屏图标列表：\(error)"
++        busy = true
++        Task {
++            defer { busy = false }
++            do {
++                let directory = try await activateProductWindow()
++                ordinaryDirectory = directory; ordinaryRows = directory.rows
++                ordinaryStatus = "请选择具体图标。刷新列表不会移动图标或打开菜单。"
++            } catch {
++                ordinaryDirectory = nil; ordinaryRows = []
++                ordinaryStatus = "无法读取本机单屏图标列表：\(error)"
++            }
+         }
+     }
+     func bindOrdinaryTarget() {
+@@ -98,49 +59,98 @@
+               let row = ordinaryRows.first(where:{ $0.id == ordinaryWindowID }) else { return }
+         do {
+             ordinaryTarget = try MenuBarIceSelectedTarget.capture(row,from:directory)
+-            ordinaryStatus = "已核验 \(row.title) 的所选图标；自动搬移尚未接通。"
++            ordinaryStatus = "已核验 \(row.title) 的所选图标，可打开单轮控制窗口。"
+         } catch { ordinaryStatus = "图标或所属应用已改变，请刷新后重新选择。" }
+     }
+-    func openSession() {
+-        guard !CommandLine.arguments.contains("--ice-candidate-ui-smoke"), !busy, session == nil else { return }; busy = true
+-        status = "正在核验组件和恢复状态…"
++    func openOrdinarySession() {
++        guard !CommandLine.arguments.contains("--ice-candidate-ui-smoke"), !busy,
++              session == nil, !ownedAttempted, !ordinaryAttempted, let target = ordinaryTarget else { return }
++        ordinaryAttempted = true; busy = true
++        ordinaryStatus = "正在准备选定图标的 v9 会话…"
+         Task {
+             defer { busy = false }
+             do {
+-                _ = try await Task.detached { try MenuBarIceCandidateProductBridge.preflight() }.value
+-                let prepared = try await Task.detached { try MenuBarIceCandidateProductBridge.command(["--prepare-ice-aligned"]) }.value
+-                guard let path = prepared["directory"] as? String else { throw Failure.message("没有有效的新会话。") }
+-                session = URL(fileURLWithPath:path)
+-                let launched = try await Task.detached { try MenuBarIceCandidateProductBridge.command(["--launch-session",path]) }.value
+-                controllerPID = ((launched["processes"] as? [String:Any])?["controller"] as? [String:Any])?["pid"] as? Int32
+-                if let controllerPID {
+-                    let proof = try MenuBarProcessSignature.read(controllerPID)
+-                    let config = try MenuBarIceCandidateProductBridge.configuration()
+-                    guard proof.identifier == "com.ryanai.mactools",
+-                          proof.executable == "/tmp/mac-tools-ice-baseline-candidate-20261007/Ice Baseline Controller.app/Contents/MacOS/IceBaselineController",
+-                          proof.sha256 == config.receipt["controllerSHA256"] as? String,
+-                          proof.launch != nil else { throw Failure.message("控制窗口身份无法核实。") }
+-                    controllerProof = proof
+-                }
+-                status = "测试窗口已打开。按“开始自建 T 单轮”；需要停止时按该窗口的“取消本轮”。"
++                _ = try await activateProductWindow()
++                let directory = try await Task.detached { try MenuBarIceInterfaceProductBridge.prepare(target) }.value
++                ordinarySession = directory // Preserve it even if launch validation fails.
++                ordinaryLaunch = try await MenuBarIceInterfaceProductBridge.launch(directory, target: target)
++                ordinaryStatus = "控制窗口已就绪。请在其窗口按“开始单轮”；关闭或失焦后等待15秒归位。取消使用控制窗口。"
++            } catch { ordinaryStatus = error.localizedDescription }
++        }
++    }
++    func refreshOrdinary() {
++        guard let directory = ordinarySession else { return }
++        do {
++            let url = directory.appendingPathComponent("result.json")
++            guard FileManager.default.fileExists(atPath: url.path) else {
++                ordinaryStatus = ordinaryLaunch?.isRunning == false
++                    ? "控制进程已退出，未发布终态结果；请检查恢复状态并保留证据。"
++                    : "尚无终态结果，请查看控制窗口；关闭产品窗口不表示取消。"
++                return
++            }
++            let data = try Data(contentsOf: url)
++            guard data.count < 2_000_000, let value = try JSONSerialization.jsonObject(with: data) as? [String: Any],
++                  let nonce = UUID(uuidString: String(directory.lastPathComponent.dropFirst(8))) else { throw MenuBarIceInterfaceProductBridge.Failure.invalid }
++            let result = try MenuBarIceInterfaceProductBridge.result(value, nonce: nonce)
++            if result.posts == 0, value["stage"] as? String == "package", value["failure"] as? String == "source" {
++                ordinaryStatus = "本轮未开始：图形启动路径的权限检查未通过（0次投递）。诊断记录已保留。"; return
++            }
++            ordinaryStatus = result.passed
++                ? "本轮搬出、界面结束及原邻边归位通过（\(result.posts)次投递）。"
++                : "本轮停止，未完成闭环（\(result.posts)次投递）。原始结果及恢复责任已保留。"
++        } catch { ordinaryStatus = error.localizedDescription }
++    }
++    func showOrdinaryController() {
++        guard let launch = ordinaryLaunch, launch.isRunning,
++              (try? MenuBarProcessSignature.read(launch.proof.pid)) == launch.proof else {
++            if let directory = ordinarySession, FileManager.default.fileExists(atPath: directory.appendingPathComponent("result.json").path) { refreshOrdinary() }
++            else { ordinaryStatus = "原控制进程已退出或身份改变，尚无终态结果；请查看证据。" }
++            return
++        }
++        NSRunningApplication(processIdentifier: launch.proof.pid)?.activate(options: [.activateIgnoringOtherApps])
++    }
++    func showOrdinaryEvidence() { if let ordinarySession { NSWorkspace.shared.open(ordinarySession) } }
++    func inspectRecovery() {
++        guard !busy else { return }; busy = true
++        Task {
++            defer { busy = false }
++            do {
++                let value = try await Task.detached { try MenuBarIceInterfaceProductBridge.recovery() }.value
++                status = value["journalPending"] as? Bool == true
++                    ? "已有待恢复记录。请查看原始记录；不会重放本轮或自动清除责任。"
++                    : "没有待恢复责任。历史结果仍保留在各会话目录。"
+             } catch { status = error.localizedDescription }
+         }
+     }
++    func showRecoveryEvidence() {
++        let directory = MenuBarIceInterfaceProductBridge.root.appendingPathComponent("selected-relative-recovery-v2")
++        NSWorkspace.shared.open(FileManager.default.fileExists(atPath: directory.path) ? directory : MenuBarIceInterfaceProductBridge.root)
++    }
++    func openSession(ordinaryWindow: Bool = false) {
++        guard !CommandLine.arguments.contains("--ice-candidate-ui-smoke"), !busy, session == nil, !ownedAttempted, !ordinaryAttempted else { return }
++        ownedAttempted = true; busy = true; status = "正在准备自建 T/N 会话…"
++        Task {
++            defer { busy = false }
++            do {
++                _ = try await activateProductWindow()
++                let directory = try await Task.detached { try MenuBarIceInterfaceProductBridge.prepareOwned() }.value
++                session = directory
++                let launch = try await MenuBarIceInterfaceProductBridge.launch(directory, ownedWindow: ordinaryWindow)
++                ownedLaunch = launch; controllerPID = launch.proof.pid; controllerProof = launch.proof
++                status = "自建控制进程已启动。请在其窗口按“开始单轮”；需要停止时按“取消并关闭”。"
++            } catch { status = error.localizedDescription }
++        }
++    }
+     func refresh() {
+-        guard let session else { return }
++        guard let directory = session else { return }
+         do {
+-            let resultURL = session.appendingPathComponent("result.json")
+-            guard FileManager.default.fileExists(atPath:resultURL.path) else {
+-                status = "尚无终态结果，请查看测试窗口；关闭产品窗口不表示取消测试。"; return
+-            }
+-            let data = try Data(contentsOf:resultURL)
+-            guard data.count < 1_048_576, let result = try JSONSerialization.jsonObject(with:data) as? [String:Any],
+-                  result["nonce"] as? String == session.lastPathComponent.replacingOccurrences(of:"session-",with:""),
+-                  result["strictANYRequired"] as? Bool == false || (result["posts"] as? Int == 0) else { throw Failure.message("会话结果无法核实。") }
+-            let posts = result["posts"] as? Int ?? 0
+-            status = result["realClosedLoopVerified"] as? Bool == true
+-                ? "本轮搬出、菜单打开／关闭及归位通过（\(posts)次投递）。请保留证据。"
+-                : "本轮停止，未通过闭环（\(posts)次投递）。请查看结果并保留恢复责任。"
++            let url = directory.appendingPathComponent("result.json")
++            guard FileManager.default.fileExists(atPath: url.path) else { status = "尚无终态结果，请查看控制窗口；关闭产品窗口不表示取消。"; return }
++            let data = try Data(contentsOf: url)
++            guard data.count < 2_000_000, let value = try JSONSerialization.jsonObject(with: data) as? [String: Any],
++                  let nonce = UUID(uuidString: String(directory.lastPathComponent.dropFirst(8))) else { throw MenuBarIceInterfaceProductBridge.Failure.invalid }
++            let result = try MenuBarIceInterfaceProductBridge.result(value, nonce: nonce)
++            status = result.passed ? "本轮搬出、界面结束及原邻边归位通过（\(result.posts)次投递）。" : "本轮停止（\(result.posts)次投递）。请保留原始结果与恢复记录。"
+         } catch { status = error.localizedDescription }
+     }
+     func showController() {
+@@ -159,35 +169,51 @@
+         VStack(alignment:.leading,spacing:16) {
+           GroupBox("Ice 菜单栏试用 · 自建 T/N") {
+             VStack(alignment:.leading, spacing:14) {
+-                Text("测试会短暂影响焦点和光标。当前闭环试用仅操作自建 T/N。")
+-                Text("搬出 T → 打开菜单 → 关闭菜单 → 等待15秒 → 原位归还").font(.callout)
++                Text("自建 T/N 测试会短暂影响焦点和光标。")
++                Text("搬出 T → 打开界面 → 结束界面 → 等待15秒 → 原邻边归还").font(.callout)
+                 Text(model.status).textSelection(.enabled).accessibilityIdentifier("ice-candidate-status")
+                 HStack {
+-                    Button("打开 T/N 测试窗口") { model.openSession() }.buttonStyle(.borderedProminent)
+-                        .disabled(model.busy || model.session != nil || CommandLine.arguments.contains("--ice-candidate-ui-smoke"))
++                    Button("自建菜单测试") { model.openSession() }.buttonStyle(.borderedProminent)
++                        .disabled(model.busy || model.session != nil || model.ownedAttempted || model.ordinaryAttempted || CommandLine.arguments.contains("--ice-candidate-ui-smoke"))
+                         .accessibilityIdentifier("ice-candidate-open-owned-session")
++                    Button("自建普通窗口测试") { model.openSession(ordinaryWindow: true) }
++                        .disabled(model.busy || model.session != nil || model.ownedAttempted || model.ordinaryAttempted || CommandLine.arguments.contains("--ice-candidate-ui-smoke"))
+                     Button("显示控制窗口") { model.showController() }.disabled(model.session == nil)
+                     Button("检查结果") { model.refresh() }.disabled(model.session == nil)
+                     Button("查看证据") { model.showEvidence() }.disabled(model.session == nil)
+                 }
+-                Text("此候选目前仅供本机单屏自建项试用；普通应用图标的自动搬移尚未接入。取消请使用测试控制窗口的按钮。")
++                Text("自建测试与所选普通图标分别在各自控制窗口开始与取消。")
+                     .font(.caption).foregroundStyle(.secondary)
+             }.padding(10).frame(maxWidth:.infinity,alignment:.leading)
+           }
+-          GroupBox("普通图标 · 只读选择") {
++          GroupBox("普通图标 · 单轮试用") {
+             VStack(alignment:.leading,spacing:10) {
+                 Text(model.ordinaryStatus).font(.callout)
+                 HStack {
+-                    Button("刷新图标列表") { model.readOrdinaryDirectory() }.disabled(model.busy)
++                    Button("刷新图标列表") { model.readOrdinaryDirectory() }.disabled(model.busy || model.ordinaryAttempted || model.session != nil)
+                     Picker("目标",selection:$model.ordinaryWindowID) {
+                         Text("请选择图标").tag(UInt32(0))
+                         ForEach(model.ordinaryRows) { row in
+                             Text("\(row.title) · \(row.id)").tag(row.id)
+                         }
+-                    }.onChange(of:model.ordinaryWindowID) { _ in model.bindOrdinaryTarget() }
++                    }.disabled(model.busy || model.ordinaryAttempted || model.session != nil).onChange(of:model.ordinaryWindowID) { _ in model.bindOrdinaryTarget() }
+                 }
++                HStack {
++                    Button("打开选定图标控制窗口") { model.openOrdinarySession() }
++                        .disabled(model.busy || !model.hasOrdinaryTarget || model.session != nil || model.ownedAttempted || model.ordinaryAttempted || CommandLine.arguments.contains("--ice-candidate-ui-smoke"))
++                        .accessibilityIdentifier("ice-interface-open-selected-session")
++                    Button("显示控制窗口") { model.showOrdinaryController() }.disabled(model.ordinarySession == nil)
++                    Button("检查结果") { model.refreshOrdinary() }.disabled(model.ordinarySession == nil)
++                    Button("查看证据") { model.showOrdinaryEvidence() }.disabled(model.ordinarySession == nil)
++                }
++                Text("会短暂影响焦点和光标。此按钮只打开控制窗口，开始按钮执行一次左键试用。仅验证原邻居同一侧的归位。")
++                    .font(.caption).foregroundStyle(.secondary)
+             }.padding(10).frame(maxWidth:.infinity,alignment:.leading)
+           }
++          HStack {
++              Button("检查恢复状态") { model.inspectRecovery() }.disabled(model.busy)
++              Button("查看恢复记录") { model.showRecoveryEvidence() }
++          }
+         }
+     }
+ }
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductBridge.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductBridge.swift
+@@ -0,0 +1,213 @@
++#if ICE_MENU_BAR_CANDIDATE || ICE_MENU_BAR_INTEGRATED
++// Copyright (c) 2026 Ryan.AI. MIT. Product adapter; no mouse sender.
++import AppKit
++import CryptoKit
++
++enum MenuBarIceInterfaceProductBridge {
++    static let root = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("MacTools/IceInterfaceCandidate", isDirectory: true)
++    static let packageRoot = Bundle.main.resourceURL!.appendingPathComponent("IceWorker",isDirectory:true)
++    static let controller = packageRoot.appendingPathComponent("Ice Selected Controller.app/Contents/MacOS/IceSelectedController")
++    static let revision = "ordinary-Ice-product-stage1"
++    struct Prepared: Codable {
++        let nonce: UUID, selected: MenuBarIceSelectedTarget?, selfOwned: Bool, controllerSHA256: String
++        let preparedAtUnix: Double
++    }
++    struct Launch {
++        let application: NSRunningApplication, proof: MenuBarProcessSignature.Proof
++        var isRunning: Bool { !application.isTerminated }
++    }
++    enum Failure: LocalizedError {
++        case invalid, unknown(URL), targetChanged, startup(URL, String)
++        var errorDescription: String? {
++            switch self {
++            case .invalid: return "v9 组件或会话无法核实，请保留记录。"
++            case .unknown(let url): return "组件启动结果未知，不要重复启动。诊断：\(url.path)"
++            case .targetChanged: return "选定图标、所属进程或桌面已改变；本轮没有启动移动。"
++            case .startup(let url, let reason): return "控制窗口准备失败（\(reason)）。本轮未开始；记录：\(url.path)"
++            }
++        }
++    }
++    static func hash(_ url: URL) throws -> String {
++        SHA256.hash(data: try Data(contentsOf: url)).map { String(format: "%02x", $0) }.joined()
++    }
++    static func manifest() throws -> [String: Any] {
++        guard ["com.ryanai.mactools.iceinterfacecandidate","com.ryanai.mactools"].contains(Bundle.main.bundleIdentifier ?? ""),
++              let url = Bundle.main.url(forResource: "ice-interface-bridge", withExtension: "json"),
++              let receipt = try JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any],
++              receipt["manifestSHA256"] as? String == (try hash(packageRoot.appendingPathComponent("prepared-build.json"))),
++              let manifest = try JSONSerialization.jsonObject(with: Data(contentsOf: packageRoot.appendingPathComponent("prepared-build.json"))) as? [String: Any],
++              manifest["revision"] as? String == revision,
++              manifest["controllerSHA256"] as? String == (try hash(controller)),
++              manifest["fixtureSHA256"] as? String == (try hash(packageRoot.appendingPathComponent("Ice Selected Fixture.app/Contents/MacOS/IceSelectedFixture"))),
++              let sources = manifest["sources"] as? [String: String], sources.count > 50 else { throw Failure.invalid }
++        let sourceRoot=packageRoot.appendingPathComponent("Source",isDirectory:true)
++        for (path,expected) in sources {
++            let file=sourceRoot.appendingPathComponent(path).resolvingSymlinksInPath()
++            guard !path.hasPrefix("/"),!path.split(separator:"/").contains(".."),file.path.hasPrefix(sourceRoot.path+"/"),try hash(file)==expected else{throw Failure.invalid}
++        }
++        return manifest
++    }
++    static func files(_ directory: URL, _ prefix: String) throws -> (FileHandle, FileHandle) {
++        let out = directory.appendingPathComponent(prefix + ".stdout"), err = directory.appendingPathComponent(prefix + ".stderr")
++        guard FileManager.default.createFile(atPath: out.path, contents: nil, attributes: [.posixPermissions: 0o600]),
++              FileManager.default.createFile(atPath: err.path, contents: nil, attributes: [.posixPermissions: 0o600]) else { throw Failure.invalid }
++        return (try FileHandle(forWritingTo: out), try FileHandle(forWritingTo: err))
++    }
++    static func command(_ arguments: [String]) throws -> [String: Any] {
++        guard arguments == ["--inspect-recovery"] || arguments == ["--prepare-owned"] || (arguments.count == 2 && arguments[0] == "--prepare-target" && UInt32(arguments[1]) != nil) else { throw Failure.invalid }
++        let manifest = try manifest()
++        try FileManager.default.createDirectory(at:root,withIntermediateDirectories:true,attributes:[.posixPermissions:0o700])
++        let diagnostic = root.appendingPathComponent("product-command-" + UUID().uuidString)
++        try FileManager.default.createDirectory(at: diagnostic, withIntermediateDirectories: false, attributes: [.posixPermissions: 0o700])
++        let (out, err) = try files(diagnostic, "command")
++        defer { try? out.close(); try? err.close() }
++        let process = Process(), done = DispatchSemaphore(value: 0)
++        process.executableURL = controller; process.arguments = arguments
++        process.standardOutput = out; process.standardError = err
++        process.terminationHandler = { _ in done.signal() }
++        try process.run()
++        if done.wait(timeout: .now() + 15) != .success {
++            // Keep the process and diagnostics: preparation may already have succeeded.
++            throw Failure.unknown(diagnostic)
++        }
++        guard process.terminationStatus == 0, try hash(controller) == manifest["controllerSHA256"] as? String else { throw Failure.unknown(diagnostic) }
++        let data = try Data(contentsOf: diagnostic.appendingPathComponent("command.stdout"))
++        guard data.count < 1_048_576, let result = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { throw Failure.unknown(diagnostic) }
++        return result
++    }
++    static func preflight() throws -> [String: Any] {
++        for app in NSWorkspace.shared.runningApplications {
++            let path = app.executableURL?.path ?? ""
++            guard !path.hasSuffix("/Ice Selected Controller.app/Contents/MacOS/IceSelectedController"),
++                  !path.hasSuffix("/Ice Baseline Controller.app/Contents/MacOS/IceBaselineController") else { throw Failure.invalid }
++        }
++        let recovery = try command(["--inspect-recovery"])
++        guard recovery["journalPending"] as? Bool == false else { throw Failure.invalid }
++        return ["workerRevision": revision, "contract": "ordinaryIceInterfaceV9", "journalPending": false,
++                "ordinaryEntryConnected": true, "automaticStart": false, "mousePosts": 0, "windowsOpened": 0, "permissionRequests": 0]
++    }
++    static func recovery() throws -> [String: Any] {
++        var value = try command(["--inspect-recovery"])
++        guard value["journalPending"] is Bool, value["unconfirmedDown"] is Bool else { throw Failure.invalid }
++        value["evidenceDirectory"] = root.appendingPathComponent("selected-relative-recovery-v2").path
++        value["nativePosts"] = 0; value["recordsCleared"] = 0
++        return value
++    }
++    static func prepareOwned() throws -> URL {
++        _ = try preflight()
++        let value = try command(["--prepare-owned"])
++        guard value["posts"] as? Int == 0, let path = value["session"] as? String else { throw Failure.invalid }
++        let directory = URL(fileURLWithPath: path, isDirectory: true)
++        guard directory.deletingLastPathComponent() == root, directory.resolvingSymlinksInPath() == directory else { throw Failure.invalid }
++        return directory
++    }
++    static func prepare(_ target: MenuBarIceSelectedTarget) throws -> URL {
++        _ = try preflight()
++        let current = try target.validate(directory: MenuBarIceSelectedTarget.readDirectory(), owner: MenuBarProcessSignature.read(target.owner.pid))
++        guard current.frame == target.originalFrame else { throw Failure.targetChanged }
++        let result = try command(["--prepare-target", String(target.windowID)])
++        guard result["posts"] as? Int == 0, let path = result["session"] as? String else { throw Failure.invalid }
++        let directory = URL(fileURLWithPath: path, isDirectory: true)
++        guard directory.deletingLastPathComponent() == root, directory.resolvingSymlinksInPath() == directory else { throw Failure.invalid }
++        return directory
++    }
++    /// A worker's new nonce does not permit it to recapture a different selection.
++    static func validate(_ prepared: Prepared, target: MenuBarIceSelectedTarget, directory: URL, sha: String, now: Double) throws {
++        guard let selected = prepared.selected, !prepared.selfOwned,
++              directory.deletingLastPathComponent() == root, directory.lastPathComponent == "session-" + prepared.nonce.uuidString,
++              selected.nonce == prepared.nonce, prepared.controllerSHA256 == sha,
++              now.isFinite, prepared.preparedAtUnix.isFinite, now >= prepared.preparedAtUnix, now - prepared.preparedAtUnix < 120,
++              selected.owner == target.owner, selected.windowID == target.windowID,
++              selected.display == target.display, selected.space == target.space,
++              selected.originalFrame == target.originalFrame else { throw Failure.targetChanged }
++    }
++    static func validateReady(_ value: [String: Any], nonce: UUID, pid: Int32) throws {
++        guard value["nonce"] as? String == nonce.uuidString, value["pid"] as? Int32 == pid,
++              value["windowVisible"] as? Bool == true, value["nativePosts"] as? Int == 0,
++              let number = value["windowNumber"] as? Int, number > 0 else { throw Failure.invalid }
++    }
++    static func launch(_ directory: URL, target: MenuBarIceSelectedTarget? = nil, ownedWindow: Bool = false, ownedCancelCheck: Bool = false) async throws -> Launch {
++        let manifest = try manifest()
++        guard directory.resolvingSymlinksInPath() == directory,
++              !FileManager.default.fileExists(atPath: directory.appendingPathComponent("action-consumed.json").path),
++              !FileManager.default.fileExists(atPath: directory.appendingPathComponent("result.json").path) else { throw Failure.invalid }
++        let data = try Data(contentsOf: directory.appendingPathComponent("session.json"))
++        guard data.count < 65_536, let sha = manifest["controllerSHA256"] as? String else { throw Failure.invalid }
++        let prepared = try JSONDecoder().decode(Prepared.self, from: data)
++        if let target {
++            guard !ownedWindow else { throw Failure.invalid }
++            try validate(prepared, target: target, directory: directory, sha: sha, now: Date().timeIntervalSince1970)
++            let current = try target.validate(directory: MenuBarIceSelectedTarget.readDirectory(), owner: MenuBarProcessSignature.read(target.owner.pid))
++            guard current.frame == target.originalFrame else { throw Failure.targetChanged }
++        } else {
++            let now = Date().timeIntervalSince1970
++            guard prepared.selfOwned, prepared.selected == nil, prepared.controllerSHA256 == sha,
++                  directory.deletingLastPathComponent() == root, directory.lastPathComponent == "session-" + prepared.nonce.uuidString,
++                  prepared.preparedAtUnix.isFinite, now >= prepared.preparedAtUnix, now - prepared.preparedAtUnix < 120 else { throw Failure.invalid }
++        }
++        // This is an independently signed GUI app. LaunchServices supplies its normal
++        // application lifecycle and existing TCC identity; do not spawn it as a child
++        // of the unprivileged product host or alter its permissions/environment.
++        let configuration = NSWorkspace.OpenConfiguration()
++        configuration.createsNewApplicationInstance = true
++        configuration.arguments = ["--session", directory.path]
++        if ownedCancelCheck { configuration.arguments.append("--owned-entry-cancel-check") }
++        else if ownedWindow { configuration.arguments.append("--owned-window-session") }
++        let application: NSRunningApplication = try await withCheckedThrowingContinuation { continuation in
++            NSWorkspace.shared.openApplication(at: packageRoot.appendingPathComponent("Ice Selected Controller.app"), configuration: configuration) { app, error in
++                if let app { continuation.resume(returning: app) }
++                else { continuation.resume(throwing: error ?? Failure.unknown(directory)) }
++            }
++        }
++        do {
++            let proof = try MenuBarProcessSignature.read(application.processIdentifier)
++            guard proof.executable == controller.path, proof.identifier == "com.ryanai.mactools", proof.team == "58TJ64422P",
++                  proof.sha256 == sha, proof.launch != nil, !application.isTerminated else { throw Failure.invalid }
++            let launch = Launch(application: application, proof: proof)
++            try JSONSerialization.data(withJSONObject: ["nonce": prepared.nonce.uuidString, "pid": proof.pid,
++                "launchMethod": "NSWorkspace.openApplication", "automaticStart": false, "permissionRequests": 0], options: [.prettyPrinted, .sortedKeys])
++                .write(to: directory.appendingPathComponent("product-launch.json"), options: .atomic)
++            let until = ProcessInfo.processInfo.systemUptime + 20
++            while ProcessInfo.processInfo.systemUptime < until {
++                if let bytes = try? Data(contentsOf: directory.appendingPathComponent("ready.json")), bytes.count < 65_536,
++                   let value = try? JSONSerialization.jsonObject(with: bytes) as? [String: Any] {
++                    try validateReady(value, nonce: prepared.nonce, pid: proof.pid)
++                    if !ownedCancelCheck {
++                        guard launch.isRunning else { throw Failure.invalid }
++                        guard try MenuBarProcessSignature.read(proof.pid) == proof else { throw Failure.invalid }
++                    }
++                    return launch
++                }
++                if let bytes = try? Data(contentsOf: directory.appendingPathComponent("result.json")), bytes.count < 2_000_000,
++                   let value = try? JSONSerialization.jsonObject(with: bytes) as? [String: Any],
++                   value["nonce"] as? String == prepared.nonce.uuidString, value["posts"] as? Int == 0,
++                   let failure = value["failure"] as? String {
++                    throw Failure.startup(directory, failure)
++                }
++                guard launch.isRunning else { throw Failure.unknown(directory) }
++                try await Task.sleep(nanoseconds: 50_000_000)
++            }
++            throw Failure.unknown(directory)
++        } catch let error as Failure { throw error }
++        catch { throw Failure.unknown(directory) }
++    }
++    static func result(_ value: [String: Any], nonce: UUID) throws -> (passed: Bool, posts: Int) {
++        guard value["nonce"] as? String == nonce.uuidString, let posts = value["posts"] as? Int, posts >= 0,
++              let passed = value["realClosedLoopVerified"] as? Bool else { throw Failure.invalid }
++        if passed {
++            guard value["menuClosedClaimed"] as? Bool == false, value["icePositionVerified"] as? Bool == true,
++                  let journal = value["journal"] as? [String: Any], journal["contract"] as? String == "ordinaryIceInterfaceV9",
++                  journal["phase"] as? String == "returned", journal["pendingRecovery"] as? Bool == false,
++                  journal["possibleDown"] as? Bool == false, journal["journalOutcomeUncertain"] as? Bool == false,
++                  let durable = journal["durableRecord"] as? [String: Any], durable["schemaVersion"] as? Int == 4,
++                  durable["phase"] as? String == "returned",
++                  let completion = value["interfaceCompletion"] as? [String: Any], completion["nonce"] as? String == nonce.uuidString,
++                  completion["criterion"] as? String == "iceTrackedInterfaceInactiveV9", completion["nativeObservation"] as? Bool == true,
++                  let evidence = value["returnEvidence"] as? [String: Any], evidence["nonce"] as? String == nonce.uuidString,
++                  evidence["criterion"] as? String == "iceNeighborEdgeV4" else { throw Failure.invalid }
++        }
++        return (passed, posts)
++    }
++}
++
++#endif
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductChecks.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductChecks.swift
+@@ -0,0 +1,74 @@
++#if ICE_MENU_BAR_CANDIDATE || ICE_MENU_BAR_INTEGRATED
++import AppKit
++
++enum MenuBarIceInterfaceProductChecks {
++    static func run(_ resultURL: URL) throws -> [String: Any] {
++        typealias Bridge = MenuBarIceInterfaceProductBridge
++        let owner = MenuBarProcessSignature.Proof(pid: 77, launch: 100, executable: "/tmp/owned-fixture", identifier: "owned.fixture", team: "58TJ64422P", sha256: String(repeating: "a", count: 64), appleAnchor: false)
++        let row = MenuBarIceSelectedTarget.Row(id: 99, pid: 77, title: "offline fixture", frame: CGRect(x: 100, y: 0, width: 32, height: 24))
++        let directory = MenuBarIceSelectedTarget.Directory(display: 1, space: 2, rows: [row])
++        let target = try MenuBarIceSelectedTarget(row: row, directory: directory, owner: owner)
++        let nonce = UUID(), sha = String(repeating: "b", count: 64)
++        let selected = try MenuBarIceSelectedTarget(row: row, directory: directory, owner: owner, nonce: nonce)
++        let session = Bridge.root.appendingPathComponent("session-" + nonce.uuidString, isDirectory: true)
++        func prepared(_ selection: MenuBarIceSelectedTarget? = selected, _ own: Bool = false, _ at: Double = 10) -> Bridge.Prepared {
++            .init(nonce: nonce, selected: selection, selfOwned: own, controllerSHA256: sha, preparedAtUnix: at)
++        }
++        var assertions = 0
++        func require(_ valid: Bool) throws { guard valid else { throw Bridge.Failure.invalid }; assertions += 1 }
++        func reject(_ operation: () throws -> Void) throws {
++            var rejected = false
++            do { try operation() } catch { rejected = true }
++            try require(rejected)
++        }
++        try Bridge.validate(prepared(), target: target, directory: session, sha: sha, now: 20); assertions += 1
++        try reject { try Bridge.validate(prepared(nil, true), target: target, directory: session, sha: sha, now: 20) }
++        try reject { try Bridge.validate(prepared(), target: target, directory: session, sha: sha, now: 130) }
++        try reject { try Bridge.validate(prepared(), target: target, directory: session, sha: sha, now: 9) }
++        try reject { try Bridge.validate(prepared(), target: target, directory: session, sha: sha, now: .nan) }
++        try reject { try Bridge.validate(prepared(), target: target, directory: URL(fileURLWithPath: "/tmp/session-" + nonce.uuidString), sha: sha, now: 20) }
++        try reject { try Bridge.validate(prepared(), target: target, directory: session, sha: "changed", now: 20) }
++        let siblingRow = MenuBarIceSelectedTarget.Row(id: 100, pid: 77, title: row.title, frame: row.frame)
++        let sibling = try MenuBarIceSelectedTarget(row: siblingRow, directory: .init(display: 1, space: 2, rows: [siblingRow]), owner: owner, nonce: nonce)
++        try reject { try Bridge.validate(prepared(sibling), target: target, directory: session, sha: sha, now: 20) }
++        let changedSpace = try MenuBarIceSelectedTarget(row: row, directory: .init(display: 1, space: 3, rows: [row]), owner: owner, nonce: nonce)
++        try reject { try Bridge.validate(prepared(changedSpace), target: target, directory: session, sha: sha, now: 20) }
++        let movedRow = MenuBarIceSelectedTarget.Row(id: row.id, pid: row.pid, title: row.title, frame: row.frame.offsetBy(dx: 1, dy: 0))
++        let moved = try MenuBarIceSelectedTarget(row: movedRow, directory: .init(display: 1, space: 2, rows: [movedRow]), owner: owner, nonce: nonce)
++        try reject { try Bridge.validate(prepared(moved), target: target, directory: session, sha: sha, now: 20) }
++        let restarted = MenuBarProcessSignature.Proof(pid: owner.pid, launch: 101, executable: owner.executable, identifier: owner.identifier, team: owner.team, sha256: owner.sha256, appleAnchor: false)
++        let replaced = try MenuBarIceSelectedTarget(row: row, directory: directory, owner: restarted, nonce: nonce)
++        try reject { try Bridge.validate(prepared(replaced), target: target, directory: session, sha: sha, now: 20) }
++        let wrongNonce = try MenuBarIceSelectedTarget(row: row, directory: directory, owner: owner)
++        try reject { try Bridge.validate(prepared(wrongNonce), target: target, directory: session, sha: sha, now: 20) }
++        let bytes = try Data(contentsOf: resultURL)
++        guard bytes.count < 2_000_000, let original = try JSONSerialization.jsonObject(with: bytes) as? [String: Any],
++              let resultNonce = (original["nonce"] as? String).flatMap(UUID.init(uuidString:)) else { throw Bridge.Failure.invalid }
++        let result = try Bridge.result(original, nonce: resultNonce)
++        try require(result.passed && result.posts == 14)
++        try reject { _ = try Bridge.result(original, nonce: UUID()) }
++        var changed = original; changed["menuClosedClaimed"] = true
++        try reject { _ = try Bridge.result(changed, nonce: resultNonce) }
++        changed = original; changed.removeValue(forKey: "interfaceCompletion")
++        try reject { _ = try Bridge.result(changed, nonce: resultNonce) }
++        changed = original
++        var journal = original["journal"] as! [String: Any]; journal["pendingRecovery"] = true; changed["journal"] = journal
++        try reject { _ = try Bridge.result(changed, nonce: resultNonce) }
++        changed = original; journal = original["journal"] as! [String: Any]; journal["contract"] = "ordinaryIceQuickV4"; changed["journal"] = journal
++        try reject { _ = try Bridge.result(changed, nonce: resultNonce) }
++        let stopped: [String: Any] = ["nonce": resultNonce.uuidString, "posts": 8, "realClosedLoopVerified": false]
++        try require(try Bridge.result(stopped, nonce: resultNonce).passed == false)
++        let ready: [String: Any] = ["nonce": nonce.uuidString, "pid": Int32(77), "windowVisible": true, "nativePosts": 0, "windowNumber": 123]
++        try Bridge.validateReady(ready, nonce: nonce, pid: 77); assertions += 1
++        try reject { try Bridge.validateReady(ready, nonce: UUID(), pid: 77) }
++        try reject { try Bridge.validateReady(ready, nonce: nonce, pid: 78) }
++        var badReady = ready; badReady["windowVisible"] = false
++        try reject { try Bridge.validateReady(badReady, nonce: nonce, pid: 77) }
++        badReady = ready; badReady["nativePosts"] = 1
++        try reject { try Bridge.validateReady(badReady, nonce: nonce, pid: 77) }
++        return ["passed": true, "assertions": assertions, "mousePosts": 0, "windowsOpened": 0,
++                "permissionRequests": 0, "realResultReplayedAsDataOnly": true]
++    }
++}
++
++#endif
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductNativeChecks.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceInterfaceProductNativeChecks.swift
+@@ -0,0 +1,88 @@
++#if ICE_MENU_BAR_CANDIDATE || ICE_MENU_BAR_INTEGRATED
++import AppKit
++
++/// Drives only our signed targets and the controller's own cancel action.
++/// This checks product launch/publication/cleanup; it never presses Start.
++@MainActor enum MenuBarIceInterfaceProductNativeChecks {
++    static func run(ordinary: Bool) async throws -> [String: Any] {
++        typealias Bridge = MenuBarIceInterfaceProductBridge
++        let manifest = try Bridge.manifest()
++        let diagnostic = Bridge.root.appendingPathComponent("product-entry-check-" + UUID().uuidString)
++        try FileManager.default.createDirectory(at: diagnostic, withIntermediateDirectories: false, attributes: [.posixPermissions: 0o700])
++        let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 480, height: 160), styleMask: [.titled], backing: .buffered, defer: false)
++        window.isReleasedWhenClosed = false; window.title = "MacTools 自建产品入口零输入检查"
++        NSApp.setActivationPolicy(.regular); window.center(); window.makeKeyAndOrderFront(nil); NSApp.activate(ignoringOtherApps: true)
++        defer { window.orderOut(nil); window.close() }
++        try await Task.sleep(nanoseconds: 200_000_000)
++        var fixture: Process?, fixtureOutput: URL?, selected: MenuBarIceSelectedTarget?
++        var controller: Bridge.Launch?, session: URL?
++        var assertions = 0
++        func require(_ valid: Bool) throws { guard valid else { throw Bridge.Failure.invalid }; assertions += 1 }
++        func quitFixture() async throws {
++            guard let fixture, let fixtureOutput else { return }
++            try Data().write(to: fixtureOutput.appendingPathExtension("quit"), options: .atomic)
++            let until = ProcessInfo.processInfo.systemUptime + 5
++            while fixture.isRunning, ProcessInfo.processInfo.systemUptime < until { try await Task.sleep(nanoseconds: 100_000_000) }
++            try require(!fixture.isRunning && fixture.terminationStatus == 0)
++        }
++        do {
++            if ordinary {
++                let process = Process(), nonce = UUID().uuidString
++                let output = diagnostic.appendingPathComponent("target.json")
++                let (out, err) = try Bridge.files(diagnostic, "target")
++                defer { try? out.close(); try? err.close() }
++                process.executableURL = Bridge.packageRoot.appendingPathComponent("Ice Product Targets.app/Contents/MacOS/IceProductTargets")
++                process.arguments = [nonce, output.path]; process.standardOutput = out; process.standardError = err
++                try process.run(); fixture = process; fixtureOutput = output
++                let proof = try MenuBarProcessSignature.read(process.processIdentifier)
++                try require(proof.identifier == "com.ryanai.mactools.producttargets" && proof.team == "58TJ64422P" && proof.sha256 == manifest["productTargetSHA256"] as? String && proof.executable == process.executableURL?.path)
++                let until = ProcessInfo.processInfo.systemUptime + 5
++                while selected == nil, process.isRunning, ProcessInfo.processInfo.systemUptime < until {
++                    if let bytes = try? Data(contentsOf: output), let value = try? JSONSerialization.jsonObject(with: bytes) as? [String: Any],
++                       value["nonce"] as? String == nonce, value["pid"] as? Int32 == process.processIdentifier,
++                       let at = value["atUnix"] as? Double, (0...1).contains(Date().timeIntervalSince1970 - at),
++                       let items = value["items"] as? [[String: Any]], let id = items.first(where: { $0["title"] as? String == "T" })?["windowID"] as? UInt32,
++                       let directory = try? MenuBarIceSelectedTarget.readDirectory(), let row = directory.rows.first(where: { $0.id == id && $0.pid == proof.pid }) {
++                        selected = try MenuBarIceSelectedTarget.capture(row, from: directory)
++                    }
++                    if selected == nil { try await Task.sleep(nanoseconds: 100_000_000) }
++                }
++                guard let selected else { throw Bridge.Failure.unknown(diagnostic) }
++                session = try Bridge.prepare(selected)
++            } else { session = try Bridge.prepareOwned() }
++            guard let session else { throw Bridge.Failure.invalid }
++            controller = try await Bridge.launch(session, target: selected, ownedCancelCheck: true)
++            guard let controller else { throw Bridge.Failure.invalid }
++            let until = ProcessInfo.processInfo.systemUptime + 25
++            while controller.isRunning, ProcessInfo.processInfo.systemUptime < until { try await Task.sleep(nanoseconds: 100_000_000) }
++            try require(!controller.isRunning)
++            let ready = try JSONSerialization.jsonObject(with: Data(contentsOf: session.appendingPathComponent("ready.json"))) as! [String: Any]
++            try require(ready["windowVisible"] as? Bool == true && ready["pid"] as? Int32 == controller.proof.pid && ready["nativePosts"] as? Int == 0)
++            let prepared = try JSONDecoder().decode(Bridge.Prepared.self, from: Data(contentsOf: session.appendingPathComponent("session.json")))
++            let rawResult = try JSONSerialization.jsonObject(with: Data(contentsOf: session.appendingPathComponent("result.json"))) as! [String: Any]
++            let result = try Bridge.result(rawResult, nonce: prepared.nonce)
++            try require(!result.passed && result.posts == 0 && rawResult["failure"] as? String == "cancelledBeforeStart")
++            try require(!FileManager.default.fileExists(atPath: session.appendingPathComponent("action-consumed.json").path))
++            let cleanup = try JSONSerialization.jsonObject(with: Data(contentsOf: session.appendingPathComponent("cleanup.json"))) as! [String: Any]
++            try require(cleanup["journalPending"] as? Bool == false && cleanup["fixtureExited"] as? Bool == true)
++            try await quitFixture()
++            _ = try Bridge.preflight()
++            let value: [String: Any] = ["passed": true, "ordinarySelectionRoute": ordinary, "session": session.path,
++                "assertions": assertions, "nativePosts": 0, "permissionRequests": 0, "startPressed": false,
++                "cancelActionInvokedOnOwnControl": true, "controllerPID": controller.proof.pid,
++                "directoryFixturePID": fixture?.processIdentifier as Any? ?? NSNull(), "targetOwner": selected.map { $0.owner.identifier } as Any? ?? NSNull(),
++                "realMovementClosedLoopClaimed": false]
++            try JSONSerialization.data(withJSONObject: value, options: [.prettyPrinted, .sortedKeys]).write(to: diagnostic.appendingPathComponent("passed.json"), options: .atomic)
++            return value
++        } catch {
++            // Preserve any launched controller and session; do not kill an unknown worker.
++            try? await quitFixture()
++            let failure: [String: Any] = ["failure": String(describing: error), "session": session?.path as Any? ?? NSNull(),
++                "controllerPID": controller?.proof.pid as Any? ?? NSNull(), "assertions": assertions, "nativePosts": 0, "startPressed": false]
++            try? JSONSerialization.data(withJSONObject: failure, options: [.prettyPrinted, .sortedKeys]).write(to: diagnostic.appendingPathComponent("failure.json"), options: .atomic)
++            throw Bridge.Failure.unknown(diagnostic)
++        }
++    }
++}
++
++#endif
+--- a/Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift
++++ b/Tools/IceInterfaceProduct/MenuBarIceInterfaceProductBridge.swift
+@@ -30,7 +30,7 @@
+         SHA256.hash(data: try Data(contentsOf: url)).map { String(format: "%02x", $0) }.joined()
+     }
+     static func manifest() throws -> [String: Any] {
+-        guard Bundle.main.bundleIdentifier == "com.ryanai.mactools.iceinterfacecandidate",
++        guard ["com.ryanai.mactools.iceinterfacecandidate","com.ryanai.mactools"].contains(Bundle.main.bundleIdentifier ?? ""),
+               let url = Bundle.main.url(forResource: "ice-interface-bridge", withExtension: "json"),
+               let receipt = try JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any],
+               receipt["manifestSHA256"] as? String == (try hash(packageRoot.appendingPathComponent("prepared-build.json"))),
+--- a/Tools/IceInterfaceProductWorker/IceSelectedSession.swift
++++ b/Tools/IceInterfaceProductWorker/IceSelectedSession.swift
+@@ -19,7 +19,7 @@
+               SecStaticCodeCreateWithPath(product as CFURL,[],&code)==errSecSuccess,let code,
+               SecStaticCodeCheckValidity(code,SecCSFlags(rawValue:kSecCSStrictValidate),nil)==errSecSuccess,
+               SecCodeCopySigningInformation(code,SecCSFlags(rawValue:kSecCSSigningInformation),&info)==errSecSuccess,
+-              let signed=info as? [String:Any],signed[kSecCodeInfoIdentifier as String] as? String=="com.ryanai.mactools.iceinterfacecandidate",
++              let signed=info as? [String:Any],["com.ryanai.mactools.iceinterfacecandidate","com.ryanai.mactools"].contains(signed[kSecCodeInfoIdentifier as String] as? String ?? ""),
+               signed[kSecCodeInfoTeamIdentifier as String] as? String=="58TJ64422P",
+               let manifest=try JSONSerialization.jsonObject(with:Data(contentsOf:packageRoot.appendingPathComponent("prepared-build.json"))) as? [String:Any],
+               let sources=manifest["sources"] as? [String:String],sources.count>50 else{throw IceSelectedFailure.binding}
+--- a/scripts/build-ice-interface-product-candidate.sh
++++ b/scripts/build-ice-interface-product-candidate.sh
+@@ -3,11 +3,18 @@
+ cd "$(dirname "$0")/.."
+ ROOT="$PWD/build/ice-interface-product"
+ APP="$ROOT/MacTools Ice Interface Candidate.app"
++FLAG=ICE_MENU_BAR_CANDIDATE
++if [ "${MAC_TOOLS_ICE_INTEGRATED:-0}" = 1 ]; then
++ ROOT="$PWD/build/ice-interface-integrated"
++ APP="$ROOT/MacTools.app"
++ FLAG=ICE_MENU_BAR_INTEGRATED
++fi
++WORKER="$PWD/build/ice-interface-product/Worker"
+ sh scripts/build-ice-interface-product-worker.sh
+ mkdir -p "$ROOT/module-cache"
+-python3 - "$ROOT" <<'PY'
++python3 - "$ROOT" "$WORKER" <<'PY'
+ import pathlib,sys,json,hashlib,shutil,plistlib,subprocess
+-root=pathlib.Path(sys.argv[1]);repo=pathlib.Path.cwd();app=root/'MacTools Ice Interface Candidate.app';worker=root/'Worker';sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
++root=pathlib.Path(sys.argv[1]);repo=pathlib.Path.cwd();import os;integrated=os.environ.get('MAC_TOOLS_ICE_INTEGRATED')=='1';app=root/('MacTools.app' if integrated else 'MacTools Ice Interface Candidate.app');worker=pathlib.Path(sys.argv[2]);sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+ if app.exists():
+  exe=app/'Contents/MacOS/MacTools'
+  if exe.exists():
+@@ -17,7 +24,7 @@
+ (app/'Contents/MacOS').mkdir(parents=True);resources=app/'Contents/Resources';resources.mkdir()
+ m=json.loads((worker/'prepared-build.json').read_text());assert m['revision']=='ordinary-Ice-product-stage1'
+ for p,h in m['sources'].items():assert sha(repo/p)==h,p
+-sources=sorted(p for p in repo.glob('Sources/MacTools/**/*.swift') if p.name not in ['MacTools.swift','MenuBarIceCandidateProduct.swift'])+sorted((repo/'Tools/IceInterfaceProduct').glob('*.swift'))
++sources=sorted(repo.glob('Sources/MacTools/**/*.swift'))
+ (root/'sources.txt').write_text('\n'.join(map(str,sources))+'\n')
+ (resources/'ice-interface-bridge.json').write_text(json.dumps({'revision':m['revision'],'manifestSHA256':sha(worker/'prepared-build.json'),'automaticStart':False},indent=2)+'\n')
+ shutil.copyfile(repo/'Assets/AppIcon/AppIcon.icns',resources/'AppIcon.icns')
+@@ -27,10 +34,10 @@
+ for p in [repo/'COPYING.GPL-3.0',repo/'THIRD_PARTY_NOTICES.md',worker/'prepared-build.json']:shutil.copyfile(p,package/p.name)
+ for p in sources:
+  dest=resources/'Source'/p.relative_to(repo);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
+-(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.1-ice-interface-candidate','CFBundleVersion':'4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True}))
++(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'6' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
+ (root/'source-manifest.json').write_text(json.dumps({str(p.relative_to(repo)):sha(p) for p in sources},indent=2,sort_keys=True)+'\n')
+ PY
+-swiftc -parse-as-library -DICE_MENU_BAR_CANDIDATE -module-name MacTools -module-cache-path "$ROOT/module-cache" $(cat "$ROOT/sources.txt") -o "$APP/Contents/MacOS/MacTools"
++swiftc -parse-as-library -D"$FLAG" -module-name MacTools -module-cache-path "$ROOT/module-cache" $(cat "$ROOT/sources.txt") -o "$APP/Contents/MacOS/MacTools"
+ codesign --force --sign "${MAC_TOOLS_SIGN_IDENTITY:-722852A9656BC9126B2C4585713B724D58F60DB6}" "$APP"
+ codesign --verify --deep --strict "$APP"
+ "$APP/Contents/MacOS/MacTools" --ice-interface-bridge-tests "$PWD/Tools/IceInterfaceProduct/Fixtures/accepted-ordinary-window.json"
+--- a/scripts/build-app.sh
++++ b/scripts/build-app.sh
+@@ -1,28 +1,10 @@
+ #!/bin/sh
+ set -eu
+ cd "$(dirname "$0")/.."
+-swift build -c release
+-BIN=$(swift build -c release --show-bin-path)
++MAC_TOOLS_ICE_INTEGRATED=1 sh scripts/build-ice-interface-product-candidate.sh
++# Keep the established build-app output path; preserve any previous generated app.
+ APP="$PWD/build/MacTools.app"
+-mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
+-cp Assets/AppIcon/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
+-cp "$BIN/MacTools" "$APP/Contents/MacOS/MacTools"
+-cat > "$APP/Contents/Info.plist" <<'PLIST'
+-<?xml version="1.0" encoding="UTF-8"?>
+-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+-<plist version="1.0"><dict>
+-<key>CFBundleExecutable</key><string>MacTools</string>
+-<key>CFBundleIdentifier</key><string>com.ryanai.mactools</string>
+-<key>CFBundleIconFile</key><string>AppIcon</string>
+-<key>CFBundleName</key><string>Mac 工具箱</string>
+-<key>CFBundlePackageType</key><string>APPL</string>
+-<key>CFBundleShortVersionString</key><string>0.2.0</string>
+-<key>CFBundleVersion</key><string>2</string>
+-<key>LSMinimumSystemVersion</key><string>13.0</string>
+-<key>NSHighResolutionCapable</key><true/>
+-</dict></plist>
+-PLIST
+-codesign --force --sign "${MAC_TOOLS_SIGN_IDENTITY:--}" "$APP"
+-plutil -lint "$APP/Contents/Info.plist"
+-codesign --verify --strict "$APP"
++[ ! -e "$APP" ] || mv "$APP" "$APP.before-ice-$$"
++ditto "$PWD/build/ice-interface-integrated/MacTools.app" "$APP"
++codesign --verify --deep --strict "$APP"
+ printf '%s\n' "$APP"

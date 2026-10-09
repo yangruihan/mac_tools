@@ -30,7 +30,7 @@ enum MenuBarIceInterfaceProductBridge {
         SHA256.hash(data: try Data(contentsOf: url)).map { String(format: "%02x", $0) }.joined()
     }
     static func manifest() throws -> [String: Any] {
-        guard Bundle.main.bundleIdentifier == "com.ryanai.mactools.iceinterfacecandidate",
+        guard ["com.ryanai.mactools.iceinterfacecandidate","com.ryanai.mactools"].contains(Bundle.main.bundleIdentifier ?? ""),
               let url = Bundle.main.url(forResource: "ice-interface-bridge", withExtension: "json"),
               let receipt = try JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? [String: Any],
               receipt["manifestSHA256"] as? String == (try hash(packageRoot.appendingPathComponent("prepared-build.json"))),

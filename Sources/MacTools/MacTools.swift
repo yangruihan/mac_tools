@@ -19,7 +19,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
         if CommandLine.arguments.contains("--ice-candidate-ui-smoke") {
             DispatchQueue.main.asyncAfter(deadline: .now()+1) { [weak self] in
                 guard let self else { exit(1) }
-                let imageURL = URL(fileURLWithPath:"/tmp/mac-tools-ice-product-ui.png")
+                let imageURL = MenuBarIceInterfaceProductBridge.root.appendingPathComponent("product-ui.png")
+                try? FileManager.default.createDirectory(at:MenuBarIceInterfaceProductBridge.root,withIntermediateDirectories:true)
                 var rendered = false
                 if let content = self.window?.contentView,
                    let bitmap = content.bitmapImageRepForCachingDisplay(in:content.bounds) {
@@ -85,13 +86,36 @@ struct MacToolsApp: App {
 
     init() {
         #if ICE_MENU_BAR_CANDIDATE || ICE_MENU_BAR_INTEGRATED
+        if CommandLine.arguments.contains("--ice-interface-recovery") {
+            do {
+                let proof = try MenuBarIceInterfaceProductBridge.recovery()
+                let data = try JSONSerialization.data(withJSONObject: proof, options: [.prettyPrinted, .sortedKeys])
+                print(String(decoding: data, as: UTF8.self)); exit(0)
+            } catch { fputs("Recovery inspection failed: \(error)\n", stderr); exit(1) }
+        }
+        if CommandLine.arguments.contains("--ice-interface-owned-entry-check") || CommandLine.arguments.contains("--ice-interface-ordinary-entry-check") {
+            let ordinary = CommandLine.arguments.contains("--ice-interface-ordinary-entry-check")
+            Task { @MainActor in do {
+                let proof = try await MenuBarIceInterfaceProductNativeChecks.run(ordinary: ordinary)
+                let data = try JSONSerialization.data(withJSONObject: proof, options: [.prettyPrinted, .sortedKeys])
+                print(String(decoding: data, as: UTF8.self)); exit(0)
+            } catch { fputs("Owned product-entry check failed: \(error)\n", stderr); exit(1) } }
+            RunLoop.main.run(); return
+        }
+        if let index = CommandLine.arguments.firstIndex(of: "--ice-interface-bridge-tests"), CommandLine.arguments.count == index + 2 {
+            do {
+                let proof = try MenuBarIceInterfaceProductChecks.run(URL(fileURLWithPath: CommandLine.arguments[index + 1]))
+                let data = try JSONSerialization.data(withJSONObject: proof, options: [.sortedKeys])
+                print(String(decoding: data, as: UTF8.self)); exit(0)
+            } catch { fputs("Interface product checks failed: \(error)\n", stderr); exit(1) }
+        }
         if CommandLine.arguments.contains("--ice-candidate-directory") {
             do {
                 let directory = try MenuBarIceSelectedTarget.readDirectory()
                 let value: [String:Any] = ["display":directory.display,"space":directory.space,
                     "rows":directory.rows.map { ["windowID":$0.id,"pid":$0.pid,"title":$0.title,
                         "frame":["x":$0.frame.minX,"y":$0.frame.minY,"width":$0.frame.width,"height":$0.frame.height]] as [String:Any] },
-                    "readOnly":true,"mousePosts":0,"permissionRequests":0,"ordinaryMovementEnabled":false]
+                    "readOnly":true,"mousePosts":0,"permissionRequests":0,"ordinaryMovementEnabled":false,"ordinaryEntryConnected":true]
                 let data = try JSONSerialization.data(withJSONObject:value,options:[.prettyPrinted,.sortedKeys])
                 print(String(decoding:data,as:UTF8.self)); exit(0)
             } catch { fputs("Ice directory read failed: \(error)\n",stderr); exit(1) }

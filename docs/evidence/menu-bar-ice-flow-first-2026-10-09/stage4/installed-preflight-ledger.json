@@ -1,0 +1,9 @@
+{
+  "command": [
+    "/Applications/MacTools.app/Contents/MacOS/MacTools",
+    "--ice-candidate-preflight"
+  ],
+  "exit": 0,
+  "stdout": "{\n  \"automaticStart\" : false,\n  \"contract\" : \"ordinaryIceInterfaceV9\",\n  \"journalPending\" : false,\n  \"mousePosts\" : 0,\n  \"ordinaryEntryConnected\" : true,\n  \"permissionRequests\" : 0,\n  \"windowsOpened\" : 0,\n  \"workerRevision\" : \"ordinary-Ice-product-stage1\"\n}\n",
+  "stderr": ""
+}

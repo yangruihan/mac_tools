@@ -1,0 +1,13 @@
+阶段4已接入正式 MacTools（2026-10-09）
+
+已安装并打开：/Applications/MacTools.app，版本0.2.2（6）。完整快捷控制、保持唤醒、触控板、窗口预览与菜单栏收纳五插件仍在；原快捷控制预设与12项原设置值核对一致。原有收纳设置在菜单栏收纳页面的同名折叠区。
+
+体验入口：正式 MacTools → 菜单栏收纳 → 隐藏QQ已有界面 → 刷新图标列表 → 选择QQ → 打开选定图标控制窗口 → 在控制窗口按一次开始。结束QQ使用后点产品“显示控制窗口”切换焦点，再等15秒。
+本轮仅验证安装后真实产品发布/取消，输入0；未追加QQ搬移。此前单屏普通桌面与全屏背景先回普通桌面准备的14投递实测保留；事务中跨桌面、多屏、其他图标和右键仍未验收。取消可能保留未归位责任，出现停止不要直接重试或删除记录。
+
+旧正式版、实际原目录与设置备份：/Users/yangruihan/Documents/MacTools正式版回滚/2026-10-09-before-stage4-515c9640
+恢复旧应用：先退出MacTools及任何控制窗口，运行备份里的ROLLBACK_APP.sh /Applications/MacTools.app。脚本会拒绝覆盖运行中的目标，保留被替换版本，不恢复/覆盖用户设置，也不删除恢复记录。已在独立副本恢复原515c字节并匹配同一只读输入验证。需要管理员权限时由你处理，不索要密码。
+
+正常构建：sh /Users/yangruihan/Workspace/mac_tools/scripts/build-app.sh → /Users/yangruihan/Workspace/mac_tools/build/MacTools.app。Sources已并入已验证界面入口；共享构建用ICE_MENU_BAR_INTEGRATED保留五插件/旧设置。父包仅允许原候选或正式com.ryanai.mactools、仍须严格签名及原team；不取消桌面、身份、所有权或50ms检查。
+
+源码改动未额外提交或推送；你的既有ProductTrial编辑保留。

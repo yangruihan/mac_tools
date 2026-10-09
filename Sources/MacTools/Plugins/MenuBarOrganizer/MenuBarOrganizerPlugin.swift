@@ -762,8 +762,9 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         return AnyView(MenuBarIceCandidateProductView())
         #elseif ICE_MENU_BAR_INTEGRATED
         return AnyView(VStack(alignment:.leading,spacing:20) {
-            MenuBarIceCandidateProductView()
-            DisclosureGroup("原有收纳设置") { MenuBarOrganizerView(plugin: self) }
+            MenuBarOrganizerView(plugin: self)
+            DisclosureGroup("开发诊断 · 单轮验证（仅排障）") { MenuBarIceCandidateProductView() }
+                .accessibilityIdentifier("menu-bar-developer-diagnostics")
         })
         #else
         return AnyView(MenuBarOrganizerView(plugin: self))
@@ -773,10 +774,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         #if ICE_MENU_BAR_CANDIDATE
         return AnyView(Button("打开 Ice 候选") { self.openToolbox() })
         #elseif ICE_MENU_BAR_INTEGRATED
-        return AnyView(VStack {
-            Button("打开 Ice 菜单栏试用") { self.openToolbox() }
-            MenuBarOrganizerMenu(plugin: self)
-        })
+        return AnyView(MenuBarOrganizerMenu(plugin: self))
         #else
         return AnyView(MenuBarOrganizerMenu(plugin: self))
         #endif

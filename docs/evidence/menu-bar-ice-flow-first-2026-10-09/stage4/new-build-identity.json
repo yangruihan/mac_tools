@@ -1,0 +1,19 @@
+{
+  "app": "/Users/yangruihan/Workspace/mac_tools/build/ice-interface-integrated/MacTools.app",
+  "info": {
+    "CFBundleExecutable": "MacTools",
+    "CFBundleIconFile": "AppIcon",
+    "CFBundleIdentifier": "com.ryanai.mactools",
+    "CFBundleName": "Mac 工具箱",
+    "CFBundlePackageType": "APPL",
+    "CFBundleShortVersionString": "0.2.2",
+    "CFBundleVersion": "6",
+    "LSMinimumSystemVersion": "14.0",
+    "LSUIElement": true,
+    "MacToolsIceIntegrationEnabled": true,
+    "MacToolsSourceRevision": "fbf2c4a63023b1e24cbd0433f60a2cdfb02a9b1c",
+    "MacToolsUncommittedSource": true,
+    "NSHighResolutionCapable": true
+  },
+  "hostSHA256": "c2b12a9f7fd6067079703f3558862f18593964883944e41cbba70a50b668a782"
+}

@@ -1,0 +1,98 @@
+{
+  "status": "complete",
+  "ACTIVE_OBJECT": "Stage4 installed integrated MacTools",
+  "LAST_CONFIRMED_RESULT": "/Applications/MacTools.app0.2.2(6) installed and reopened; five plugins, original presets/settings and recovery records retained; installed QQ publication/cancel0 posts; no pending",
+  "NEXT_EXECUTABLE_ACTION": "User experiences the integrated MacTools; optimize only concrete feedback, no new feature expansion",
+  "installedPath": "/Applications/MacTools.app",
+  "version": "0.2.2",
+  "build": "6",
+  "bundleIdentifier": "com.ryanai.mactools",
+  "hostSHA256": "c2b12a9f7fd6067079703f3558862f18593964883944e41cbba70a50b668a782",
+  "workerSHA256": "01d9cee348a227dee9bcbf0de2ff5d3def8846ca93d61cf4a22b9748ef9d0d8a",
+  "normalBuildCommand": "sh /Users/yangruihan/Workspace/mac_tools/scripts/build-app.sh",
+  "normalBuildOutput": "/Users/yangruihan/Workspace/mac_tools/build/MacTools.app",
+  "formalRuntimeSources": "normal Sources/MacTools; no evidence/tmp dependency for interface worker",
+  "allFivePluginsRetained": true,
+  "originalCriticalSettingsValuesEqual": {
+    "criticalOriginalKeysPreserved": [
+      "app.windowShortcut",
+      "plugin.keep-awake.enabled",
+      "plugin.menu-bar-organizer.optedIn",
+      "plugin.menu-bar-organizer.presentationMode",
+      "plugin.menu-bar-organizer.priorMainPosition",
+      "plugin.menu-bar-organizer.visibleLimit",
+      "plugin.quick-controls.presets",
+      "plugin.quick-controls.unlockShortcut",
+      "plugin.window-preview.frameRate",
+      "presets",
+      "unlockShortcut",
+      "windowShortcut"
+    ],
+    "criticalValuesEqual": true,
+    "missingOriginalCriticalKeys": [],
+    "volatileWindowStatusPositionsComparedAsSettings": false
+  },
+  "backup": "/Users/yangruihan/Documents/MacTools正式版回滚/2026-10-09-before-stage4-515c9640",
+  "appRollback": "/Users/yangruihan/Documents/MacTools正式版回滚/2026-10-09-before-stage4-515c9640/ROLLBACK_APP.sh",
+  "sourcePatch": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage4/source.patch",
+  "appRollbackSeparateCopyOriginal515cHashAndInputVerified": true,
+  "sourceRollbackAndPatchExact9FilesVerified": true,
+  "swiftTestCount": 500,
+  "swiftFailures": 0,
+  "installedZeroInputGuiCheck": {
+    "session": "/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/session-582D30B2-299C-48CC-98CD-C228432FE1BA",
+    "nonce": "582D30B2-299C-48CC-98CD-C228432FE1BA",
+    "ready": {
+      "fixturePID": null,
+      "frontPID": 93149,
+      "hitTestRequired": false,
+      "nativePosts": 0,
+      "nonce": "582D30B2-299C-48CC-98CD-C228432FE1BA",
+      "pid": 93149,
+      "strictANYRequired": false,
+      "windowKey": true,
+      "windowNumber": 358288,
+      "windowVisible": true
+    },
+    "result": {
+      "diagnosticUserEscObservations": [],
+      "failure": "cancelledBeforeStart",
+      "nonce": "582D30B2-299C-48CC-98CD-C228432FE1BA",
+      "posts": 0,
+      "realClosedLoopVerified": false,
+      "stage": "ready"
+    },
+    "cleanup": {
+      "atUnix": 1791545126.9822068,
+      "fixtureExited": true,
+      "installedSHA256": "c2b12a9f7fd6067079703f3558862f18593964883944e41cbba70a50b668a782",
+      "journalPending": false
+    },
+    "productEntryViaCUA": true,
+    "StartPressed": false
+  },
+  "gui": {
+    "formalRunning": [
+      "94211 /Applications/MacTools.app/Contents/MacOS/MacTools"
+    ],
+    "uiTitle": "Mac 工具箱",
+    "sidebarPlugins": [
+      "快捷控制",
+      "保持唤醒",
+      "屏蔽内置触控板",
+      "窗口悬浮预览",
+      "菜单栏收纳"
+    ],
+    "oldSettingsDisclosureVisible": true,
+    "quickControlsOriginalPresetsObserved": true,
+    "initialQQEntryReadyForExperience": true,
+    "sourceBinarySHA256": "c2b12a9f7fd6067079703f3558862f18593964883944e41cbba70a50b668a782",
+    "nativePostsThisTurn": 0,
+    "nativeWorkerRunning": false
+  },
+  "pendingRecovery": false,
+  "nativeQQMovementThisTurn": 0,
+  "realQQMovementAfterFormalInstallNotClaimed": true,
+  "previousRealQQOrdinaryAndFullscreenProductAcceptanceRetained": true,
+  "notCommittedOrPushed": true
+}

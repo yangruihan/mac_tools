@@ -1,0 +1,46 @@
+{
+  "MODIFIED_FILE": {
+    "path": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/MODIFIED_FILE.swift",
+    "bytes": 11903,
+    "sha256": "2f734a3a12287213b65d0a9d8e0c65ace6c05e17c535e179c15d8f1791f95bd1"
+  },
+  "DIFF_FILE": {
+    "path": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/DIFF_FILE.patch",
+    "bytes": 17604,
+    "sha256": "a1f72270cbf68c5ad284b85c7c0472486a082ef768b07ff841277ba4e0e13535"
+  },
+  "VERIFICATION": {
+    "path": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/VERIFICATION.txt",
+    "bytes": 957719,
+    "sha256": "3040e2b76e29563218d407a440947d757c1fc3058f39bc67c35ced78cd7ddbd2"
+  },
+  "ROLLBACK": {
+    "path": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+    "bytes": 2904,
+    "sha256": "5ccc3c72d28b30507b0bc6e6ede28acc4370e51631719236d19dadac35edac6d"
+  },
+  "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage4/completion.json": {
+    "bytes": 4111,
+    "sha256": "c0652476ffbb296e90391c26d77acd3fbebe87b3d6f330a98f61b4021545a869"
+  },
+  "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/stage4/source.patch": {
+    "bytes": 65759,
+    "sha256": "1e10591b1735b7e8768a80dc57906989495751469623af9f974dd70ea98848fc"
+  },
+  "/Users/yangruihan/Documents/MacTools\u6b63\u5f0f\u7248\u56de\u6eda/2026-10-09-before-stage4-515c9640/ROLLBACK_APP.sh": {
+    "bytes": 1456,
+    "sha256": "1fb4c514fc62bcb15e86d1411b7f4004b6df2df90a6180998bbdd593138a8245"
+  },
+  "/Users/yangruihan/Documents/MacTools\u6b63\u5f0f\u7248\u56de\u6eda/2026-10-09-before-stage4-515c9640/MacTools.app/Contents/MacOS/MacTools": {
+    "bytes": 4503072,
+    "sha256": "515c9640ea01039d0157a57cae81893547cfac04b404b6ce41086461bfbce9a2"
+  },
+  "/Applications/MacTools.app/Contents/MacOS/MacTools": {
+    "bytes": 8340736,
+    "sha256": "c2b12a9f7fd6067079703f3558862f18593964883944e41cbba70a50b668a782"
+  },
+  "/Users/yangruihan/Workspace/mac_tools/docs/MENUBAR_ICE_FORMAL_INTEGRATION.txt": {
+    "bytes": 1901,
+    "sha256": "0c309e9c59426c450e4a3181db40ac49ed46d487c2873f37265dfc1f667d0681"
+  }
+}

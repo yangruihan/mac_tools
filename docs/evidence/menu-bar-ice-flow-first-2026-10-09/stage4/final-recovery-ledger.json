@@ -1,0 +1,9 @@
+{
+  "command": [
+    "/Applications/MacTools.app/Contents/MacOS/MacTools",
+    "--ice-interface-recovery"
+  ],
+  "exit": 0,
+  "stdout": "{\n  \"evidenceDirectory\" : \"\\/Users\\/yangruihan\\/Library\\/Application Support\\/MacTools\\/IceInterfaceCandidate\\/selected-relative-recovery-v2\",\n  \"journalPending\" : false,\n  \"nativePosts\" : 0,\n  \"nonce\" : null,\n  \"recordsCleared\" : 0,\n  \"recordSHA256\" : null,\n  \"unconfirmedDown\" : false\n}\n",
+  "stderr": ""
+}
