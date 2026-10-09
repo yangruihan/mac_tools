@@ -1,0 +1,114 @@
+{
+  "ACTIVE_OBJECT": "/tmp/mac-tools-ice-interface-product-candidate-20261009/Worker/Ice Selected Controller.app",
+  "LAST_CONFIRMED_RESULT": {
+    "session": "/tmp/mac-tools-ice-interface-product-candidate-20261009/Worker/session-53E57644-C45E-4F1E-8083-349759EC9445",
+    "nonce": "53E57644-C45E-4F1E-8083-349759EC9445",
+    "realClosedLoopVerified": true,
+    "actualPosts": 14,
+    "activeInterfaceSeconds": 47.16137958341278,
+    "inactiveThenWaitSeconds": 15.015096583170816,
+    "totalOperationSeconds": 63.406682416796684,
+    "routeCount": 6,
+    "rawReceiptCount": 10,
+    "pairedGestureStatus": [
+      "pairedTransportReturned",
+      "pairedTransportReturned",
+      "pairedTransportReturned"
+    ],
+    "pendingRecovery": false,
+    "cleanup": {
+      "atUnix": 1791521634.063148,
+      "fixtureExited": true,
+      "installedSHA256": "515c9640ea01039d0157a57cae81893547cfac04b404b6ce41086461bfbce9a2",
+      "journalPending": false
+    },
+    "interfaceCompletion": {
+      "criterion": "iceTrackedInterfaceInactiveV9",
+      "display": 1,
+      "firstInactiveAt": 1837779.4688308334,
+      "kind": "ordinaryWindow",
+      "level": 0,
+      "nativeObservation": true,
+      "nonce": "53E57644-C45E-4F1E-8083-349759EC9445",
+      "owner": {
+        "executable": "/Applications/QQ.app/Contents/MacOS/QQ",
+        "identifier": "com.tencent.qq",
+        "launch": 1791499568.56596,
+        "pid": 58349,
+        "sha256": "35453afefbecb877a3b7c3e81111b3ea2debec75e263a0e4ac1e0338659dedbd",
+        "team": "FN2V63AD2J"
+      },
+      "secondInactiveAt": 1837794.9857711252,
+      "space": 4634,
+      "windowID": 355000
+    },
+    "returnEvidence": {
+      "atUptime": 1837794.9816405834,
+      "criterion": "iceNeighborEdgeV4",
+      "fullQueueRequired": false,
+      "neighborFrame": "{{1241, 0}, {38, 37}}",
+      "neighborID": 354357,
+      "nonce": "53E57644-C45E-4F1E-8083-349759EC9445",
+      "relativeFullQueueVerified": false,
+      "returnOnLeft": true,
+      "targetFrame": "{{1209, 0}, {32, 37}}",
+      "targetID": 351689,
+      "targetPID": 58349
+    },
+    "programEntry": "existing project session CLI; Start via CUA",
+    "defocusActor": "not attributed; actual owner inactive transition observed after >32 seconds",
+    "returnOnlySetupPosts": 6,
+    "ordinaryClosedLoopTestPosts": 14,
+    "originalNeighborRestarted": true,
+    "newNeighborID": 354357,
+    "fullScreenProductEntryAcceptanceClaimed": false
+  },
+  "NEXT_EXECUTABLE_ACTION": "Stop objective testing. Await user subjective experience feedback; keep the same working candidate and role set. Formal installation/integration remain unrequested.",
+  "INPUT_PATHS": [
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/MODIFIED_FILE.swift",
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/MODIFIED_PLAN.swift",
+    "/tmp/mac-tools-ice-interface-product-candidate-20261009/Worker/prepared-build.json"
+  ],
+  "ACCEPTANCE_EVENT": "Observed real QQ move -> interface active/inactive -> 15 second wait -> original neighbor edge returned; journal cleared.",
+  "workerSHA256": "9012bb7af4915f10cb230db652f376bf930ee8a394fd2d6e18cf0c09247c019f",
+  "formalInstalledSHA256": "515c9640ea01039d0157a57cae81893547cfac04b404b6ce41086461bfbce9a2",
+  "newWorkerPostsThisTurn": 30,
+  "successfulQQPosts": 14,
+  "failedQQPosts": 2,
+  "selfOwnedPosts": 14,
+  "UIInputPostCountUnknown": true,
+  "baselineModifiedRollbackOffline": [
+    63,
+    507
+  ],
+  "roles": {
+    "TARGET": "/Users/yangruihan/Workspace/mac_tools/Tools/IceInterfaceProductWorker/IceSelectedWorkflow.swift",
+    "targetSHA256": "9a033598ba0c7251bea98c7a10d2c95d5a2107d19378f19bc4fbcc8327765f7b",
+    "GOAL": "runNative.verifyReturned: original Ice neighbor edge only; remove redundant absolute geometry/full-peer audit and unreachable relative-return branch; IceSelectedRuntime.check keeps live PID/start/path/scope checks, moves signature hashing/validation out of 50ms route; executeInterface engine budget explicitly matches existing 90-second coordinator, keeping original 15-second delay and 50ms routes; interface lease selects first new same-owner window like Ice, tolerating additional/rebuilt owner windows without replacing tracked ID.",
+    "MODIFIED_FILE": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/MODIFIED_FILE.swift",
+    "DIFF_FILE": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/DIFF_FILE.patch",
+    "VERIFICATION": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/VERIFICATION.txt",
+    "ROLLBACK": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/ROLLBACK.sh",
+    "supplementalModified": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/MODIFIED_PLAN.swift",
+    "supplementalBaseline": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/BASELINE_PLAN.swift",
+    "supplementalTarget": "/Users/yangruihan/Workspace/mac_tools/Tools/IceInterfaceProductWorker/IceSelectedPlan.swift",
+    "supplementalTargetSHA256": "60f07e11c893c22e4f6fb4aa47101934b63d5d6b221f4050414ba562ce1f9fe7",
+    "supplementalDelayChecks": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/MODIFIED_DELAY_CHECKS.swift",
+    "latestFailureNonce": "F9528D46-C25B-42B8-992F-8BB519FC41C8",
+    "supplementalInterfaceLease": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/MODIFIED_INTERFACE_LEASE.swift",
+    "supplementalInterfaceChecks": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/MODIFIED_INTERFACE_CHECKS.swift"
+  },
+  "remaining": "Ordinary desktop QQ long occupied-interface path verified once; full-screen product-entry desktop transition and other icons/right-button not verified.",
+  "QQWaitSeconds": 15.025111875031143,
+  "productUI": "Existing candidate relaunched; self-test/refresh controls enabled; recovery UI reads no pending responsibility. No new session started from product UI.",
+  "newAssistantNativePostsThisFollowup": 0,
+  "pageClickFixLatest": {
+    "ACTIVE_OBJECT": "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift",
+    "LAST_CONFIRMED_RESULT": "build14 simplified page; human accepted left panel and right menu",
+    "NEXT_EXECUTABLE_ACTION": "none for requested two fixes",
+    "INPUT_PATHS": [
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/page-click-20261010/completion.json"
+    ],
+    "ACCEPTANCE_EVENT": "user physical left/right click accepted; integrated 501/0 and rollback500/0"
+  }
+}

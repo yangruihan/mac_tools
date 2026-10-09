@@ -1,5 +1,15 @@
 #!/bin/sh
 set -eu
+if [ "${1:-}" = "--page-click-installed-app" ]; then
+ [ "$#" -eq 2 ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ exec "$DIR/page-click-20261010/ROLLBACK_INSTALLED_APP.sh" "$2"
+fi
+if [ "${1:-}" = "--page-click-source" ]; then
+ [ "$#" -eq 2 ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ exec "$DIR/page-click-20261010/ROLLBACK.sh" "$2"
+fi
 if [ "${1:-}" = "--panel-drag-installed-app" ]; then
  [ "$#" -eq 2 ] || exit 2
  DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)

@@ -165,6 +165,9 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         control.autosaveName = Self.controlName
         control.button?.image = NSImage(systemSymbolName: "rectangle.3.group", accessibilityDescription: "显示隐藏的菜单栏图标")
         control.button?.target = self; control.button?.action = #selector(controlClicked)
+        control.button?.setAccessibilityIdentifier("menu-bar-organizer-control")
+        control.button?.setAccessibilityLabel("菜单栏收纳")
+        control.button?.toolTip = "左键打开图标面板；右键更多操作"
         control.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
         let divider = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         divider.autosaveName = Self.dividerName
@@ -178,7 +181,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
                          perform: { [weak self] in self?.toggleNative() })])
         environmentMonitor = MenuBarEnvironmentMonitor { [weak self] change in self?.environmentChanged(change) }
         environmentMonitor?.start()
-        status = "已启用。请将收纳按钮留在分隔符右侧，再用 ⌘ 拖动需要收纳的图标。"
+        status = "已启用。"
         saveOptIn(true)
         Self.prepareMainStatusPosition()
         if nativeRevealPreviewEnabled {
@@ -344,7 +347,14 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
             NSMenu.popUpContextMenu(menu, with: event, for: button)
             return
         }
-        if presentationMode == .native { toggleNative() } else { openShelf() }
+        if Self.opensPanelOnLeftClick(presentationMode) { openShelf() } else { toggleNative() }
+    }
+    static func opensPanelOnLeftClick(_ mode:OrganizerPresentationMode)->Bool {
+        #if ICE_MENU_BAR_INTEGRATED
+        return true
+        #else
+        return mode == .panel
+        #endif
     }
     @objc private func toggleFromMenu() { toggleNative() }
     @objc private func arrangeFromMenu() { arrangeNativeIcons() }
@@ -361,7 +371,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
     func arrangeNativeIcons() {
         MainActor.assumeIsolated { operationCoordinator?.releaseUnmovedInteraction() }
         expand()
-        if isOrganizing { status = "手动编辑：在屏幕顶部按住 ⌘ 拖动；│ 左侧收纳、右侧常驻，同侧拖动换序。完成后点击收起。" }
+        if isOrganizing { status = "原生排列中；按住 ⌘ 拖动图标。" }
     }
     func openShelf() {
         guard isOrganizing else { return }
@@ -377,7 +387,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         closePanel()
         divider?.length = NSStatusItem.variableLength
         visibility.expand()
-        if isOrganizing { status = "已展开；直接点击原生图标，或按住 ⌘ 手动排列。再次点击 / ⌃⌥⌘H 收起。" }
+        if isOrganizing { status = "原生图标已展开。" }
     }
     private func recoveryControlVisible() -> Bool {
         guard let button = control?.button, let window = button.window, window.isVisible else { return false }
@@ -636,7 +646,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         let keptCollapsed = visibility.dismissPopover()
         if !keptCollapsed { divider?.length = NSStatusItem.variableLength }
         if isOrganizing {
-            status = keptCollapsed ? "已收起；浮窗已关闭，常驻图标保持可见。⌃⌥⌘H / ⌃⌥⌘R 或右键菜单可展开。" : "采集已取消；原生图标保持展开。"
+            status = keptCollapsed ? "面板已关闭，收纳保持。" : "采集已取消；原生图标保持展开。"
         }
     }
     func popoverDidClose(_ notification: Notification) {
@@ -971,7 +981,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         #elseif ICE_MENU_BAR_INTEGRATED
         return AnyView(VStack(alignment:.leading,spacing:20) {
             MenuBarOrganizerView(plugin: self)
-            DisclosureGroup("开发诊断 · 单轮验证（仅排障）") { MenuBarIceCandidateProductView() }
+            DisclosureGroup("故障诊断") { MenuBarIceCandidateProductView() }
                 .accessibilityIdentifier("menu-bar-developer-diagnostics")
         })
         #else
@@ -1174,24 +1184,29 @@ private struct MenuBarOrganizerView: View {
                     Text(plugin.visibility.state == .collapsing ? "正在收起" : plugin.isCollapsed ? "已收起" : plugin.isOrganizing ? "已展开" : "未启用")
                         .font(.caption).foregroundStyle(.secondary)
                 }
+                #if ICE_MENU_BAR_INTEGRATED
+                Text("左键打开面板，右键更多操作。拖动图标可换序或改变收纳归属。")
+                    .font(.callout).foregroundStyle(.secondary)
+                #else
                 Picker("普通点击", selection: Binding(get: { plugin.presentationMode }, set: plugin.setPresentationMode)) {
                     ForEach(OrganizerPresentationMode.allCases, id: \.self) { Text($0.title).tag($0) }
                 }.pickerStyle(.segmented)
                 Text("原生展开无需录屏或辅助功能权限；点击后直接操作真实图标。刘海或菜单栏拥挤时，展开也可能显示不全。")
                     .font(.callout).foregroundStyle(.secondary)
+                #endif
                 HStack {
                     if plugin.isOrganizing {
-                        Button(plugin.presentationMode == .native ? (plugin.isCollapsed ? "展开原生图标" : "收起原生图标") : "打开 / 关闭图标面板") {
-                            plugin.presentationMode == .native ? plugin.toggleNative() : plugin.openShelf()
+                        Button(MenuBarOrganizerPlugin.opensPanelOnLeftClick(plugin.presentationMode) ? "打开图标面板" : (plugin.isCollapsed ? "展开原生图标" : "收起原生图标")) {
+                            MenuBarOrganizerPlugin.opensPanelOnLeftClick(plugin.presentationMode) ? plugin.openShelf() : plugin.toggleNative()
                         }.buttonStyle(.borderedProminent)
                             .disabled(plugin.nativeRevealBlocksLayout)
-                        Button("编辑布局…") { plugin.arrangeNativeIcons() }
+                        Button("原生排列…") { plugin.arrangeNativeIcons() }
                             .accessibilityIdentifier("menu-bar-edit-native-layout")
                             .disabled(plugin.nativeRevealBlocksLayout)
-                        Button("收纳图标…") { plugin.refreshNotchDirectory() }
+                        Button("图标列表…") { plugin.refreshNotchDirectory() }
                             .accessibilityIdentifier("menu-bar-open-notch-directory")
                         Spacer()
-                        Button("关闭功能") { plugin.turnOff() }
+                        Button("停用") { plugin.turnOff() }
                     } else {
                         Button("启用菜单栏收纳") { plugin.enable() }.buttonStyle(.borderedProminent)
                     }
@@ -1219,7 +1234,7 @@ private struct MenuBarOrganizerView: View {
                             }.frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
-                    DisclosureGroup("刘海与收纳图标 · 无需截图", isExpanded: $plugin.showsNotchDirectory) {
+                    DisclosureGroup("图标列表", isExpanded: $plugin.showsNotchDirectory) {
                         VStack(alignment: .leading, spacing: 10) {
                             HStack {
                                 Button("重新读取") { plugin.refreshNotchDirectory() }
@@ -1253,14 +1268,14 @@ private struct MenuBarOrganizerView: View {
                                     }
                                 }.frame(maxHeight: 220)
                             }
-                            Text("目录按窗口位置分类，不保证原图标可见。打开会按 Ice 流程临时露出原图标，无需录屏；界面不再占用15秒后归位。拖动整理仍需原图标进入可见区。")
+                            Text("无需截图读取图标；点击“打开”使用原应用。")
                                 .font(.caption).foregroundStyle(.secondary)
                         }.padding(.top, 8)
                     }
                 }
-                DisclosureGroup("高级 · 图标面板", isExpanded: $plugin.showsAdvancedOptions) {
+                DisclosureGroup("权限与帮助", isExpanded: $plugin.showsAdvancedOptions) {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("图标面板采集需要屏幕录制权限；打开时临时露出原图标，界面不再占用15秒后归位。外点 / Esc 清除浮窗缓存，原生收纳保持。")
+                        Text("图标面板需要屏幕录制；打开图标需要辅助功能权限。")
                             .font(.caption).foregroundStyle(.secondary)
                         HStack {
                             Button(plugin.isCapturing ? "取消图标采集" : "打开 / 关闭图标面板") { plugin.openShelf() }.disabled(!plugin.isOrganizing)
@@ -1269,7 +1284,7 @@ private struct MenuBarOrganizerView: View {
                                 Button("辅助功能权限") { plugin.requestAccessibilityPermission() }
                             }
                         }
-                        Text("排列请展开原生菜单栏，按住 ⌘ 手动拖动；可在缩略图面板拖放换序或改变收纳归属；不按数量自动整理。")
+                        Text("面板拖放保存排列；原生排列请按住 ⌘ 拖动。")
                             .font(.caption).foregroundStyle(.secondary)
                     }.padding(.top, 8)
                 }

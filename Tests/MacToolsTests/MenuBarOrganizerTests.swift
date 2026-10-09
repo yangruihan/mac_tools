@@ -55,6 +55,16 @@ final class MenuBarOrganizerTests: XCTestCase {
         XCTAssertEqual(defaults.dictionaryRepresentation() as NSDictionary, before as NSDictionary)
         XCTAssertEqual(plugin.status, MenuBarOperationFailure.movementUnavailable.message)
     }
+    func testLeftClickRouteDoesNotUseInvisibleNativeToggleInIntegratedBuild() {
+        #if ICE_MENU_BAR_INTEGRATED
+        XCTAssertTrue(MenuBarOrganizerPlugin.opensPanelOnLeftClick(.native))
+        XCTAssertTrue(MenuBarOrganizerPlugin.opensPanelOnLeftClick(.panel))
+        #else
+        XCTAssertFalse(MenuBarOrganizerPlugin.opensPanelOnLeftClick(.native))
+        XCTAssertTrue(MenuBarOrganizerPlugin.opensPanelOnLeftClick(.panel))
+        #endif
+    }
+
     func testResidentPartitionIncludesAllSevenAppsBetweenDividerAndControl() {
         let screen = CGRect(x: 0, y: 0, width: 2056, height: 1329)
         let divider = CGRect(x: 1314, y: 0, width: 24, height: 43)

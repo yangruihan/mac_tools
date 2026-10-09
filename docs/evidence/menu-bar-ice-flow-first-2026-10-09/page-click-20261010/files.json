@@ -1,0 +1,6 @@
+{
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": "024cf79b878f8701f8a40ae7b79e389efc0cff2256c1e5282fdbd127ae107329",
+  "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarNativeEditingView.swift": "0bebb526e8404d3b0532910d913d953288b4f91a63a465e4b43cc78261bb4429",
+  "Tests/MacToolsTests/MenuBarOrganizerTests.swift": "cf313829482351bd935eb1419dc2f35a0580a9b017a4ae6a7affe433c860770b",
+  "scripts/build-ice-interface-product-candidate.sh": "f7c484c382a63c63a9e8b440fabb6bebcbe6b3b78228183d7aa1775b0efb15f6"
+}

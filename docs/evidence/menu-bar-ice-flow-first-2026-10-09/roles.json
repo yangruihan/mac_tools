@@ -235,5 +235,72 @@
       "fixtureCleanup": "explicit .quit requested, no fixture process remains"
     },
     "installedAppRollback": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/panel-drag-20261010/ROLLBACK_INSTALLED_APP.sh"
+  },
+  "pageClickFix": {
+    "baseline": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/page-click-20261010/baseline",
+    "modified": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/page-click-20261010/modified",
+    "patch": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/page-click-20261010/source.patch",
+    "rollback": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/page-click-20261010/ROLLBACK.sh",
+    "installedAppRollback": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/page-click-20261010/ROLLBACK_INSTALLED_APP.sh",
+    "completion": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/page-click-20261010/completion.json",
+    "status": {
+      "status": "accepted",
+      "installed": "/Applications/MacTools.app",
+      "build": 14,
+      "hostSHA256": "c96e86b135868df6cfd3941218a1ae3cdc544cb28543c73b90945eeaffd5e89b",
+      "baselineCommit": "646483fc47a78a321e3cf4a8e532a539b53392da",
+      "changedSymbols": [
+        "MenuBarOrganizerPlugin.controlClicked/opensPanelOnLeftClick",
+        "MenuBarOrganizerView",
+        "MenuBarNativeEditingView"
+      ],
+      "baseline": {
+        "swiftTests": 500,
+        "failures": 0,
+        "exit": 0,
+        "leftClickRoute": "persisted native mode toggles native bar; actual baseline hardware click was user reported, not assistant reproduced"
+      },
+      "modified": {
+        "swiftTests": 501,
+        "integratedTests": 501,
+        "failures": 0,
+        "exit": 0,
+        "leftClickRoute": "integrated .native and .panel both openShelf; legacy .native still native toggle"
+      },
+      "rollback": {
+        "swiftTests": 500,
+        "failures": 0,
+        "exit": 0,
+        "sourceHashesEqualBaseline": true,
+        "appSHA256": "1dfc5fbbb66c64f913fbbb1769d0370bc35afb171c6ecf0fbb489169ac0afd73",
+        "separateCopyOnly": true
+      },
+      "humanAcceptance": {
+        "question": "请在当前 build 14 左键点一次顶部“菜单栏收纳”图标：是否出现缩略图面板？如果方便，再右键确认菜单仍出现。无需拖图标或修改设置。",
+        "answer": "左键面板、右键菜单都正常",
+        "scope": "user physical click confirmation; assistant did not synthesize status item click"
+      },
+      "toolLimit": {
+        "attempt": "CUA native coordinate click status item",
+        "error": "windowNotFoundAtPosition((1337.5,18.5))",
+        "actualStatusItemInput": false
+      },
+      "preserved": [
+        "right-click menu",
+        "native layout entry",
+        "persisted preferences",
+        "existing failure/recovery journals"
+      ],
+      "notRetested": [
+        "third-party drag/restart persistence",
+        "fullscreen in-place/multiple displays"
+      ],
+      "sourceHashes": {
+        "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": "2684d6d85b6eea66e17243d3bb28dfd44fc380b02aa851693ccbcdd9779a21d3",
+        "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarNativeEditingView.swift": "bdc88c85ae914add791bda9349b3255e011f678d99f146a2ff712bdfe874a3cf",
+        "Tests/MacToolsTests/MenuBarOrganizerTests.swift": "b4d0f3b110aad4cbe831f3972571d29b66b0213f904093bdf788308e44df012d",
+        "scripts/build-ice-interface-product-candidate.sh": "8dbe7242776ff13c919ced017a0ca8408ab3c50e85ef7ec7ef64d62c5e797955"
+      }
+    }
   }
 }
