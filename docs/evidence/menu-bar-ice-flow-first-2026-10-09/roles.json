@@ -227,7 +227,7 @@
       "fullAppRestoredSHA256": "3e7df2686b2f315818aad072f9a585b2649c043730a5c6e6570f33cc921a3429",
       "componentRestoredSHA256": "c13cb6284e48ae944528e446cb6cdb58a2035c25e9dbcebca6c367465a42be6b",
       "remainingQA": [
-        "third-party icon layout and restart persistence not separately accepted"
+        "third-party icon behavior and app-specific autosave participation not separately accepted"
       ],
       "fixtureCleanup": "explicit .quit requested, no fixture process remains"
     },
@@ -610,6 +610,187 @@
         "production nonactivating panel not re-tested for every individual gesture"
       ],
       "committedNewFix": true
+    }
+  },
+  "restartPersistenceAcceptance": {
+    "completion": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/persistence-20261010/completion.json",
+    "nativeAssert": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/persistence-20261010/assert-persistence.py",
+    "nativeOutput": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/persistence-20261010/native-check.stdout",
+    "qaSource": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/persistence-20261010/BoundaryMain.swift",
+    "fixtureBaseline": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/persistence-20261010/Fixture-before-graceful-exit.swift",
+    "fixtureModified": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/persistence-20261010/Fixture.swift",
+    "fixtureDiff": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/persistence-20261010/fixture-exit.patch",
+    "status": {
+      "status": "owned-application-restart-persistence-accepted",
+      "commitCompleted": "8747c0c6",
+      "installed": {
+        "path": "/Applications/MacTools.app",
+        "build": 17,
+        "sha256": "126033183665ec6ef87f681dcf1359824fff63a3832ee6c605e714b584ae9a85",
+        "unchanged": true
+      },
+      "target": "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift",
+      "targetSHA256": "7fbf0ba0592b2337cb9c9daf7ae2ca5bb83ae03da594cd52d64e12738afde20a",
+      "changedProductionSymbol": null,
+      "checks": {
+        "hostRestart": {
+          "passed": true,
+          "hostPIDs": [
+            47968,
+            52773
+          ],
+          "fixturePIDs": [
+            47801,
+            47801
+          ],
+          "order": [
+            "N",
+            "R",
+            "T"
+          ],
+          "hidden": [
+            "N",
+            "R"
+          ],
+          "resident": [
+            "T"
+          ],
+          "enabled": true,
+          "mode": "panel",
+          "legacyVisibleLimit": 7,
+          "savedSettings": {
+            "optedIn": "true",
+            "presentationMode": "\"panel\"",
+            "visibleLimit": "7"
+          },
+          "savedPositions": {
+            "persist_163bd897-c052-479e-b969-109bd2d1dbbb_N": 1219,
+            "persist_163bd897-c052-479e-b969-109bd2d1dbbb_T": 1099,
+            "persist_163bd897-c052-479e-b969-109bd2d1dbbb_R": 1190
+          }
+        },
+        "hostAndFixtureRestart": {
+          "passed": true,
+          "hostPIDs": [
+            57963,
+            60183
+          ],
+          "fixturePIDs": [
+            57817,
+            59840
+          ],
+          "order": [
+            "N",
+            "R",
+            "T"
+          ],
+          "hidden": [
+            "N",
+            "R"
+          ],
+          "resident": [
+            "T"
+          ],
+          "enabled": true,
+          "mode": "panel",
+          "legacyVisibleLimit": 7,
+          "savedSettings": {
+            "optedIn": "true",
+            "presentationMode": "\"panel\"",
+            "visibleLimit": "7"
+          },
+          "savedPositions": {
+            "persist_163bd897-c052-479e-b969-109bd2d1dbbb_N": 1220,
+            "persist_163bd897-c052-479e-b969-109bd2d1dbbb_T": 1138,
+            "persist_163bd897-c052-479e-b969-109bd2d1dbbb_R": 1191
+          }
+        },
+        "disabledRestart": {
+          "passed": true,
+          "hostPIDs": [
+            60183,
+            60996
+          ],
+          "fixturePIDs": [
+            59840,
+            59840
+          ],
+          "order": [],
+          "hidden": [],
+          "resident": [],
+          "enabled": false,
+          "mode": "panel",
+          "legacyVisibleLimit": 7,
+          "savedSettings": {
+            "optedIn": "false",
+            "presentationMode": "\"panel\"",
+            "visibleLimit": "7"
+          },
+          "savedPositions": {
+            "persist_163bd897-c052-479e-b969-109bd2d1dbbb_T": 1138,
+            "persist_163bd897-c052-479e-b969-109bd2d1dbbb_N": 1220,
+            "persist_163bd897-c052-479e-b969-109bd2d1dbbb_R": 1191
+          }
+        }
+      },
+      "nativeScene": "self-owned named NSStatusItems N/T/R, isolated settings suite, native actual-layout driver and signed unchanged worker; new PIDs and IDs across both restart",
+      "startupOverrideEnable": false,
+      "settingsReadBackWithoutRewrite": true,
+      "sourceAllowlist": "fresh fixture PID and exactly N/T/R IDs; no user icon accepted",
+      "QAWindowDifference": "QA-only activating and main-capable floating panel for CUA window addressing; production nonactivating/non-main policy unchanged; drag/click/return logic and signed worker untouched",
+      "initialFixtureFailurePreserved": {
+        "before": "before-both-restart.json",
+        "after": "after-both-restart.json",
+        "cause": "fixture explicitly removeStatusItem cleared its own autosaved preferred-position keys; changed fixture-only termination to normal app exit and flush existing native preferences",
+        "productionCodeChangedForFailure": false
+      },
+      "layoutEnginePosts": 24,
+      "layoutEnginePostsDuringRestart": 0,
+      "layoutSessions": [
+        {
+          "nonce": "FFF0777F-DFF0-46A5-9735-45944969ADB5",
+          "posts": 6,
+          "source": 368311,
+          "destination": 368310
+        },
+        {
+          "nonce": "D1A96AA4-4858-4A29-A5AF-F94C5D178FCD",
+          "posts": 6,
+          "source": 368390,
+          "destination": 368394
+        },
+        {
+          "nonce": "8435121E-354E-438B-B2F8-1C6417321405",
+          "posts": 6,
+          "source": 368391,
+          "destination": 368392
+        },
+        {
+          "nonce": "F8FB8E18-FF11-4AA3-8038-ED0107EB6317",
+          "posts": 6,
+          "source": 368310,
+          "destination": 368321
+        }
+      ],
+      "nonfixtureGlyphRelativeOrderUnchanged": 25,
+      "userAppsDragged": false,
+      "journalPending": false,
+      "testAppsStopped": true,
+      "formalAppRestored": true,
+      "swiftTests": 503,
+      "swiftFailures": 0,
+      "sourceTransactionBaselineModifiedRollback": [
+        503,
+        503,
+        503
+      ],
+      "sourceTransactionNote": "reuse verified accepted build17 transaction; no new production candidate or rollback needed for read-only acceptance",
+      "persistenceBoundary": "same display ordinary desktop application/process restart, not OS reboot; named NSStatusItem owner participates in native autosave; transient floating-panel/open-collapsed visibility not counted as persisted settings",
+      "remaining": [
+        "third-party icon/app participation in autosave not accepted",
+        "OS reboot, multi-display and in-place fullscreen not accepted"
+      ],
+      "acceptanceRecordsCommitted": true
     }
   }
 }

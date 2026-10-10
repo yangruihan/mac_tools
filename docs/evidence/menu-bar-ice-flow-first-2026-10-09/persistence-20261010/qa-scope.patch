@@ -1,0 +1,102 @@
+--- production-build17
++++ owned-persistence-QA
+@@ -30,8 +30,8 @@
+ 
+ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPopoverDelegate {
+     static let id = "menu-bar-organizer"
+-    private static let controlName = "mactools_shelf_control"
+-    private static let dividerName = "mactools_shelf_divider"
++    private static let controlName = "boundary_163bd897-c052-479e-b969-109bd2d1dbbb_control"
++    private static let dividerName = "boundary_163bd897-c052-479e-b969-109bd2d1dbbb_divider"
+     private static let mainPositionKey = "NSStatusItem Preferred Position Item-0"
+     private static let priorMainPositionKey = "plugin.menu-bar-organizer.priorMainPosition"
+     private static let pinnedMainPosition = 200.0
+@@ -153,7 +153,7 @@
+             status = "macOS 27 已改用系统菜单栏溢出菜单，此手动分隔符模式不适用"; return
+         }
+         // A full bar parks new items under app menus; seed visible, ordered slots before creation.
+-        let defaults = UserDefaults.standard
++        let defaults = BoundaryScope.defaults
+         let controlPositionKey = "NSStatusItem Preferred Position \(Self.controlName)"
+         let dividerPositionKey = "NSStatusItem Preferred Position \(Self.dividerName)"
+         if !Self.sanePositions(control: defaults.object(forKey: controlPositionKey) as? Double,
+@@ -317,8 +317,10 @@
+         let level = Int(CGWindowLevelForKey(.statusWindow))
+         return list.compactMap { item in
+             guard (item[kCGWindowLayer as String] as? Int) == level,
++                  (item[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value == BoundaryScope.fixturePID,
+                   (item[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value != ProcessInfo.processInfo.processIdentifier,
+                   let id = (item[kCGWindowNumber as String] as? NSNumber)?.uint32Value,
++                  BoundaryScope.ids.contains(id),
+                   let bounds = item[kCGWindowBounds as String] as? NSDictionary,
+                   let frame = CGRect(dictionaryRepresentation: bounds) else { return nil }
+             return (id, frame)
+@@ -558,6 +560,7 @@
+         #endif
+     }
+     func acceptPanelDrop(_ data:Data,destination:CGWindowID?,onLeft:Bool,intoShelf:Bool) {
++        BoundaryScope.record(["event":"drop","source":(try? JSONDecoder().decode(ShelfDragPayload.self,from:data).id) ?? 0,"destination":destination.map{Int($0)} ?? -1,"onLeft":onLeft,"hidden":intoShelf])
+         #if ICE_MENU_BAR_INTEGRATED
+         guard let payload=ShelfDragPayload.decode(data,generation:token,known:Set((icons+visibleIcons).map(\.id))) else{return}
+         placePanelIcon(payload.id,destination:destination,onLeft:onLeft,intoShelf:intoShelf)
+@@ -575,6 +578,7 @@
+     private func placePanelIcon(_ id:CGWindowID,destination:CGWindowID?,onLeft:Bool,intoShelf:Bool) {
+         guard isOrganizing,isCollapsed,!activationBlocksLayout,id != destination,
+               let source=(icons+visibleIcons).first(where:{$0.id==id})?.identity else{return}
++        guard source.pid == BoundaryScope.fixturePID, BoundaryScope.ids.contains(id), destination.map({BoundaryScope.ids.contains($0)}) ?? true else { status="拒绝非自建图标"; return }
+         let peer=destination.flatMap{key in (icons+visibleIcons).first(where:{$0.id==key})?.identity}
+         guard destination==nil || peer != nil else{return}
+         expand()
+@@ -720,7 +724,7 @@
+             self.dismissShelf();return event
+         }) {popoverMonitors.append(monitor)}
+         if let monitor=NSEvent.addGlobalMonitorForEvents(matching:[.leftMouseDown,.rightMouseDown],handler:{[weak self] _ in self?.dismissShelf()}) {popoverMonitors.append(monitor)}
+-        panel.makeKeyAndOrderFront(nil)
++        panel.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true)
+     }
+     private func showHelpPanel() {
+         guard let frame = control?.button?.window?.frame, let screen = screen(for: frame) else { expand(); return }
+@@ -918,6 +922,7 @@
+     }
+     #if ICE_MENU_BAR_INTEGRATED
+     private func activateIceIdentity(_ identity: MenuBarIconIdentity) {
++        guard identity.pid == BoundaryScope.fixturePID, BoundaryScope.ids.contains(identity.windowID) else { status="拒绝非自建图标打开"; return }
+         guard iceActivation == nil, iceLaunch?.isRunning != true else {
+             status = "上一项打开或恢复尚未结束；未重复操作。"; return
+         }
+@@ -1051,12 +1056,12 @@
+ 
+ final class ShelfDragPanel: NSPanel {
+     convenience init(shelfRect:NSRect) {
+-        self.init(contentRect:shelfRect,styleMask:[.borderless,.nonactivatingPanel],backing:.buffered,defer:false)
++        self.init(contentRect:shelfRect,styleMask:[.borderless],backing:.buffered,defer:false)
+         isOpaque=false; backgroundColor = .clear; hasShadow=true
+         appearance=NSAppearance(named:.darkAqua)
+     }
+     override var canBecomeKey:Bool {true}
+-    override var canBecomeMain:Bool {false}
++    override var canBecomeMain:Bool {true}
+ }
+ 
+ private struct ShelfIconFrames: PreferenceKey {
+@@ -1114,6 +1119,7 @@
+                 .onEnded { value in
+                     guard dragEnabled else{return}
+                     defer{draggedID=nil}
++                    BoundaryScope.record(["event":"gesture-ended","source":Int(icon.id),"x":value.location.x,"y":value.location.y,"receivingRow":(rowFrames.first(where:{$0.value.contains(value.location)})?.key).map{ $0 ? "hidden" : "resident" } ?? "outside"])
+                     guard let targetHidden=rowFrames.first(where:{$0.value.contains(value.location)})?.key else{return}
+                     let candidates=targetHidden ? icons : outside
+                     let target=candidates.first{ $0.id != icon.id && iconFrames[$0.id]?.contains(value.location)==true }
+@@ -1332,3 +1338,12 @@
+         }
+     }
+ }
++
++extension MenuBarOrganizerPlugin {
++    func boundaryState() -> [String:Any] {
++        ["status":status,"visibility":String(describing:visibility.state),"enabled":isOrganizing,"presentationMode":presentationMode.rawValue,"visibleLimit":visibleLimit,
++         "liveHidden":placement().map{Self.hiddenWindows(statusWindows(),leftOf:$0.divider.minX,in:$0.screen,statusBarY:$0.screen.minY).map{Int($0.id)}} ?? [],
++         "liveResident":placement().map{Self.residentWindows(statusWindows(),after:$0.divider,in:$0.screen,statusBarY:$0.screen.minY).map{Int($0.id)}} ?? [],
++         "liveOrder":statusWindows().sorted{$0.frame.minX < $1.frame.minX}.map{Int($0.id)},"hidden":icons.map{Int($0.id)},"resident":visibleIcons.map{Int($0.id)},"capture":isCapturing,"control":control?.button?.window?.windowNumber ?? 0,"divider":divider?.button?.window?.windowNumber ?? 0,"workerRunning":iceLaunch?.isRunning ?? false]
++    }
++}

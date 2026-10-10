@@ -1,0 +1,55 @@
+{
+  "activeBaseline" : {
+    "display" : 1,
+    "nonce" : "D1A96AA4-4858-4A29-A5AF-F94C5D178FCD",
+    "originalFrame" : [
+      [
+        539,
+        0
+      ],
+      [
+        29,
+        37
+      ]
+    ],
+    "owner" : {
+      "appleAnchor" : false,
+      "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/persistence-163bd897-c052-479e-b969-109bd2d1dbbb\/fixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+      "identifier" : "com.ryanai.mactools.layoutfixture",
+      "launch" : 1791618196.7996171,
+      "pid" : 57817,
+      "sha256" : "30bdaaeafd617e9b82f91f163923cdacef0964974f765bfce6faec1e2e4a2757",
+      "team" : "58TJ64422P"
+    },
+    "space" : 4634,
+    "windowID" : 368390
+  },
+  "hitTestRequired" : false,
+  "inputPolicy" : "iceMouseTracking",
+  "selectionBeforeAnchor" : {
+    "display" : 1,
+    "nonce" : "D1A96AA4-4858-4A29-A5AF-F94C5D178FCD",
+    "originalFrame" : [
+      [
+        568,
+        0
+      ],
+      [
+        29,
+        37
+      ]
+    ],
+    "owner" : {
+      "appleAnchor" : false,
+      "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/persistence-163bd897-c052-479e-b969-109bd2d1dbbb\/fixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+      "identifier" : "com.ryanai.mactools.layoutfixture",
+      "launch" : 1791618196.7996171,
+      "pid" : 57817,
+      "sha256" : "30bdaaeafd617e9b82f91f163923cdacef0964974f765bfce6faec1e2e4a2757",
+      "team" : "58TJ64422P"
+    },
+    "space" : 4634,
+    "windowID" : 368390
+  },
+  "strictANYRequired" : false
+}

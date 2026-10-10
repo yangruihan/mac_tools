@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "hostRestart": true,
+  "hostAndNamedFixtureGracefulRestart": true,
+  "disabledRestart": true,
+  "order": [
+    "N",
+    "R",
+    "T"
+  ],
+  "hidden": [
+    "N",
+    "R"
+  ],
+  "resident": [
+    "T"
+  ],
+  "settingsReadBackWithoutRewrite": true,
+  "originalExplicitRemovalFixtureFailureRetained": true,
+  "OSRebootTested": false
+}

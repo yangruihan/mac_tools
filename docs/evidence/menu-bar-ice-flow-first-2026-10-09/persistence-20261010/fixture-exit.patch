@@ -1,0 +1,11 @@
+--- fixture-explicit-removal
++++ fixture-normal-application-exit
+@@ -27,7 +27,7 @@
+             try? FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: output.path)
+         }
+         if FileManager.default.fileExists(atPath: output.appendingPathExtension("quit").path) || ProcessInfo.processInfo.systemUptime >= deadline {
+-            items.forEach { NSStatusBar.system.removeStatusItem($0) }; items = []; timer?.invalidate(); NSApp.terminate(nil)
++            timer?.invalidate(); _ = UserDefaults.standard.synchronize(); NSApp.terminate(nil)
+         }
+     }
+ }

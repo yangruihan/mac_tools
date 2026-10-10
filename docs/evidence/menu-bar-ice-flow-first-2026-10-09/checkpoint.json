@@ -139,5 +139,15 @@
       "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/post-layout-open-20261010/assert-native-regression.py"
     ],
     "ACCEPTANCE_EVENT": "realClosedLoopVerified, native ordinary inactive evidence, original neighbor edge returned, clearAdmitted and pendingfalse for2 native cases"
+  },
+  "restartPersistenceLatest": {
+    "ACTIVE_OBJECT": "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift",
+    "LAST_CONFIRMED_RESULT": "commit8747c0c6; host-only and joint named-fixture app restarts preserve N,R,T order, N/R hidden T resident and exact settings; optout restart stays disabled; 503 tests; build17 unchanged restored",
+    "NEXT_EXECUTABLE_ACTION": "user real-app experience; no automatic icon operations",
+    "INPUT_PATHS": [
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/persistence-20261010/completion.json",
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/persistence-20261010/assert-persistence.py"
+    ],
+    "ACCEPTANCE_EVENT": "new PIDs and windowIDs, live same order/partition, byte-identical saved preferences read without writes; disabled restart no status icons"
   }
 }

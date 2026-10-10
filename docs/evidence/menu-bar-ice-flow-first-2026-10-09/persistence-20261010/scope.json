@@ -1,0 +1,15 @@
+{
+  "nonce": "163bd897-c052-479e-b969-109bd2d1dbbb",
+  "external": "/Users/yangruihan/Documents/MacTools边界验收/2026-10-10-persistence-163bd897-c052-479e-b969-109bd2d1dbbb",
+  "app": "/Users/yangruihan/Workspace/mac_tools/build/persistence-163bd897-c052-479e-b969-109bd2d1dbbb/PersistenceQA.app",
+  "fixture": "/Users/yangruihan/Workspace/mac_tools/build/persistence-163bd897-c052-479e-b969-109bd2d1dbbb/fixture.app",
+  "fixtureConfig": "/Users/yangruihan/Documents/MacTools边界验收/2026-10-10-persistence-163bd897-c052-479e-b969-109bd2d1dbbb/fixture.json",
+  "state": "/Users/yangruihan/Documents/MacTools边界验收/2026-10-10-persistence-163bd897-c052-479e-b969-109bd2d1dbbb/state.json",
+  "installedSHA256": "126033183665ec6ef87f681dcf1359824fff63a3832ee6c605e714b584ae9a85",
+  "productionSourceSHA256": "7fbf0ba0592b2337cb9c9daf7ae2ca5bb83ae03da594cd52d64e12738afde20a",
+  "commit": "8747c0c6",
+  "settingsSuite": "boundary.163bd897-c052-479e-b969-109bd2d1dbbb",
+  "sourceScope": "fresh fixture PID and 3 exact N/T/R IDs; fixture names persistent and nonce-scoped; no forced enable at startup",
+  "qaWindowDifference": "QA-only activating and main-capable floating panel for CUA window addressing; production nonactivating/non-main policy unchanged; drag/click/return logic and signed worker untouched",
+  "telemetryAlias": "/Users/yangruihan/Documents/MacTools边界验收/2026-10-10-163bd897-c052-479e-b969-109bd2d1dbbb"
+}

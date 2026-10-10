@@ -1,0 +1,36 @@
+{
+  "anchor" : {
+    "frame" : {
+      "height" : 37,
+      "width" : 29,
+      "x" : 1508,
+      "y" : 0
+    },
+    "id" : 368341,
+    "process" : {
+      "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/persistence-163bd897-c052-479e-b969-109bd2d1dbbb\/PersistenceQA.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+      "identifier" : "com.ryanai.mactools",
+      "launch" : 1791617685.1873081,
+      "pid" : 49653,
+      "sha256" : "cde4b791f3152ac89712b500141a08963f3869d5f99886fdfae7472c0ebc0065",
+      "team" : "58TJ64422P"
+    }
+  },
+  "target" : {
+    "frame" : {
+      "height" : 37,
+      "width" : 29,
+      "x" : 573,
+      "y" : 0
+    },
+    "id" : 368311,
+    "process" : {
+      "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/persistence-163bd897-c052-479e-b969-109bd2d1dbbb\/fixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+      "identifier" : "com.ryanai.mactools.layoutfixture",
+      "launch" : 1791617558.7565479,
+      "pid" : 47801,
+      "sha256" : "8285101bcd3db8ab2f459f838a4b3594d3495df5f00299a8feb4617fa0b950c7",
+      "team" : "58TJ64422P"
+    }
+  }
+}
