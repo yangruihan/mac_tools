@@ -770,11 +770,11 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         let separatorX = geometry.divider.minX
         let menuY = geometry.screen.minY
         let targets = Self.hiddenWindows(statusWindows(), leftOf: separatorX, in: geometry.screen, statusBarY: menuY)
-        guard !targets.isEmpty else {
-            status = "分隔符左侧尚无可收纳图标；先按住 ⌘ 拖动图标。"
+        let outside = Self.residentWindows(statusWindows(), after: geometry.divider, in: geometry.screen, statusBarY: menuY)
+        guard Self.canShowShelf(hiddenCount:targets.count,residentCount:outside.count) else {
+            status = "没有可读取的菜单栏图标；请稍后重试。"
             showHelpPanel(); return
         }
-        let outside = Self.residentWindows(statusWindows(), after: geometry.divider, in: geometry.screen, statusBarY: menuY)
         // Capture application identity with the window inventory, before asynchronous screenshots.
         let inventory = statusTargets()
         let captureDisplay = MenuBarDisplay.current().first { $0.quartzFrame == geometry.screen }
@@ -830,8 +830,9 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
             }
         }
     }
+    static func canShowShelf(hiddenCount:Int,residentCount:Int)->Bool { hiddenCount > 0 || residentCount > 0 }
     private func showCachedPanel() {
-        guard isCollapsed, let geometry = placement(), !icons.isEmpty else { expand(); return }
+        guard isCollapsed, let geometry = placement(), Self.canShowShelf(hiddenCount:icons.count,residentCount:visibleIcons.count) else { expand(); return }
         dismissPopoverOnly()
         let width = MenuBarPopoverLayout.width(iconCount: max(icons.count, visibleIcons.count), screenWidth: geometry.screen.width)
         let view = ShelfPanelView(icons: icons, outside: visibleIcons, width: width, generation: token,

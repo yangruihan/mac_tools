@@ -1,0 +1,32 @@
+[
+  {
+    "nonce": "A5CA722F-0B29-4BDB-B486-9DC90464E96A",
+    "posts": 6,
+    "phase": "placed",
+    "layoutVerified": true,
+    "clearAdmitted": true,
+    "source": 367268,
+    "destination": 367269,
+    "onLeft": false
+  },
+  {
+    "nonce": "59972DEF-8F6C-41D8-97C0-334558C7D534",
+    "posts": 6,
+    "phase": "placed",
+    "layoutVerified": true,
+    "clearAdmitted": true,
+    "source": 367269,
+    "destination": 367492,
+    "onLeft": false
+  },
+  {
+    "nonce": "21BD4125-F992-4344-B06B-7ABB53D70100",
+    "posts": 6,
+    "phase": "placed",
+    "layoutVerified": true,
+    "clearAdmitted": true,
+    "source": 367269,
+    "destination": 367329,
+    "onLeft": true
+  }
+]

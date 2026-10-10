@@ -1,0 +1,32 @@
+/Users/yangruihan/Documents/MacTools边界验收/2026-10-10-94e49aee-3333-4fc7-b66c-3d632aa56154/Sources/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift:110:88: warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+108 |             return
+109 |         }
+110 |         NSRunningApplication(processIdentifier: launch.proof.pid)?.activate(options: [.activateIgnoringOtherApps])
+    |                                                                                        `- warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+111 |     }
+112 |     func showOrdinaryEvidence() { if let ordinarySession { NSWorkspace.shared.open(ordinarySession) } }
+
+/Users/yangruihan/Documents/MacTools边界验收/2026-10-10-94e49aee-3333-4fc7-b66c-3d632aa56154/Sources/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift:161:83: warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+159 |             status = "原控制窗口已退出或身份改变；不会激活其他进程。"; return
+160 |         }
+161 |         NSRunningApplication(processIdentifier:controllerPID)?.activate(options:[.activateIgnoringOtherApps])
+    |                                                                                   `- warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+162 |     }
+163 |     func showEvidence() { if let session { NSWorkspace.shared.open(session) } }
+
+/Users/yangruihan/Documents/MacTools边界验收/2026-10-10-94e49aee-3333-4fc7-b66c-3d632aa56154/Sources/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift:199:95: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+197 |                             Text("\(row.title) · \(row.id)").tag(row.id)
+198 |                         }
+199 |                     }.disabled(model.busy || model.ordinaryAttempted || model.session != nil).onChange(of:model.ordinaryWindowID) { _ in model.bindOrdinaryTarget() }
+    |                                                                                               `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+200 |                 }
+201 |                 HStack {
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/yangruihan/Documents/MacTools边界验收/2026-10-10-94e49aee-3333-4fc7-b66c-3d632aa56154/Sources/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift:1114:210: error: value of type 'Bool' has no member 'map'
+1112 |                     guard dragEnabled else{return}
+1113 |                     defer{draggedID=nil}
+1114 |                     BoundaryScope.record(["event":"gesture-ended","source":Int(icon.id),"x":value.location.x,"y":value.location.y,"receivingRow":rowFrames.first(where:{$0.value.contains(value.location)})?.key.map{ $0 ? "hidden" : "resident" } ?? "outside"])
+     |                                                                                                                                                                                                                  `- error: value of type 'Bool' has no member 'map'
+1115 |                     guard let targetHidden=rowFrames.first(where:{$0.value.contains(value.location)})?.key else{return}
+1116 |                     let candidates=targetHidden ? icons : outside

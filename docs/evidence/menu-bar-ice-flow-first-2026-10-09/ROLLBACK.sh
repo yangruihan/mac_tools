@@ -1,5 +1,11 @@
 #!/bin/sh
 set -eu
+if [ "${1:-}" = "--boundary-source" ] || [ "${1:-}" = "--boundary-installed-app" ]; then
+ [ "$#" -eq 2 ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ SCRIPT=ROLLBACK.sh; [ "$1" != "--boundary-installed-app" ] || SCRIPT=ROLLBACK_INSTALLED_APP.sh
+ exec "$DIR/boundary-20261010/$SCRIPT" "$2"
+fi
 if [ "${1:-}" = "--shelf-style-source" ] || [ "${1:-}" = "--shelf-style-installed-app" ]; then
  [ "$#" -eq 2 ] || exit 2
  DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)

@@ -120,5 +120,14 @@
       "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/shelf-style-20261010/source-verification.json"
     ],
     "ACCEPTANCE_EVENT": "observed user confirmation: 只出现浮窗，样式和图标正常"
+  },
+  "boundaryLatest": {
+    "ACTIVE_OBJECT": "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift",
+    "LAST_CONFIRMED_RESULT": "self-owned N empty-hidden and empty-resident actual placement verified6 posts each, gap and outside cancel0 layout posts; setupT6 posts; no user glyph order change across26 live IDs; build16 installed",
+    "NEXT_EXECUTABLE_ACTION": "post-layout normal click/open regression, only after user requests next item",
+    "INPUT_PATHS": [
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/boundary-20261010/completion.json"
+    ],
+    "ACCEPTANCE_EVENT": "4 boundary cases accepted in scoped native QA; source502/503/502 and full-app rollback proof"
   }
 }

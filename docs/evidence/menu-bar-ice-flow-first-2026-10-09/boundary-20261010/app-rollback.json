@@ -1,0 +1,10 @@
+{
+  "command": [
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/boundary-20261010/ROLLBACK_INSTALLED_APP.sh",
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/boundary-20261010/rollback-app.app"
+  ],
+  "exit": 0,
+  "stdout": "restored old app; changed copy preserved at /Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/boundary-20261010/rollback-app.app.before-rollback-69975; settings and recovery records untouched\n",
+  "stderr": "",
+  "restoredSHA256": "fc3ff00252101c2951979c50cae1f81eb3a17df18d5da8f505cdcea15cef7606"
+}

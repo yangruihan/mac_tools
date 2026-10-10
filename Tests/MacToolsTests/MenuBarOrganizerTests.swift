@@ -4,6 +4,13 @@ import AppKit
 @testable import MacTools
 
 final class MenuBarOrganizerTests: XCTestCase {
+    func testShelfAdmissionAllowsEitherEmptyReceivingSectionButNotBothEmpty() {
+        XCTAssertTrue(MenuBarOrganizerPlugin.canShowShelf(hiddenCount:0,residentCount:2))
+        XCTAssertTrue(MenuBarOrganizerPlugin.canShowShelf(hiddenCount:2,residentCount:0))
+        XCTAssertTrue(MenuBarOrganizerPlugin.canShowShelf(hiddenCount:1,residentCount:1))
+        XCTAssertFalse(MenuBarOrganizerPlugin.canShowShelf(hiddenCount:0,residentCount:0))
+    }
+
     @MainActor
     func testShelfPanelDoesNotActivateToolboxAndHasTransparentDarkChrome() {
         let panel=ShelfDragPanel(shelfRect:NSRect(x:0,y:0,width:320,height:200))

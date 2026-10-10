@@ -1,0 +1,13 @@
+{
+  "nonce": "94e49aee-3333-4fc7-b66c-3d632aa56154",
+  "external": "/Users/yangruihan/Documents/MacTools边界验收/2026-10-10-94e49aee-3333-4fc7-b66c-3d632aa56154",
+  "app": "/Users/yangruihan/Workspace/mac_tools/build/boundary-94e49aee-3333-4fc7-b66c-3d632aa56154/BoundaryQA.app",
+  "fixture": "/Users/yangruihan/Workspace/mac_tools/build/boundary-94e49aee-3333-4fc7-b66c-3d632aa56154/fixture.app",
+  "fixtureConfig": "/Users/yangruihan/Documents/MacTools边界验收/2026-10-10-94e49aee-3333-4fc7-b66c-3d632aa56154/fixture.json",
+  "state": "/Users/yangruihan/Documents/MacTools边界验收/2026-10-10-94e49aee-3333-4fc7-b66c-3d632aa56154/state.json",
+  "installedBaselineSHA256": "fc3ff00252101c2951979c50cae1f81eb3a17df18d5da8f505cdcea15cef7606",
+  "productionSourceSHA256": "3c364982cf59619746a2be12d425c335015d15c38e0c068c13c582dcfb225512",
+  "nativeMovementAllowlist": "exact fresh fixture PID and 2 windowIDs; target only same fixture IDs or own QA divider",
+  "userIconsAllowed": false,
+  "qaWindowDifference": "activating panel in QA copy only to work around CUA window selection; production drag gesture, row hit-test, payload validation, layout driver preserved"
+}

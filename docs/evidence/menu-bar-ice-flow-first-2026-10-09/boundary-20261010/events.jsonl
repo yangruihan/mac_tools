@@ -1,0 +1,8 @@
+{"atUnix":1791612333.548409,"event":"gesture-ended","receivingRow":"hidden","source":367269,"x":120,"y":57}
+{"atUnix":1791612333.549077,"destination":-1,"event":"drop","hidden":true,"onLeft":true,"source":367269}
+{"atUnix":1791612986.8829379,"event":"gesture-ended","receivingRow":"outside","source":367269,"x":120,"y":95}
+{"atUnix":1791613015.521338,"event":"gesture-ended","receivingRow":"outside","source":367269,"x":280,"y":57}
+{"atUnix":1791613057.792901,"event":"gesture-ended","receivingRow":"hidden","source":367268,"x":54,"y":57}
+{"atUnix":1791613057.793608,"destination":367269,"event":"drop","hidden":true,"onLeft":false,"source":367268}
+{"atUnix":1791613121.7465811,"event":"gesture-ended","receivingRow":"resident","source":367269,"x":120,"y":145}
+{"atUnix":1791613121.7471461,"destination":-1,"event":"drop","hidden":false,"onLeft":false,"source":367269}

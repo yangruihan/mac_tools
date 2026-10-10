@@ -227,8 +227,6 @@
       "fullAppRestoredSHA256": "3e7df2686b2f315818aad072f9a585b2649c043730a5c6e6570f33cc921a3429",
       "componentRestoredSHA256": "c13cb6284e48ae944528e446cb6cdb58a2035c25e9dbcebca6c367465a42be6b",
       "remainingQA": [
-        "empty receiving-row native drop",
-        "drag cancellation outside row; unit guards exist",
         "post-layout normal click/open native regression",
         "third-party icon layout and restart persistence not separately accepted"
       ],
@@ -397,6 +395,119 @@
         ]
       },
       "commitScope": "shelf activation/style source, test, build15 config and scoped evidence; no push"
+    }
+  },
+  "boundaryAcceptance": {
+    "baseline": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/boundary-20261010/baseline",
+    "modified": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/boundary-20261010/modified",
+    "patch": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/boundary-20261010/source.patch",
+    "rollback": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/boundary-20261010/ROLLBACK.sh",
+    "installedAppRollback": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/boundary-20261010/ROLLBACK_INSTALLED_APP.sh",
+    "completion": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/boundary-20261010/completion.json",
+    "status": {
+      "status": "self-owned-native-boundaries-accepted",
+      "installed": {
+        "app": "/Applications/MacTools.app",
+        "build": 16,
+        "hostSHA256": "e7c3371ff0f4f7a62a3d47ddb54a0a9d452efc3b70c9fb050bcfd0ae55a336e2",
+        "sourceSHA256": "8c35e3b0136e69e6e7c4f49a048510d952603a2306cb92f770b22b45d4c3abe9",
+        "signatureVerified": true,
+        "testAppsStopped": true
+      },
+      "changedSymbol": "MenuBarOrganizerPlugin.canShowShelf / captureExpandedPanel / showCachedPanel",
+      "baseline": {
+        "swiftTests": 502,
+        "failures": 0,
+        "exit": 0,
+        "nativeObserved": "empty hidden row refused despite N/T resident; recorded baseline-native.json"
+      },
+      "modified": {
+        "swiftTests": 503,
+        "failures": 0,
+        "exit": 0,
+        "nativeObserved": "both empty row directions received; gap and out-of-panel cancellation created zero layout sessions"
+      },
+      "rollback": {
+        "swiftTests": 502,
+        "failures": 0,
+        "exit": 0,
+        "sourceHashesEqualOriginal": true,
+        "app": {
+          "command": [
+            "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/boundary-20261010/ROLLBACK_INSTALLED_APP.sh",
+            "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/boundary-20261010/rollback-app.app"
+          ],
+          "exit": 0,
+          "stdout": "restored old app; changed copy preserved at /Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/boundary-20261010/rollback-app.app.before-rollback-69975; settings and recovery records untouched\n",
+          "stderr": "",
+          "restoredSHA256": "fc3ff00252101c2951979c50cae1f81eb3a17df18d5da8f505cdcea15cef7606"
+        },
+        "bridgeAssertions": 33
+      },
+      "checks": {
+        "empty-hidden": {
+          "gestureSource": 367269,
+          "destinationNil": true,
+          "session": "21BD4125-F992-4344-B06B-7ABB53D70100",
+          "layoutVerified": true,
+          "posts": 6
+        },
+        "empty-resident": {
+          "gestureSource": 367269,
+          "destinationNil": true,
+          "session": "59972DEF-8F6C-41D8-97C0-334558C7D534",
+          "layoutVerified": true,
+          "posts": 6
+        },
+        "gap-cancel": {
+          "gestureSource": 367269,
+          "point": [
+            120,
+            95
+          ],
+          "receivingRow": "outside",
+          "newLayoutSessions": 0,
+          "layoutPosts": 0,
+          "fixtureFramesUnchanged": true
+        },
+        "outside-panel-cancel": {
+          "gestureSource": 367269,
+          "point": [
+            280,
+            57
+          ],
+          "receivingRow": "outside",
+          "newLayoutSessions": 0,
+          "layoutPosts": 0,
+          "fixtureFramesUnchanged": true
+        }
+      },
+      "setupSession": "A5CA722F-0B29-4BDB-B486-9DC90464E96A",
+      "totalLayoutPosts": 18,
+      "testFixturePID": 4126,
+      "testFixtureWindows": {
+        "N": 367269,
+        "T": 367268
+      },
+      "userAppsMoved": false,
+      "unchangedNonFixtureGlyphRelativeOrderCount": 26,
+      "pendingRecovery": false,
+      "guiActor": "assistant CUA native drags, no human drag required",
+      "scopeDifference": "activating panel in QA copy only to work around CUA window selection; production drag gesture, row hit-test, payload validation, layout driver preserved",
+      "sourceDirectoryScope": "test panel lists only fixed fresh fixture PID and 2 IDs; production row hit test, payload generation/known IDs validation, layout driver and signed worker retained",
+      "cleanup": "QA and N/T exited with status0; no remaining test process; formal build16 restarted",
+      "formalReadback": "Mac 工具箱 / menu-bar organizer visible on restart; subsequent CUA stale-state and noWindowsAvailable preserved, no repeat action",
+      "sourceHashes": {
+        "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": "8c35e3b0136e69e6e7c4f49a048510d952603a2306cb92f770b22b45d4c3abe9",
+        "Tests/MacToolsTests/MenuBarOrganizerTests.swift": "480a8722db7f10f636e70c7562f0cda568d61a1caf00d6ef912bf897e0610c2a",
+        "scripts/build-ice-interface-product-candidate.sh": "67a678e0e9dcd2582ec30741a9ebb32355cc2c7f98bc251ba8ed79a30336ff4f"
+      },
+      "remaining": [
+        "post-layout normal click/open regression",
+        "third-party layout and restart persistence",
+        "multi-display/fullscreen in-place not accepted"
+      ],
+      "committed": true
     }
   }
 }

@@ -1,0 +1,14 @@
+{
+  "command": [
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/boundary-20261010/ROLLBACK.sh",
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/boundary-20261010/test-modified"
+  ],
+  "stdout": "",
+  "stderr": "",
+  "exit": 0,
+  "restoredHashes": {
+    "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": "3c364982cf59619746a2be12d425c335015d15c38e0c068c13c582dcfb225512",
+    "Tests/MacToolsTests/MenuBarOrganizerTests.swift": "0584f723317802bb90a48009a2a8f832b40a6629a154a6cc49e4d9c564108f16",
+    "scripts/build-ice-interface-product-candidate.sh": "be5286673e30fc2a6b0cc5eafb8c53998007598ca5b66dc3333300d8940a77fd"
+  }
+}

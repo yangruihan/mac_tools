@@ -1,0 +1,36 @@
+{
+  "anchor" : {
+    "frame" : {
+      "height" : 37,
+      "width" : 29,
+      "x" : 1508,
+      "y" : 0
+    },
+    "id" : 367521,
+    "process" : {
+      "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/boundary-94e49aee-3333-4fc7-b66c-3d632aa56154\/BoundaryQA.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+      "identifier" : "com.ryanai.mactools",
+      "launch" : 1791613122.4310429,
+      "pid" : 73527,
+      "sha256" : "98fbafdb5a3acfe11f5ff3a73204a572a2eac61f0238353afa4a42118dd6da9a",
+      "team" : "58TJ64422P"
+    }
+  },
+  "target" : {
+    "frame" : {
+      "height" : 37,
+      "width" : 30,
+      "x" : 514,
+      "y" : 0
+    },
+    "id" : 367269,
+    "process" : {
+      "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/boundary-94e49aee-3333-4fc7-b66c-3d632aa56154\/fixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+      "identifier" : "com.ryanai.mactools.layoutfixture",
+      "launch" : 1791612096.4545951,
+      "pid" : 4126,
+      "sha256" : "122fd79857481f8398ed84139365542917eb7cca97ca309fda8c180a9bb7c5c7",
+      "team" : "58TJ64422P"
+    }
+  }
+}

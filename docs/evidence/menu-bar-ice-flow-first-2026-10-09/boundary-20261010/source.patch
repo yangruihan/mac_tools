@@ -1,0 +1,55 @@
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
+@@ -770,11 +770,11 @@
+         let separatorX = geometry.divider.minX
+         let menuY = geometry.screen.minY
+         let targets = Self.hiddenWindows(statusWindows(), leftOf: separatorX, in: geometry.screen, statusBarY: menuY)
+-        guard !targets.isEmpty else {
+-            status = "分隔符左侧尚无可收纳图标；先按住 ⌘ 拖动图标。"
++        let outside = Self.residentWindows(statusWindows(), after: geometry.divider, in: geometry.screen, statusBarY: menuY)
++        guard Self.canShowShelf(hiddenCount:targets.count,residentCount:outside.count) else {
++            status = "没有可读取的菜单栏图标；请稍后重试。"
+             showHelpPanel(); return
+         }
+-        let outside = Self.residentWindows(statusWindows(), after: geometry.divider, in: geometry.screen, statusBarY: menuY)
+         // Capture application identity with the window inventory, before asynchronous screenshots.
+         let inventory = statusTargets()
+         let captureDisplay = MenuBarDisplay.current().first { $0.quartzFrame == geometry.screen }
+@@ -830,8 +830,9 @@
+             }
+         }
+     }
++    static func canShowShelf(hiddenCount:Int,residentCount:Int)->Bool { hiddenCount > 0 || residentCount > 0 }
+     private func showCachedPanel() {
+-        guard isCollapsed, let geometry = placement(), !icons.isEmpty else { expand(); return }
++        guard isCollapsed, let geometry = placement(), Self.canShowShelf(hiddenCount:icons.count,residentCount:visibleIcons.count) else { expand(); return }
+         dismissPopoverOnly()
+         let width = MenuBarPopoverLayout.width(iconCount: max(icons.count, visibleIcons.count), screenWidth: geometry.screen.width)
+         let view = ShelfPanelView(icons: icons, outside: visibleIcons, width: width, generation: token,
+--- a/Tests/MacToolsTests/MenuBarOrganizerTests.swift
++++ b/Tests/MacToolsTests/MenuBarOrganizerTests.swift
+@@ -4,6 +4,13 @@
+ @testable import MacTools
+ 
+ final class MenuBarOrganizerTests: XCTestCase {
++    func testShelfAdmissionAllowsEitherEmptyReceivingSectionButNotBothEmpty() {
++        XCTAssertTrue(MenuBarOrganizerPlugin.canShowShelf(hiddenCount:0,residentCount:2))
++        XCTAssertTrue(MenuBarOrganizerPlugin.canShowShelf(hiddenCount:2,residentCount:0))
++        XCTAssertTrue(MenuBarOrganizerPlugin.canShowShelf(hiddenCount:1,residentCount:1))
++        XCTAssertFalse(MenuBarOrganizerPlugin.canShowShelf(hiddenCount:0,residentCount:0))
++    }
++
+     @MainActor
+     func testShelfPanelDoesNotActivateToolboxAndHasTransparentDarkChrome() {
+         let panel=ShelfDragPanel(shelfRect:NSRect(x:0,y:0,width:320,height:200))
+--- a/scripts/build-ice-interface-product-candidate.sh
++++ b/scripts/build-ice-interface-product-candidate.sh
+@@ -34,7 +34,7 @@
+ for p in [repo/'COPYING.GPL-3.0',repo/'THIRD_PARTY_NOTICES.md',worker/'prepared-build.json']:shutil.copyfile(p,package/p.name)
+ for p in sources:
+  dest=resources/'Source'/p.relative_to(repo);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
+-(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'15' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
++(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'16' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
+ (root/'source-manifest.json').write_text(json.dumps({str(p.relative_to(repo)):sha(p) for p in sources},indent=2,sort_keys=True)+'\n')
+ PY
+ swiftc -parse-as-library -D"$FLAG" -module-name MacTools -module-cache-path "$ROOT/module-cache" $(cat "$ROOT/sources.txt") -o "$APP/Contents/MacOS/MacTools"

@@ -1,0 +1,34 @@
+{
+  "anchorID" : 367521,
+  "screens" : [
+    {
+      "frame" : "{{0, 0}, {1728, 1117}}",
+      "right" : "{{956, 1085}, {772, 32}}"
+    }
+  ],
+  "selected" : {
+    "display" : 1,
+    "nonce" : "59972DEF-8F6C-41D8-97C0-334558C7D534",
+    "originalFrame" : [
+      [
+        514,
+        0
+      ],
+      [
+        30,
+        37
+      ]
+    ],
+    "owner" : {
+      "appleAnchor" : false,
+      "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/boundary-94e49aee-3333-4fc7-b66c-3d632aa56154\/fixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+      "identifier" : "com.ryanai.mactools.layoutfixture",
+      "launch" : 1791612096.4545951,
+      "pid" : 4126,
+      "sha256" : "122fd79857481f8398ed84139365542917eb7cca97ca309fda8c180a9bb7c5c7",
+      "team" : "58TJ64422P"
+    },
+    "space" : 4634,
+    "windowID" : 367269
+  }
+}
