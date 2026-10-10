@@ -1,0 +1,202 @@
+{
+  "automaticReturn" : false,
+  "diagnosticUserEscObservations" : [
+
+  ],
+  "events" : [
+    {
+      "elapsedMS" : 0.40808320045471191,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1931908.4532033335
+    },
+    {
+      "elapsedMS" : 0.28195837512612343,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1931908.4534946668
+    },
+    {
+      "elapsedMS" : 0.25195814669132233,
+      "phase" : "identity-validated",
+      "synchronousPost" : false,
+      "uptime" : 1931908.4573829167
+    }
+  ],
+  "journal" : {
+    "acknowledgments" : [
+      {
+        "atUptime" : 1931908.4512940417,
+        "hasPossibleEffect" : false,
+        "phase" : "prepared",
+        "recordSHA256" : "31ac0d4aee7b12015a4316bd0f4f89772ee5ccf739fef2a19098cc0ec31e2d63",
+        "revision" : 0,
+        "unconfirmedDown" : false
+      },
+      {
+        "atUptime" : 1931908.4526760418,
+        "hasPossibleEffect" : false,
+        "phase" : "moving",
+        "recordSHA256" : "a6dbcbb4cddfd0018284a7584a603d4878427133e8e22d0e750ff29f8e87e6a6",
+        "revision" : 1,
+        "unconfirmedDown" : false
+      },
+      {
+        "atUptime" : 1931908.6477340418,
+        "hasPossibleEffect" : false,
+        "phase" : "placed",
+        "recordSHA256" : "eeba2ef06e4dc921578b55dcf2124daf798f70466eeaf494b9ee85e9824ab142",
+        "revision" : 2,
+        "unconfirmedDown" : false
+      }
+    ],
+    "clearAdmitted" : true,
+    "completed" : true,
+    "contract" : "ordinaryIceLayoutV10",
+    "durableRecord" : {
+      "binding" : {
+        "anchor" : {
+          "frame" : {
+            "height" : 37,
+            "width" : 29,
+            "x" : 1508,
+            "y" : 0
+          },
+          "id" : 368583,
+          "process" : {
+            "executable" : "\/Applications\/MacTools.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+            "identifier" : "com.ryanai.mactools",
+            "launch" : 1791619343.0109689,
+            "pid" : 75378,
+            "sha256" : "cde4b791f3152ac89712b500141a08963f3869d5f99886fdfae7472c0ebc0065",
+            "team" : "58TJ64422P"
+          }
+        },
+        "area" : {
+          "height" : 37,
+          "width" : 772,
+          "x" : 956,
+          "y" : 0
+        },
+        "controller" : {
+          "executable" : "\/Applications\/MacTools.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+          "identifier" : "com.ryanai.mactools",
+          "launch" : 1791619343.0109689,
+          "pid" : 75378,
+          "sha256" : "cde4b791f3152ac89712b500141a08963f3869d5f99886fdfae7472c0ebc0065",
+          "team" : "58TJ64422P"
+        },
+        "display" : 1,
+        "layoutDestination" : {
+          "frame" : {
+            "height" : 37,
+            "width" : 24,
+            "x" : 912,
+            "y" : 0
+          },
+          "id" : 368442,
+          "process" : {
+            "executable" : "\/Applications\/MacTools.app\/Contents\/MacOS\/MacTools",
+            "identifier" : "com.ryanai.mactools",
+            "launch" : 1791618605.749979,
+            "pid" : 64593,
+            "sha256" : "126033183665ec6ef87f681dcf1359824fff63a3832ee6c605e714b584ae9a85",
+            "team" : "58TJ64422P"
+          }
+        },
+        "layoutOnLeft" : false,
+        "neighbor" : {
+          "frame" : {
+            "height" : 37,
+            "width" : 33,
+            "x" : 968,
+            "y" : 0
+          },
+          "id" : 359596,
+          "process" : {
+            "executable" : "\/Applications\/iOA\/iOA.app\/Contents\/MacOS\/iOA",
+            "identifier" : "com.tencent.iOA",
+            "launch" : 1791549544.6832039,
+            "pid" : 74956,
+            "sha256" : "1395c796ed6999bc4f0ff6710940481a3b4fef58f0dc8bad6c8cbfc039d27a96",
+            "team" : "88L2Q4487U"
+          }
+        },
+        "nonce" : "7938969F-3C95-4B28-A075-54A29681BF21",
+        "owner" : {
+          "executable" : "\/System\/Library\/CoreServices\/Spotlight.app\/Contents\/MacOS\/Spotlight",
+          "identifier" : "com.apple.Spotlight",
+          "launch" : 1789537523.0097089,
+          "pid" : 758,
+          "sha256" : "b9d2245ca1eccbf453002dc19bd74c18849e317248b073a083355c6647b9f7d3"
+        },
+        "returnOnLeft" : true,
+        "space" : 4634,
+        "target" : {
+          "frame" : {
+            "height" : 37,
+            "width" : 32,
+            "x" : 936,
+            "y" : 0
+          },
+          "id" : 39,
+          "process" : {
+            "executable" : "\/System\/Library\/CoreServices\/Spotlight.app\/Contents\/MacOS\/Spotlight",
+            "identifier" : "com.apple.Spotlight",
+            "launch" : 1789537523.0097089,
+            "pid" : 758,
+            "sha256" : "b9d2245ca1eccbf453002dc19bd74c18849e317248b073a083355c6647b9f7d3"
+          }
+        }
+      },
+      "contract" : "ordinaryIceLayoutV10",
+      "generation" : "7793D342-1F98-46FE-9D7F-EC4FA7E9D140",
+      "gestures" : [
+
+      ],
+      "phase" : "placed",
+      "placementEvidenceSHA256" : "3cb199d6e0778e6816ad4de03ca511d334b79ecdd2536ddad1d052b8f9746773",
+      "revision" : 2,
+      "schemaVersion" : 5,
+      "transaction" : "0F5C0450-B0BC-452B-955D-F04655E27B13"
+    },
+    "effectsAdmitted" : 2,
+    "generation" : "7793D342-1F98-46FE-9D7F-EC4FA7E9D140",
+    "journalOutcomeUncertain" : false,
+    "pendingRecovery" : false,
+    "phase" : "placed",
+    "physicalReleaseProven" : false,
+    "possibleDown" : false,
+    "stopReason" : null,
+    "transaction" : "0F5C0450-B0BC-452B-955D-F04655E27B13",
+    "uncertainProposal" : null
+  },
+  "layoutVerified" : true,
+  "nonce" : "7938969F-3C95-4B28-A075-54A29681BF21",
+  "openedInterface" : false,
+  "persistent" : true,
+  "placementEvidence" : {
+    "atUptime" : 1931908.6464884584,
+    "criterion" : "icePersistentNeighborEdgeV10",
+    "display" : 1,
+    "first" : {
+      "destinationFrame" : "{{912, 0}, {24, 37}}",
+      "destinationID" : 368442,
+      "onLeft" : false,
+      "targetFrame" : "{{936, 0}, {32, 37}}",
+      "targetID" : 39
+    },
+    "nativeObservation" : true,
+    "nonce" : "7938969F-3C95-4B28-A075-54A29681BF21",
+    "second" : {
+      "destinationFrame" : "{{912, 0}, {24, 37}}",
+      "destinationID" : 368442,
+      "onLeft" : false,
+      "targetFrame" : "{{936, 0}, {32, 37}}",
+      "targetID" : 39
+    },
+    "space" : 4634
+  },
+  "posts" : 0,
+  "realClosedLoopVerified" : false
+}

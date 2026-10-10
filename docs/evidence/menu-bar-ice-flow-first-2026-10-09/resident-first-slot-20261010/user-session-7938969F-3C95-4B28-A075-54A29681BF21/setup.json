@@ -1,0 +1,53 @@
+{
+  "activeBaseline" : {
+    "display" : 1,
+    "nonce" : "7938969F-3C95-4B28-A075-54A29681BF21",
+    "originalFrame" : [
+      [
+        936,
+        0
+      ],
+      [
+        32,
+        37
+      ]
+    ],
+    "owner" : {
+      "appleAnchor" : true,
+      "executable" : "\/System\/Library\/CoreServices\/Spotlight.app\/Contents\/MacOS\/Spotlight",
+      "identifier" : "com.apple.Spotlight",
+      "launch" : 1789537523.0097089,
+      "pid" : 758,
+      "sha256" : "b9d2245ca1eccbf453002dc19bd74c18849e317248b073a083355c6647b9f7d3"
+    },
+    "space" : 4634,
+    "windowID" : 39
+  },
+  "hitTestRequired" : false,
+  "inputPolicy" : "iceMouseTracking",
+  "selectionBeforeAnchor" : {
+    "display" : 1,
+    "nonce" : "7938969F-3C95-4B28-A075-54A29681BF21",
+    "originalFrame" : [
+      [
+        965,
+        0
+      ],
+      [
+        32,
+        37
+      ]
+    ],
+    "owner" : {
+      "appleAnchor" : true,
+      "executable" : "\/System\/Library\/CoreServices\/Spotlight.app\/Contents\/MacOS\/Spotlight",
+      "identifier" : "com.apple.Spotlight",
+      "launch" : 1789537523.0097089,
+      "pid" : 758,
+      "sha256" : "b9d2245ca1eccbf453002dc19bd74c18849e317248b073a083355c6647b9f7d3"
+    },
+    "space" : 4634,
+    "windowID" : 39
+  },
+  "strictANYRequired" : false
+}

@@ -1,0 +1,8 @@
+{
+  "automaticStart" : true,
+  "launchMethod" : "NSWorkspace.openApplication",
+  "nonce" : "9F9F5010-808C-4945-9453-BB6A430A4420",
+  "permissionRequests" : 0,
+  "pid" : 96810,
+  "productionMode" : true
+}

@@ -4,6 +4,31 @@ import AppKit
 @testable import MacTools
 
 final class MenuBarOrganizerTests: XCTestCase {
+    func testPanelDropBeforeFirstResidentTileUsesFirstPeerInsteadOfDivider() {
+        let frames:[CGWindowID:CGRect]=[1:CGRect(x:20,y:0,width:30,height:40),2:CGRect(x:80,y:0,width:30,height:40),3:CGRect(x:140,y:0,width:30,height:40)]
+        XCTAssertEqual(MenuBarOrganizerPlugin.panelDropPeer(source:3,at:CGPoint(x:5,y:20),candidates:[1,2,3],frames:frames),1)
+        XCTAssertEqual(MenuBarOrganizerPlugin.panelDropPeer(source:3,at:CGPoint(x:58,y:20),candidates:[1,2,3],frames:frames),1)
+    }
+    func testPanelDropGapRespectsWrappedRowAndMissingGeometry() {
+        let frames:[CGWindowID:CGRect]=[1:CGRect(x:20,y:0,width:30,height:40),2:CGRect(x:20,y:80,width:30,height:40)]
+        XCTAssertEqual(MenuBarOrganizerPlugin.panelDropPeer(source:3,at:CGPoint(x:5,y:100),candidates:[1,2],frames:frames),2)
+        XCTAssertNil(MenuBarOrganizerPlugin.panelDropPeer(source:3,at:CGPoint(x:5,y:20),candidates:[1,2],frames:[:]))
+    }
+    func testPanelDropOntoSourceIsNoOpAndEmptyRowHasNoPeer() {
+        let frames:[CGWindowID:CGRect]=[1:CGRect(x:20,y:0,width:30,height:40),2:CGRect(x:80,y:0,width:30,height:40)]
+        XCTAssertNil(MenuBarOrganizerPlugin.panelDropPeer(source:1,at:CGPoint(x:30,y:20),candidates:[1,2],frames:frames))
+        XCTAssertNil(MenuBarOrganizerPlugin.panelDropPeer(source:1,at:CGPoint(x:30,y:100),candidates:[],frames:frames))
+    }
+    #if ICE_MENU_BAR_INTEGRATED
+    func testObservedSpotlightZeroPostLayoutReceiptIsAlreadySatisfied() throws {
+        let root=URL(fileURLWithPath:#filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+        let directory=root.appendingPathComponent("docs/evidence/menu-bar-ice-flow-first-2026-10-09/resident-first-slot-20261010/user-session-7938969F-3C95-4B28-A075-54A29681BF21")
+        let request=try JSONDecoder().decode(MenuBarIceLayoutRequest.self,from:Data(contentsOf:directory.appendingPathComponent("layout-request.json")))
+        let value=try XCTUnwrap(JSONSerialization.jsonObject(with:Data(contentsOf:directory.appendingPathComponent("result.json"))) as? [String:Any])
+        XCTAssertTrue(try MenuBarIceInterfaceProductBridge.layoutResult(value,request:request,sourceID:39))
+    }
+    #endif
+
     func testShelfAdmissionAllowsEitherEmptyReceivingSectionButNotBothEmpty() {
         XCTAssertTrue(MenuBarOrganizerPlugin.canShowShelf(hiddenCount:0,residentCount:2))
         XCTAssertTrue(MenuBarOrganizerPlugin.canShowShelf(hiddenCount:2,residentCount:0))

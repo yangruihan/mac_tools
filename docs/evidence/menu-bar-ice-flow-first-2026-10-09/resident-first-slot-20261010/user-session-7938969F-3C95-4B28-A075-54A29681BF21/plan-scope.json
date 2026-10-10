@@ -1,0 +1,33 @@
+{
+  "anchorID" : 368583,
+  "screens" : [
+    {
+      "frame" : "{{0, 0}, {1728, 1117}}",
+      "right" : "{{956, 1085}, {772, 32}}"
+    }
+  ],
+  "selected" : {
+    "display" : 1,
+    "nonce" : "7938969F-3C95-4B28-A075-54A29681BF21",
+    "originalFrame" : [
+      [
+        936,
+        0
+      ],
+      [
+        32,
+        37
+      ]
+    ],
+    "owner" : {
+      "appleAnchor" : true,
+      "executable" : "\/System\/Library\/CoreServices\/Spotlight.app\/Contents\/MacOS\/Spotlight",
+      "identifier" : "com.apple.Spotlight",
+      "launch" : 1789537523.0097089,
+      "pid" : 758,
+      "sha256" : "b9d2245ca1eccbf453002dc19bd74c18849e317248b073a083355c6647b9f7d3"
+    },
+    "space" : 4634,
+    "windowID" : 39
+  }
+}

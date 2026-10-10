@@ -1,0 +1,8 @@
+{
+  "source": "user-reported",
+  "message": "现在可以移到常驻第一格了",
+  "build": "18",
+  "case": "Spotlight search moved to first resident slot",
+  "date": "2026-10-10",
+  "noAgentIconMovement": true
+}

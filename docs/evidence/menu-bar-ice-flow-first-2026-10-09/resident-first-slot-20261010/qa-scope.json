@@ -1,0 +1,10 @@
+{
+  "nonce": "e399d099-344b-4816-9980-f52e6d5c1fec",
+  "external": "/Users/yangruihan/Documents/MacTools边界验收/2026-10-10-first-slot-e399d099-344b-4816-9980-f52e6d5c1fec",
+  "app": "/Users/yangruihan/Workspace/mac_tools/build/first-slot-e399d099-344b-4816-9980-f52e6d5c1fec/FirstSlotQA.app",
+  "fixture": "/Users/yangruihan/Workspace/mac_tools/build/first-slot-e399d099-344b-4816-9980-f52e6d5c1fec/fixture.app",
+  "fixtureConfig": "/Users/yangruihan/Documents/MacTools边界验收/2026-10-10-first-slot-e399d099-344b-4816-9980-f52e6d5c1fec/fixture.json",
+  "state": "/Users/yangruihan/Documents/MacTools边界验收/2026-10-10-first-slot-e399d099-344b-4816-9980-f52e6d5c1fec/state.json",
+  "sourceScope": "exact fresh self-owned N/T/R IDs only; no user icon moved",
+  "qaWindowDifference": "QA-only activating and main-capable floating panel for CUA window addressing; production nonactivating/non-main policy unchanged; drag/click/return logic and signed worker untouched"
+}

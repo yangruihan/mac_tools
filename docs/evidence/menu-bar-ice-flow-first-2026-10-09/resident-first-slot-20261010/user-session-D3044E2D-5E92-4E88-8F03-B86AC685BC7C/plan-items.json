@@ -1,0 +1,35 @@
+{
+  "anchor" : {
+    "frame" : {
+      "height" : 37,
+      "width" : 29,
+      "x" : 1508,
+      "y" : 0
+    },
+    "id" : 368536,
+    "process" : {
+      "executable" : "\/Applications\/MacTools.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+      "identifier" : "com.ryanai.mactools",
+      "launch" : 1791619307.4105821,
+      "pid" : 74768,
+      "sha256" : "cde4b791f3152ac89712b500141a08963f3869d5f99886fdfae7472c0ebc0065",
+      "team" : "58TJ64422P"
+    }
+  },
+  "target" : {
+    "frame" : {
+      "height" : 37,
+      "width" : 32,
+      "x" : 1325,
+      "y" : 0
+    },
+    "id" : 39,
+    "process" : {
+      "executable" : "\/System\/Library\/CoreServices\/Spotlight.app\/Contents\/MacOS\/Spotlight",
+      "identifier" : "com.apple.Spotlight",
+      "launch" : 1789537523.0097089,
+      "pid" : 758,
+      "sha256" : "b9d2245ca1eccbf453002dc19bd74c18849e317248b073a083355c6647b9f7d3"
+    }
+  }
+}

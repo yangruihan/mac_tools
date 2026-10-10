@@ -1,0 +1,8 @@
+{
+  "build": "18",
+  "application": "/Applications/MacTools.app",
+  "hostSHA256": "2a90e59eb03de1fa04e7c5b6132c630bf51b50a0638dc86266f32208fdfedfb7",
+  "pluginSHA256": "2842b200c4ddbffc438f7927b6841feedaa94f719b26aa1778598855c0487da9",
+  "previousApplication": "/Applications/MacTools.before-resident-first-20261010.app",
+  "sourceUncommitted": true
+}

@@ -1,0 +1,19 @@
+{
+  "actualDisplay" : 1,
+  "actualSpace" : 4634,
+  "atUptime" : 1933133.8324752918,
+  "displayMatches" : true,
+  "expectedDisplay" : 1,
+  "expectedSpace" : 4634,
+  "matchedRows" : [
+    {
+      "frame" : "{{557, 0}, {30, 37}}",
+      "id" : 368814,
+      "pid" : 92411
+    }
+  ],
+  "nonce" : "9F9F5010-808C-4945-9453-BB6A430A4420",
+  "ownerMatches" : true,
+  "spaceMatches" : true,
+  "windowID" : 368814
+}

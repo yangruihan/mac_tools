@@ -1,0 +1,97 @@
+{
+  "binding" : {
+    "anchor" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 29,
+        "x" : 1508,
+        "y" : 0
+      },
+      "id" : 368583,
+      "process" : {
+        "executable" : "\/Applications\/MacTools.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+        "identifier" : "com.ryanai.mactools",
+        "launch" : 1791619343.0109689,
+        "pid" : 75378,
+        "sha256" : "cde4b791f3152ac89712b500141a08963f3869d5f99886fdfae7472c0ebc0065",
+        "team" : "58TJ64422P"
+      }
+    },
+    "area" : {
+      "height" : 37,
+      "width" : 772,
+      "x" : 956,
+      "y" : 0
+    },
+    "controller" : {
+      "executable" : "\/Applications\/MacTools.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+      "identifier" : "com.ryanai.mactools",
+      "launch" : 1791619343.0109689,
+      "pid" : 75378,
+      "sha256" : "cde4b791f3152ac89712b500141a08963f3869d5f99886fdfae7472c0ebc0065",
+      "team" : "58TJ64422P"
+    },
+    "display" : 1,
+    "layoutDestination" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 24,
+        "x" : 912,
+        "y" : 0
+      },
+      "id" : 368442,
+      "process" : {
+        "executable" : "\/Applications\/MacTools.app\/Contents\/MacOS\/MacTools",
+        "identifier" : "com.ryanai.mactools",
+        "launch" : 1791618605.749979,
+        "pid" : 64593,
+        "sha256" : "126033183665ec6ef87f681dcf1359824fff63a3832ee6c605e714b584ae9a85",
+        "team" : "58TJ64422P"
+      }
+    },
+    "layoutOnLeft" : false,
+    "neighbor" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 33,
+        "x" : 968,
+        "y" : 0
+      },
+      "id" : 359596,
+      "process" : {
+        "executable" : "\/Applications\/iOA\/iOA.app\/Contents\/MacOS\/iOA",
+        "identifier" : "com.tencent.iOA",
+        "launch" : 1791549544.6832039,
+        "pid" : 74956,
+        "sha256" : "1395c796ed6999bc4f0ff6710940481a3b4fef58f0dc8bad6c8cbfc039d27a96",
+        "team" : "88L2Q4487U"
+      }
+    },
+    "nonce" : "7938969F-3C95-4B28-A075-54A29681BF21",
+    "owner" : {
+      "executable" : "\/System\/Library\/CoreServices\/Spotlight.app\/Contents\/MacOS\/Spotlight",
+      "identifier" : "com.apple.Spotlight",
+      "launch" : 1789537523.0097089,
+      "pid" : 758,
+      "sha256" : "b9d2245ca1eccbf453002dc19bd74c18849e317248b073a083355c6647b9f7d3"
+    },
+    "returnOnLeft" : true,
+    "space" : 4634,
+    "target" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 32,
+        "x" : 936,
+        "y" : 0
+      },
+      "id" : 39,
+      "process" : {
+        "executable" : "\/System\/Library\/CoreServices\/Spotlight.app\/Contents\/MacOS\/Spotlight",
+        "identifier" : "com.apple.Spotlight",
+        "launch" : 1789537523.0097089,
+        "pid" : 758,
+        "sha256" : "b9d2245ca1eccbf453002dc19bd74c18849e317248b073a083355c6647b9f7d3"
+      }
+    }
+  }
+}

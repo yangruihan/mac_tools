@@ -252,6 +252,17 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
               hidden ? x < dividerX : x > controlX else { return nil }
         return (x, after)
     }
+    static func panelDropPeer(source:CGWindowID,at point:CGPoint,candidates:[CGWindowID],frames:[CGWindowID:CGRect])->CGWindowID? {
+        guard point.x.isFinite,point.y.isFinite,frames[source]?.contains(point) != true else{return nil}
+        let peers=candidates.filter{$0 != source}.compactMap{id in frames[id].map{(id,$0)}}
+            .filter{$0.1.width>0 && $0.1.height>0 && $0.1.minX.isFinite && $0.1.minY.isFinite}
+        func distance(_ frame:CGRect)->CGFloat {
+            let x=max(0,max(frame.minX-point.x,point.x-frame.maxX))
+            let y=max(0,max(frame.minY-point.y,point.y-frame.maxY))
+            return x*x+y*y
+        }
+        return peers.min{distance($0.1)<distance($1.1)}?.0
+    }
     static func shelfDrop(source: CGWindowID, at point: CGPoint, hidden: [CGWindowID], visible: [CGWindowID],
                           hiddenRow: CGRect, visibleRow: CGRect, iconFrames: [CGWindowID: CGRect]) -> ShelfDropAction? {
         let wasHidden = hidden.contains(source)
@@ -1116,10 +1127,11 @@ private struct ShelfPanelView: View {
                     defer{draggedID=nil}
                     guard let targetHidden=rowFrames.first(where:{$0.value.contains(value.location)})?.key else{return}
                     let candidates=targetHidden ? icons : outside
-                    let target=candidates.first{ $0.id != icon.id && iconFrames[$0.id]?.contains(value.location)==true }
-                    let left=target.flatMap{iconFrames[$0.id]}.map{targetHidden ? value.location.x<$0.midX : value.location.x>=$0.midX} ?? targetHidden
+                    let targetID=MenuBarOrganizerPlugin.panelDropPeer(source:icon.id,at:value.location,candidates:candidates.map(\.id),frames:iconFrames)
+                    guard candidates.isEmpty || targetID != nil else{return}
+                    let left=targetID.flatMap{iconFrames[$0]}.map{targetHidden ? value.location.x<$0.midX : value.location.x>=$0.midX} ?? targetHidden
                     guard let data=try? JSONEncoder().encode(ShelfDragPayload(id:icon.id,generation:generation)) else{return}
-                    onDrop(data,target?.id,left,targetHidden)
+                    onDrop(data,targetID,left,targetHidden)
                 })
             .overlay(alignment: .bottomTrailing) {
                 if icon.availability == .occluded {

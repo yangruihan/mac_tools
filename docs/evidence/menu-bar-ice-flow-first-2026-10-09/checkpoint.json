@@ -149,5 +149,60 @@
       "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/persistence-20261010/assert-persistence.py"
     ],
     "ACCEPTANCE_EVENT": "new PIDs and windowIDs, live same order/partition, byte-identical saved preferences read without writes; disabled restart no status icons"
+  },
+  "residentFirstSlot20261010": {
+    "target": "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift",
+    "changedSymbol": "panelDropPeer / ShelfPanelView.onEnded",
+    "baseline": {
+      "command": "swift test",
+      "exit": 0,
+      "tests": 503
+    },
+    "modified": {
+      "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+      "exit": 0,
+      "tests": 507
+    },
+    "rollback": {
+      "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+      "exit": 0,
+      "tests": 503,
+      "originalHashesRestored": true
+    },
+    "native": {
+      "selfCellNoNewSession": true,
+      "residentOrder": [
+        368815,
+        368814,
+        368813
+      ],
+      "otherIconRelativeOrderUnchanged": true,
+      "sessions": [
+        "session-9F9F5010-808C-4945-9453-BB6A430A4420",
+        "session-B6C101A5-E0A2-49D6-B08F-65179E280EDD"
+      ]
+    },
+    "installed": {
+      "build": "18",
+      "application": "/Applications/MacTools.app",
+      "hostSHA256": "2a90e59eb03de1fa04e7c5b6132c630bf51b50a0638dc86266f32208fdfedfb7",
+      "pluginSHA256": "2842b200c4ddbffc438f7927b6841feedaa94f719b26aa1778598855c0487da9",
+      "previousApplication": "/Applications/MacTools.before-resident-first-20261010.app",
+      "sourceUncommitted": true
+    },
+    "userSpotlightMoved": false,
+    "userErrorTextUnknown": true,
+    "commitOrPush": false,
+    "qaScope": "activating allowlisted fixture host; production nonactivating window not retested",
+    "backupAppRollbackExit": 0,
+    "bridgeReplayAssertions": 33,
+    "userAcceptance": {
+      "source": "user-reported",
+      "message": "现在可以移到常驻第一格了",
+      "build": "18",
+      "case": "Spotlight search moved to first resident slot",
+      "date": "2026-10-10",
+      "noAgentIconMovement": true
+    }
   }
 }

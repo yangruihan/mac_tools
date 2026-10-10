@@ -1,0 +1,80 @@
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
+@@ -251,6 +251,17 @@
+         guard x > screen.minX + 8, x < screen.maxX - 8,
+               hidden ? x < dividerX : x > controlX else { return nil }
+         return (x, after)
++    }
++    static func panelDropPeer(source:CGWindowID,at point:CGPoint,candidates:[CGWindowID],frames:[CGWindowID:CGRect])->CGWindowID? {
++        guard point.x.isFinite,point.y.isFinite,frames[source]?.contains(point) != true else{return nil}
++        let peers=candidates.filter{$0 != source}.compactMap{id in frames[id].map{(id,$0)}}
++            .filter{$0.1.width>0 && $0.1.height>0 && $0.1.minX.isFinite && $0.1.minY.isFinite}
++        func distance(_ frame:CGRect)->CGFloat {
++            let x=max(0,max(frame.minX-point.x,point.x-frame.maxX))
++            let y=max(0,max(frame.minY-point.y,point.y-frame.maxY))
++            return x*x+y*y
++        }
++        return peers.min{distance($0.1)<distance($1.1)}?.0
+     }
+     static func shelfDrop(source: CGWindowID, at point: CGPoint, hidden: [CGWindowID], visible: [CGWindowID],
+                           hiddenRow: CGRect, visibleRow: CGRect, iconFrames: [CGWindowID: CGRect]) -> ShelfDropAction? {
+@@ -1116,10 +1127,11 @@
+                     defer{draggedID=nil}
+                     guard let targetHidden=rowFrames.first(where:{$0.value.contains(value.location)})?.key else{return}
+                     let candidates=targetHidden ? icons : outside
+-                    let target=candidates.first{ $0.id != icon.id && iconFrames[$0.id]?.contains(value.location)==true }
+-                    let left=target.flatMap{iconFrames[$0.id]}.map{targetHidden ? value.location.x<$0.midX : value.location.x>=$0.midX} ?? targetHidden
++                    let targetID=MenuBarOrganizerPlugin.panelDropPeer(source:icon.id,at:value.location,candidates:candidates.map(\.id),frames:iconFrames)
++                    guard candidates.isEmpty || targetID != nil else{return}
++                    let left=targetID.flatMap{iconFrames[$0]}.map{targetHidden ? value.location.x<$0.midX : value.location.x>=$0.midX} ?? targetHidden
+                     guard let data=try? JSONEncoder().encode(ShelfDragPayload(id:icon.id,generation:generation)) else{return}
+-                    onDrop(data,target?.id,left,targetHidden)
++                    onDrop(data,targetID,left,targetHidden)
+                 })
+             .overlay(alignment: .bottomTrailing) {
+                 if icon.availability == .occluded {
+--- a/Tests/MacToolsTests/MenuBarOrganizerTests.swift
++++ b/Tests/MacToolsTests/MenuBarOrganizerTests.swift
+@@ -4,6 +4,31 @@
+ @testable import MacTools
+ 
+ final class MenuBarOrganizerTests: XCTestCase {
++    func testPanelDropBeforeFirstResidentTileUsesFirstPeerInsteadOfDivider() {
++        let frames:[CGWindowID:CGRect]=[1:CGRect(x:20,y:0,width:30,height:40),2:CGRect(x:80,y:0,width:30,height:40),3:CGRect(x:140,y:0,width:30,height:40)]
++        XCTAssertEqual(MenuBarOrganizerPlugin.panelDropPeer(source:3,at:CGPoint(x:5,y:20),candidates:[1,2,3],frames:frames),1)
++        XCTAssertEqual(MenuBarOrganizerPlugin.panelDropPeer(source:3,at:CGPoint(x:58,y:20),candidates:[1,2,3],frames:frames),1)
++    }
++    func testPanelDropGapRespectsWrappedRowAndMissingGeometry() {
++        let frames:[CGWindowID:CGRect]=[1:CGRect(x:20,y:0,width:30,height:40),2:CGRect(x:20,y:80,width:30,height:40)]
++        XCTAssertEqual(MenuBarOrganizerPlugin.panelDropPeer(source:3,at:CGPoint(x:5,y:100),candidates:[1,2],frames:frames),2)
++        XCTAssertNil(MenuBarOrganizerPlugin.panelDropPeer(source:3,at:CGPoint(x:5,y:20),candidates:[1,2],frames:[:]))
++    }
++    func testPanelDropOntoSourceIsNoOpAndEmptyRowHasNoPeer() {
++        let frames:[CGWindowID:CGRect]=[1:CGRect(x:20,y:0,width:30,height:40),2:CGRect(x:80,y:0,width:30,height:40)]
++        XCTAssertNil(MenuBarOrganizerPlugin.panelDropPeer(source:1,at:CGPoint(x:30,y:20),candidates:[1,2],frames:frames))
++        XCTAssertNil(MenuBarOrganizerPlugin.panelDropPeer(source:1,at:CGPoint(x:30,y:100),candidates:[],frames:frames))
++    }
++    #if ICE_MENU_BAR_INTEGRATED
++    func testObservedSpotlightZeroPostLayoutReceiptIsAlreadySatisfied() throws {
++        let root=URL(fileURLWithPath:#filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
++        let directory=root.appendingPathComponent("docs/evidence/menu-bar-ice-flow-first-2026-10-09/resident-first-slot-20261010/user-session-7938969F-3C95-4B28-A075-54A29681BF21")
++        let request=try JSONDecoder().decode(MenuBarIceLayoutRequest.self,from:Data(contentsOf:directory.appendingPathComponent("layout-request.json")))
++        let value=try XCTUnwrap(JSONSerialization.jsonObject(with:Data(contentsOf:directory.appendingPathComponent("result.json"))) as? [String:Any])
++        XCTAssertTrue(try MenuBarIceInterfaceProductBridge.layoutResult(value,request:request,sourceID:39))
++    }
++    #endif
++
+     func testShelfAdmissionAllowsEitherEmptyReceivingSectionButNotBothEmpty() {
+         XCTAssertTrue(MenuBarOrganizerPlugin.canShowShelf(hiddenCount:0,residentCount:2))
+         XCTAssertTrue(MenuBarOrganizerPlugin.canShowShelf(hiddenCount:2,residentCount:0))
+--- a/scripts/build-ice-interface-product-candidate.sh
++++ b/scripts/build-ice-interface-product-candidate.sh
+@@ -34,7 +34,7 @@
+ for p in [repo/'COPYING.GPL-3.0',repo/'THIRD_PARTY_NOTICES.md',worker/'prepared-build.json']:shutil.copyfile(p,package/p.name)
+ for p in sources:
+  dest=resources/'Source'/p.relative_to(repo);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
+-(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'17' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
++(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'18' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
+ (root/'source-manifest.json').write_text(json.dumps({str(p.relative_to(repo)):sha(p) for p in sources},indent=2,sort_keys=True)+'\n')
+ PY
+ swiftc -parse-as-library -D"$FLAG" -module-name MacTools -module-cache-path "$ROOT/module-cache" $(cat "$ROOT/sources.txt") -o "$APP/Contents/MacOS/MacTools"
