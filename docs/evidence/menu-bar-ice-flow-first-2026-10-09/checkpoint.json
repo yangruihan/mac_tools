@@ -365,5 +365,61 @@
       "limits": "dark appearance covered by pixel unit test, not new GUI screenshot; low-alpha dark glyph antialias edges can also soften"
     },
     "commitOrPush": false
+  },
+  "panelAppearanceToggle20261010": {
+    "target": "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift",
+    "changedSites": [
+      "ShelfPanelView footer appearance button",
+      "MenuBarOrganizerPlugin.setPanelAppearance",
+      "PluginContext.setAppearance callback to AppModel.setAppearance"
+    ],
+    "baseline": {
+      "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+      "exit": 0,
+      "tests": 509,
+      "behavior": "no in-panel appearance switch"
+    },
+    "modified": {
+      "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+      "exit": 0,
+      "tests": 510,
+      "behavior": "in-panel switch calls host appearance/persistence without toolbox callback"
+    },
+    "rollback": {
+      "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+      "exit": 0,
+      "tests": 509,
+      "originalSourceHashesRestored": true,
+      "behavior": "no in-panel appearance switch"
+    },
+    "appRollback": {
+      "exit": 0,
+      "restoredSHA256": "672443b86c9adc4fa152a3e51d4bdb5cfb0e460062a9e7c6a26951f4aa6e7b0d",
+      "matchingBridgeAssertions": 33
+    },
+    "installed": {
+      "build": "22",
+      "application": "/Applications/MacTools.app",
+      "hostSHA256": "58185973ea8c49ed5dea48a6650da2723edb70b8ec74bc26916c80ff633f48a0",
+      "previousApplication": "/Applications/MacTools.before-panel-toggle-20261010.app",
+      "uncommitted": true
+    },
+    "ui": {
+      "source": "CUA production build22 AX + screenshots",
+      "sequence": [
+        "same panel light: switch to night button",
+        "button click: panel dark, switch to day button",
+        "button click: panel light, switch to night button"
+      ],
+      "sameDialogAXID": 41,
+      "icons": "9 hidden /16 resident unchanged",
+      "savedNativeMode": "light",
+      "savedModeCommand": "defaults read com.ryanai.mactools appearanceMode",
+      "savedModeExit": 0,
+      "finalMode": "explicit light",
+      "noApplicationIconClickOrDrag": true,
+      "limits": "actual app restart persistence not rerun; AppModel reload persistence passed unit test"
+    },
+    "commitOrPush": false
   }
 }

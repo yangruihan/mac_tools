@@ -1,0 +1,5 @@
+patching file 'Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift'
+patching file 'Sources/MacTools/AppModel.swift'
+patching file 'Sources/MacTools/Core/ToolPlugin.swift'
+patching file 'Tests/MacToolsTests/MenuBarOrganizerTests.swift'
+patching file 'scripts/build-ice-interface-product-candidate.sh'

@@ -873,13 +873,15 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
             onDrop: { [weak self] data,id,left,hidden in self?.acceptPanelDrop(data,destination:id,onLeft:left,intoShelf:hidden) },
             onExpand: { [weak self] in self?.arrangeNativeIcons() },
             onClick: { [weak self] id in Task { @MainActor in self?.activateIcon(id) } },
-            onOpenToolbox: { [weak self] in self?.openToolbox() })
+            onOpenToolbox: { [weak self] in self?.openToolbox() },
+            onSetAppearance: { [weak self] in self?.setPanelAppearance($0) })
         #if ICE_MENU_BAR_INTEGRATED
         showDragPanel(AnyView(view),width:width)
         #else
         showPopover(AnyView(view), width: width)
         #endif
     }
+    func setPanelAppearance(_ mode:AppearanceMode) { context.setAppearance(mode) }
     func openToolbox() {
         expand(); showsAdvancedOptions = true
         context.openToolbox()
@@ -1125,6 +1127,7 @@ private struct ShelfPanelView: View {
     let onExpand: () -> Void
     let onClick: (CGWindowID) -> Void
     let onOpenToolbox: () -> Void
+    let onSetAppearance: (AppearanceMode) -> Void
     private func glyph(_ image:CGImage)->Image {
         Image(decorative:MenuBarOrganizerPlugin.shelfGlyph(image,light:colorScheme == .light) ?? image,scale:2)
     }
@@ -1218,6 +1221,11 @@ private struct ShelfPanelView: View {
                 Button("编辑布局 · 手动排列") { onExpand() }
                     .help("在屏幕顶部按住 ⌘ 拖动：分隔符左侧收纳、右侧常驻，同侧拖动换序。")
                 Spacer()
+                Button { onSetAppearance(colorScheme == .dark ? .light : .dark) } label: {
+                    Image(systemName:colorScheme == .dark ? "sun.max" : "moon")
+                }.accessibilityLabel(colorScheme == .dark ? "切换到白天模式" : "切换到黑夜模式")
+                    .accessibilityIdentifier("menu-bar-toggle-appearance")
+                    .help("切换工具箱与收纳浮窗外观，自动保存。")
                 Button("打开工具箱") { onOpenToolbox() }
             }.controlSize(.small)
         }.padding(10)

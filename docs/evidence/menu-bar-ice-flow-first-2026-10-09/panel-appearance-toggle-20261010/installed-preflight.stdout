@@ -1,0 +1,10 @@
+{
+  "automaticStart" : false,
+  "contract" : "ordinaryIceInterfaceV9",
+  "journalPending" : false,
+  "mousePosts" : 0,
+  "ordinaryEntryConnected" : true,
+  "permissionRequests" : 0,
+  "windowsOpened" : 0,
+  "workerRevision" : "ordinary-Ice-product-stage1"
+}

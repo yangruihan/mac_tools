@@ -64,7 +64,7 @@ final class AppModel: ObservableObject {
                       openToolbox: { [weak self] in
                           self?.selectedPluginID = id
                           self?.showToolbox?()
-                      })
+                      }, setAppearance: { [weak self] in self?.setAppearance($0) })
     }
     func setAppearance(_ mode: AppearanceMode) {
         appearanceMode = mode; defaults.set(mode.rawValue, forKey: "appearanceMode")

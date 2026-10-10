@@ -4,6 +4,23 @@ import AppKit
 @testable import MacTools
 
 final class MenuBarOrganizerTests: XCTestCase {
+    @MainActor
+    func testPanelAppearanceUsesHostSettingsWithoutOpeningToolbox() throws {
+        let name="ShelfAppearance.\(UUID())", app=NSApplication.shared, original=NSApplication.shared.appearance
+        let defaults=try XCTUnwrap(UserDefaults(suiteName:name))
+        defer { defaults.removePersistentDomain(forName:name);app.appearance=original }
+        let model=AppModel(defaults:defaults)
+        var toolboxOpens=0;model.showToolbox={toolboxOpens+=1}
+        let plugin=try XCTUnwrap(model.plugins.plugins.compactMap{$0 as? MenuBarOrganizerPlugin}.first)
+        for mode in [AppearanceMode.dark,.light] {
+            plugin.setPanelAppearance(mode)
+            XCTAssertEqual(model.appearanceMode,mode)
+            XCTAssertEqual(app.appearance?.name,mode.nativeAppearance?.name)
+            XCTAssertEqual(AppModel(defaults:defaults).appearanceMode,mode)
+        }
+        XCTAssertEqual(toolboxOpens,0)
+    }
+
     func testShelfGlyphSoftensOnlyNeutralShadowInBothAppearances() throws {
         let rgba:[UInt8]=[0,0,0,64, 32,32,32,255, 255,255,255,255, 64,0,0,64]
         let provider=try XCTUnwrap(CGDataProvider(data:Data(rgba) as CFData))

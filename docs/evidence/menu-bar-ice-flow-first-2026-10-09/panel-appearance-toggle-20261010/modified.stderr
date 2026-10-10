@@ -1,0 +1,45 @@
+Building for debugging...
+[0/6] Write sources
+[2/6] Write swift-version--58304C5D6DBC2206.txt
+[4/10] Compiling MacTools ToolPlugin.swift
+[5/10] Compiling MacTools AppModel.swift
+[6/10] Emitting module MacTools
+[7/10] Compiling MacTools MenuBarOrganizerPlugin.swift
+[8/16] Compiling MacTools QuickControlsPlugin.swift
+[9/16] Compiling MacTools KeepAwakePlugin.swift
+[10/16] Compiling MacTools TrackpadPlugin.swift
+[11/16] Compiling MacTools QuickControlsView.swift
+[12/16] Compiling MacTools MacTools.swift
+[13/16] Compiling MacTools WindowPreviewPlugin.swift
+[13/18] Write Objects.LinkFileList
+[14/18] Linking MacTools
+[15/18] Applying MacTools
+[17/27] Compiling MacToolsTests KeepAwakeTests.swift
+[18/27] Compiling MacToolsTests MenuBarEnvironmentTests.swift
+[19/27] Compiling MacToolsTests Checks.swift
+[20/27] Compiling MacToolsTests MenuBarNativeObservationTests.swift
+[21/27] Compiling MacToolsTests MenuBarItemDirectoryTests.swift
+[22/27] Compiling MacToolsTests MenuBarVisibilityTests.swift
+/Users/yangruihan/Workspace/mac_tools/Tests/MacToolsTests/MenuBarVisibilityTests.swift:13:138: warning: capture of 'prefs' with non-Sendable type 'UserDefaults' in a '@Sendable' closure; this is an error in the Swift 6 language mode [#SendableClosureCaptures]
+ 11 |         let probe = MainThreadDeliveryProbe()
+ 12 |         let (plugin, observation, token) = await MainActor.run {
+ 13 |             let plugin = MenuBarOrganizerPlugin(context: PluginContext(settings: PluginSettings(id: MenuBarOrganizerPlugin.id, defaults: prefs), hotkeys: HotKeyService(), report: { _ in }))
+    |                                                                                                                                          `- warning: capture of 'prefs' with non-Sendable type 'UserDefaults' in a '@Sendable' closure; this is an error in the Swift 6 language mode [#SendableClosureCaptures]
+ 14 |             let observation = plugin.$status.dropFirst().sink { _ in probe.record(Thread.isMainThread) }
+ 15 |             return (plugin, observation, plugin.gallery.generation)
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSUserDefaults.h:49:12: note: class 'UserDefaults' does not conform to the 'Sendable' protocol
+ 47 |  NSUserDefaults can be observed using Key-Value Observing for any key stored in it. Using NSKeyValueObservingOptionPrior to observe changes from other processes or devices will behave as though NSKeyValueObservingOptionPrior was not specified.
+ 48 |  */
+ 49 | @interface NSUserDefaults : NSObject {
+    |            `- note: class 'UserDefaults' does not conform to the 'Sendable' protocol
+ 50 | @private
+ 51 |     id _kvo_;
+
+[#SendableClosureCaptures]: <https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures>
+[23/27] Compiling MacToolsTests FloatingPreviewTests.swift
+[24/27] Emitting module MacToolsTests
+[25/27] Compiling MacToolsTests MenuBarOrganizerTests.swift
+[25/27] Write Objects.LinkFileList
+[26/27] Linking MacToolsPackageTests
+Build complete! (7.52s)

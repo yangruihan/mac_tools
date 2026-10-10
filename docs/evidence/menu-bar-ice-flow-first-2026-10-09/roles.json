@@ -824,5 +824,13 @@
     "verification": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/flat-style-20261010/completion.json",
     "rollbackSource": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/flat-style-20261010/ROLLBACK.sh",
     "rollbackInstalledApp": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/flat-style-20261010/ROLLBACK_INSTALLED_APP.sh"
+  },
+  "panelAppearanceToggle20261010": {
+    "supplement": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/panel-appearance-toggle-20261010",
+    "modifiedSources": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/panel-appearance-toggle-20261010/modified",
+    "diff": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/panel-appearance-toggle-20261010/source.patch",
+    "verification": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/panel-appearance-toggle-20261010/completion.json",
+    "rollbackSource": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/panel-appearance-toggle-20261010/ROLLBACK.sh",
+    "rollbackInstalledApp": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/panel-appearance-toggle-20261010/ROLLBACK_INSTALLED_APP.sh"
   }
 }

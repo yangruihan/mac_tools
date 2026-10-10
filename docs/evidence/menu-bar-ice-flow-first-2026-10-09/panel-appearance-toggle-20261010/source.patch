@@ -1,0 +1,97 @@
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
+@@ -873,13 +873,15 @@
+             onDrop: { [weak self] data,id,left,hidden in self?.acceptPanelDrop(data,destination:id,onLeft:left,intoShelf:hidden) },
+             onExpand: { [weak self] in self?.arrangeNativeIcons() },
+             onClick: { [weak self] id in Task { @MainActor in self?.activateIcon(id) } },
+-            onOpenToolbox: { [weak self] in self?.openToolbox() })
++            onOpenToolbox: { [weak self] in self?.openToolbox() },
++            onSetAppearance: { [weak self] in self?.setPanelAppearance($0) })
+         #if ICE_MENU_BAR_INTEGRATED
+         showDragPanel(AnyView(view),width:width)
+         #else
+         showPopover(AnyView(view), width: width)
+         #endif
+     }
++    func setPanelAppearance(_ mode:AppearanceMode) { context.setAppearance(mode) }
+     func openToolbox() {
+         expand(); showsAdvancedOptions = true
+         context.openToolbox()
+@@ -1125,6 +1127,7 @@
+     let onExpand: () -> Void
+     let onClick: (CGWindowID) -> Void
+     let onOpenToolbox: () -> Void
++    let onSetAppearance: (AppearanceMode) -> Void
+     private func glyph(_ image:CGImage)->Image {
+         Image(decorative:MenuBarOrganizerPlugin.shelfGlyph(image,light:colorScheme == .light) ?? image,scale:2)
+     }
+@@ -1218,6 +1221,11 @@
+                 Button("编辑布局 · 手动排列") { onExpand() }
+                     .help("在屏幕顶部按住 ⌘ 拖动：分隔符左侧收纳、右侧常驻，同侧拖动换序。")
+                 Spacer()
++                Button { onSetAppearance(colorScheme == .dark ? .light : .dark) } label: {
++                    Image(systemName:colorScheme == .dark ? "sun.max" : "moon")
++                }.accessibilityLabel(colorScheme == .dark ? "切换到白天模式" : "切换到黑夜模式")
++                    .accessibilityIdentifier("menu-bar-toggle-appearance")
++                    .help("切换工具箱与收纳浮窗外观，自动保存。")
+                 Button("打开工具箱") { onOpenToolbox() }
+             }.controlSize(.small)
+         }.padding(10)
+--- a/Sources/MacTools/AppModel.swift
++++ b/Sources/MacTools/AppModel.swift
+@@ -64,7 +64,7 @@
+                       openToolbox: { [weak self] in
+                           self?.selectedPluginID = id
+                           self?.showToolbox?()
+-                      })
++                      }, setAppearance: { [weak self] in self?.setAppearance($0) })
+     }
+     func setAppearance(_ mode: AppearanceMode) {
+         appearanceMode = mode; defaults.set(mode.rawValue, forKey: "appearanceMode")
+--- a/Sources/MacTools/Core/ToolPlugin.swift
++++ b/Sources/MacTools/Core/ToolPlugin.swift
+@@ -44,6 +44,7 @@
+     let hotkeys: HotKeyService
+     let report: (String) -> Void
+     var openToolbox: () -> Void = {}
++    var setAppearance: (AppearanceMode) -> Void = { _ in }
+ }
+ 
+ final class PluginRegistry: ObservableObject {
+--- a/Tests/MacToolsTests/MenuBarOrganizerTests.swift
++++ b/Tests/MacToolsTests/MenuBarOrganizerTests.swift
+@@ -4,6 +4,23 @@
+ @testable import MacTools
+ 
+ final class MenuBarOrganizerTests: XCTestCase {
++    @MainActor
++    func testPanelAppearanceUsesHostSettingsWithoutOpeningToolbox() throws {
++        let name="ShelfAppearance.\(UUID())", app=NSApplication.shared, original=NSApplication.shared.appearance
++        let defaults=try XCTUnwrap(UserDefaults(suiteName:name))
++        defer { defaults.removePersistentDomain(forName:name);app.appearance=original }
++        let model=AppModel(defaults:defaults)
++        var toolboxOpens=0;model.showToolbox={toolboxOpens+=1}
++        let plugin=try XCTUnwrap(model.plugins.plugins.compactMap{$0 as? MenuBarOrganizerPlugin}.first)
++        for mode in [AppearanceMode.dark,.light] {
++            plugin.setPanelAppearance(mode)
++            XCTAssertEqual(model.appearanceMode,mode)
++            XCTAssertEqual(app.appearance?.name,mode.nativeAppearance?.name)
++            XCTAssertEqual(AppModel(defaults:defaults).appearanceMode,mode)
++        }
++        XCTAssertEqual(toolboxOpens,0)
++    }
++
+     func testShelfGlyphSoftensOnlyNeutralShadowInBothAppearances() throws {
+         let rgba:[UInt8]=[0,0,0,64, 32,32,32,255, 255,255,255,255, 64,0,0,64]
+         let provider=try XCTUnwrap(CGDataProvider(data:Data(rgba) as CFData))
+--- a/scripts/build-ice-interface-product-candidate.sh
++++ b/scripts/build-ice-interface-product-candidate.sh
+@@ -34,7 +34,7 @@
+ for p in [repo/'COPYING.GPL-3.0',repo/'THIRD_PARTY_NOTICES.md',worker/'prepared-build.json']:shutil.copyfile(p,package/p.name)
+ for p in sources:
+  dest=resources/'Source'/p.relative_to(repo);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
+-(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'21' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
++(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'22' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
+ (root/'source-manifest.json').write_text(json.dumps({str(p.relative_to(repo)):sha(p) for p in sources},indent=2,sort_keys=True)+'\n')
+ PY
+ swiftc -parse-as-library -D"$FLAG" -module-name MacTools -module-cache-path "$ROOT/module-cache" $(cat "$ROOT/sources.txt") -o "$APP/Contents/MacOS/MacTools"
