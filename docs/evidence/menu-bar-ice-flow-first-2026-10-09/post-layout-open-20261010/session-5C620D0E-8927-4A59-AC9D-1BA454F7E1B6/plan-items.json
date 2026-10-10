@@ -1,0 +1,36 @@
+{
+  "anchor" : {
+    "frame" : {
+      "height" : 37,
+      "width" : 29,
+      "x" : 1508,
+      "y" : 0
+    },
+    "id" : 368027,
+    "process" : {
+      "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/post-layout-open-6a1cbeb5-9099-4883-ad73-f6af162409e5\/OpenRegressionQA.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+      "identifier" : "com.ryanai.mactools",
+      "launch" : 1791616072.2206609,
+      "pid" : 24968,
+      "sha256" : "01b9d7a8a96ad46784b9dca7a2038c733a4310a53c96ccec1dbf367928f7ca14",
+      "team" : "58TJ64422P"
+    }
+  },
+  "target" : {
+    "frame" : {
+      "height" : 37,
+      "width" : 30,
+      "x" : 555,
+      "y" : 0
+    },
+    "id" : 367991,
+    "process" : {
+      "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/post-layout-open-6a1cbeb5-9099-4883-ad73-f6af162409e5\/fixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+      "identifier" : "com.ryanai.mactools.layoutfixture",
+      "launch" : 1791615571.5034339,
+      "pid" : 16340,
+      "sha256" : "46b35b93e7fbf01155978f7f1e8bf4a8583fe1e0b2f1bccdf48dd17a3fe3b0b3",
+      "team" : "58TJ64422P"
+    }
+  }
+}

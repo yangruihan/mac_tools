@@ -1,0 +1,5 @@
+{
+  "exit": 0,
+  "stdout": "patching file 'Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift'\npatching file 'scripts/build-ice-interface-product-candidate.sh'\n",
+  "stderr": ""
+}

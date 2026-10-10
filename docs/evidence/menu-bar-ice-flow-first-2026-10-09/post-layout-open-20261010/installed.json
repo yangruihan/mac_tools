@@ -1,0 +1,8 @@
+{
+  "app": "/Applications/MacTools.app",
+  "build": 17,
+  "hostSHA256": "126033183665ec6ef87f681dcf1359824fff63a3832ee6c605e714b584ae9a85",
+  "sourceSHA256": "7fbf0ba0592b2337cb9c9daf7ae2ca5bb83ae03da594cd52d64e12738afde20a",
+  "signatureVerified": true,
+  "testAppsStopped": true
+}

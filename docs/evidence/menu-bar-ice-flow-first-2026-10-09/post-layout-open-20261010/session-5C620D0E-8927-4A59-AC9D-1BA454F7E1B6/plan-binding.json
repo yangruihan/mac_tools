@@ -1,0 +1,81 @@
+{
+  "binding" : {
+    "anchor" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 29,
+        "x" : 1508,
+        "y" : 0
+      },
+      "id" : 368027,
+      "process" : {
+        "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/post-layout-open-6a1cbeb5-9099-4883-ad73-f6af162409e5\/OpenRegressionQA.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+        "identifier" : "com.ryanai.mactools",
+        "launch" : 1791616072.2206609,
+        "pid" : 24968,
+        "sha256" : "01b9d7a8a96ad46784b9dca7a2038c733a4310a53c96ccec1dbf367928f7ca14",
+        "team" : "58TJ64422P"
+      }
+    },
+    "area" : {
+      "height" : 37,
+      "width" : 772,
+      "x" : 956,
+      "y" : 0
+    },
+    "controller" : {
+      "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/post-layout-open-6a1cbeb5-9099-4883-ad73-f6af162409e5\/OpenRegressionQA.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+      "identifier" : "com.ryanai.mactools",
+      "launch" : 1791616072.2206609,
+      "pid" : 24968,
+      "sha256" : "01b9d7a8a96ad46784b9dca7a2038c733a4310a53c96ccec1dbf367928f7ca14",
+      "team" : "58TJ64422P"
+    },
+    "display" : 1,
+    "neighbor" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 24,
+        "x" : 585,
+        "y" : 0
+      },
+      "id" : 367993,
+      "process" : {
+        "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/post-layout-open-6a1cbeb5-9099-4883-ad73-f6af162409e5\/OpenRegressionQA.app\/Contents\/MacOS\/MacTools",
+        "identifier" : "com.ryanai.mactools",
+        "launch" : 1791615581.2320349,
+        "pid" : 16551,
+        "sha256" : "3cfae213dd9baff98069fd71189471ea4408de0df275111a9fa8f733daf10d62",
+        "team" : "58TJ64422P"
+      }
+    },
+    "nonce" : "5C620D0E-8927-4A59-AC9D-1BA454F7E1B6",
+    "owner" : {
+      "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/post-layout-open-6a1cbeb5-9099-4883-ad73-f6af162409e5\/fixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+      "identifier" : "com.ryanai.mactools.layoutfixture",
+      "launch" : 1791615571.5034339,
+      "pid" : 16340,
+      "sha256" : "46b35b93e7fbf01155978f7f1e8bf4a8583fe1e0b2f1bccdf48dd17a3fe3b0b3",
+      "team" : "58TJ64422P"
+    },
+    "returnOnLeft" : true,
+    "space" : 4634,
+    "target" : {
+      "frame" : {
+        "height" : 37,
+        "width" : 30,
+        "x" : 555,
+        "y" : 0
+      },
+      "id" : 367991,
+      "process" : {
+        "executable" : "\/Users\/yangruihan\/Workspace\/mac_tools\/build\/post-layout-open-6a1cbeb5-9099-4883-ad73-f6af162409e5\/fixture.app\/Contents\/MacOS\/PanelLayoutFixture",
+        "identifier" : "com.ryanai.mactools.layoutfixture",
+        "launch" : 1791615571.5034339,
+        "pid" : 16340,
+        "sha256" : "46b35b93e7fbf01155978f7f1e8bf4a8583fe1e0b2f1bccdf48dd17a3fe3b0b3",
+        "team" : "58TJ64422P"
+      }
+    }
+  }
+}

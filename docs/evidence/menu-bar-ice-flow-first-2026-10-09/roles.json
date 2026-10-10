@@ -227,7 +227,6 @@
       "fullAppRestoredSHA256": "3e7df2686b2f315818aad072f9a585b2649c043730a5c6e6570f33cc921a3429",
       "componentRestoredSHA256": "c13cb6284e48ae944528e446cb6cdb58a2035c25e9dbcebca6c367465a42be6b",
       "remainingQA": [
-        "post-layout normal click/open native regression",
         "third-party icon layout and restart persistence not separately accepted"
       ],
       "fixtureCleanup": "explicit .quit requested, no fixture process remains"
@@ -503,11 +502,114 @@
         "scripts/build-ice-interface-product-candidate.sh": "67a678e0e9dcd2582ec30741a9ebb32355cc2c7f98bc251ba8ed79a30336ff4f"
       },
       "remaining": [
-        "post-layout normal click/open regression",
         "third-party layout and restart persistence",
         "multi-display/fullscreen in-place not accepted"
       ],
       "committed": true
+    }
+  },
+  "postLayoutOpenAcceptance": {
+    "baseline": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/post-layout-open-20261010/baseline",
+    "modified": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/post-layout-open-20261010/modified",
+    "patch": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/post-layout-open-20261010/source.patch",
+    "rollback": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/post-layout-open-20261010/ROLLBACK.sh",
+    "installedAppRollback": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/post-layout-open-20261010/ROLLBACK_INSTALLED_APP.sh",
+    "completion": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/post-layout-open-20261010/completion.json",
+    "status": {
+      "status": "post-layout-owned-open-and-return-accepted",
+      "priorBoundaryCommit": "600f9dbb",
+      "installed": {
+        "app": "/Applications/MacTools.app",
+        "build": 17,
+        "hostSHA256": "126033183665ec6ef87f681dcf1359824fff63a3832ee6c605e714b584ae9a85",
+        "sourceSHA256": "7fbf0ba0592b2337cb9c9daf7ae2ca5bb83ae03da594cd52d64e12738afde20a",
+        "signatureVerified": true,
+        "testAppsStopped": true
+      },
+      "changedSymbol": "MenuBarOrganizerPlugin.activateIceIdentity: expand before exact-target capture; restoreCollapsed only after returned and clear cleanup, after releasing iceActivation lock",
+      "baseline": {
+        "tests": 503,
+        "failures": 0,
+        "exit": 0,
+        "nativeFailure": "session-9CCFCFEC-77E4-48DE-925E-99721ECDB993, binding at plan, posts0, no native click or ordinary window, no pending recovery",
+        "observedFrames": {
+          "selectedOriginalX": -2893,
+          "planLiveX": -2922,
+          "controllerAnchorWidth": 29
+        }
+      },
+      "modified": {
+        "tests": 503,
+        "failures": 0,
+        "exit": 0,
+        "nativeCases": [
+          {
+            "session": "session-1ED9E38E-B424-43F8-AB9A-146107D6B685",
+            "posts": 14,
+            "inactiveToReturnProofSeconds": 15.356115791713819,
+            "trackedWindowID": 368015,
+            "returned": true
+          },
+          {
+            "session": "session-5C620D0E-8927-4A59-AC9D-1BA454F7E1B6",
+            "posts": 14,
+            "inactiveToReturnProofSeconds": 15.356370583409443,
+            "trackedWindowID": 368015,
+            "returned": true
+          }
+        ],
+        "GUIActor": "assistant CUA native panel clicks and self-owned normal-window close/focus; no human drag required",
+        "newWindow": "native N click1 opened ordinary window368015; actual window closed; source returned",
+        "existingBackgroundWindow": "before visible/inactive368015; native click2 reactivated same368015; after visible/inactive; source returned",
+        "sourceFixturePID": 16340,
+        "sourceNWindowID": 367991,
+        "recollapseAfterReturn": true
+      },
+      "rollback": {
+        "tests": 503,
+        "failures": 0,
+        "exit": 0,
+        "sourceHashesRestored": true,
+        "fullApp": {
+          "command": [
+            "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/post-layout-open-20261010/ROLLBACK_INSTALLED_APP.sh",
+            "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/post-layout-open-20261010/rollback-app.app"
+          ],
+          "exit": 0,
+          "stdout": "restored old app; changed copy preserved at /Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/post-layout-open-20261010/rollback-app.app.before-rollback-31020; settings and recovery records untouched\n",
+          "stderr": "",
+          "restoredSHA256": "e7c3371ff0f4f7a62a3d47ddb54a0a9d452efc3b70c9fb050bcfd0ae55a336e2"
+        },
+        "baselineModifiedRollbackBridgeAssertions": [
+          33,
+          33,
+          33
+        ]
+      },
+      "sourceHashes": {
+        "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": "7fbf0ba0592b2337cb9c9daf7ae2ca5bb83ae03da594cd52d64e12738afde20a",
+        "scripts/build-ice-interface-product-candidate.sh": "cf8867dd95fe5fa579c3471245be3a274ea7a993c1dd395eaa8abb0bdc314535"
+      },
+      "totalEnginePosts": 40,
+      "postBreakdown": {
+        "expiredFixtureSetupLayout": 6,
+        "failedBaselinePlan": 0,
+        "freshFixtureSetupLayout": 6,
+        "newWindowOpenReturn": 14,
+        "existingWindowOpenReturn": 14
+      },
+      "nonfixtureGlyphRelativeOrderUnchanged": 26,
+      "userAppsDragged": false,
+      "journalPending": false,
+      "fixtureCleanup": "all own fixture and QA processes exited0; own ordinary window removed; formal app restarted",
+      "QAWindowDifference": "QA-only activating and main-capable floating panel for CUA window addressing; production nonactivating/non-main policy unchanged; drag/click/return logic and signed worker untouched",
+      "presentationTradeoff": "original native bar temporarily expands for stable binding; after proved return restores original collapsed state; no relaxation of owner/launch/path/signature/window/scope/neighbor guards",
+      "remaining": [
+        "third-party layout/open and restart persistence",
+        "multi-display/fullscreen in-place not accepted",
+        "production nonactivating panel not re-tested for every individual gesture"
+      ],
+      "committedNewFix": true
     }
   }
 }

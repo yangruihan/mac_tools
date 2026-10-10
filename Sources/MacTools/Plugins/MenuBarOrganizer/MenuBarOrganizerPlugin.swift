@@ -921,11 +921,16 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         guard iceActivation == nil, iceLaunch?.isRunning != true else {
             status = "上一项打开或恢复尚未结束；未重复操作。"; return
         }
-        closePanel(); _ = visibility.dismissPopover()
+        let restoreCollapsed = isCollapsed
+        expand()
         status = "正在核实原图标并打开…"
         iceActivation = Task { @MainActor [weak self] in
             guard let self else { return }
-            defer { self.iceActivation = nil }
+            var returned = false
+            defer {
+                self.iceActivation = nil
+                if restoreCollapsed && returned { self.collapse() }
+            }
             do {
                 try await Task.sleep(nanoseconds: 350_000_000)
                 guard self.isOrganizing, let original = identity.application,
@@ -966,6 +971,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
                             throw MenuBarIceInterfaceProductBridge.Failure.unknown(session)
                         }
                         self.iceLaunch = nil
+                        returned = true
                         self.status = "图标已打开并回到原邻边；可以继续使用。"
                     } else {
                         self.status = "打开流程已停止；请查看恢复窗口。原始记录保留，不会自动重试。"

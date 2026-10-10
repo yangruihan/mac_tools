@@ -1,0 +1,2 @@
+Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
+scripts/build-ice-interface-product-candidate.sh

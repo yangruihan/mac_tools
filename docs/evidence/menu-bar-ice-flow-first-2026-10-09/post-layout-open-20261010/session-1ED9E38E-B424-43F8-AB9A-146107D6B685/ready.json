@@ -1,0 +1,15 @@
+{
+  "automaticStart" : true,
+  "fixturePID" : null,
+  "frontPID" : 16551,
+  "hitTestRequired" : false,
+  "layoutMode" : false,
+  "nativePosts" : 0,
+  "nonce" : "1ED9E38E-B424-43F8-AB9A-146107D6B685",
+  "pid" : 18303,
+  "productionMode" : true,
+  "strictANYRequired" : false,
+  "windowKey" : false,
+  "windowNumber" : 368013,
+  "windowVisible" : false
+}

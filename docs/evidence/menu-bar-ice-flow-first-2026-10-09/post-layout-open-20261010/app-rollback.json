@@ -1,0 +1,10 @@
+{
+  "command": [
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/post-layout-open-20261010/ROLLBACK_INSTALLED_APP.sh",
+    "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/post-layout-open-20261010/rollback-app.app"
+  ],
+  "exit": 0,
+  "stdout": "restored old app; changed copy preserved at /Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/post-layout-open-20261010/rollback-app.app.before-rollback-31020; settings and recovery records untouched\n",
+  "stderr": "",
+  "restoredSHA256": "e7c3371ff0f4f7a62a3d47ddb54a0a9d452efc3b70c9fb050bcfd0ae55a336e2"
+}

@@ -1,5 +1,11 @@
 #!/bin/sh
 set -eu
+if [ "${1:-}" = "--post-layout-open-source" ] || [ "${1:-}" = "--post-layout-open-installed-app" ]; then
+ [ "$#" -eq 2 ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ SCRIPT=ROLLBACK.sh; [ "$1" != "--post-layout-open-installed-app" ] || SCRIPT=ROLLBACK_INSTALLED_APP.sh
+ exec "$DIR/post-layout-open-20261010/$SCRIPT" "$2"
+fi
 if [ "${1:-}" = "--boundary-source" ] || [ "${1:-}" = "--boundary-installed-app" ]; then
  [ "$#" -eq 2 ] || exit 2
  DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)

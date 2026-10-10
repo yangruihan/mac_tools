@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "cases": [
+    {
+      "session": "session-1ED9E38E-B424-43F8-AB9A-146107D6B685",
+      "posts": 14,
+      "inactiveToReturnProofSeconds": 15.356115791713819,
+      "trackedWindowID": 368015,
+      "returned": true
+    },
+    {
+      "session": "session-5C620D0E-8927-4A59-AC9D-1BA454F7E1B6",
+      "posts": 14,
+      "inactiveToReturnProofSeconds": 15.356370583409443,
+      "trackedWindowID": 368015,
+      "returned": true
+    }
+  ],
+  "restoredCollapsed": true,
+  "nonfixtureOrderUnchanged": true
+}
