@@ -800,5 +800,29 @@
     "verification": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/resident-first-slot-20261010/completion.json",
     "rollbackSource": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/resident-first-slot-20261010/ROLLBACK.sh",
     "rollbackInstalledApp": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/resident-first-slot-20261010/ROLLBACK_INSTALLED_APP.sh"
+  },
+  "lightMode20261010": {
+    "supplement": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/light-mode-20261010",
+    "modifiedSources": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/light-mode-20261010/modified",
+    "diff": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/light-mode-20261010/source.patch",
+    "verification": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/light-mode-20261010/completion.json",
+    "rollbackSource": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/light-mode-20261010/ROLLBACK.sh",
+    "rollbackInstalledApp": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/light-mode-20261010/ROLLBACK_INSTALLED_APP.sh"
+  },
+  "lightIconStyle20261010": {
+    "supplement": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/light-icon-style-20261010",
+    "modifiedSources": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/light-icon-style-20261010/modified",
+    "diff": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/light-icon-style-20261010/source.patch",
+    "verification": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/light-icon-style-20261010/completion.json",
+    "rollbackSource": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/light-icon-style-20261010/ROLLBACK.sh",
+    "rollbackInstalledApp": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/light-icon-style-20261010/ROLLBACK_INSTALLED_APP.sh"
+  },
+  "flatStyle20261010": {
+    "supplement": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/flat-style-20261010",
+    "modifiedSources": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/flat-style-20261010/modified",
+    "diff": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/flat-style-20261010/source.patch",
+    "verification": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/flat-style-20261010/completion.json",
+    "rollbackSource": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/flat-style-20261010/ROLLBACK.sh",
+    "rollbackInstalledApp": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/flat-style-20261010/ROLLBACK_INSTALLED_APP.sh"
   }
 }

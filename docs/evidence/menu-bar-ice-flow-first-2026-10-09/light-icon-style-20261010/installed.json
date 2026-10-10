@@ -1,0 +1,8 @@
+{
+  "build": "20",
+  "application": "/Applications/MacTools.app",
+  "hostSHA256": "2a25d0e95377c5b916da74c00a71709e11ab4497b85397bbbc304aaa4c33108f",
+  "pluginSHA256": "38eb52f13668bca65ae0d196e086075fc52192e390719c57f60fcf29242b6d9c",
+  "previousApplication": "/Applications/MacTools.before-light-icon-style-20261010.app",
+  "uncommitted": true
+}

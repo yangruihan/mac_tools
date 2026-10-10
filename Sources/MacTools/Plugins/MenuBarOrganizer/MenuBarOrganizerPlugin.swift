@@ -252,6 +252,30 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
               hidden ? x < dividerX : x > controlX else { return nil }
         return (x, after)
     }
+    static func shelfGlyph(_ image:CGImage,light:Bool)->CGImage? {
+        guard image.width>0,image.height>0,image.width<=1024,image.height<=1024 else{return nil}
+        var pixels=[UInt8](repeating:0,count:image.width*image.height*4)
+        return pixels.withUnsafeMutableBytes { buffer in
+            guard let context=CGContext(data:buffer.baseAddress,width:image.width,height:image.height,
+                bitsPerComponent:8,bytesPerRow:image.width*4,space:CGColorSpaceCreateDeviceRGB(),
+                bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue|CGBitmapInfo.byteOrder32Big.rawValue) else{return nil}
+            context.draw(image,in:CGRect(x:0,y:0,width:image.width,height:image.height))
+            let bytes=buffer.bindMemory(to:UInt8.self)
+            // Soften captured low-alpha dark shadows without flattening colored status pixels.
+            for i in stride(from:0,to:bytes.count,by:4) {
+                let alpha=Int(bytes[i+3]),r=Int(bytes[i]),g=Int(bytes[i+1]),b=Int(bytes[i+2])
+                let neutral=max(r,max(g,b))-min(r,min(g,b))<=alpha/16
+                if alpha>0,alpha<128,neutral,max(r,max(g,b))*100<alpha*35 {
+                    bytes[i]/=8;bytes[i+1]/=8;bytes[i+2]/=8;bytes[i+3]/=8
+                    continue
+                }
+                guard light,alpha>0,neutral,min(r,min(g,b))*100>alpha*55 else{continue}
+                let ink=UInt8(alpha*18/100)
+                bytes[i]=ink;bytes[i+1]=ink;bytes[i+2]=ink
+            }
+            return context.makeImage()
+        }
+    }
     static func panelDropPeer(source:CGWindowID,at point:CGPoint,candidates:[CGWindowID],frames:[CGWindowID:CGRect])->CGWindowID? {
         guard point.x.isFinite,point.y.isFinite,frames[source]?.contains(point) != true else{return nil}
         let peers=candidates.filter{$0 != source}.compactMap{id in frames[id].map{(id,$0)}}
@@ -711,11 +735,10 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
     }
     private func showDragPanel(_ content:AnyView,width:CGFloat) {
         guard let anchor=control?.button?.window,anchor.isVisible,recoveryControlVisible(),let screen=screen(for:anchor.frame),!environment.sleeping else{expand();return}
-        // Captured menu-bar glyphs are often white even when the toolbox uses light appearance.
         let view=NSHostingView(rootView:content.frame(width:width).padding(10)
-            .background(Color(red:0.14,green:0.15,blue:0.17))
-            .overlay(RoundedRectangle(cornerRadius:14).strokeBorder(.white.opacity(0.12),lineWidth:1))
-            .clipShape(RoundedRectangle(cornerRadius:14)).preferredColorScheme(.dark))
+            .background(Color(nsColor:.windowBackgroundColor))
+            .overlay(RoundedRectangle(cornerRadius:14).strokeBorder(Color.primary.opacity(0.12),lineWidth:1))
+            .clipShape(RoundedRectangle(cornerRadius:14)))
         view.layoutSubtreeIfNeeded()
         let size=NSSize(width:width+20,height:max(80,view.fittingSize.height))
         let panel=ShelfDragPanel(shelfRect:NSRect(origin:.zero,size:size))
@@ -1063,8 +1086,7 @@ private struct OrganizerHelpView: View {
 final class ShelfDragPanel: NSPanel {
     convenience init(shelfRect:NSRect) {
         self.init(contentRect:shelfRect,styleMask:[.borderless,.nonactivatingPanel],backing:.buffered,defer:false)
-        isOpaque=false; backgroundColor = .clear; hasShadow=true
-        appearance=NSAppearance(named:.darkAqua)
+        isOpaque=false; backgroundColor = .clear; hasShadow=false
     }
     override var canBecomeKey:Bool {true}
     override var canBecomeMain:Bool {false}
@@ -1080,6 +1102,8 @@ private struct ShelfRowFrames: PreferenceKey {
 }
 
 private struct ShelfPanelView: View {
+    @Environment(\.colorScheme) private var colorScheme
+    @State private var hoveredID:CGWindowID?
     @State private var hiddenPage = 0
     @State private var visiblePage = 0
     @State private var draggedID:CGWindowID?
@@ -1101,18 +1125,22 @@ private struct ShelfPanelView: View {
     let onExpand: () -> Void
     let onClick: (CGWindowID) -> Void
     let onOpenToolbox: () -> Void
+    private func glyph(_ image:CGImage)->Image {
+        Image(decorative:MenuBarOrganizerPlugin.shelfGlyph(image,light:colorScheme == .light) ?? image,scale:2)
+    }
     private func iconButton(_ icon: ShelfIcon, index: Int, hidden: Bool) -> some View {
         Button { onClick(icon.id) } label: {
             Group {
                 if let image = icon.image {
-                    Image(decorative: image, scale: 2).renderingMode(.original).resizable().aspectRatio(contentMode: .fit)
+                    glyph(image).renderingMode(.original).resizable().aspectRatio(contentMode: .fit)
                 } else {
                     Image(systemName: "photo.badge.exclamationmark").resizable().aspectRatio(contentMode: .fit).foregroundStyle(.secondary)
                 }
             }.frame(width: 44, height: 44)
-                .padding(4).background(Color(white:0.50),in:RoundedRectangle(cornerRadius:9))
+                .padding(4).background(Color.primary.opacity(hoveredID==icon.id ? 0.07 : 0),in:RoundedRectangle(cornerRadius:9))
                 .frame(width: MenuBarPopoverLayout.tile, height: MenuBarPopoverLayout.tile)
         }.buttonStyle(.plain)
+            .onHover { hoveredID = $0 ? icon.id : nil }
             .accessibilityLabel("\(hidden ? "收纳" : "可见")图标 \(index + 1)")
             .accessibilityIdentifier("menu-bar-icon-\(icon.id)")
             .background(GeometryReader { proxy in Color.clear.preference(key:ShelfIconFrames.self,value:[icon.id:proxy.frame(in:.named("shelf-drag"))]) })
@@ -1198,7 +1226,7 @@ private struct ShelfPanelView: View {
             .onPreferenceChange(ShelfRowFrames.self){rowFrames=$0}
             .overlay(alignment:.topLeading) {
                 if let id=draggedID,let icon=(icons+outside).first(where:{$0.id==id}),let image=icon.image {
-                    Image(decorative:image,scale:2).resizable().aspectRatio(contentMode:.fit)
+                    glyph(image).resizable().aspectRatio(contentMode:.fit)
                         .frame(width:44,height:44).position(dragPoint).allowsHitTesting(false)
                 }
             }

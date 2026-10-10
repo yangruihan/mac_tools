@@ -1,0 +1,48 @@
+{
+  "target": "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift",
+  "changedSites": [
+    "showDragPanel background/border/colorScheme",
+    "ShelfDragPanel.appearance"
+  ],
+  "baseline": {
+    "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "exit": 0,
+    "tests": 507,
+    "appearance": "forced darkAqua"
+  },
+  "modified": {
+    "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "exit": 0,
+    "tests": 507,
+    "appearance": "inherited app appearance; Aqua and darkAqua assertions pass"
+  },
+  "rollback": {
+    "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "exit": 0,
+    "tests": 507,
+    "originalSourceHashesRestored": true,
+    "appearance": "forced darkAqua"
+  },
+  "appRollback": {
+    "exit": 0,
+    "restoredSHA256": "2a90e59eb03de1fa04e7c5b6132c630bf51b50a0638dc86266f32208fdfedfb7",
+    "matchingBridgeTests": 33
+  },
+  "ui": {
+    "source": "CUA production build 19 observations",
+    "light": "light background, dark text, rounded outer border, gray glyph tiles; 9 hidden / 16 resident",
+    "dark": "dark background, light text, rounded outer border, gray glyph tiles; 9 hidden / 16 resident",
+    "system": "restored original system setting; observed light panel under current system appearance",
+    "input": "appearance menu changes and panel opening only; no source icon click or drag",
+    "limits": "OS live appearance change while panel stays open not exercised"
+  },
+  "installed": {
+    "build": "19",
+    "application": "/Applications/MacTools.app",
+    "hostSHA256": "920566b1eadf82809712d6b9a55b1ee6d14df256661f8e387927e3d96716bd27",
+    "pluginSHA256": "f68d34f6d6100f03d29de6c284cf5ad1fa1ac4e5952feb025bca834233c1fda7",
+    "previousApplication": "/Applications/MacTools.before-light-mode-20261010.app",
+    "uncommitted": true
+  },
+  "commitOrPush": false
+}

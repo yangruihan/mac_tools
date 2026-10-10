@@ -1,0 +1,101 @@
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
+@@ -252,7 +252,7 @@
+               hidden ? x < dividerX : x > controlX else { return nil }
+         return (x, after)
+     }
+-    static func lightShelfGlyph(_ image:CGImage)->CGImage? {
++    static func shelfGlyph(_ image:CGImage,light:Bool)->CGImage? {
+         guard image.width>0,image.height>0,image.width<=1024,image.height<=1024 else{return nil}
+         var pixels=[UInt8](repeating:0,count:image.width*image.height*4)
+         return pixels.withUnsafeMutableBytes { buffer in
+@@ -261,11 +261,15 @@
+                 bitmapInfo:CGImageAlphaInfo.premultipliedLast.rawValue|CGBitmapInfo.byteOrder32Big.rawValue) else{return nil}
+             context.draw(image,in:CGRect(x:0,y:0,width:image.width,height:image.height))
+             let bytes=buffer.bindMemory(to:UInt8.self)
+-            // Adapt neutral white glyph strokes, preserving colored status pixels and alpha.
++            // Soften captured low-alpha dark shadows without flattening colored status pixels.
+             for i in stride(from:0,to:bytes.count,by:4) {
+                 let alpha=Int(bytes[i+3]),r=Int(bytes[i]),g=Int(bytes[i+1]),b=Int(bytes[i+2])
+-                guard alpha>0,max(r,max(g,b))-min(r,min(g,b))<=alpha/16,
+-                      min(r,min(g,b))*100>alpha*55 else{continue}
++                let neutral=max(r,max(g,b))-min(r,min(g,b))<=alpha/16
++                if alpha>0,alpha<128,neutral,max(r,max(g,b))*100<alpha*35 {
++                    bytes[i]/=8;bytes[i+1]/=8;bytes[i+2]/=8;bytes[i+3]/=8
++                    continue
++                }
++                guard light,alpha>0,neutral,min(r,min(g,b))*100>alpha*55 else{continue}
+                 let ink=UInt8(alpha*18/100)
+                 bytes[i]=ink;bytes[i+1]=ink;bytes[i+2]=ink
+             }
+@@ -1082,7 +1086,7 @@
+ final class ShelfDragPanel: NSPanel {
+     convenience init(shelfRect:NSRect) {
+         self.init(contentRect:shelfRect,styleMask:[.borderless,.nonactivatingPanel],backing:.buffered,defer:false)
+-        isOpaque=false; backgroundColor = .clear; hasShadow=true
++        isOpaque=false; backgroundColor = .clear; hasShadow=false
+     }
+     override var canBecomeKey:Bool {true}
+     override var canBecomeMain:Bool {false}
+@@ -1122,7 +1126,7 @@
+     let onClick: (CGWindowID) -> Void
+     let onOpenToolbox: () -> Void
+     private func glyph(_ image:CGImage)->Image {
+-        Image(decorative:colorScheme == .light ? MenuBarOrganizerPlugin.lightShelfGlyph(image) ?? image : image,scale:2)
++        Image(decorative:MenuBarOrganizerPlugin.shelfGlyph(image,light:colorScheme == .light) ?? image,scale:2)
+     }
+     private func iconButton(_ icon: ShelfIcon, index: Int, hidden: Bool) -> some View {
+         Button { onClick(icon.id) } label: {
+--- a/Tests/MacToolsTests/MenuBarOrganizerTests.swift
++++ b/Tests/MacToolsTests/MenuBarOrganizerTests.swift
+@@ -4,13 +4,29 @@
+ @testable import MacTools
+ 
+ final class MenuBarOrganizerTests: XCTestCase {
++    func testShelfGlyphSoftensOnlyNeutralShadowInBothAppearances() throws {
++        let rgba:[UInt8]=[0,0,0,64, 32,32,32,255, 255,255,255,255, 64,0,0,64]
++        let provider=try XCTUnwrap(CGDataProvider(data:Data(rgba) as CFData))
++        let image=try XCTUnwrap(CGImage(width:4,height:1,bitsPerComponent:8,bitsPerPixel:32,bytesPerRow:16,
++            space:CGColorSpaceCreateDeviceRGB(),bitmapInfo:CGBitmapInfo(rawValue:CGImageAlphaInfo.premultipliedLast.rawValue),
++            provider:provider,decode:nil,shouldInterpolate:false,intent:.defaultIntent))
++        for light in [true,false] {
++            let adapted=try XCTUnwrap(MenuBarOrganizerPlugin.shelfGlyph(image,light:light))
++            let data=try XCTUnwrap(adapted.dataProvider?.data)
++            let bytes=Array(UnsafeBufferPointer(start:CFDataGetBytePtr(data),count:CFDataGetLength(data)))
++            XCTAssertEqual(Array(bytes[0..<4]),[0,0,0,8])
++            XCTAssertEqual(Array(bytes[4..<8]),[32,32,32,255])
++            XCTAssertEqual(Array(bytes[8..<12]),light ? [45,45,45,255] : [255,255,255,255])
++            XCTAssertEqual(Array(bytes[12..<16]),[64,0,0,64])
++        }
++    }
+     func testLightShelfGlyphAdaptsWhiteAndPreservesColorDarkPixelsAndAlpha() throws {
+         let rgba:[UInt8]=[255,255,255,255, 255,128,0,255, 32,32,32,255, 128,128,128,128]
+         let provider=try XCTUnwrap(CGDataProvider(data:Data(rgba) as CFData))
+         let image=try XCTUnwrap(CGImage(width:4,height:1,bitsPerComponent:8,bitsPerPixel:32,bytesPerRow:16,
+             space:CGColorSpaceCreateDeviceRGB(),bitmapInfo:CGBitmapInfo(rawValue:CGImageAlphaInfo.premultipliedLast.rawValue),
+             provider:provider,decode:nil,shouldInterpolate:false,intent:.defaultIntent))
+-        let adapted=try XCTUnwrap(MenuBarOrganizerPlugin.lightShelfGlyph(image))
++        let adapted=try XCTUnwrap(MenuBarOrganizerPlugin.shelfGlyph(image,light:true))
+         let data=try XCTUnwrap(adapted.dataProvider?.data)
+         let bytes=Array(UnsafeBufferPointer(start:CFDataGetBytePtr(data),count:CFDataGetLength(data)))
+         XCTAssertEqual(Array(bytes[0..<4]),[45,45,45,255])
+@@ -60,7 +76,7 @@
+         XCTAssertFalse(panel.canBecomeMain)
+         XCTAssertFalse(panel.isOpaque)
+         XCTAssertEqual(panel.backgroundColor,.clear)
+-        XCTAssertTrue(panel.hasShadow)
++        XCTAssertFalse(panel.hasShadow)
+         XCTAssertNil(panel.appearance)
+         let app=NSApplication.shared, original=NSApplication.shared.appearance
+         defer { app.appearance=original }
+--- a/scripts/build-ice-interface-product-candidate.sh
++++ b/scripts/build-ice-interface-product-candidate.sh
+@@ -34,7 +34,7 @@
+ for p in [repo/'COPYING.GPL-3.0',repo/'THIRD_PARTY_NOTICES.md',worker/'prepared-build.json']:shutil.copyfile(p,package/p.name)
+ for p in sources:
+  dest=resources/'Source'/p.relative_to(repo);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
+-(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'20' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
++(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'21' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
+ (root/'source-manifest.json').write_text(json.dumps({str(p.relative_to(repo)):sha(p) for p in sources},indent=2,sort_keys=True)+'\n')
+ PY
+ swiftc -parse-as-library -D"$FLAG" -module-name MacTools -module-cache-path "$ROOT/module-cache" $(cat "$ROOT/sources.txt") -o "$APP/Contents/MacOS/MacTools"

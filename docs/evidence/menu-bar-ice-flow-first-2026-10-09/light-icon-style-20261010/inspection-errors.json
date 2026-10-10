@@ -1,0 +1,5 @@
+{
+  "source": "assumed MenuBarCapture.swift and unexpanded shell glob",
+  "exit": 1,
+  "correction": "rg enum MenuBarCapture Sources/MacTools -> MenuBarVisibility.swift; inspected actual file"
+}

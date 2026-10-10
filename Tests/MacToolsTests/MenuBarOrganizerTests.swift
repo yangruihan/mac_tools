@@ -4,6 +4,38 @@ import AppKit
 @testable import MacTools
 
 final class MenuBarOrganizerTests: XCTestCase {
+    func testShelfGlyphSoftensOnlyNeutralShadowInBothAppearances() throws {
+        let rgba:[UInt8]=[0,0,0,64, 32,32,32,255, 255,255,255,255, 64,0,0,64]
+        let provider=try XCTUnwrap(CGDataProvider(data:Data(rgba) as CFData))
+        let image=try XCTUnwrap(CGImage(width:4,height:1,bitsPerComponent:8,bitsPerPixel:32,bytesPerRow:16,
+            space:CGColorSpaceCreateDeviceRGB(),bitmapInfo:CGBitmapInfo(rawValue:CGImageAlphaInfo.premultipliedLast.rawValue),
+            provider:provider,decode:nil,shouldInterpolate:false,intent:.defaultIntent))
+        for light in [true,false] {
+            let adapted=try XCTUnwrap(MenuBarOrganizerPlugin.shelfGlyph(image,light:light))
+            let data=try XCTUnwrap(adapted.dataProvider?.data)
+            let bytes=Array(UnsafeBufferPointer(start:CFDataGetBytePtr(data),count:CFDataGetLength(data)))
+            XCTAssertEqual(Array(bytes[0..<4]),[0,0,0,8])
+            XCTAssertEqual(Array(bytes[4..<8]),[32,32,32,255])
+            XCTAssertEqual(Array(bytes[8..<12]),light ? [45,45,45,255] : [255,255,255,255])
+            XCTAssertEqual(Array(bytes[12..<16]),[64,0,0,64])
+        }
+    }
+    func testLightShelfGlyphAdaptsWhiteAndPreservesColorDarkPixelsAndAlpha() throws {
+        let rgba:[UInt8]=[255,255,255,255, 255,128,0,255, 32,32,32,255, 128,128,128,128]
+        let provider=try XCTUnwrap(CGDataProvider(data:Data(rgba) as CFData))
+        let image=try XCTUnwrap(CGImage(width:4,height:1,bitsPerComponent:8,bitsPerPixel:32,bytesPerRow:16,
+            space:CGColorSpaceCreateDeviceRGB(),bitmapInfo:CGBitmapInfo(rawValue:CGImageAlphaInfo.premultipliedLast.rawValue),
+            provider:provider,decode:nil,shouldInterpolate:false,intent:.defaultIntent))
+        let adapted=try XCTUnwrap(MenuBarOrganizerPlugin.shelfGlyph(image,light:true))
+        let data=try XCTUnwrap(adapted.dataProvider?.data)
+        let bytes=Array(UnsafeBufferPointer(start:CFDataGetBytePtr(data),count:CFDataGetLength(data)))
+        XCTAssertEqual(Array(bytes[0..<4]),[45,45,45,255])
+        XCTAssertEqual(Array(bytes[4..<8]),[255,128,0,255])
+        XCTAssertEqual(Array(bytes[8..<12]),[32,32,32,255])
+        XCTAssertEqual(Array(bytes[12..<16]),[23,23,23,128])
+        XCTAssertEqual(adapted.width,image.width);XCTAssertEqual(adapted.height,image.height)
+    }
+
     func testPanelDropBeforeFirstResidentTileUsesFirstPeerInsteadOfDivider() {
         let frames:[CGWindowID:CGRect]=[1:CGRect(x:20,y:0,width:30,height:40),2:CGRect(x:80,y:0,width:30,height:40),3:CGRect(x:140,y:0,width:30,height:40)]
         XCTAssertEqual(MenuBarOrganizerPlugin.panelDropPeer(source:3,at:CGPoint(x:5,y:20),candidates:[1,2,3],frames:frames),1)
@@ -37,15 +69,21 @@ final class MenuBarOrganizerTests: XCTestCase {
     }
 
     @MainActor
-    func testShelfPanelDoesNotActivateToolboxAndHasTransparentDarkChrome() {
+    func testShelfPanelDoesNotActivateToolboxAndInheritsLightAndDarkAppearance() {
         let panel=ShelfDragPanel(shelfRect:NSRect(x:0,y:0,width:320,height:200))
         XCTAssertTrue(panel.styleMask.contains(.nonactivatingPanel))
         XCTAssertTrue(panel.canBecomeKey)
         XCTAssertFalse(panel.canBecomeMain)
         XCTAssertFalse(panel.isOpaque)
         XCTAssertEqual(panel.backgroundColor,.clear)
-        XCTAssertTrue(panel.hasShadow)
-        XCTAssertEqual(panel.appearance?.name,.darkAqua)
+        XCTAssertFalse(panel.hasShadow)
+        XCTAssertNil(panel.appearance)
+        let app=NSApplication.shared, original=NSApplication.shared.appearance
+        defer { app.appearance=original }
+        for name in [NSAppearance.Name.aqua,.darkAqua] {
+            app.appearance=NSAppearance(named:name)
+            XCTAssertEqual(panel.effectiveAppearance.bestMatch(from:[.aqua,.darkAqua]),name)
+        }
     }
 
     @MainActor

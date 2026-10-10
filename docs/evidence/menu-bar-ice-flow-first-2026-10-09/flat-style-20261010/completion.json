@@ -1,0 +1,48 @@
+{
+  "target": "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift",
+  "changedSites": [
+    "shelfGlyph: neutral dark pixels alpha<128 attenuated by8 in both appearances",
+    "ShelfDragPanel.hasShadow=false"
+  ],
+  "baseline": {
+    "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "exit": 0,
+    "tests": 508,
+    "appearance": "captured shadows unchanged; panel hasShadow=true"
+  },
+  "modified": {
+    "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "exit": 0,
+    "tests": 509,
+    "appearance": "captured neutral dark low-alpha shadows attenuated; panel hasShadow=false"
+  },
+  "rollback": {
+    "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "exit": 0,
+    "tests": 508,
+    "originalHashesRestored": true,
+    "appearance": "captured shadows unchanged; panel hasShadow=true"
+  },
+  "appRollback": {
+    "exit": 0,
+    "restoredSHA256": "2a25d0e95377c5b916da74c00a71709e11ab4497b85397bbbc304aaa4c33108f",
+    "matchingBridgeAssertions": 33
+  },
+  "installed": {
+    "build": "21",
+    "application": "/Applications/MacTools.app",
+    "hostSHA256": "672443b86c9adc4fa152a3e51d4bdb5cfb0e460062a9e7c6a26951f4aa6e7b0d",
+    "pluginSHA256": "aaddc1daadb46b72735f20fa37e96d5c8e0dee7ba6febc06639784210a78f83e",
+    "previousApplication": "/Applications/MacTools.before-flat-style-20261010.app",
+    "uncommitted": true
+  },
+  "ui": {
+    "source": "CUA production build21 screenshot and AX",
+    "appearance": "system/light unchanged",
+    "observed": "rounded light panel, no gray cards, visibly softened icon halos, dark glyphs and pink/orange color details retained; 9 hidden / 16 resident",
+    "actions": "open panel only; no application icon activation or drag",
+    "final": "panel opened for user testing",
+    "limits": "dark appearance covered by pixel unit test, not new GUI screenshot; low-alpha dark glyph antialias edges can also soften"
+  },
+  "commitOrPush": false
+}

@@ -1,5 +1,23 @@
 #!/bin/sh
 set -eu
+if [ "${1:-}" = "--flat-style-source" ] || [ "${1:-}" = "--flat-style-installed-app" ]; then
+ [ "$#" -eq 2 ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ SCRIPT=ROLLBACK.sh; [ "$1" != "--flat-style-installed-app" ] || SCRIPT=ROLLBACK_INSTALLED_APP.sh
+ exec "$DIR/flat-style-20261010/$SCRIPT" "$2"
+fi
+if [ "${1:-}" = "--light-icon-style-source" ] || [ "${1:-}" = "--light-icon-style-installed-app" ]; then
+ [ "$#" -eq 2 ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ SCRIPT=ROLLBACK.sh; [ "$1" != "--light-icon-style-installed-app" ] || SCRIPT=ROLLBACK_INSTALLED_APP.sh
+ exec "$DIR/light-icon-style-20261010/$SCRIPT" "$2"
+fi
+if [ "${1:-}" = "--light-mode-source" ] || [ "${1:-}" = "--light-mode-installed-app" ]; then
+ [ "$#" -eq 2 ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ SCRIPT=ROLLBACK.sh; [ "$1" != "--light-mode-installed-app" ] || SCRIPT=ROLLBACK_INSTALLED_APP.sh
+ exec "$DIR/light-mode-20261010/$SCRIPT" "$2"
+fi
 if [ "${1:-}" = "--resident-first-source" ] || [ "${1:-}" = "--resident-first-installed-app" ]; then
  [ "$#" -eq 2 ] || exit 2
  DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)

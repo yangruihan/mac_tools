@@ -1,0 +1,15 @@
+{
+  "compileFirstAttempt": {
+    "exit": 1,
+    "source": "CFData is not Sequence in test data extraction",
+    "correction": "CFDataGetBytePtr/CFDataGetLength",
+    "stderr": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/light-icon-style-20261010/modified-first-error.stderr",
+    "retryExit": 0
+  },
+  "ui": [
+    "stale app handle rejected Escape; refreshed with cua.getApp",
+    "first capture cancelled; original icons remained expanded; fresh state then new capture succeeded",
+    "user changed app warning blocked an action; refreshed before further input",
+    "getAXState following quit reopened old app; quit again and ps confirmed exited before replacement"
+  ]
+}

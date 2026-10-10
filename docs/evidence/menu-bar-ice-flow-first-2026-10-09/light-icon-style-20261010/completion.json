@@ -1,0 +1,65 @@
+{
+  "target": "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift",
+  "changedSites": [
+    "ShelfPanelView.iconButton background and hover",
+    "lightShelfGlyph neutral stroke adaptation",
+    "ShelfPanelView drag ghost same glyph appearance"
+  ],
+  "baseline": {
+    "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "exit": 0,
+    "tests": 507,
+    "style": "gray cards"
+  },
+  "modified": {
+    "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "exit": 0,
+    "tests": 508,
+    "style": "no constant cards; neutral white glyphs adapt in light"
+  },
+  "rollback": {
+    "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "exit": 0,
+    "tests": 507,
+    "style": "gray cards restored",
+    "originalSourceHashesRestored": true
+  },
+  "appRollback": {
+    "exit": 0,
+    "restoredSHA256": "920566b1eadf82809712d6b9a55b1ee6d14df256661f8e387927e3d96716bd27",
+    "matchingBridgeAssertions": 33
+  },
+  "installed": {
+    "build": "20",
+    "application": "/Applications/MacTools.app",
+    "hostSHA256": "2a25d0e95377c5b916da74c00a71709e11ab4497b85397bbbc304aaa4c33108f",
+    "pluginSHA256": "38eb52f13668bca65ae0d196e086075fc52192e390719c57f60fcf29242b6d9c",
+    "previousApplication": "/Applications/MacTools.before-light-icon-style-20261010.app",
+    "uncommitted": true
+  },
+  "ui": {
+    "source": "CUA production build20",
+    "light": "system light: no gray icon cards; neutral strokes dark; ChatGPT pink dot and orange microphone backing visible; rounded panel retained; 9 hidden / 16 resident",
+    "dark": "original white strokes on dark panel; no gray cards; 9 hidden / 16 resident",
+    "finalAppearance": "system restored",
+    "input": "open/close panel, switch appearance only; no application icon activation or drag",
+    "notVerified": "hover highlight and native drag regression not exercised this styling turn"
+  },
+  "errors": {
+    "compileFirstAttempt": {
+      "exit": 1,
+      "source": "CFData is not Sequence in test data extraction",
+      "correction": "CFDataGetBytePtr/CFDataGetLength",
+      "stderr": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/light-icon-style-20261010/modified-first-error.stderr",
+      "retryExit": 0
+    },
+    "ui": [
+      "stale app handle rejected Escape; refreshed with cua.getApp",
+      "first capture cancelled; original icons remained expanded; fresh state then new capture succeeded",
+      "user changed app warning blocked an action; refreshed before further input",
+      "getAXState following quit reopened old app; quit again and ps confirmed exited before replacement"
+    ]
+  },
+  "commitOrPush": false,
+  "reference": "https://developer.apple.com/design/human-interface-guidelines/dark-mode"
+}

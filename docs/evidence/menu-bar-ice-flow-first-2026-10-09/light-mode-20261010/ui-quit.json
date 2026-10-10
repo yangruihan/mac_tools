@@ -1,0 +1,7 @@
+{
+  "action": "CUA super+q",
+  "observationError": "NSOSStatusErrorDomain -600 procNotFound after quit",
+  "processRecheck": "no MacTools process under /Applications/MacTools.app",
+  "originalAppearance": "system",
+  "oldBuild": "18"
+}

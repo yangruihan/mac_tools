@@ -1,0 +1,62 @@
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
+@@ -711,11 +711,10 @@
+     }
+     private func showDragPanel(_ content:AnyView,width:CGFloat) {
+         guard let anchor=control?.button?.window,anchor.isVisible,recoveryControlVisible(),let screen=screen(for:anchor.frame),!environment.sleeping else{expand();return}
+-        // Captured menu-bar glyphs are often white even when the toolbox uses light appearance.
+         let view=NSHostingView(rootView:content.frame(width:width).padding(10)
+-            .background(Color(red:0.14,green:0.15,blue:0.17))
+-            .overlay(RoundedRectangle(cornerRadius:14).strokeBorder(.white.opacity(0.12),lineWidth:1))
+-            .clipShape(RoundedRectangle(cornerRadius:14)).preferredColorScheme(.dark))
++            .background(Color(nsColor:.windowBackgroundColor))
++            .overlay(RoundedRectangle(cornerRadius:14).strokeBorder(Color.primary.opacity(0.12),lineWidth:1))
++            .clipShape(RoundedRectangle(cornerRadius:14)))
+         view.layoutSubtreeIfNeeded()
+         let size=NSSize(width:width+20,height:max(80,view.fittingSize.height))
+         let panel=ShelfDragPanel(shelfRect:NSRect(origin:.zero,size:size))
+@@ -1064,7 +1063,6 @@
+     convenience init(shelfRect:NSRect) {
+         self.init(contentRect:shelfRect,styleMask:[.borderless,.nonactivatingPanel],backing:.buffered,defer:false)
+         isOpaque=false; backgroundColor = .clear; hasShadow=true
+-        appearance=NSAppearance(named:.darkAqua)
+     }
+     override var canBecomeKey:Bool {true}
+     override var canBecomeMain:Bool {false}
+--- a/Tests/MacToolsTests/MenuBarOrganizerTests.swift
++++ b/Tests/MacToolsTests/MenuBarOrganizerTests.swift
+@@ -37,7 +37,7 @@
+     }
+ 
+     @MainActor
+-    func testShelfPanelDoesNotActivateToolboxAndHasTransparentDarkChrome() {
++    func testShelfPanelDoesNotActivateToolboxAndInheritsLightAndDarkAppearance() {
+         let panel=ShelfDragPanel(shelfRect:NSRect(x:0,y:0,width:320,height:200))
+         XCTAssertTrue(panel.styleMask.contains(.nonactivatingPanel))
+         XCTAssertTrue(panel.canBecomeKey)
+@@ -45,7 +45,13 @@
+         XCTAssertFalse(panel.isOpaque)
+         XCTAssertEqual(panel.backgroundColor,.clear)
+         XCTAssertTrue(panel.hasShadow)
+-        XCTAssertEqual(panel.appearance?.name,.darkAqua)
++        XCTAssertNil(panel.appearance)
++        let app=NSApplication.shared, original=NSApplication.shared.appearance
++        defer { app.appearance=original }
++        for name in [NSAppearance.Name.aqua,.darkAqua] {
++            app.appearance=NSAppearance(named:name)
++            XCTAssertEqual(panel.effectiveAppearance.bestMatch(from:[.aqua,.darkAqua]),name)
++        }
+     }
+ 
+     @MainActor
+--- a/scripts/build-ice-interface-product-candidate.sh
++++ b/scripts/build-ice-interface-product-candidate.sh
+@@ -34,7 +34,7 @@
+ for p in [repo/'COPYING.GPL-3.0',repo/'THIRD_PARTY_NOTICES.md',worker/'prepared-build.json']:shutil.copyfile(p,package/p.name)
+ for p in sources:
+  dest=resources/'Source'/p.relative_to(repo);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
+-(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'18' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
++(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'19' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
+ (root/'source-manifest.json').write_text(json.dumps({str(p.relative_to(repo)):sha(p) for p in sources},indent=2,sort_keys=True)+'\n')
+ PY
+ swiftc -parse-as-library -D"$FLAG" -module-name MacTools -module-cache-path "$ROOT/module-cache" $(cat "$ROOT/sources.txt") -o "$APP/Contents/MacOS/MacTools"

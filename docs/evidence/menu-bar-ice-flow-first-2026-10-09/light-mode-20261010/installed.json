@@ -1,0 +1,8 @@
+{
+  "build": "19",
+  "application": "/Applications/MacTools.app",
+  "hostSHA256": "920566b1eadf82809712d6b9a55b1ee6d14df256661f8e387927e3d96716bd27",
+  "pluginSHA256": "f68d34f6d6100f03d29de6c284cf5ad1fa1ac4e5952feb025bca834233c1fda7",
+  "previousApplication": "/Applications/MacTools.before-light-mode-20261010.app",
+  "uncommitted": true
+}

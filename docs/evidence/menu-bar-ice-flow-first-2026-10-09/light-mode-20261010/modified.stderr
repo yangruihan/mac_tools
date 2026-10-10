@@ -1,0 +1,13 @@
+Building for debugging...
+[0/6] Write sources
+[2/6] Write swift-version--58304C5D6DBC2206.txt
+[4/8] Compiling MacTools MenuBarOrganizerPlugin.swift
+[5/8] Emitting module MacTools
+[5/10] Write Objects.LinkFileList
+[6/10] Linking MacTools
+[7/10] Applying MacTools
+[9/12] Emitting module MacToolsTests
+[10/12] Compiling MacToolsTests MenuBarOrganizerTests.swift
+[10/12] Write Objects.LinkFileList
+[11/12] Linking MacToolsPackageTests
+Build complete! (6.08s)

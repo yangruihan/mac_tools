@@ -1,0 +1,8 @@
+{
+  "build": "21",
+  "application": "/Applications/MacTools.app",
+  "hostSHA256": "672443b86c9adc4fa152a3e51d4bdb5cfb0e460062a9e7c6a26951f4aa6e7b0d",
+  "pluginSHA256": "aaddc1daadb46b72735f20fa37e96d5c8e0dee7ba6febc06639784210a78f83e",
+  "previousApplication": "/Applications/MacTools.before-flat-style-20261010.app",
+  "uncommitted": true
+}

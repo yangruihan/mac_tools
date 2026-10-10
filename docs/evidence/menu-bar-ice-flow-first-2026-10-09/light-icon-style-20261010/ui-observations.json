@@ -1,0 +1,8 @@
+{
+  "source": "CUA production build20",
+  "light": "system light: no gray icon cards; neutral strokes dark; ChatGPT pink dot and orange microphone backing visible; rounded panel retained; 9 hidden / 16 resident",
+  "dark": "original white strokes on dark panel; no gray cards; 9 hidden / 16 resident",
+  "finalAppearance": "system restored",
+  "input": "open/close panel, switch appearance only; no application icon activation or drag",
+  "notVerified": "hover highlight and native drag regression not exercised this styling turn"
+}

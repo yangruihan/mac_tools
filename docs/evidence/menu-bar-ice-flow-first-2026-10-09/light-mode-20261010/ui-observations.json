@@ -1,0 +1,8 @@
+{
+  "source": "CUA production build 19 observations",
+  "light": "light background, dark text, rounded outer border, gray glyph tiles; 9 hidden / 16 resident",
+  "dark": "dark background, light text, rounded outer border, gray glyph tiles; 9 hidden / 16 resident",
+  "system": "restored original system setting; observed light panel under current system appearance",
+  "input": "appearance menu changes and panel opening only; no source icon click or drag",
+  "limits": "OS live appearance change while panel stays open not exercised"
+}
