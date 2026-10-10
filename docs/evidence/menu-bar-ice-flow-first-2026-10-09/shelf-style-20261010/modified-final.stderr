@@ -1,0 +1,214 @@
+[0/1] Planning build
+Building for debugging...
+[0/6] Write swift-version--58304C5D6DBC2206.txt
+[2/72] Compiling MacTools MenuBarLocalReceiptWriter.swift
+[3/72] Compiling MacTools MenuBarLocalStartReceipt.swift
+[4/72] Compiling MacTools MenuBarLocalUIReadback.swift
+[5/72] Compiling MacTools MenuBarMoveInterference.swift
+[6/72] Compiling MacTools MenuBarMoveStageRecorder.swift
+[7/77] Compiling MacTools MenuBarOwnedStatusItemWidthDriver.swift
+[8/77] Compiling MacTools MenuBarOwnedTargetHit.swift
+[9/77] Compiling MacTools MenuBarOwnedWidthJournal.swift
+[10/77] Compiling MacTools MenuBarProcessSignature.swift
+[11/77] Compiling MacTools MenuBarRealActionConsumption.swift
+[12/77] Compiling MacTools MenuBarIceInterfaceProductChecks.swift
+[13/77] Compiling MacTools MenuBarIceInterfaceProductNativeChecks.swift
+[14/77] Compiling MacTools MenuBarIceSelectedTarget.swift
+[15/77] Compiling MacTools MenuBarIconActivation.swift
+[16/77] Compiling MacTools MenuBarIconIdentity.swift
+[17/77] Compiling MacTools MenuBarInputAttribution.swift
+[18/77] Compiling MacTools MenuBarItemDirectory.swift
+[19/77] Compiling MacTools MenuBarListenOnlyInterferenceSource.swift
+[20/77] Compiling MacTools MenuBarLiveOperationDriver.swift
+[21/77] Compiling MacTools MenuBarLocalAcceptanceGate.swift
+[22/77] Compiling MacTools MenuBarHiddenMoveCoordinator.swift
+[23/77] Compiling MacTools MenuBarHiddenMoveJournal.swift
+[24/77] Compiling MacTools MenuBarHiddenMoveModel.swift
+[25/77] Compiling MacTools MenuBarIceCandidateProduct.swift
+[26/77] Compiling MacTools MenuBarIceInterfaceProductBridge.swift
+[27/77] Compiling MacTools AppModel.swift
+[28/77] Compiling MacTools HotKeyService.swift
+[29/77] Compiling MacTools ToolPlugin.swift
+[30/77] Compiling MacTools MacTools.swift
+[31/77] Compiling MacTools KeepAwakePlugin.swift
+[32/77] Emitting module MacTools
+[33/77] Compiling MacTools MenuBarAcceptanceStopNotice.swift
+[34/77] Compiling MacTools MenuBarDestinationAdmissionDiagnostic.swift
+[35/77] Compiling MacTools MenuBarDispatchWitness.swift
+[36/77] Compiling MacTools MenuBarEnvironment.swift
+[37/77] Compiling MacTools MenuBarHiddenInterferenceSource.swift
+[38/77] Compiling MacTools MenuBarNativeEditingView.swift
+[39/77] Compiling MacTools MenuBarNativeObservation.swift
+[40/77] Compiling MacTools MenuBarNativeRevealController.swift
+[41/77] Compiling MacTools MenuBarNativeRevealDiagnostic.swift
+[42/77] Compiling MacTools MenuBarNativeRevealPlan.swift
+[43/77] Compiling MacTools MenuBarTemporaryMoveModel.swift
+[44/77] Compiling MacTools MenuBarVisibility.swift
+[45/77] Compiling MacTools Hardware.swift
+[46/77] Compiling MacTools QuickControlsPlugin.swift
+[47/77] Compiling MacTools QuickControlsView.swift
+[48/77] Compiling MacTools IceMenuBarClassification.swift
+[49/77] Compiling MacTools IceMenuBarReadAdapter.swift
+[50/77] Compiling MacTools IceOwnedMouseEvent.swift
+[51/77] Compiling MacTools IcePrivateWindowAPI.swift
+[52/77] Compiling MacTools MenuBarAXActivator.swift
+[53/77] Compiling MacTools MenuBarRealInputDiagnosticScope.swift
+[54/77] Compiling MacTools MenuBarRealLocalAuthorization.swift
+[55/77] Compiling MacTools MenuBarRealRunControl.swift
+[56/77] Compiling MacTools MenuBarRecoveryJournal.swift
+[57/77] Compiling MacTools MenuBarTemporaryMoveJournal.swift
+[58/77] Compiling MacTools MenuBarLocalContinuityLedger.swift
+[59/77] Compiling MacTools MenuBarLocalDiagnosticReceipt.swift
+[60/77] Compiling MacTools MenuBarLocalNoMoveInput.swift
+[61/77] Compiling MacTools MenuBarLocalNoMovePreparation.swift
+[62/77] Compiling MacTools MenuBarLocalObservationBudget.swift
+[63/77] Compiling MacTools TrackpadPlugin.swift
+[64/77] Compiling MacTools FloatingPreview.swift
+[65/77] Compiling MacTools WindowPreviewPlugin.swift
+[66/77] Compiling MacTools ContentView.swift
+[67/77] Compiling MacTools SharedControls.swift
+[68/77] Compiling MacTools MenuBarOperation.swift
+[69/77] Compiling MacTools MenuBarOperationStop.swift
+[70/77] Compiling MacTools MenuBarOrganizerPlugin.swift
+[71/77] Compiling MacTools MenuBarOwnedFixtureMoveDriver.swift
+[72/77] Compiling MacTools MenuBarOwnedMouseTransport.swift
+[72/77] Write Objects.LinkFileList
+[73/77] Linking MacTools
+[74/77] Applying MacTools
+[76/137] Compiling MacToolsTests MenuBarHiddenMoveJournalTests.swift
+[77/137] Compiling MacToolsTests MenuBarHiddenMoveModelTests.swift
+[78/137] Compiling MacToolsTests MenuBarIceSelectedTargetTests.swift
+[79/137] Compiling MacToolsTests MenuBarIconActivationTests.swift
+[80/137] Compiling MacToolsTests MenuBarIconIdentityTests.swift
+[81/141] Compiling MacToolsTests MenuBarNativeCapturedReplayTests.swift
+[82/141] Compiling MacToolsTests MenuBarNativeFrontMenuReaderTests.swift
+[83/141] Compiling MacToolsTests MenuBarNativeObservationTests.swift
+[84/141] Compiling MacToolsTests MenuBarNativeRevealControllerTests.swift
+[85/141] Compiling MacToolsTests MenuBarMoveAdapterFixture.swift
+[86/141] Compiling MacToolsTests MenuBarMoveInterferenceTests.swift
+[87/141] Compiling MacToolsTests MenuBarMoveStageRecorderTests.swift
+[88/141] Compiling MacToolsTests MenuBarNativeAXReadTests.swift
+[89/141] Compiling MacToolsTests MenuBarNativeAttemptGateTests.swift
+[90/141] Compiling MacToolsTests MenuBarOwnedTargetHitTests.swift
+[91/141] Compiling MacToolsTests MenuBarRealActionConsumptionTests.swift
+[92/141] Compiling MacToolsTests MenuBarRealInputDiagnosticTests.swift
+[93/141] Compiling MacToolsTests MenuBarRealLocalAuthorizationTests.swift
+[94/141] Compiling MacToolsTests MenuBarInputAttributionTests.swift
+[95/141] Compiling MacToolsTests MenuBarItemDirectoryTests.swift
+[96/141] Compiling MacToolsTests MenuBarLocalAcceptanceGateTests.swift
+[97/141] Compiling MacToolsTests MenuBarLocalFailureEvidenceTests.swift
+[98/141] Compiling MacToolsTests MenuBarLocalNativeContinuityTests.swift
+[99/141] Compiling MacToolsTests MenuBarLocalNoMovePreparationTests.swift
+[100/141] Compiling MacToolsTests MenuBarLocalObservationTests.swift
+[101/141] Compiling MacToolsTests MenuBarLocalQuietCountdownDesignTests.swift
+[102/141] Compiling MacToolsTests MenuBarLocalStartReceiptTests.swift
+[103/141] Compiling MacToolsTests MenuBarLocalUIReadbackTests.swift
+[104/141] Compiling MacToolsTests Checks.swift
+[105/141] Compiling MacToolsTests FloatingPreviewTests.swift
+[106/141] Compiling MacToolsTests IceMenuBarClassificationTests.swift
+[107/141] Compiling MacToolsTests IceMenuBarReadAdapterTests.swift
+[108/141] Compiling MacToolsTests KeepAwakeTests.swift
+[109/141] Compiling MacToolsTests MenuBarRealRequestIsolationTests.swift
+[110/141] Compiling MacToolsTests MenuBarRealRunControlTests.swift
+[111/141] Compiling MacToolsTests MenuBarRequestReceiptHistoryTests.swift
+[112/141] Compiling MacToolsTests MenuBarRequestWarmupCapturedTests.swift
+[113/141] Emitting module MacToolsTests
+[114/141] Compiling MacToolsTests MenuBarRequestWarmupTests.swift
+[115/141] Compiling MacToolsTests MenuBarSemanticIdentityTests.swift
+[116/141] Compiling MacToolsTests MenuBarSharedStopTests.swift
+[117/141] Compiling MacToolsTests MenuBarStartHistoryBoundaryTests.swift
+[118/141] Compiling MacToolsTests MenuBarAcceptanceStopNoticeTests.swift
+[119/141] Compiling MacToolsTests MenuBarActionLayoutCommitTests.swift
+[120/141] Compiling MacToolsTests MenuBarBindingDiagnosticTests.swift
+[121/141] Compiling MacToolsTests MenuBarCapturedStartBoundaryTests.swift
+[122/141] Compiling MacToolsTests MenuBarDestinationAdmissionDiagnosticTests.swift
+[123/141] Compiling MacToolsTests MenuBarDispatchWitnessTests.swift
+[124/141] Compiling MacToolsTests MenuBarEnvironmentTests.swift
+[125/141] Compiling MacToolsTests MenuBarHIDAndWaitingObservationTests.swift
+[126/141] Compiling MacToolsTests MenuBarHiddenMoveCoordinatorTests.swift
+[127/141] Compiling MacToolsTests MenuBarHiddenMoveFixture.swift
+[128/141] Compiling MacToolsTests MenuBarTemporaryMoveJournalTests.swift
+/Users/yangruihan/Workspace/mac_tools/Tests/MacToolsTests/MenuBarVisibilityTests.swift:13:138: warning: capture of 'prefs' with non-Sendable type 'UserDefaults' in a '@Sendable' closure; this is an error in the Swift 6 language mode [#SendableClosureCaptures]
+ 11 |         let probe = MainThreadDeliveryProbe()
+ 12 |         let (plugin, observation, token) = await MainActor.run {
+ 13 |             let plugin = MenuBarOrganizerPlugin(context: PluginContext(settings: PluginSettings(id: MenuBarOrganizerPlugin.id, defaults: prefs), hotkeys: HotKeyService(), report: { _ in }))
+    |                                                                                                                                          `- warning: capture of 'prefs' with non-Sendable type 'UserDefaults' in a '@Sendable' closure; this is an error in the Swift 6 language mode [#SendableClosureCaptures]
+ 14 |             let observation = plugin.$status.dropFirst().sink { _ in probe.record(Thread.isMainThread) }
+ 15 |             return (plugin, observation, plugin.gallery.generation)
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSUserDefaults.h:49:12: note: class 'UserDefaults' does not conform to the 'Sendable' protocol
+ 47 |  NSUserDefaults can be observed using Key-Value Observing for any key stored in it. Using NSKeyValueObservingOptionPrior to observe changes from other processes or devices will behave as though NSKeyValueObservingOptionPrior was not specified.
+ 48 |  */
+ 49 | @interface NSUserDefaults : NSObject {
+    |            `- note: class 'UserDefaults' does not conform to the 'Sendable' protocol
+ 50 | @private
+ 51 |     id _kvo_;
+
+[#SendableClosureCaptures]: <https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures>
+[129/141] Compiling MacToolsTests MenuBarTemporaryMoveModelTests.swift
+/Users/yangruihan/Workspace/mac_tools/Tests/MacToolsTests/MenuBarVisibilityTests.swift:13:138: warning: capture of 'prefs' with non-Sendable type 'UserDefaults' in a '@Sendable' closure; this is an error in the Swift 6 language mode [#SendableClosureCaptures]
+ 11 |         let probe = MainThreadDeliveryProbe()
+ 12 |         let (plugin, observation, token) = await MainActor.run {
+ 13 |             let plugin = MenuBarOrganizerPlugin(context: PluginContext(settings: PluginSettings(id: MenuBarOrganizerPlugin.id, defaults: prefs), hotkeys: HotKeyService(), report: { _ in }))
+    |                                                                                                                                          `- warning: capture of 'prefs' with non-Sendable type 'UserDefaults' in a '@Sendable' closure; this is an error in the Swift 6 language mode [#SendableClosureCaptures]
+ 14 |             let observation = plugin.$status.dropFirst().sink { _ in probe.record(Thread.isMainThread) }
+ 15 |             return (plugin, observation, plugin.gallery.generation)
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSUserDefaults.h:49:12: note: class 'UserDefaults' does not conform to the 'Sendable' protocol
+ 47 |  NSUserDefaults can be observed using Key-Value Observing for any key stored in it. Using NSKeyValueObservingOptionPrior to observe changes from other processes or devices will behave as though NSKeyValueObservingOptionPrior was not specified.
+ 48 |  */
+ 49 | @interface NSUserDefaults : NSObject {
+    |            `- note: class 'UserDefaults' does not conform to the 'Sendable' protocol
+ 50 | @private
+ 51 |     id _kvo_;
+
+[#SendableClosureCaptures]: <https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures>
+[130/141] Compiling MacToolsTests MenuBarVisibilityTests.swift
+/Users/yangruihan/Workspace/mac_tools/Tests/MacToolsTests/MenuBarVisibilityTests.swift:13:138: warning: capture of 'prefs' with non-Sendable type 'UserDefaults' in a '@Sendable' closure; this is an error in the Swift 6 language mode [#SendableClosureCaptures]
+ 11 |         let probe = MainThreadDeliveryProbe()
+ 12 |         let (plugin, observation, token) = await MainActor.run {
+ 13 |             let plugin = MenuBarOrganizerPlugin(context: PluginContext(settings: PluginSettings(id: MenuBarOrganizerPlugin.id, defaults: prefs), hotkeys: HotKeyService(), report: { _ in }))
+    |                                                                                                                                          `- warning: capture of 'prefs' with non-Sendable type 'UserDefaults' in a '@Sendable' closure; this is an error in the Swift 6 language mode [#SendableClosureCaptures]
+ 14 |             let observation = plugin.$status.dropFirst().sink { _ in probe.record(Thread.isMainThread) }
+ 15 |             return (plugin, observation, plugin.gallery.generation)
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSUserDefaults.h:49:12: note: class 'UserDefaults' does not conform to the 'Sendable' protocol
+ 47 |  NSUserDefaults can be observed using Key-Value Observing for any key stored in it. Using NSKeyValueObservingOptionPrior to observe changes from other processes or devices will behave as though NSKeyValueObservingOptionPrior was not specified.
+ 48 |  */
+ 49 | @interface NSUserDefaults : NSObject {
+    |            `- note: class 'UserDefaults' does not conform to the 'Sendable' protocol
+ 50 | @private
+ 51 |     id _kvo_;
+
+[#SendableClosureCaptures]: <https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures>
+[131/141] Compiling MacToolsTests MenuBarLocalQuietCountdownCandidate.swift
+/Users/yangruihan/Workspace/mac_tools/Tests/MacToolsTests/MenuBarVisibilityTests.swift:13:138: warning: capture of 'prefs' with non-Sendable type 'UserDefaults' in a '@Sendable' closure; this is an error in the Swift 6 language mode [#SendableClosureCaptures]
+ 11 |         let probe = MainThreadDeliveryProbe()
+ 12 |         let (plugin, observation, token) = await MainActor.run {
+ 13 |             let plugin = MenuBarOrganizerPlugin(context: PluginContext(settings: PluginSettings(id: MenuBarOrganizerPlugin.id, defaults: prefs), hotkeys: HotKeyService(), report: { _ in }))
+    |                                                                                                                                          `- warning: capture of 'prefs' with non-Sendable type 'UserDefaults' in a '@Sendable' closure; this is an error in the Swift 6 language mode [#SendableClosureCaptures]
+ 14 |             let observation = plugin.$status.dropFirst().sink { _ in probe.record(Thread.isMainThread) }
+ 15 |             return (plugin, observation, plugin.gallery.generation)
+
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSUserDefaults.h:49:12: note: class 'UserDefaults' does not conform to the 'Sendable' protocol
+ 47 |  NSUserDefaults can be observed using Key-Value Observing for any key stored in it. Using NSKeyValueObservingOptionPrior to observe changes from other processes or devices will behave as though NSKeyValueObservingOptionPrior was not specified.
+ 48 |  */
+ 49 | @interface NSUserDefaults : NSObject {
+    |            `- note: class 'UserDefaults' does not conform to the 'Sendable' protocol
+ 50 | @private
+ 51 |     id _kvo_;
+
+[#SendableClosureCaptures]: <https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures>
+[132/141] Compiling MacToolsTests MenuBarNativeRevealDiagnosticTests.swift
+[133/141] Compiling MacToolsTests MenuBarNativeRevealFixtureDriver.swift
+[134/141] Compiling MacToolsTests MenuBarNativeRevealPlanTests.swift
+[135/141] Compiling MacToolsTests MenuBarNativeThreadOrderReplayTests.swift
+[136/141] Compiling MacToolsTests MenuBarOperationTests.swift
+[137/141] Compiling MacToolsTests MenuBarOrganizerTests.swift
+[138/141] Compiling MacToolsTests MenuBarOwnedFixtureMoveDriverTests.swift
+[139/141] Compiling MacToolsTests MenuBarOwnedMouseTransportTests.swift
+[140/143] Compiling MacToolsPackageTests runner.swift
+[141/143] Emitting module MacToolsPackageTests
+[141/143] Write Objects.LinkFileList
+[142/143] Linking MacToolsPackageTests
+Build complete! (14.11s)

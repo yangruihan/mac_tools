@@ -1,0 +1,16 @@
+{
+  "patchReconstructionExit": 0,
+  "patchStdout": "patching file 'Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift'\npatching file 'Tests/MacToolsTests/MenuBarOrganizerTests.swift'\npatching file 'scripts/build-ice-interface-product-candidate.sh'\n",
+  "patchStderr": "",
+  "rollbackExit": 0,
+  "restoredSourceHashes": {
+    "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": "2684d6d85b6eea66e17243d3bb28dfd44fc380b02aa851693ccbcdd9779a21d3",
+    "Tests/MacToolsTests/MenuBarOrganizerTests.swift": "b4d0f3b110aad4cbe831f3972571d29b66b0213f904093bdf788308e44df012d",
+    "scripts/build-ice-interface-product-candidate.sh": "8dbe7242776ff13c919ced017a0ca8408ab3c50e85ef7ec7ef64d62c5e797955"
+  },
+  "modifiedSourceHashes": {
+    "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": "3c364982cf59619746a2be12d425c335015d15c38e0c068c13c582dcfb225512",
+    "Tests/MacToolsTests/MenuBarOrganizerTests.swift": "0584f723317802bb90a48009a2a8f832b40a6629a154a6cc49e4d9c564108f16",
+    "scripts/build-ice-interface-product-candidate.sh": "be5286673e30fc2a6b0cc5eafb8c53998007598ca5b66dc3333300d8940a77fd"
+  }
+}

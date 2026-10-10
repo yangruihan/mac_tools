@@ -1,0 +1,110 @@
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
+@@ -653,6 +653,9 @@
+         if let popover = notification.object as? NSPopover, popover === shelfPopover { dismissShelf() }
+     }
+     private func showPopover(_ content: AnyView, width: CGFloat) {
++        #if ICE_MENU_BAR_INTEGRATED
++        showDragPanel(content,width:width)
++        #else
+         guard shelfPopover == nil, let button = control?.button, button.window?.isVisible == true, recoveryControlVisible(), !environment.sleeping else {
+             expand(); status = "控制图标不可见，已展开；请从工具箱手动排列。"; return
+         }
+@@ -693,13 +696,18 @@
+         controller.view.window?.title = "菜单栏收纳"
+         NSApp.activate(ignoringOtherApps: true)
+         controller.view.window?.makeKey()
++        #endif
+     }
+     private func showDragPanel(_ content:AnyView,width:CGFloat) {
+-        guard let anchor=control?.button?.window,let screen=screen(for:anchor.frame),!environment.sleeping else{expand();return}
+-        let view=NSHostingView(rootView:content.frame(width:width).padding(10).background(.regularMaterial))
++        guard let anchor=control?.button?.window,anchor.isVisible,recoveryControlVisible(),let screen=screen(for:anchor.frame),!environment.sleeping else{expand();return}
++        // Captured menu-bar glyphs are often white even when the toolbox uses light appearance.
++        let view=NSHostingView(rootView:content.frame(width:width).padding(10)
++            .background(Color(red:0.14,green:0.15,blue:0.17))
++            .overlay(RoundedRectangle(cornerRadius:14).strokeBorder(.white.opacity(0.12),lineWidth:1))
++            .clipShape(RoundedRectangle(cornerRadius:14)).preferredColorScheme(.dark))
+         view.layoutSubtreeIfNeeded()
+         let size=NSSize(width:width+20,height:max(80,view.fittingSize.height))
+-        let panel=ShelfDragPanel(contentRect:NSRect(origin:.zero,size:size),styleMask:[.borderless],backing:.buffered,defer:false)
++        let panel=ShelfDragPanel(shelfRect:NSRect(origin:.zero,size:size))
+         panel.title="菜单栏收纳";panel.level = .floating;panel.hidesOnDeactivate=false
+         panel.isReleasedWhenClosed=false;panel.isMovableByWindowBackground=false;panel.contentView=view
+         panel.setFrameOrigin(NSPoint(x:min(max(anchor.frame.midX-size.width/2,screen.minX+8),screen.maxX-size.width-8),
+@@ -712,7 +720,7 @@
+             self.dismissShelf();return event
+         }) {popoverMonitors.append(monitor)}
+         if let monitor=NSEvent.addGlobalMonitorForEvents(matching:[.leftMouseDown,.rightMouseDown],handler:{[weak self] _ in self?.dismissShelf()}) {popoverMonitors.append(monitor)}
+-        panel.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true)
++        panel.makeKeyAndOrderFront(nil)
+     }
+     private func showHelpPanel() {
+         guard let frame = control?.button?.window?.frame, let screen = screen(for: frame) else { expand(); return }
+@@ -742,7 +750,7 @@
+         let id = gallery.beginCapture()
+         status = "正在等待菜单栏展开…"
+         showPopover(AnyView(OrganizerCaptureView(plugin: self)), width: 300)
+-        guard token == id, shelfPopover != nil else { return }
++        guard token == id, shelfPopover != nil || shelfWindow != nil else { return }
+         work = Task { @MainActor [weak self] in
+             do { try await Task.sleep(nanoseconds: 350_000_000) } catch { return }
+             guard !Task.isCancelled, let self, self.token == id, self.isOrganizing else { return }
+@@ -1034,7 +1042,12 @@
+     }
+ }
+ 
+-private final class ShelfDragPanel: NSPanel {
++final class ShelfDragPanel: NSPanel {
++    convenience init(shelfRect:NSRect) {
++        self.init(contentRect:shelfRect,styleMask:[.borderless,.nonactivatingPanel],backing:.buffered,defer:false)
++        isOpaque=false; backgroundColor = .clear; hasShadow=true
++        appearance=NSAppearance(named:.darkAqua)
++    }
+     override var canBecomeKey:Bool {true}
+     override var canBecomeMain:Bool {false}
+ }
+@@ -1079,6 +1092,7 @@
+                     Image(systemName: "photo.badge.exclamationmark").resizable().aspectRatio(contentMode: .fit).foregroundStyle(.secondary)
+                 }
+             }.frame(width: 44, height: 44)
++                .padding(4).background(Color(white:0.50),in:RoundedRectangle(cornerRadius:9))
+                 .frame(width: MenuBarPopoverLayout.tile, height: MenuBarPopoverLayout.tile)
+         }.buttonStyle(.plain)
+             .accessibilityLabel("\(hidden ? "收纳" : "可见")图标 \(index + 1)")
+--- a/Tests/MacToolsTests/MenuBarOrganizerTests.swift
++++ b/Tests/MacToolsTests/MenuBarOrganizerTests.swift
+@@ -1,9 +1,22 @@
+ import XCTest
+ import CoreGraphics
++import AppKit
+ @testable import MacTools
+ 
+ final class MenuBarOrganizerTests: XCTestCase {
+     @MainActor
++    func testShelfPanelDoesNotActivateToolboxAndHasTransparentDarkChrome() {
++        let panel=ShelfDragPanel(shelfRect:NSRect(x:0,y:0,width:320,height:200))
++        XCTAssertTrue(panel.styleMask.contains(.nonactivatingPanel))
++        XCTAssertTrue(panel.canBecomeKey)
++        XCTAssertFalse(panel.canBecomeMain)
++        XCTAssertFalse(panel.isOpaque)
++        XCTAssertEqual(panel.backgroundColor,.clear)
++        XCTAssertTrue(panel.hasShadow)
++        XCTAssertEqual(panel.appearance?.name,.darkAqua)
++    }
++
++    @MainActor
+     func testRepeatedManualEntriesAndModeSwitchesPreserveOptOutAndLegacyConfiguration() throws {
+         let name = "MenuOrganizerManualEntries.\(UUID())"
+         let defaults = try XCTUnwrap(UserDefaults(suiteName: name))
+--- a/scripts/build-ice-interface-product-candidate.sh
++++ b/scripts/build-ice-interface-product-candidate.sh
+@@ -34,7 +34,7 @@
+ for p in [repo/'COPYING.GPL-3.0',repo/'THIRD_PARTY_NOTICES.md',worker/'prepared-build.json']:shutil.copyfile(p,package/p.name)
+ for p in sources:
+  dest=resources/'Source'/p.relative_to(repo);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
+-(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'14' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
++(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'15' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
+ (root/'source-manifest.json').write_text(json.dumps({str(p.relative_to(repo)):sha(p) for p in sources},indent=2,sort_keys=True)+'\n')
+ PY
+ swiftc -parse-as-library -D"$FLAG" -module-name MacTools -module-cache-path "$ROOT/module-cache" $(cat "$ROOT/sources.txt") -o "$APP/Contents/MacOS/MacTools"

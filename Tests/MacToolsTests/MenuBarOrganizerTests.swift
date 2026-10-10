@@ -1,8 +1,21 @@
 import XCTest
 import CoreGraphics
+import AppKit
 @testable import MacTools
 
 final class MenuBarOrganizerTests: XCTestCase {
+    @MainActor
+    func testShelfPanelDoesNotActivateToolboxAndHasTransparentDarkChrome() {
+        let panel=ShelfDragPanel(shelfRect:NSRect(x:0,y:0,width:320,height:200))
+        XCTAssertTrue(panel.styleMask.contains(.nonactivatingPanel))
+        XCTAssertTrue(panel.canBecomeKey)
+        XCTAssertFalse(panel.canBecomeMain)
+        XCTAssertFalse(panel.isOpaque)
+        XCTAssertEqual(panel.backgroundColor,.clear)
+        XCTAssertTrue(panel.hasShadow)
+        XCTAssertEqual(panel.appearance?.name,.darkAqua)
+    }
+
     @MainActor
     func testRepeatedManualEntriesAndModeSwitchesPreserveOptOutAndLegacyConfiguration() throws {
         let name = "MenuOrganizerManualEntries.\(UUID())"

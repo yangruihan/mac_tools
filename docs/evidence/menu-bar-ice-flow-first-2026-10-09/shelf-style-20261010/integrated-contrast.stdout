@@ -1,0 +1,1207 @@
+Test Suite 'All tests' started at 2026-10-10 13:26:36.495.
+Test Suite 'MacToolsPackageTests.xctest' started at 2026-10-10 13:26:36.497.
+Test Suite 'Checks' started at 2026-10-10 13:26:36.497.
+Test Case '-[MacToolsTests.Checks testAppearanceSwitchAndPersistence]' started.
+Test Case '-[MacToolsTests.Checks testAppearanceSwitchAndPersistence]' passed (0.065 seconds).
+Test Case '-[MacToolsTests.Checks testBuiltinsAndWindowShortcutPersistence]' started.
+Test Case '-[MacToolsTests.Checks testBuiltinsAndWindowShortcutPersistence]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.Checks testCrossPluginShortcutConflictsAndRelease]' started.
+Test Case '-[MacToolsTests.Checks testCrossPluginShortcutConflictsAndRelease]' passed (0.006 seconds).
+Test Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' started.
+Test Case '-[MacToolsTests.Checks testKeepAwakeNativeLifecycle]' passed (0.005 seconds).
+Test Case '-[MacToolsTests.Checks testLegacyMigrationAndSettingsIsolation]' started.
+Test Case '-[MacToolsTests.Checks testLegacyMigrationAndSettingsIsolation]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.Checks testLocksProtectionAndDisableCleanup]' started.
+Test Case '-[MacToolsTests.Checks testLocksProtectionAndDisableCleanup]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.Checks testPluginDiscoveryLifecyclePersistenceAndDuplicateGuard]' started.
+Test Case '-[MacToolsTests.Checks testPluginDiscoveryLifecyclePersistenceAndDuplicateGuard]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' started.
+Test Case '-[MacToolsTests.Checks testProtectionAndValidation]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.Checks testToolboxCloseHookOnlyReachesStartedPluginsAndIsIdempotentForHost]' started.
+Test Case '-[MacToolsTests.Checks testToolboxCloseHookOnlyReachesStartedPluginsAndIsIdempotentForHost]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.Checks testTrackpadDisableRestoresAndFailureRetainsRegistryState]' started.
+Test Case '-[MacToolsTests.Checks testTrackpadDisableRestoresAndFailureRetainsRegistryState]' passed (0.001 seconds).
+Test Suite 'Checks' passed at 2026-10-10 13:26:36.593.
+	 Executed 10 tests, with 0 failures (0 unexpected) in 0.095 (0.096) seconds
+Test Suite 'FloatingPreviewTests' started at 2026-10-10 13:26:36.593.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFloatingResizablePanelAndPluginStop]' passed (0.082 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testFrameRateSelectionPersistsAndBoundsCaptureCadence]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testFrameRateSelectionPersistsAndBoundsCaptureCadence]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testHiddenWindowPausesAndRestoresWithoutLosingFrame]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testHiddenWindowPausesAndRestoresWithoutLosingFrame]' passed (2.248 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testPixelSizeBoundAndAspect]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testSelectedFrameRateThrottlesCaptures]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testSelectedFrameRateThrottlesCaptures]' passed (0.542 seconds).
+Test Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' started.
+Test Case '-[MacToolsTests.FloatingPreviewTests testStopDiscardsLateFrameAndErrorsClearImage]' passed (0.074 seconds).
+Test Suite 'FloatingPreviewTests' passed at 2026-10-10 13:26:39.542.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 2.948 (2.949) seconds
+Test Suite 'IceMenuBarClassificationTests' started at 2026-10-10 13:26:39.542.
+Test Case '-[MacToolsTests.IceMenuBarClassificationTests testAuthenticatedCarrierIsAccountedAndWideControlStaysAStatusItem]' started.
+Test Case '-[MacToolsTests.IceMenuBarClassificationTests testAuthenticatedCarrierIsAccountedAndWideControlStaysAStatusItem]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.IceMenuBarClassificationTests testCarrierRemainsInHiddenCaptureRecoveryAndCannotDisappear]' started.
+Test Case '-[MacToolsTests.IceMenuBarClassificationTests testCarrierRemainsInHiddenCaptureRecoveryAndCannotDisappear]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.IceMenuBarClassificationTests testLiveAppleCarrierRoleDoesNotRequireOrInventItsKernelStartTime]' started.
+Test Case '-[MacToolsTests.IceMenuBarClassificationTests testLiveAppleCarrierRoleDoesNotRequireOrInventItsKernelStartTime]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.IceMenuBarClassificationTests testUnknownLayerUnverifiedAppleAndMissingMembersRejectInsteadOfFiltering]' started.
+Test Case '-[MacToolsTests.IceMenuBarClassificationTests testUnknownLayerUnverifiedAppleAndMissingMembersRejectInsteadOfFiltering]' passed (0.000 seconds).
+Test Suite 'IceMenuBarClassificationTests' passed at 2026-10-10 13:26:39.543.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'IceMenuBarReadAdapterTests' started at 2026-10-10 13:26:39.543.
+Test Case '-[MacToolsTests.IceMenuBarReadAdapterTests testDefaultAndInjectedDisabledPolicyNeverReadPrivateSource]' started.
+Test Case '-[MacToolsTests.IceMenuBarReadAdapterTests testDefaultAndInjectedDisabledPolicyNeverReadPrivateSource]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.IceMenuBarReadAdapterTests testHiddenAndOffSpaceMembersRemainWithoutClaimingLogicalOrder]' started.
+Test Case '-[MacToolsTests.IceMenuBarReadAdapterTests testHiddenAndOffSpaceMembersRemainWithoutClaimingLogicalOrder]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.IceMenuBarReadAdapterTests testNativeFailureIsPreservedWithoutFallbackOrRetry]' started.
+Test Case '-[MacToolsTests.IceMenuBarReadAdapterTests testNativeFailureIsPreservedWithoutFallbackOrRetry]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.IceMenuBarReadAdapterTests testNonStatusCarrierMemberIsRetainedWithoutInventingCompleteItemOrder]' started.
+Test Case '-[MacToolsTests.IceMenuBarReadAdapterTests testNonStatusCarrierMemberIsRetainedWithoutInventingCompleteItemOrder]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.IceMenuBarReadAdapterTests testTruncationSpaceChangeMissingDuplicateAndZeroMembersFailClosed]' started.
+Test Case '-[MacToolsTests.IceMenuBarReadAdapterTests testTruncationSpaceChangeMissingDuplicateAndZeroMembersFailClosed]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.IceMenuBarReadAdapterTests testUnknownGeometryAndInvalidSpacesAreNotSilentlyFiltered]' started.
+Test Case '-[MacToolsTests.IceMenuBarReadAdapterTests testUnknownGeometryAndInvalidSpacesAreNotSilentlyFiltered]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.IceMenuBarReadAdapterTests testUnsupportedProfileStopsBeforeReadingDirectory]' started.
+Test Case '-[MacToolsTests.IceMenuBarReadAdapterTests testUnsupportedProfileStopsBeforeReadingDirectory]' passed (0.000 seconds).
+Test Suite 'IceMenuBarReadAdapterTests' passed at 2026-10-10 13:26:39.544.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'KeepAwakeTests' started at 2026-10-10 13:26:39.544.
+Test Case '-[MacToolsTests.KeepAwakeTests testCreateFailureRollsBackAndKeepsIntentForRetry]' started.
+Test Case '-[MacToolsTests.KeepAwakeTests testCreateFailureRollsBackAndKeepsIntentForRetry]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.KeepAwakeTests testLostAssertionIsDetectedAndRecreatedWithoutDuplicates]' started.
+Test Case '-[MacToolsTests.KeepAwakeTests testLostAssertionIsDetectedAndRecreatedWithoutDuplicates]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.KeepAwakeTests testPartialRollbackFailureRetainsIDsAndOffCanRetry]' started.
+Test Case '-[MacToolsTests.KeepAwakeTests testPartialRollbackFailureRetainsIDsAndOffCanRetry]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.KeepAwakeTests testSavedIntentSurvivesStopRestartAndExplicitOff]' started.
+Test Case '-[MacToolsTests.KeepAwakeTests testSavedIntentSurvivesStopRestartAndExplicitOff]' passed (0.003 seconds).
+Test Suite 'KeepAwakeTests' passed at 2026-10-10 13:26:39.552.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.007 (0.008) seconds
+Test Suite 'MenuBarAcceptanceStopNoticeTests' started at 2026-10-10 13:26:39.552.
+Test Case '-[MacToolsTests.MenuBarAcceptanceStopNoticeTests testCancelExpiryAndMonitorLossHaveReadableReasons]' started.
+Test Case '-[MacToolsTests.MenuBarAcceptanceStopNoticeTests testCancelExpiryAndMonitorLossHaveReadableReasons]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarAcceptanceStopNoticeTests testLaterInputMessagePreservesUnknownAttributionAndZeroEmission]' started.
+Test Case '-[MacToolsTests.MenuBarAcceptanceStopNoticeTests testLaterInputMessagePreservesUnknownAttributionAndZeroEmission]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarAcceptanceStopNoticeTests testNoticeCannotExtendWorkerDeadlineOrSurviveInvalidClock]' started.
+Test Case '-[MacToolsTests.MenuBarAcceptanceStopNoticeTests testNoticeCannotExtendWorkerDeadlineOrSurviveInvalidClock]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarAcceptanceStopNoticeTests testReadingHasFixedExpiryAndCannotRestartAfterClose]' started.
+Test Case '-[MacToolsTests.MenuBarAcceptanceStopNoticeTests testReadingHasFixedExpiryAndCannotRestartAfterClose]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarAcceptanceStopNoticeTests testReadingRequiresSavedReceiptAndBothInputsStopped]' started.
+Test Case '-[MacToolsTests.MenuBarAcceptanceStopNoticeTests testReadingRequiresSavedReceiptAndBothInputsStopped]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarAcceptanceStopNoticeTests testRecordedHardwareRoundStillRefusesCounterChangeInBothCallbackOrders]' started.
+Test Case '-[MacToolsTests.MenuBarAcceptanceStopNoticeTests testRecordedHardwareRoundStillRefusesCounterChangeInBothCallbackOrders]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarAcceptanceStopNoticeTests testUnknownEmissionRecoveryAndContradictorySuccessNeverClaimFullReturn]' started.
+Test Case '-[MacToolsTests.MenuBarAcceptanceStopNoticeTests testUnknownEmissionRecoveryAndContradictorySuccessNeverClaimFullReturn]' passed (0.000 seconds).
+Test Suite 'MenuBarAcceptanceStopNoticeTests' passed at 2026-10-10 13:26:39.556.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.004 (0.004) seconds
+Test Suite 'MenuBarActionLayoutCommitTests' started at 2026-10-10 13:26:39.556.
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testAnyGeometryDriftAfterCommitIsStillExactBindingFailure]' started.
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testAnyGeometryDriftAfterCommitIsStillExactBindingFailure]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testDiagnosticPolicyCannotUseRealLayoutCommitPhase]' started.
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testDiagnosticPolicyCannotUseRealLayoutCommitPhase]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testFenceReadCannotCommitAPlanThatBecameStaleWhileInputStayedQuiet]' started.
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testFenceReadCannotCommitAPlanThatBecameStaleWhileInputStayedQuiet]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testGeometryCommitsOnceInsideOriginalCountdownAndCannotUpgradeIsolatedPermit]' started.
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testGeometryCommitsOnceInsideOriginalCountdownAndCannotUpgradeIsolatedPermit]' passed (0.008 seconds).
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testInputAndSourceLossDuringScanCannotBecomeLayoutCommit]' started.
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testInputAndSourceLossDuringScanCannotBecomeLayoutCommit]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testIntentChangesPermanentlyRefuseWithoutRetryOrPermit]' started.
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testIntentChangesPermanentlyRefuseWithoutRetryOrPermit]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testLayoutFailureNoticeShowsActualReasonWithoutClaimingMovement]' started.
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testLayoutFailureNoticeShowsActualReasonWithoutClaimingMovement]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testOldPairUnstablePairProviderFailureAndLateScanStayUncommitted]' started.
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testOldPairUnstablePairProviderFailureAndLateScanStayUncommitted]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testRecordedTwelvePixelShiftChangesGeometryButPreservesIntentAndOldRejection]' started.
+Test Case '-[MacToolsTests.MenuBarActionLayoutCommitTests testRecordedTwelvePixelShiftChangesGeometryButPreservesIntentAndOldRejection]' passed (0.003 seconds).
+Test Suite 'MenuBarActionLayoutCommitTests' passed at 2026-10-10 13:26:39.575.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.018 (0.019) seconds
+Test Suite 'MenuBarBindingDiagnosticTests' started at 2026-10-10 13:26:39.575.
+Test Case '-[MacToolsTests.MenuBarBindingDiagnosticTests testChangedFactsDistinguishLayoutEnvironmentIdentityAndIgnoreSampleClock]' started.
+Test Case '-[MacToolsTests.MenuBarBindingDiagnosticTests testChangedFactsDistinguishLayoutEnvironmentIdentityAndIgnoreSampleClock]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarBindingDiagnosticTests testLegacyBindingReasonAndNewSpecificReasonDoNotClaimHIDActivity]' started.
+Test Case '-[MacToolsTests.MenuBarBindingDiagnosticTests testLegacyBindingReasonAndNewSpecificReasonDoNotClaimHIDActivity]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarBindingDiagnosticTests testOtherFailureRemainsVisibleRatherThanGenericStop]' started.
+Test Case '-[MacToolsTests.MenuBarBindingDiagnosticTests testOtherFailureRemainsVisibleRatherThanGenericStop]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarBindingDiagnosticTests testPostValidationLayoutRejectionRetainsFirstDiagnosticWithoutRebinding]' started.
+Test Case '-[MacToolsTests.MenuBarBindingDiagnosticTests testPostValidationLayoutRejectionRetainsFirstDiagnosticWithoutRebinding]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarBindingDiagnosticTests testRealRecordedLayoutMismatchIsItemsOnlyAndOldTerminalHasNoInventedDetail]' started.
+Test Case '-[MacToolsTests.MenuBarBindingDiagnosticTests testRealRecordedLayoutMismatchIsItemsOnlyAndOldTerminalHasNoInventedDetail]' passed (0.003 seconds).
+Test Suite 'MenuBarBindingDiagnosticTests' passed at 2026-10-10 13:26:39.581.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.006 (0.006) seconds
+Test Suite 'MenuBarCapturedStartBoundaryTests' started at 2026-10-10 13:26:39.581.
+Test Case '-[MacToolsTests.MenuBarCapturedStartBoundaryTests testCapturedSyntheticSuffixPassesWithOnlyIndexNormalization]' started.
+Test Case '-[MacToolsTests.MenuBarCapturedStartBoundaryTests testCapturedSyntheticSuffixPassesWithOnlyIndexNormalization]' passed (0.009 seconds).
+Test Case '-[MacToolsTests.MenuBarCapturedStartBoundaryTests testHumanFullTraceRefusesInBothCompatibleCallbackOrdersAndClaimBounds]' started.
+Test Case '-[MacToolsTests.MenuBarCapturedStartBoundaryTests testHumanFullTraceRefusesInBothCompatibleCallbackOrdersAndClaimBounds]' passed (0.006 seconds).
+Test Case '-[MacToolsTests.MenuBarCapturedStartBoundaryTests testSubtractingOneInCounterfactualStillFailsIndependentHIDAgeGuard]' started.
+Test Case '-[MacToolsTests.MenuBarCapturedStartBoundaryTests testSubtractingOneInCounterfactualStillFailsIndependentHIDAgeGuard]' passed (0.007 seconds).
+Test Case '-[MacToolsTests.MenuBarCapturedStartBoundaryTests testSyntheticPositiveControlCannotAbsorbLaterInputOrHealthLoss]' started.
+Test Case '-[MacToolsTests.MenuBarCapturedStartBoundaryTests testSyntheticPositiveControlCannotAbsorbLaterInputOrHealthLoss]' passed (0.003 seconds).
+Test Suite 'MenuBarCapturedStartBoundaryTests' passed at 2026-10-10 13:26:39.606.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.024 (0.024) seconds
+Test Suite 'MenuBarDestinationAdmissionDiagnosticTests' started at 2026-10-10 13:26:39.606.
+Test Case '-[MacToolsTests.MenuBarDestinationAdmissionDiagnosticTests testCurrentCGAndAXDifferentWidthsAreQualifiedByExistingCenterRule]' started.
+Test Case '-[MacToolsTests.MenuBarDestinationAdmissionDiagnosticTests testCurrentCGAndAXDifferentWidthsAreQualifiedByExistingCenterRule]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarDestinationAdmissionDiagnosticTests testIdentityWidthAndMissingAXAreDistinguishable]' started.
+Test Case '-[MacToolsTests.MenuBarDestinationAdmissionDiagnosticTests testIdentityWidthAndMissingAXAreDistinguishable]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarDestinationAdmissionDiagnosticTests testTwoDifferentAXElementsCannotCombineIntoAFalseMatch]' started.
+Test Case '-[MacToolsTests.MenuBarDestinationAdmissionDiagnosticTests testTwoDifferentAXElementsCannotCombineIntoAFalseMatch]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarDestinationAdmissionDiagnosticTests testVisibilityDropWithIdenticalIdentityAndGeometryRemainsRejected]' started.
+Test Case '-[MacToolsTests.MenuBarDestinationAdmissionDiagnosticTests testVisibilityDropWithIdenticalIdentityAndGeometryRemainsRejected]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarDestinationAdmissionDiagnosticTests testWrongCenterAndUnsafeHeightAreSeparatelyRejected]' started.
+Test Case '-[MacToolsTests.MenuBarDestinationAdmissionDiagnosticTests testWrongCenterAndUnsafeHeightAreSeparatelyRejected]' passed (0.000 seconds).
+Test Suite 'MenuBarDestinationAdmissionDiagnosticTests' passed at 2026-10-10 13:26:39.607.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'MenuBarDispatchWitnessTests' started at 2026-10-10 13:26:39.607.
+Test Case '-[MacToolsTests.MenuBarDispatchWitnessTests testDanglingDispatchMarkerCannotBeMisreadAsZeroEffects]' started.
+Test Case '-[MacToolsTests.MenuBarDispatchWitnessTests testDanglingDispatchMarkerCannotBeMisreadAsZeroEffects]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarDispatchWitnessTests testGuardAndMarkerArePrivateAndExistingGuardCannotBeRearmed]' started.
+Test Case '-[MacToolsTests.MenuBarDispatchWitnessTests testGuardAndMarkerArePrivateAndExistingGuardCannotBeRearmed]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarDispatchWitnessTests testPossiblePostMarkerEvenWithoutCompletionCounterCannotBecomeZeroProof]' started.
+Test Case '-[MacToolsTests.MenuBarDispatchWitnessTests testPossiblePostMarkerEvenWithoutCompletionCounterCannotBecomeZeroProof]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarDispatchWitnessTests testReportedOriginIsCoarseAndNeverAnOwnGestureOrPhysicalHumanProof]' started.
+Test Case '-[MacToolsTests.MenuBarDispatchWitnessTests testReportedOriginIsCoarseAndNeverAnOwnGestureOrPhysicalHumanProof]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarDispatchWitnessTests testSealedNoDispatchCanClosePreparedWithoutPretendingReturnedOrMovingAfterSpaceChange]' started.
+Test Case '-[MacToolsTests.MenuBarDispatchWitnessTests testSealedNoDispatchCanClosePreparedWithoutPretendingReturnedOrMovingAfterSpaceChange]' passed (0.005 seconds).
+Test Suite 'MenuBarDispatchWitnessTests' passed at 2026-10-10 13:26:39.616.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.009 (0.009) seconds
+Test Suite 'MenuBarEnvironmentTests' started at 2026-10-10 13:26:39.616.
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testAllScreenLifecycleEventsExpandAndRejectPendingCollapseAndCapture]' started.
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testAllScreenLifecycleEventsExpandAndRejectPendingCollapseAndCapture]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testCollapsedDividerMayExtendOutsideItsDisplayButCannotCrossDisplayRows]' started.
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testCollapsedDividerMayExtendOutsideItsDisplayButCannotCrossDisplayRows]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testDisplayLocalConversionHandlesAboveLeftAndChangedMainDisplay]' started.
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testDisplayLocalConversionHandlesAboveLeftAndChangedMainDisplay]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testEnvironmentChangesAreInertWhenPluginHasNotOptedIn]' started.
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testEnvironmentChangesAreInertWhenPluginHasNotOptedIn]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testExternal24PointStatusWindowClipsIts27PointButtonLayout]' started.
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testExternal24PointStatusWindowClipsIts27PointButtonLayout]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testMonitorUsesCorrectCentersAndStopsWithoutDuplicateObservers]' started.
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testMonitorUsesCorrectCentersAndStopsWithoutDuplicateObservers]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testNotchCoverageIsDistinctFromOutsideDisplay]' started.
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testNotchCoverageIsDistinctFromOutsideDisplay]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testRapidDisplaySleepWakeAndAppChangesInvalidateOldWork]' started.
+Test Case '-[MacToolsTests.MenuBarEnvironmentTests testRapidDisplaySleepWakeAndAppChangesInvalidateOldWork]' passed (0.000 seconds).
+Test Suite 'MenuBarEnvironmentTests' passed at 2026-10-10 13:26:39.619.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'MenuBarHIDAndWaitingObservationTests' started at 2026-10-10 13:26:39.619.
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testAdapterRecordsAgeCallSeparatelyFromLaterReadWork]' started.
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testAdapterRecordsAgeCallSeparatelyFromLaterReadWork]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testAgeBracketStillUsesItsEndAndRejectsImpossibleOrIncompleteBrackets]' started.
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testAgeBracketStillUsesItsEndAndRejectsImpossibleOrIncompleteBrackets]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testBrokerConsumesOnlyReadyHistoryAndEndsBeforeImmutableStartProof]' started.
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testBrokerConsumesOnlyReadyHistoryAndEndsBeforeImmutableStartProof]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testLateHIDCannotHideInNarrowBracketOrAfterAgeCall]' started.
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testLateHIDCannotHideInNarrowBracketOrAfterAgeCall]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testLongWaitingConsumesEveryBatchAndKeepsCumulativeIdentityUntilBegin]' started.
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testLongWaitingConsumesEveryBatchAndKeepsCumulativeIdentityUntilBegin]' passed (0.032 seconds).
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testProofQueueCapacityStillOverflowsAfterWaitingEnded]' started.
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testProofQueueCapacityStillOverflowsAfterWaitingEnded]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testRecordedAmbiguousQueryRemainsRefusedWithoutInventedBracket]' started.
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testRecordedAmbiguousQueryRemainsRefusedWithoutInventedBracket]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testSkippedWrongContinuityLateClockOwnOrCrossPhaseConsumptionCannotHeal]' started.
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testSkippedWrongContinuityLateClockOwnOrCrossPhaseConsumptionCannotHeal]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testTrueOverflowRemainsLostEvenAfterDrainAndDoesNotGrowUnbounded]' started.
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testTrueOverflowRemainsLostEvenAfterDrainAndDoesNotGrowUnbounded]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testWaitingLossStopsBrokerBeforePermitOrFenceAndCannotRestart]' started.
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testWaitingLossStopsBrokerBeforePermitOrFenceAndCannotRestart]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testWaitingTimerAlsoFiresWhileEventTrackingRunsWithoutAnyWindow]' started.
+Test Case '-[MacToolsTests.MenuBarHIDAndWaitingObservationTests testWaitingTimerAlsoFiresWhileEventTrackingRunsWithoutAnyWindow]' passed (0.103 seconds).
+Test Suite 'MenuBarHIDAndWaitingObservationTests' passed at 2026-10-10 13:26:39.762.
+	 Executed 11 tests, with 0 failures (0 unexpected) in 0.142 (0.143) seconds
+Test Suite 'MenuBarHiddenMoveCoordinatorTests' started at 2026-10-10 13:26:39.762.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testActivityDuringReturnEvidenceWriteRetainsJournal]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testActivityDuringReturnEvidenceWriteRetainsJournal]' passed (0.014 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testAttemptAccountingOccursAfterAdmissionAndRecoveryBeforeAnyGateOrMove]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testAttemptAccountingOccursAfterAdmissionAndRecoveryBeforeAnyGateOrMove]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testCancellationDuringReturnAndExpiredTransactionCannotClearJournal]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testCancellationDuringReturnAndExpiredTransactionCannotClearJournal]' passed (0.013 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testCancellationExternalInputAndMonitorLossAfterOpenBlockMenuCloseAndInverse]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testCancellationExternalInputAndMonitorLossAfterOpenBlockMenuCloseAndInverse]' passed (0.012 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testDefaultPolicyDoesNothingBeforeJournalOrInputAndUnprovenAdmissionStops]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testDefaultPolicyDoesNothingBeforeJournalOrInputAndUnprovenAdmissionStops]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testEveryDurableStageFailureStopsAtItsLastProvenJournalPhase]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testEveryDurableStageFailureStopsAtItsLastProvenJournalPhase]' passed (0.057 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testExplicitInverseRecoveryCannotClearAfterListenerLossDuringReturn]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testExplicitInverseRecoveryCannotClearAfterListenerLossDuringReturn]' passed (0.005 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testExplicitRecoveryClearsFreshOriginalProofWithoutMouseOrInputLease]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testExplicitRecoveryClearsFreshOriginalProofWithoutMouseOrInputLease]' passed (0.014 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testExplicitRecoveryDefaultDisabledAndIncompleteInputNeverDispatchInverse]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testExplicitRecoveryDefaultDisabledAndIncompleteInputNeverDispatchInverse]' passed (0.012 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testExplicitRecoveryHonorsCancellationBudgetAndPoisonedEvidence]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testExplicitRecoveryHonorsCancellationBudgetAndPoisonedEvidence]' passed (0.027 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testFailedHandoffWriteCannotStopOverlappingMonitorOrReachMove]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testFailedHandoffWriteCannotStopOverlappingMonitorOrReachMove]' passed (0.008 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testIncompleteInputCoverageCannotPrepareOrSend]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testIncompleteInputCoverageCannotPrepareOrSend]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testInterferenceLossAndEpochChangeDuringReturnRetainRestorePrepared]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testInterferenceLossAndEpochChangeDuringReturnRetainRestorePrepared]' passed (0.027 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testIsolatedFakeFullLoopPersistsBeforeBothMovesAndClearsOnlyAfterTwoReturnSamples]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testIsolatedFakeFullLoopPersistsBeforeBothMovesAndClearsOnlyAfterTwoReturnSamples]' passed (0.008 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testMenuOpenCloseAndInverseMayHaveEffectButFailureCannotAdvanceOrClear]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testMenuOpenCloseAndInverseMayHaveEffectButFailureCannotAdvanceOrClear]' passed (0.027 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testOriginalGeometryCannotClearUnresolvedDownResponsibility]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testOriginalGeometryCannotClearUnresolvedDownResponsibility]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testPersistenceUnknownOutcomeNeverDispatchesAndNextCallRefusesPendingRecord]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testPersistenceUnknownOutcomeNeverDispatchesAndNextCallRefusesPendingRecord]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testPossibleMoveEffectKeepsPreparedAndRestartNeverReplays]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testPossibleMoveEffectKeepsPreparedAndRestartNeverReplays]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testRealPermitCoordinatorGateAndDurableJournalIntegrateWithoutNativeSender]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testRealPermitCoordinatorGateAndDurableJournalIntegrateWithoutNativeSender]' passed (0.018 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testRestorePreparedWriteCancellationBlocksInverse]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testRestorePreparedWriteCancellationBlocksInverse]' passed (0.006 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testReturnEvidenceMustBeDurableBeforeJournalClear]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testReturnEvidenceMustBeDurableBeforeJournalClear]' passed (0.030 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testTakeoverDuringMenuClosePreventsRestoreAndKeepsJournal]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testTakeoverDuringMenuClosePreventsRestoreAndKeepsJournal]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testUnknownHumanInputOrVisibleFailureRetainsMovedWithoutMenuOrReturn]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testUnknownHumanInputOrVisibleFailureRetainsMovedWithoutMenuOrReturn]' passed (0.006 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testUnknownMenuStateAndCancelAfterMoveCannotAcknowledgeRestoration]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveCoordinatorTests testUnknownMenuStateAndCancelAfterMoveCannotAcknowledgeRestoration]' passed (0.005 seconds).
+Test Suite 'MenuBarHiddenMoveCoordinatorTests' passed at 2026-10-10 13:26:40.076.
+	 Executed 24 tests, with 0 failures (0 unexpected) in 0.311 (0.314) seconds
+Test Suite 'MenuBarHiddenMoveJournalTests' started at 2026-10-10 13:26:40.076.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveJournalTests testCorruptEnvelopeAndUnsupportedSchemaAreNeverOverwritten]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveJournalTests testCorruptEnvelopeAndUnsupportedSchemaAreNeverOverwritten]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveJournalTests testFaultBeforeRenameKeepsOriginalAfterRenameKeepsPossibleEffect]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveJournalTests testFaultBeforeRenameKeepsOriginalAfterRenameKeepsPossibleEffect]' passed (0.006 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveJournalTests testLifecyclePrivateModesTwoReturnSamplesAndSeparateV1Responsibility]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveJournalTests testLifecyclePrivateModesTwoReturnSamplesAndSeparateV1Responsibility]' passed (0.009 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveJournalTests testOwnerSessionMismatchKeepsOriginalJournalBytes]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveJournalTests testOwnerSessionMismatchKeepsOriginalJournalBytes]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveJournalTests testStaleTransactionBackwardTransitionAndUnprovenReturnCannotErase]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveJournalTests testStaleTransactionBackwardTransitionAndUnprovenReturnCannotErase]' passed (0.022 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveJournalTests testUnsafeLeafModesSymlinksAndCompetingLockFailClosed]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveJournalTests testUnsafeLeafModesSymlinksAndCompetingLockFailClosed]' passed (0.004 seconds).
+Test Suite 'MenuBarHiddenMoveJournalTests' passed at 2026-10-10 13:26:40.126.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.049 (0.050) seconds
+Test Suite 'MenuBarHiddenMoveModelTests' started at 2026-10-10 13:26:40.126.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testChangedPeerGeometryOrAnchorCannotBeAcknowledgedAsRestored]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testChangedPeerGeometryOrAnchorCannotBeAcknowledgedAsRestored]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testExactReturnedStateNeedsTwoNewSamplesAndCannotClearAfterEnvironmentLoss]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testExactReturnedStateNeedsTwoNewSamplesAndCannotClearAfterEnvironmentLoss]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testFreshStablePairAndFiniteGeometryAreRequiredBeforeCapturingResponsibility]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testFreshStablePairAndFiniteGeometryAreRequiredBeforeCapturingResponsibility]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testHiddenNegativeCoordinatesAreRecordedWithBothNeighborIdentities]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testHiddenNegativeCoordinatesAreRecordedWithBothNeighborIdentities]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testMissingDuplicateAndOverlappingPeersRejectWithoutFilteringHiddenItems]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testMissingDuplicateAndOverlappingPeersRejectWithoutFilteringHiddenItems]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testMissingTargetCannotCaptureAnOtherwiseConsistentInventory]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testMissingTargetCannotCaptureAnOtherwiseConsistentInventory]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testOwnerNonceItemInstanceAndProcessLaunchAreNotInterchangeable]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testOwnerNonceItemInstanceAndProcessLaunchAreNotInterchangeable]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testShownTargetUnknownVisibilityAndMalformedOnScreenCannotClaimHidden]' started.
+Test Case '-[MacToolsTests.MenuBarHiddenMoveModelTests testShownTargetUnknownVisibilityAndMalformedOnScreenCannotClaimHidden]' passed (0.000 seconds).
+Test Suite 'MenuBarHiddenMoveModelTests' passed at 2026-10-10 13:26:40.135.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.007 (0.009) seconds
+Test Suite 'MenuBarIceSelectedTargetTests' started at 2026-10-10 13:26:40.135.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testExactBindingAllowsMovementButRejectsRestartPIDAndSignatureChange]' started.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testExactBindingAllowsMovementButRejectsRestartPIDAndSignatureChange]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testExistingPopupAndCancellationCannotBeRearmed]' started.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testExistingPopupAndCancellationCannotBeRearmed]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testNeverSeenMenuCannotAuthorizeReturnAndOneAbsentSampleIsUnknown]' started.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testNeverSeenMenuCannotAuthorizeReturnAndOneAbsentSampleIsUnknown]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testNoSiblingRematchingDuplicateWindowOrSpaceChange]' started.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testNoSiblingRematchingDuplicateWindowOrSpaceChange]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testOtherOwnerPopupDoesNotProveSelectedMenuOpened]' started.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testOtherOwnerPopupDoesNotProveSelectedMenuOpened]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testReopeningResetsCloseConfirmation]' started.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testReopeningResetsCloseConfirmation]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testUnknownOwnerOrScopeAndUnhealthyObservationPermanentlyStop]' started.
+Test Case '-[MacToolsTests.MenuBarIceSelectedTargetTests testUnknownOwnerOrScopeAndUnhealthyObservationPermanentlyStop]' passed (0.000 seconds).
+Test Suite 'MenuBarIceSelectedTargetTests' passed at 2026-10-10 13:26:40.136.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'MenuBarIconActivationTests' started at 2026-10-10 13:26:40.136.
+Test Case '-[MacToolsTests.MenuBarIconActivationTests testForegroundHitAcceptsVisibleButtonHeightAndRejectsAdjacentMenu]' started.
+Test Case '-[MacToolsTests.MenuBarIconActivationTests testForegroundHitAcceptsVisibleButtonHeightAndRejectsAdjacentMenu]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIconActivationTests testOnlyCurrentVisibleSameOwnerUniqueSafeTargetCanActivate]' started.
+Test Case '-[MacToolsTests.MenuBarIconActivationTests testOnlyCurrentVisibleSameOwnerUniqueSafeTargetCanActivate]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIconActivationTests testSafeCoordinateMappingSupportsNegativeExternalDisplays]' started.
+Test Case '-[MacToolsTests.MenuBarIconActivationTests testSafeCoordinateMappingSupportsNegativeExternalDisplays]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIconActivationTests testTallerNotchBackingWindowUsesItsSafeVisibleCenter]' started.
+Test Case '-[MacToolsTests.MenuBarIconActivationTests testTallerNotchBackingWindowUsesItsSafeVisibleCenter]' passed (0.000 seconds).
+Test Suite 'MenuBarIconActivationTests' passed at 2026-10-10 13:26:40.137.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'MenuBarIconIdentityTests' started at 2026-10-10 13:26:40.137.
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testCacheInvalidationPreservesSevenItemsButRejectsOldCaptureCompletion]' started.
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testCacheInvalidationPreservesSevenItemsButRejectsOldCaptureCompletion]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testFallbackUsesCurrentAnchorDisplayWithoutClickingOtherDisplayCopy]' started.
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testFallbackUsesCurrentAnchorDisplayWithoutClickingOtherDisplayCopy]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testMirroredOffscreenCopyDoesNotOverrideActiveDisplayAndNotchIsReported]' started.
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testMirroredOffscreenCopyDoesNotOverrideActiveDisplayAndNotchIsReported]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testMultiIconApplicationRefusesFallbackAfterRestartOrDisappearance]' started.
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testMultiIconApplicationRefusesFallbackAfterRestartOrDisappearance]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testReorderingUsesIdentityInsteadOfScreenshotCoordinates]' started.
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testReorderingUsesIdentityInsteadOfScreenshotCoordinates]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testRestartRematchesOnlyUniqueSameBundleAndPath]' started.
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testRestartRematchesOnlyUniqueSameBundleAndPath]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testReusedWindowAndPIDCannotClickDifferentApplicationOrLaunch]' started.
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testReusedWindowAndPIDCannotClickDifferentApplicationOrLaunch]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testTwoVisibleDisplaysAreAmbiguousWithoutPreferredDisplay]' started.
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testTwoVisibleDisplaysAreAmbiguousWithoutPreferredDisplay]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testUnknownOrInvalidLaunchAndGeometryNeverResolve]' started.
+Test Case '-[MacToolsTests.MenuBarIconIdentityTests testUnknownOrInvalidLaunchAndGeometryNeverResolve]' passed (0.000 seconds).
+Test Suite 'MenuBarIconIdentityTests' passed at 2026-10-10 13:26:40.143.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.004 (0.006) seconds
+Test Suite 'MenuBarInputAttributionTests' started at 2026-10-10 13:26:40.143.
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testActualPortLossTimeoutPermissionAndBadClockRemainUnhealthyAndRefused]' started.
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testActualPortLossTimeoutPermissionAndBadClockRemainUnhealthyAndRefused]' passed (0.017 seconds).
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testExactPreRegisteredEmissionHasSingleUseReceipt]' started.
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testExactPreRegisteredEmissionHasSingleUseReceipt]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testInitialQuietRequiresWarmupAndRecentActivityAbsenceWithoutInferringKeyState]' started.
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testInitialQuietRequiresWarmupAndRecentActivityAbsenceWithoutInferringKeyState]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testListenOnlySourceIsDisconnectedUntilExplicitStart]' started.
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testListenOnlySourceIsDisconnectedUntilExplicitStart]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testMarkerOnlyPIDOnlyAndShapeChangesDoNotAttributeAnEvent]' started.
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testMarkerOnlyPIDOnlyAndShapeChangesDoNotAttributeAnEvent]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testNormalActivityDuringReadIsUnavailableButDoesNotClaimListenerLossOrIdle]' started.
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testNormalActivityDuringReadIsUnavailableButDoesNotClaimListenerLossOrIdle]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testStaleFutureAndDuplicateRegistrationsCannotClaimOwnGesture]' started.
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testStaleFutureAndDuplicateRegistrationsCannotClaimOwnGesture]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testUnlistedPhysicalActivityStillInvalidatesAfterItHasBecomeQuietAgain]' started.
+Test Case '-[MacToolsTests.MenuBarInputAttributionTests testUnlistedPhysicalActivityStillInvalidatesAfterItHasBecomeQuietAgain]' passed (0.000 seconds).
+Test Suite 'MenuBarInputAttributionTests' passed at 2026-10-10 13:26:40.163.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.020 (0.021) seconds
+Test Suite 'MenuBarItemDirectoryTests' started at 2026-10-10 13:26:40.163.
+Test Case '-[MacToolsTests.MenuBarItemDirectoryTests testDirectoryEntryDoesNotEnableOptedOutPluginOrMutateConfiguration]' started.
+Test Case '-[MacToolsTests.MenuBarItemDirectoryTests testDirectoryEntryDoesNotEnableOptedOutPluginOrMutateConfiguration]' passed (0.006 seconds).
+Test Case '-[MacToolsTests.MenuBarItemDirectoryTests testDisplayLocalTransformAndApplicationNameFallback]' started.
+Test Case '-[MacToolsTests.MenuBarItemDirectoryTests testDisplayLocalTransformAndApplicationNameFallback]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarItemDirectoryTests testDuplicateOrOverlappingDisplayMappingIsNotGuessed]' started.
+Test Case '-[MacToolsTests.MenuBarItemDirectoryTests testDuplicateOrOverlappingDisplayMappingIsNotGuessed]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarItemDirectoryTests testExcludesOwnUnknownDuplicateAndInvalidWindows]' started.
+Test Case '-[MacToolsTests.MenuBarItemDirectoryTests testExcludesOwnUnknownDuplicateAndInvalidWindows]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarItemDirectoryTests testNotchOffscreenAndPartialOverlapRemainAccessibleWithoutImages]' started.
+Test Case '-[MacToolsTests.MenuBarItemDirectoryTests testNotchOffscreenAndPartialOverlapRemainAccessibleWithoutImages]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarItemDirectoryTests testSameRowDisplaysRefuseAmbiguousOffscreenButKeepPhysicalSelectedDisplay]' started.
+Test Case '-[MacToolsTests.MenuBarItemDirectoryTests testSameRowDisplaysRefuseAmbiguousOffscreenButKeepPhysicalSelectedDisplay]' passed (0.000 seconds).
+Test Suite 'MenuBarItemDirectoryTests' passed at 2026-10-10 13:26:40.170.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.007 (0.007) seconds
+Test Suite 'MenuBarLocalAcceptanceGateTests' started at 2026-10-10 13:26:40.170.
+Test Case '-[MacToolsTests.MenuBarLocalAcceptanceGateTests testCancelAndHealthLossStopWithoutTrigger]' started.
+Test Case '-[MacToolsTests.MenuBarLocalAcceptanceGateTests testCancelAndHealthLossStopWithoutTrigger]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalAcceptanceGateTests testCannotStartBeforeReadyOrWithoutExactReceiptProof]' started.
+Test Case '-[MacToolsTests.MenuBarLocalAcceptanceGateTests testCannotStartBeforeReadyOrWithoutExactReceiptProof]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalAcceptanceGateTests testEqualPacketsForAnotherWindowDoNotProveOwnStart]' started.
+Test Case '-[MacToolsTests.MenuBarLocalAcceptanceGateTests testEqualPacketsForAnotherWindowDoNotProveOwnStart]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalAcceptanceGateTests testEveryOtherActivityStopsAndLaterQuietCannotRestart]' started.
+Test Case '-[MacToolsTests.MenuBarLocalAcceptanceGateTests testEveryOtherActivityStopsAndLaterQuietCannotRestart]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalAcceptanceGateTests testSignedAndZeroEventNumbersRemainPartOfTheFullProof]' started.
+Test Case '-[MacToolsTests.MenuBarLocalAcceptanceGateTests testSignedAndZeroEventNumbersRemainPartOfTheFullProof]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalAcceptanceGateTests testStallBackwardClockAndDuplicateStartCannotExtendCountdown]' started.
+Test Case '-[MacToolsTests.MenuBarLocalAcceptanceGateTests testStallBackwardClockAndDuplicateStartCannotExtendCountdown]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalAcceptanceGateTests testThreeSecondsIsMonotonicAndExactlyOneProposal]' started.
+Test Case '-[MacToolsTests.MenuBarLocalAcceptanceGateTests testThreeSecondsIsMonotonicAndExactlyOneProposal]' passed (0.000 seconds).
+Test Suite 'MenuBarLocalAcceptanceGateTests' passed at 2026-10-10 13:26:40.173.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.001 (0.003) seconds
+Test Suite 'MenuBarLocalFailureEvidenceTests' started at 2026-10-10 13:26:40.173.
+Test Case '-[MacToolsTests.MenuBarLocalFailureEvidenceTests testEveryStopCausePersistsBeforeCleanupAndCannotBeOverwritten]' started.
+Test Case '-[MacToolsTests.MenuBarLocalFailureEvidenceTests testEveryStopCausePersistsBeforeCleanupAndCannotBeOverwritten]' passed (0.023 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalFailureEvidenceTests testNonfinitePayloadStillProducesDurableScalarFailureReceipt]' started.
+Test Case '-[MacToolsTests.MenuBarLocalFailureEvidenceTests testNonfinitePayloadStillProducesDurableScalarFailureReceipt]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalFailureEvidenceTests testSameCauseDistinguishesSampleReentryFromElapsedCoverageGap]' started.
+Test Case '-[MacToolsTests.MenuBarLocalFailureEvidenceTests testSameCauseDistinguishesSampleReentryFromElapsedCoverageGap]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalFailureEvidenceTests testStartupRejectionRetainsPreCleanupHealthWithoutStartingNativeTap]' started.
+Test Case '-[MacToolsTests.MenuBarLocalFailureEvidenceTests testStartupRejectionRetainsPreCleanupHealthWithoutStartingNativeTap]' passed (0.000 seconds).
+Test Suite 'MenuBarLocalFailureEvidenceTests' passed at 2026-10-10 13:26:40.198.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.024 (0.025) seconds
+Test Suite 'MenuBarLocalNativeContinuityTests' started at 2026-10-10 13:26:40.198.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testActivityDuringPostDeadlineResamplingStopsInsteadOfPassing]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testActivityDuringPostDeadlineResamplingStopsInsteadOfPassing]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testBothCallbackOrdersUseRealAdapterAndNewPostDeadlineScan]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testBothCallbackOrdersUseRealAdapterAndNewPostDeadlineScan]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testExactOwnPacketFieldsRemainRequiredInNativeCallbackPath]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testExactOwnPacketFieldsRemainRequiredInNativeCallbackPath]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testHardwareLikeOwnUpCounterIncreaseIsNotSubtractedOrExempted]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testHardwareLikeOwnUpCounterIncreaseIsNotSubtractedOrExempted]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testHealthLossWithinReadAndMissingCounterAreNeverIdle]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testHealthLossWithinReadAndMissingCounterAreNeverIdle]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testHIDActivityBeforeFirstUpSampleCannotBeAbsorbedIntoBaseline]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testHIDActivityBeforeFirstUpSampleCannotBeAbsorbedIntoBaseline]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testHIDAgeUsesTheConservativeEndOfTheQueryInterval]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testHIDAgeUsesTheConservativeEndOfTheQueryInterval]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testHIDCounterChangeThenReturnBeforeClaimStillRefuses]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testHIDCounterChangeThenReturnBeforeClaimStillRefuses]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testHIDOnlyInputAndUncountedActivityDuringCountdownAreBothLatched]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testHIDOnlyInputAndUncountedActivityDuringCountdownAreBothLatched]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testInputWhileAwaitingUpAndRepeatedOwnUpArePermanentlyTerminal]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testInputWhileAwaitingUpAndRepeatedOwnUpArePermanentlyTerminal]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testLossAtTheClickBoundaryAndReconnectCannotEraseHistory]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testLossAtTheClickBoundaryAndReconnectCannotEraseHistory]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testMissingOrLatePreUpHistoryNeverBecomesContinuousByWaiting]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testMissingOrLatePreUpHistoryNeverBecomesContinuousByWaiting]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testReentrantCallbackDuringSamplingCannotManufactureAnAtomicRead]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testReentrantCallbackDuringSamplingCannotManufactureAnAtomicRead]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testStableCounterDoesNotHideMoreRecentHIDAgeInStartupGap]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testStableCounterDoesNotHideMoreRecentHIDAgeInStartupGap]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testStallBackwardClockCancelAndVirtualStartCannotResume]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testStallBackwardClockCancelAndVirtualStartCannotResume]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testTapOnlyAndPublicStateActivityCannotDisappearWhenQuietReturns]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testTapOnlyAndPublicStateActivityCannotDisappearWhenQuietReturns]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testWindowFilterDoesNotRetainForeignCoordinatesOrClaimMissingWindow]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNativeContinuityTests testWindowFilterDoesNotRetainForeignCoordinatesOrClaimMissingWindow]' passed (0.000 seconds).
+Test Suite 'MenuBarLocalNativeContinuityTests' passed at 2026-10-10 13:26:40.201.
+	 Executed 17 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'MenuBarLocalNoMovePreparationTests' started at 2026-10-10 13:26:40.201.
+Test Case '-[MacToolsTests.MenuBarLocalNoMovePreparationTests testChangedNoncePIDLaunchPathAndSignatureAllRefuse]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNoMovePreparationTests testChangedNoncePIDLaunchPathAndSignatureAllRefuse]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNoMovePreparationTests testForeignOrChangedGeometryAndDuplicateInstancesRefuse]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNoMovePreparationTests testForeignOrChangedGeometryAndDuplicateInstancesRefuse]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNoMovePreparationTests testHistoricalOwnedCGPublicationReplayWithoutAnyDestination]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNoMovePreparationTests testHistoricalOwnedCGPublicationReplayWithoutAnyDestination]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNoMovePreparationTests testInvalidFixtureOrListenerCannotReachPresenter]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNoMovePreparationTests testInvalidFixtureOrListenerCannotReachPresenter]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNoMovePreparationTests testMissingDestinationStillAuthorizesLocalPresentationOnly]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNoMovePreparationTests testMissingDestinationStillAuthorizesLocalPresentationOnly]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalNoMovePreparationTests testNoRuntimeUpgradeModeAndCountdownRemainsProposalOnly]' started.
+Test Case '-[MacToolsTests.MenuBarLocalNoMovePreparationTests testNoRuntimeUpgradeModeAndCountdownRemainsProposalOnly]' passed (0.000 seconds).
+Test Suite 'MenuBarLocalNoMovePreparationTests' passed at 2026-10-10 13:26:40.206.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.004 (0.004) seconds
+Test Suite 'MenuBarLocalObservationTests' started at 2026-10-10 13:26:40.206.
+Test Case '-[MacToolsTests.MenuBarLocalObservationTests testCapturedIdleSamplesRemainReadyForBothPurposesWithoutAuthorization]' started.
+Test Case '-[MacToolsTests.MenuBarLocalObservationTests testCapturedIdleSamplesRemainReadyForBothPurposesWithoutAuthorization]' passed (0.008 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalObservationTests testExhaustedSetupDoesNoWorkAndInvalidClockRefuses]' started.
+Test Case '-[MacToolsTests.MenuBarLocalObservationTests testExhaustedSetupDoesNoWorkAndInvalidClockRefuses]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalObservationTests testPollFailureStopsWithoutWaitingOrRetrying]' started.
+Test Case '-[MacToolsTests.MenuBarLocalObservationTests testPollFailureStopsWithoutWaitingOrRetrying]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalObservationTests testSetupSharesDeadlineAndLastWaitUsesRemainingBudget]' started.
+Test Case '-[MacToolsTests.MenuBarLocalObservationTests testSetupSharesDeadlineAndLastWaitUsesRemainingBudget]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalObservationTests testSlowPollAndLateWakeDoNotAddWaitOrFinalSample]' started.
+Test Case '-[MacToolsTests.MenuBarLocalObservationTests testSlowPollAndLateWakeDoNotAddWaitOrFinalSample]' passed (0.000 seconds).
+Test Suite 'MenuBarLocalObservationTests' passed at 2026-10-10 13:26:40.214.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.008 (0.009) seconds
+Test Suite 'MenuBarLocalQuietCountdownDesignTests' started at 2026-10-10 13:26:40.214.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testASecondIdenticalOwnClickStillCountsAsLaterInput]' started.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testASecondIdenticalOwnClickStillCountsAsLaterInput]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testBackwardClockStallReplayedOrFutureSamplesAllRefuse]' started.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testBackwardClockStallReplayedOrFutureSamplesAllRefuse]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testCancelAndListenerLossCannotResumeInEitherStage]' started.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testCancelAndListenerLossCannotResumeInEitherStage]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testChangedCounterResetAndContinuityCannotBeAcceptedAsNewBaseline]' started.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testChangedCounterResetAndContinuityCannotBeAcceptedAsNewBaseline]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testCountdownExpiryDoesNotAcceptOldQuietOrPermitDuplicateStartExtension]' started.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testCountdownExpiryDoesNotAcceptOldQuietOrPermitDuplicateStartExtension]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testEveryIdentityFieldRemainsExactIncludingSignedAndZeroNumbers]' started.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testEveryIdentityFieldRemainsExactIncludingSignedAndZeroNumbers]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testHIDOnlyInputOneMillisecondAfterMatchStopsDespiteLaterQuiet]' started.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testHIDOnlyInputOneMillisecondAfterMatchStopsDespiteLaterQuiet]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testHistoricalExactSyntheticReceiptCannotInventMissingBoundaryCounters]' started.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testHistoricalExactSyntheticReceiptCannotInventMissingBoundaryCounters]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testInputDuringFinalSamplingPermanentlyInvalidatesOtherwiseQuietResult]' started.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testInputDuringFinalSamplingPermanentlyInvalidatesOtherwiseQuietResult]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testMissingCandidateVirtualCandidateAndForeignWindowCannotArm]' started.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testMissingCandidateVirtualCandidateAndForeignWindowCannotArm]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testMissingCoverageUnhealthyOrAbsentCounterNeverMeansIdle]' started.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testMissingCoverageUnhealthyOrAbsentCounterNeverMeansIdle]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testNewQuietRequiresFiniteAgeAndReleasedPublicGestureState]' started.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testNewQuietRequiresFiniteAgeAndReleasedPublicGestureState]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testSyntheticAndPhysicalTimelinesSeparateIdentityFromFinalHIDQuiet]' started.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testSyntheticAndPhysicalTimelinesSeparateIdentityFromFinalHIDQuiet]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testTapOnlyInputAndAutorepeatStopEvenWhenCounterDoesNotChange]' started.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testTapOnlyInputAndAutorepeatStopEvenWhenCounterDoesNotChange]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testUpToMatchGapCannotBeRebaselinedAfterUnknownInput]' started.
+Test Case '-[MacToolsTests.MenuBarLocalQuietCountdownDesignTests testUpToMatchGapCannotBeRebaselinedAfterUnknownInput]' passed (0.000 seconds).
+Test Suite 'MenuBarLocalQuietCountdownDesignTests' passed at 2026-10-10 13:26:40.219.
+	 Executed 15 tests, with 0 failures (0 unexpected) in 0.004 (0.005) seconds
+Test Suite 'MenuBarLocalStartReceiptTests' started at 2026-10-10 13:26:40.219.
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testAnnotatedOwnWindowStillRequiresFullExactPacket]' started.
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testAnnotatedOwnWindowStillRequiresFullExactPacket]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testAnotherEventAfterClickAndStaleReceiptAreNeverIgnored]' started.
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testAnotherEventAfterClickAndStaleReceiptAreNeverIgnored]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testAppKitBeforeTapCanMatchOnlyTheSameEventWithinFixedDeadline]' started.
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testAppKitBeforeTapCanMatchOnlyTheSameEventWithinFixedDeadline]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testExactEqualityAndSingleUseReceipt]' started.
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testExactEqualityAndSingleUseReceipt]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testLocalStageUsesAnnotatedTapAndRealStageStaysSession]' started.
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testLocalStageUsesAnnotatedTapAndRealStageStaysSession]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testNativeNoPostChannelRejectsEveryRouteBeforeAnyWitnessOrTap]' started.
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testNativeNoPostChannelRejectsEveryRouteBeforeAnyWitnessOrTap]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testNearTimeCoordinatesAndPIDAreInsufficient]' started.
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testNearTimeCoordinatesAndPIDAreInsufficient]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testOlderAndLaterHardwareActivityRemainDifferentStrictRefusals]' started.
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testOlderAndLaterHardwareActivityRemainDifferentStrictRefusals]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testPreAnnotationWindowMissingIsDiagnosedAndNeverMaterializesForeignPacket]' started.
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testPreAnnotationWindowMissingIsDiagnosedAndNeverMaterializesForeignPacket]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testRecordedNegativePacketReplayStillRejectsTheOlderHIDClock]' started.
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testRecordedNegativePacketReplayStillRejectsTheOlderHIDClock]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testSignedAndZeroNumbersStillNeedTheExactOwnedPacket]' started.
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testSignedAndZeroNumbersStillNeedTheExactOwnedPacket]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testVirtualReceiptIsExplicitAndNotRealTapEvidence]' started.
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testVirtualReceiptIsExplicitAndNotRealTapEvidence]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testWaitingNeverAcceptsAnotherRecentEventOrLaterActivity]' started.
+Test Case '-[MacToolsTests.MenuBarLocalStartReceiptTests testWaitingNeverAcceptsAnotherRecentEventOrLaterActivity]' passed (0.000 seconds).
+Test Suite 'MenuBarLocalStartReceiptTests' passed at 2026-10-10 13:26:40.221.
+	 Executed 13 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'MenuBarLocalUIReadbackTests' started at 2026-10-10 13:26:40.221.
+Test Case '-[MacToolsTests.MenuBarLocalUIReadbackTests testAXCannotCompleteIsReportedWithOriginalErrorAndNeverRetried]' started.
+Test Case '-[MacToolsTests.MenuBarLocalUIReadbackTests testAXCannotCompleteIsReportedWithOriginalErrorAndNeverRetried]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalUIReadbackTests testAXFrameDistinguishesMissingWrongTypeAndWrongValueKind]' started.
+Test Case '-[MacToolsTests.MenuBarLocalUIReadbackTests testAXFrameDistinguishesMissingWrongTypeAndWrongValueKind]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalUIReadbackTests testAXFrameRejectsZeroNegativeAndNonfiniteSizes]' started.
+Test Case '-[MacToolsTests.MenuBarLocalUIReadbackTests testAXFrameRejectsZeroNegativeAndNonfiniteSizes]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalUIReadbackTests testCGBoundsMissingAndMalformedAreSeparate]' started.
+Test Case '-[MacToolsTests.MenuBarLocalUIReadbackTests testCGBoundsMissingAndMalformedAreSeparate]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalUIReadbackTests testCGListMissingWindowWrongOwnerAndLayerAreSeparate]' started.
+Test Case '-[MacToolsTests.MenuBarLocalUIReadbackTests testCGListMissingWindowWrongOwnerAndLayerAreSeparate]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalUIReadbackTests testOwnerMismatchDoesNotReadForeignElement]' started.
+Test Case '-[MacToolsTests.MenuBarLocalUIReadbackTests testOwnerMismatchDoesNotReadForeignElement]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarLocalUIReadbackTests testSecondCheckUsesFreshDataAndLabelsThePhase]' started.
+Test Case '-[MacToolsTests.MenuBarLocalUIReadbackTests testSecondCheckUsesFreshDataAndLabelsThePhase]' passed (0.000 seconds).
+Test Suite 'MenuBarLocalUIReadbackTests' passed at 2026-10-10 13:26:40.223.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'MenuBarMoveInterferenceTests' started at 2026-10-10 13:26:40.223.
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testDisconnectedAndPermissionRequiredAreUnavailableWithoutRequestingAccess]' started.
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testDisconnectedAndPermissionRequiredAreUnavailableWithoutRequestingAccess]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testEachMissingCoverageCannotBeTreatedAsNoUserInput]' started.
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testEachMissingCoverageCannotBeTreatedAsNoUserInput]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testExternalEpochChangeDetectsConcurrentActionEvenWhenNoEventWasDelivered]' started.
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testExternalEpochChangeDetectsConcurrentActionEvenWhenNoEventWasDelivered]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testHeldButtonKeyOrModifierRefusesBaselineAndActionBoundary]' started.
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testHeldButtonKeyOrModifierRefusesBaselineAndActionBoundary]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testInterferenceFailureRetainsModelAndFileRecoveryResponsibility]' started.
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testInterferenceFailureRetainsModelAndFileRecoveryResponsibility]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testLossOfCapabilityOrContinuityCannotResumeWithOldLease]' started.
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testLossOfCapabilityOrContinuityCannotResumeWithOldLease]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testOwnAttributedGestureAllowsOnlyFreshIdleBoundary]' started.
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testOwnAttributedGestureAllowsOnlyFreshIdleBoundary]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testStaleRepeatedFutureAndBackwardsTimeSamplesBlockInsteadOfPassing]' started.
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testStaleRepeatedFutureAndBackwardsTimeSamplesBlockInsteadOfPassing]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testUserOrAmbiguousInputBlocksPermanentlyEvenIfNextSnapshotIsIdle]' started.
+Test Case '-[MacToolsTests.MenuBarMoveInterferenceTests testUserOrAmbiguousInputBlocksPermanentlyEvenIfNextSnapshotIsIdle]' passed (0.000 seconds).
+Test Suite 'MenuBarMoveInterferenceTests' passed at 2026-10-10 13:26:40.226.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'MenuBarMoveStageRecorderTests' started at 2026-10-10 13:26:40.226.
+Test Case '-[MacToolsTests.MenuBarMoveStageRecorderTests testDurablePrivateChainBindsFullPayloadAndCannotReopen]' started.
+Test Case '-[MacToolsTests.MenuBarMoveStageRecorderTests testDurablePrivateChainBindsFullPayloadAndCannotReopen]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarMoveStageRecorderTests testPartialWriteFailurePoisonsRecorderAndCannotRetryNewFilename]' started.
+Test Case '-[MacToolsTests.MenuBarMoveStageRecorderTests testPartialWriteFailurePoisonsRecorderAndCannotRetryNewFilename]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarMoveStageRecorderTests testSerializationFailureAlsoPermanentlyStopsEvidence]' started.
+Test Case '-[MacToolsTests.MenuBarMoveStageRecorderTests testSerializationFailureAlsoPermanentlyStopsEvidence]' passed (0.001 seconds).
+Test Suite 'MenuBarMoveStageRecorderTests' passed at 2026-10-10 13:26:40.229.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'MenuBarNativeAXFailureRestoreTests' started at 2026-10-10 13:26:40.229.
+Test Case '-[MacToolsTests.MenuBarNativeAXFailureRestoreTests testTypedAXCallFailureSurvivesAcknowledgedPhysicalRestoration]' started.
+Test Case '-[MacToolsTests.MenuBarNativeAXFailureRestoreTests testTypedAXCallFailureSurvivesAcknowledgedPhysicalRestoration]' passed (0.002 seconds).
+Test Suite 'MenuBarNativeAXFailureRestoreTests' passed at 2026-10-10 13:26:40.232.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'MenuBarNativeAXReadTests' started at 2026-10-10 13:26:40.232.
+Test Case '-[MacToolsTests.MenuBarNativeAXReadTests testHistoricalGenericFailureDoesNotInventAXDetailsAndNewDetailRoundTrips]' started.
+Test Case '-[MacToolsTests.MenuBarNativeAXReadTests testHistoricalGenericFailureDoesNotInventAXDetailsAndNewDetailRoundTrips]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeAXReadTests testRecoveryMissingExtrasIsNotReportedAsFrontMenuFailure]' started.
+Test Case '-[MacToolsTests.MenuBarNativeAXReadTests testRecoveryMissingExtrasIsNotReportedAsFrontMenuFailure]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeAXReadTests testTargetPositionMessagingFailureIdentifiesExactCallAndIdentity]' started.
+Test Case '-[MacToolsTests.MenuBarNativeAXReadTests testTargetPositionMessagingFailureIdentifiesExactCallAndIdentity]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeAXReadTests testUnreadableMenuEmptyMenuAndSuccessWithNilAreDifferentRefusals]' started.
+Test Case '-[MacToolsTests.MenuBarNativeAXReadTests testUnreadableMenuEmptyMenuAndSuccessWithNilAreDifferentRefusals]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeAXReadTests testWrongOwnerAndTimeoutSetterFailureCannotProceedToCopy]' started.
+Test Case '-[MacToolsTests.MenuBarNativeAXReadTests testWrongOwnerAndTimeoutSetterFailureCannotProceedToCopy]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeAXReadTests testWrongValueShapeAndDisallowedMenuRoleStayRefused]' started.
+Test Case '-[MacToolsTests.MenuBarNativeAXReadTests testWrongValueShapeAndDisallowedMenuRoleStayRefused]' passed (0.000 seconds).
+Test Suite 'MenuBarNativeAXReadTests' passed at 2026-10-10 13:26:40.236.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'MenuBarNativeAttemptGateTests' started at 2026-10-10 13:26:40.236.
+Test Case '-[MacToolsTests.MenuBarNativeAttemptGateTests testCapturedHiddenTargetReachesReadyOnlyAfterTwoVisibleVerifiedPrivateSamples]' started.
+Test Case '-[MacToolsTests.MenuBarNativeAttemptGateTests testCapturedHiddenTargetReachesReadyOnlyAfterTwoVisibleVerifiedPrivateSamples]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeAttemptGateTests testExactCapturedPreconditionFailureNowPlansOnlyOneButtonWidthAttempt]' started.
+Test Case '-[MacToolsTests.MenuBarNativeAttemptGateTests testExactCapturedPreconditionFailureNowPlansOnlyOneButtonWidthAttempt]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeAttemptGateTests testMenuChangeAfterAllowedAttemptStillRefusesInteractionAndRestores]' started.
+Test Case '-[MacToolsTests.MenuBarNativeAttemptGateTests testMenuChangeAfterAllowedAttemptStillRefusesInteractionAndRestores]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeAttemptGateTests testOneVisibleSampleCannotGrantInteractionWhenSecondIsUnknown]' started.
+Test Case '-[MacToolsTests.MenuBarNativeAttemptGateTests testOneVisibleSampleCannotGrantInteractionWhenSecondIsUnknown]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeAttemptGateTests testPersistentlyHiddenTargetDoesNotReachReadyAndRestoresExactlyOnce]' started.
+Test Case '-[MacToolsTests.MenuBarNativeAttemptGateTests testPersistentlyHiddenTargetDoesNotReachReadyAndRestoresExactlyOnce]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeAttemptGateTests testUnknownRecoveryAfterFailedAttemptRetainsJournalAndBlocksInteraction]' started.
+Test Case '-[MacToolsTests.MenuBarNativeAttemptGateTests testUnknownRecoveryAfterFailedAttemptRetainsJournalAndBlocksInteraction]' passed (0.002 seconds).
+Test Suite 'MenuBarNativeAttemptGateTests' passed at 2026-10-10 13:26:40.250.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.013 (0.014) seconds
+Test Suite 'MenuBarNativeCapturedReplayTests' started at 2026-10-10 13:26:40.250.
+Test Case '-[MacToolsTests.MenuBarNativeCapturedReplayTests testRecordedMenuSwitchRejectsBeforeOrderAndVisibility]' started.
+Test Case '-[MacToolsTests.MenuBarNativeCapturedReplayTests testRecordedMenuSwitchRejectsBeforeOrderAndVisibility]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeCapturedReplayTests testStableContextAndOrderCounterfactualStillRequiresOrderedOnScreenTarget]' started.
+Test Case '-[MacToolsTests.MenuBarNativeCapturedReplayTests testStableContextAndOrderCounterfactualStillRequiresOrderedOnScreenTarget]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeCapturedReplayTests testStableMenuCounterfactualStillRejectsHiddenSystemWindowOrderChanges]' started.
+Test Case '-[MacToolsTests.MenuBarNativeCapturedReplayTests testStableMenuCounterfactualStillRejectsHiddenSystemWindowOrderChanges]' passed (0.001 seconds).
+Test Suite 'MenuBarNativeCapturedReplayTests' passed at 2026-10-10 13:26:40.256.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.005 (0.005) seconds
+Test Suite 'MenuBarNativeFrontMenuReaderTests' started at 2026-10-10 13:26:40.256.
+Test Case '-[MacToolsTests.MenuBarNativeFrontMenuReaderTests testCancelledDuringFinalSuccessfulAXSizeCannotReturnGeometry]' started.
+Test Case '-[MacToolsTests.MenuBarNativeFrontMenuReaderTests testCancelledDuringFinalSuccessfulAXSizeCannotReturnGeometry]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeFrontMenuReaderTests testExternalMenuKeepsBoundedBackgroundAXRead]' started.
+Test Case '-[MacToolsTests.MenuBarNativeFrontMenuReaderTests testExternalMenuKeepsBoundedBackgroundAXRead]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeFrontMenuReaderTests testFinalSuccessfulAXSizeAfterSharedDeadlineCannotReturnGeometry]' started.
+Test Case '-[MacToolsTests.MenuBarNativeFrontMenuReaderTests testFinalSuccessfulAXSizeAfterSharedDeadlineCannotReturnGeometry]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeFrontMenuReaderTests testPrecancelledMenuReadNeverQueriesEitherProcess]' started.
+Test Case '-[MacToolsTests.MenuBarNativeFrontMenuReaderTests testPrecancelledMenuReadNeverQueriesEitherProcess]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeFrontMenuReaderTests testSelfAndExternalReadFailuresRemainTypedRefusalsWithoutFallback]' started.
+Test Case '-[MacToolsTests.MenuBarNativeFrontMenuReaderTests testSelfAndExternalReadFailuresRemainTypedRefusalsWithoutFallback]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeFrontMenuReaderTests testSelfMenuReadsEveryAXAttributeOnMainThread]' started.
+Test Case '-[MacToolsTests.MenuBarNativeFrontMenuReaderTests testSelfMenuReadsEveryAXAttributeOnMainThread]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeFrontMenuReaderTests testSharedExpiredBudgetDoesNotReadOrResetDeadline]' started.
+Test Case '-[MacToolsTests.MenuBarNativeFrontMenuReaderTests testSharedExpiredBudgetDoesNotReadOrResetDeadline]' passed (0.001 seconds).
+Test Suite 'MenuBarNativeFrontMenuReaderTests' passed at 2026-10-10 13:26:40.262.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.005 (0.006) seconds
+Test Suite 'MenuBarNativeObservationTests' started at 2026-10-10 13:26:40.262.
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testAmbiguousRecoveryAndDuplicateAXMatchesAreRefused]' started.
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testAmbiguousRecoveryAndDuplicateAXMatchesAreRefused]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testAssemblesCompletePublicGeometryAndVerifiesNativeReflow]' started.
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testAssemblesCompletePublicGeometryAndVerifiesNativeReflow]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testInactiveNativeMenuZeroSizeGeometryCannotPassMenuSafetyCheck]' started.
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testInactiveNativeMenuZeroSizeGeometryCannotPassMenuSafetyCheck]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testManualEditingMayChangeOrderButNotIdentitySetOrRecovery]' started.
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testManualEditingMayChangeOrderButNotIdentitySetOrRecovery]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testMenuUnknownOrOnWrongDisplayRefusesAndOccupiedSpaceIsExcluded]' started.
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testMenuUnknownOrOnWrongDisplayRefusesAndOccupiedSpaceIsExcluded]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testOrdinaryBundleCannotEnableWidthFromSettingsOrPublicEntry]' started.
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testOrdinaryBundleCannotEnableWidthFromSettingsOrPublicEntry]' passed (0.005 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testOverlayOrUnknownOpacityCannotClaimCompleteVisibility]' started.
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testOverlayOrUnknownOpacityCannotClaimCompleteVisibility]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testPartialAXNotchCoverageIsNotClippedToSafeAreaToPass]' started.
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testPartialAXNotchCoverageIsNotClippedToSafeAreaToPass]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testPhysicallyCollapsedDividerHasSpecificPreconditionRefusal]' started.
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testPhysicallyCollapsedDividerHasSpecificPreconditionRefusal]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testUnknownHiddenPeerIsStillRefusedRatherThanDroppedFromOrder]' started.
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testUnknownHiddenPeerIsStillRefusedRatherThanDroppedFromOrder]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testUnknownPeerAndRecycledTargetAreNotSilentlyIgnored]' started.
+Test Case '-[MacToolsTests.MenuBarNativeObservationTests testUnknownPeerAndRecycledTargetAreNotSilentlyIgnored]' passed (0.000 seconds).
+Test Suite 'MenuBarNativeObservationTests' passed at 2026-10-10 13:26:40.270.
+	 Executed 11 tests, with 0 failures (0 unexpected) in 0.008 (0.009) seconds
+Test Suite 'MenuBarNativePostcheckRestoreTests' started at 2026-10-10 13:26:40.270.
+Test Case '-[MacToolsTests.MenuBarNativePostcheckRestoreTests testPostcheckEvidenceSurvivesAcknowledgedFailureRestoration]' started.
+Test Case '-[MacToolsTests.MenuBarNativePostcheckRestoreTests testPostcheckEvidenceSurvivesAcknowledgedFailureRestoration]' passed (0.001 seconds).
+Test Suite 'MenuBarNativePostcheckRestoreTests' passed at 2026-10-10 13:26:40.271.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'MenuBarNativeRevealControllerTests' started at 2026-10-10 13:26:40.271.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testCancelDuringPendingReadMakesLateObservationInert]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testCancelDuringPendingReadMakesLateObservationInert]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testCancelSleepDisplayChangeAndTimeoutRestoreOwnWidth]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testCancelSleepDisplayChangeAndTimeoutRestoreOwnWidth]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testCloseRequestRestoresSynchronouslyBeforeAcknowledgement]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testCloseRequestRestoresSynchronouslyBeforeAcknowledgement]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testCorruptFileRecoveryIsNotClearedOrApplied]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testCorruptFileRecoveryIsNotClearedOrApplied]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testCrashRecordOnlyRecoversSameApplicationAndOwnItemOnNewLaunch]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testCrashRecordOnlyRecoversSameApplicationAndOwnItemOnNewLaunch]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testDisplayChangeDoesNotWeakenPhysicalRestoreAcknowledgement]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testDisplayChangeDoesNotWeakenPhysicalRestoreAcknowledgement]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testDisplayChangeDuringPreflightMakesLateReadInertWithoutWidthWrite]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testDisplayChangeDuringPreflightMakesLateReadInertWithoutWidthWrite]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testDurableCrashRecordSurvivesAndIsAcknowledgedByFreshOwnViewInstance]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testDurableCrashRecordSurvivesAndIsAcknowledgedByFreshOwnViewInstance]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testEditingWatchdogRestoresAndDuplicateStartCannotResizeAgain]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testEditingWatchdogRestoresAndDuplicateStartCannotResizeAgain]' passed (0.083 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testEnterMeasuresRealFixtureViewWidthThenFinishPreservesManualOrder]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testEnterMeasuresRealFixtureViewWidthThenFinishPreservesManualOrder]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testFailedExposureOrReadbackCannotReachReadyAndRestores]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testFailedExposureOrReadbackCannotReachReadyAndRestores]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testJournalFailureCannotApplyWidthAndThrowAfterApplyStillRestores]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testJournalFailureCannotApplyWidthAndThrowAfterApplyStillRestores]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testNormalShutdownRequestsRestoreButRetainsRecordUntilNextLaunch]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testNormalShutdownRequestsRestoreButRetainsRecordUntilNextLaunch]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testNoSpaceOrUnstableRecoveryDoesNotWriteWidth]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testNoSpaceOrUnstableRecoveryDoesNotWriteWidth]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testPreparationWatchdogStopsHungObservationBeforeMutation]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testPreparationWatchdogStopsHungObservationBeforeMutation]' passed (0.084 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testReadyMonitorRestoresOnLostRecoveryInsteadOfLeavingWidthActive]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testReadyMonitorRestoresOnLostRecoveryInsteadOfLeavingWidthActive]' passed (0.659 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testRestorationGeometryFailureRetainsRecordAndBlocksNewEntry]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testRestorationGeometryFailureRetainsRecordAndBlocksNewEntry]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testTaskCancellationAfterWidthApplyStillAcknowledgesRestore]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testTaskCancellationAfterWidthApplyStillAcknowledgesRestore]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testUnknownRecoveryVisibilityRetainsJournalEvenIfWidthMatches]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealControllerTests testUnknownRecoveryVisibilityRetainsJournalEvenIfWidthMatches]' passed (0.001 seconds).
+Test Suite 'MenuBarNativeRevealControllerTests' passed at 2026-10-10 13:26:41.112.
+	 Executed 19 tests, with 0 failures (0 unexpected) in 0.840 (0.841) seconds
+Test Suite 'MenuBarNativeRevealDiagnosticTests' started at 2026-10-10 13:26:41.112.
+Test Case '-[MacToolsTests.MenuBarNativeRevealDiagnosticTests testBoundedTraceRetainsFirstFailureEvenBeyondEntryLimit]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealDiagnosticTests testBoundedTraceRetainsFirstFailureEvenBeyondEntryLimit]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealDiagnosticTests testDiagnosticFilePersistsFailureAndRestoredStatePrivately]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealDiagnosticTests testDiagnosticFilePersistsFailureAndRestoredStatePrivately]' passed (0.006 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealDiagnosticTests testDiagnosticWriteFailureCannotBlockWidthRestoration]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealDiagnosticTests testDiagnosticWriteFailureCannotBlockWidthRestoration]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealDiagnosticTests testFirstVerificationFailureSurvivesPhysicalRestoreFailure]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealDiagnosticTests testFirstVerificationFailureSurvivesPhysicalRestoreFailure]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealDiagnosticTests testLateLiveSampleCannotEnterAnotherTransactionTrace]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealDiagnosticTests testLateLiveSampleCannotEnterAnotherTransactionTrace]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealDiagnosticTests testOptionalImmediateDiagnosticReadCannotAddAnActivationGuard]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealDiagnosticTests testOptionalImmediateDiagnosticReadCannotAddAnActivationGuard]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealDiagnosticTests testReadFailureRecordsItsStageBeforeAutomaticAcknowledgedRestoration]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealDiagnosticTests testReadFailureRecordsItsStageBeforeAutomaticAcknowledgedRestoration]' passed (0.000 seconds).
+Test Suite 'MenuBarNativeRevealDiagnosticTests' passed at 2026-10-10 13:26:41.123.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.010 (0.010) seconds
+Test Suite 'MenuBarNativeRevealPlanTests' started at 2026-10-10 13:26:41.123.
+Test Case '-[MacToolsTests.MenuBarNativeRevealPlanTests testAlreadyVisibleTargetDoesNotRequestReflow]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealPlanTests testAlreadyVisibleTargetDoesNotRequestReflow]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealPlanTests testApplicationMenusAndBoundedSpaceAreRequired]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealPlanTests testApplicationMenusAndBoundedSpaceAreRequired]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealPlanTests testEnvironmentIdentityAndRelativeOrderCannotChange]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealPlanTests testEnvironmentIdentityAndRelativeOrderCannotChange]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealPlanTests testHiddenTargetMayAttemptOwnWidthButInteractionRequiresOrderedOnScreen]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealPlanTests testHiddenTargetMayAttemptOwnWidthButInteractionRequiresOrderedOnScreen]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealPlanTests testPlansOwnWidthIncreaseAndVerifiesMeasuredNativeReflow]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealPlanTests testPlansOwnWidthIncreaseAndVerifiesMeasuredNativeReflow]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealPlanTests testRecoveryAnchorAlreadyHiddenOrNoNotchGeometryIsRejected]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealPlanTests testRecoveryAnchorAlreadyHiddenOrNoNotchGeometryIsRejected]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeRevealPlanTests testRejectsReflowWithoutVisibilityCorrespondenceAndRecoveryAnchor]' started.
+Test Case '-[MacToolsTests.MenuBarNativeRevealPlanTests testRejectsReflowWithoutVisibilityCorrespondenceAndRecoveryAnchor]' passed (0.000 seconds).
+Test Suite 'MenuBarNativeRevealPlanTests' passed at 2026-10-10 13:26:41.124.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'MenuBarNativeThreadOrderReplayTests' started at 2026-10-10 13:26:41.124.
+Test Case '-[MacToolsTests.MenuBarNativeThreadOrderReplayTests testActualFalseOnScreenDoesNotMeanButtonStillInNotchOrMenuRegion]' started.
+Test Case '-[MacToolsTests.MenuBarNativeThreadOrderReplayTests testActualFalseOnScreenDoesNotMeanButtonStillInNotchOrMenuRegion]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeThreadOrderReplayTests testActualStableIdentitiesAndExpectedTargetShiftStillRejectRawOrderChange]' started.
+Test Case '-[MacToolsTests.MenuBarNativeThreadOrderReplayTests testActualStableIdentitiesAndExpectedTargetShiftStillRejectRawOrderChange]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeThreadOrderReplayTests testLegacyTraceHasNoInventedPostcheckAndNewEvidenceRoundTripsWithoutChangingFailure]' started.
+Test Case '-[MacToolsTests.MenuBarNativeThreadOrderReplayTests testLegacyTraceHasNoInventedPostcheckAndNewEvidenceRoundTripsWithoutChangingFailure]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeThreadOrderReplayTests testPeerIdentityChangeCannotBeExplainedAwayAsNativeMovement]' started.
+Test Case '-[MacToolsTests.MenuBarNativeThreadOrderReplayTests testPeerIdentityChangeCannotBeExplainedAwayAsNativeMovement]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarNativeThreadOrderReplayTests testVisibilityAndOrderRemainIndependentMandatoryRefusals]' started.
+Test Case '-[MacToolsTests.MenuBarNativeThreadOrderReplayTests testVisibilityAndOrderRemainIndependentMandatoryRefusals]' passed (0.003 seconds).
+Test Suite 'MenuBarNativeThreadOrderReplayTests' passed at 2026-10-10 13:26:41.141.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.016 (0.017) seconds
+Test Suite 'MenuBarOperationTests' started at 2026-10-10 13:26:41.141.
+Test Case '-[MacToolsTests.MenuBarOperationTests testAcceptedActionIsReportedAsDispatchedNotObserved]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testAcceptedActionIsReportedAsDispatchedNotObserved]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testAXErrorClassificationDoesNotTreatTimeoutAsRefusal]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testAXErrorClassificationDoesNotTreatTimeoutAsRefusal]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testAXObservedNeverSendsCoordinateClickOrMove]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testAXObservedNeverSendsCoordinateClickOrMove]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testAXPreflightRejectsUnidentifiedTargetWithoutSendingAction]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testAXPreflightRejectsUnidentifiedTargetWithoutSendingAction]' passed (0.008 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testAXTimeoutUnknownNeverEscalatesAndBlocksDuplicateRequest]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testAXTimeoutUnknownNeverEscalatesAndBlocksDuplicateRequest]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testCancellationAfterAXKeepsUnknownLeaseAndNeverClicks]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testCancellationAfterAXKeepsUnknownLeaseAndNeverClicks]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testCancellationDuringAXDoesNotEscalateOrForgetInteraction]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testCancellationDuringAXDoesNotEscalateOrForgetInteraction]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testClearFailurePreservesAlreadyRestoredRecordWithoutReactivation]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testClearFailurePreservesAlreadyRestoredRecordWithoutReactivation]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testCloseNeedsTwoConsecutiveSamplesAndUnknownResetsEvidence]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testCloseNeedsTwoConsecutiveSamplesAndUnknownResetsEvidence]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testConcurrentRequestsCannotInterleave]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testConcurrentRequestsCannotInterleave]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testCorruptJournalIsNotSilentlyDiscarded]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testCorruptJournalIsNotSilentlyDiscarded]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testExitAndReloadRoundTripPreservesRecordUntilExistingMenuCloses]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testExitAndReloadRoundTripPreservesRecordUntilExistingMenuCloses]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testExpiredBudgetStopsBeforeResolvingOrPosting]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testExpiredBudgetStopsBeforeResolvingOrPosting]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testExplicitAXRefusalCanUseVerifiedVisibleClick]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testExplicitAXRefusalCanUseVerifiedVisibleClick]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testFileJournalRoundTripAndPrivatePermissions]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testFileJournalRoundTripAndPrivatePermissions]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testInvalidationPreservesMenuAndRecoveryResponsibility]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testInvalidationPreservesMenuAndRecoveryResponsibility]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testJournalFailurePreventsAllMovement]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testJournalFailurePreventsAllMovement]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testJournalRejectsSelfAnchorCorruptAndSymlinkWithoutDeletingThem]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testJournalRejectsSelfAnchorCorruptAndSymlinkWithoutDeletingThem]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testLiveDriverHasNoClickMoveOrRestoreProvider]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testLiveDriverHasNoClickMoveOrRestoreProvider]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testPartialMoveFailureCompensatesWithoutActivationReplay]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testPartialMoveFailureCompensatesWithoutActivationReplay]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testPreparedRecordPrecedesMoveAndUnknownMenuPreventsRestore]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testPreparedRecordPrecedesMoveAndUnknownMenuPreventsRestore]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testProductionAXRefusalStopsWithoutFallbackAndReleasesUnmovedLease]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testProductionAXRefusalStopsWithoutFallbackAndReleasesUnmovedLease]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testRestartWithPreparedRecordOnlyRecoversNeverReplaysActivation]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testRestartWithPreparedRecordOnlyRecoversNeverReplaysActivation]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testRestoreFailureKeepsRecordAndBlocksNewActivation]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testRestoreFailureKeepsRecordAndBlocksNewActivation]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testStartupRecoveryChecksMenuEvenWithoutAnInteractionLease]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testStartupRecoveryChecksMenuEvenWithoutAnInteractionLease]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testTaskCancellationAfterPossibleMoveKeepsRecordForNextRecovery]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testTaskCancellationAfterPossibleMoveKeepsRecordForNextRecovery]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testUncertainAXAfterRevealNeverFallsBackAndRetainsRecovery]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testUncertainAXAfterRevealNeverFallsBackAndRetainsRecovery]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testUnknownMenuCannotBeForcedToRestore]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testUnknownMenuCannotBeForcedToRestore]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOperationTests testUnsupportedMoveIsHonestAndDoesNotCreateRecord]' started.
+Test Case '-[MacToolsTests.MenuBarOperationTests testUnsupportedMoveIsHonestAndDoesNotCreateRecord]' passed (0.000 seconds).
+Test Suite 'MenuBarOperationTests' passed at 2026-10-10 13:26:41.159.
+	 Executed 29 tests, with 0 failures (0 unexpected) in 0.017 (0.019) seconds
+Test Suite 'MenuBarOrganizerTests' started at 2026-10-10 13:26:41.160.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testActivationIsOptInAndDoesNotTouchSystemAtStartup]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFailOpenGeometryAndHiddenWindowSelection]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFormerAutomaticEditingEntriesAreInertAndPreserveSettings]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testFormerAutomaticEditingEntriesAreInertAndPreserveSettings]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testLeftClickRouteDoesNotUseInvisibleNativeToggleInIntegratedBuild]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testLeftClickRouteDoesNotUseInvisibleNativeToggleInIntegratedBuild]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testMainTrayPositionRestoresOnDisable]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testReorderStaysInsideItsLane]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testRepeatedManualEntriesAndModeSwitchesPreserveOptOutAndLegacyConfiguration]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testRepeatedManualEntriesAndModeSwitchesPreserveOptOutAndLegacyConfiguration]' passed (0.008 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testResidentPartitionIncludesAllSevenAppsBetweenDividerAndControl]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testResidentPartitionIncludesAllSevenAppsBetweenDividerAndControl]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testShelfDragRoutesAcrossRowsAndReordersWithinRow]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testShelfDragRoutesAcrossRowsAndReordersWithinRow]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testShelfPanelDoesNotActivateToolboxAndHasTransparentDarkChrome]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testShelfPanelDoesNotActivateToolboxAndHasTransparentDarkChrome]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testStatusItemSlotsStayVisibleAndOrdered]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' started.
+Test Case '-[MacToolsTests.MenuBarOrganizerTests testVisibleLimitIsClampedAndPersistedWithoutTouchingSystem]' passed (0.002 seconds).
+Test Suite 'MenuBarOrganizerTests' passed at 2026-10-10 13:26:41.179.
+	 Executed 12 tests, with 0 failures (0 unexpected) in 0.018 (0.019) seconds
+Test Suite 'MenuBarOwnedFixtureMoveDriverTests' started at 2026-10-10 13:26:41.179.
+Test Case '-[MacToolsTests.MenuBarOwnedFixtureMoveDriverTests testButtonOutsideSafeAreaStillRejectsWithoutEvents]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedFixtureMoveDriverTests testButtonOutsideSafeAreaStillRejectsWithoutEvents]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedFixtureMoveDriverTests testFreshGlobalHitFailureBetweenVisibleProofAndClickNeverPosts]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedFixtureMoveDriverTests testFreshGlobalHitFailureBetweenVisibleProofAndClickNeverPosts]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedFixtureMoveDriverTests testFullStatusWindowHeight37AndSafeButtonArea32AreDistinguished]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedFixtureMoveDriverTests testFullStatusWindowHeight37AndSafeButtonArea32AreDistinguished]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedFixtureMoveDriverTests testRealModeStillRejectsMissingDestinationBeforeAnyPost]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedFixtureMoveDriverTests testRealModeStillRejectsMissingDestinationBeforeAnyPost]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedFixtureMoveDriverTests testRestoreCannotCrossScopeOrLoseOriginalRightNeighborBetweenPairs]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedFixtureMoveDriverTests testRestoreCannotCrossScopeOrLoseOriginalRightNeighborBetweenPairs]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedFixtureMoveDriverTests testTargetDisappearingAfterAdmissionCannotReachTheMouseChannel]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedFixtureMoveDriverTests testTargetDisappearingAfterAdmissionCannotReachTheMouseChannel]' passed (0.001 seconds).
+Test Suite 'MenuBarOwnedFixtureMoveDriverTests' passed at 2026-10-10 13:26:41.182.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'MenuBarOwnedMouseTransportTests' started at 2026-10-10 13:26:41.182.
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testChangedLeaseRefusesBeforeDownAndDoesNotIssueCleanupUp]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testChangedLeaseRefusesBeforeDownAndDoesNotIssueCleanupUp]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testCreatedPacketsAreAcceptedByExactPrivateStateRegistryWithoutPosting]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testCreatedPacketsAreAcceptedByExactPrivateStateRegistryWithoutPosting]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testDefaultDisabledSendsNothing]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testDefaultDisabledSendsNothing]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testInvalidPacketStopsBeforeAnyChannelCall]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testInvalidPacketStopsBeforeAnyChannelCall]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testNativePairNumberWrapsWithoutReusingPerPacketMarkers]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testNativePairNumberWrapsWithoutReusingPerPacketMarkers]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testPacketBuilderRejectsNumbersThatWouldSilentlyTruncate]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testPacketBuilderRejectsNumbersThatWouldSilentlyTruncate]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testSignedAndZeroNativePacketsRequireExactOneUseAttribution]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testSignedAndZeroNativePacketsRequireExactOneUseAttribution]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testUnknownDownOrUpReceiptReleasesOriginalOwnedWindowOnceAndThrows]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedMouseTransportTests testUnknownDownOrUpReceiptReleasesOriginalOwnedWindowOnceAndThrows]' passed (0.000 seconds).
+Test Suite 'MenuBarOwnedMouseTransportTests' passed at 2026-10-10 13:26:41.184.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'MenuBarOwnedTargetHitTests' started at 2026-10-10 13:26:41.184.
+Test Case '-[MacToolsTests.MenuBarOwnedTargetHitTests testContainerForeignAndSameLookingOtherElementNeverPass]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedTargetHitTests testContainerForeignAndSameLookingOtherElementNeverPass]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedTargetHitTests testExactElementOwnerRoleHelpAndGeometryPassTogether]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedTargetHitTests testExactElementOwnerRoleHelpAndGeometryPassTogether]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedTargetHitTests testGeometryChangingAtHitOrFinalReadCannotPassOldFrame]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedTargetHitTests testGeometryChangingAtHitOrFinalReadCannotPassOldFrame]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedTargetHitTests testInvalidGeometryRejectedBeforeAnyRead]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedTargetHitTests testInvalidGeometryRejectedBeforeAnyRead]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarOwnedTargetHitTests testMissingDuplicateOrIncorrectSemanticIdentityRefuses]' started.
+Test Case '-[MacToolsTests.MenuBarOwnedTargetHitTests testMissingDuplicateOrIncorrectSemanticIdentityRefuses]' passed (0.000 seconds).
+Test Suite 'MenuBarOwnedTargetHitTests' passed at 2026-10-10 13:26:41.185.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'MenuBarRealActionConsumptionTests' started at 2026-10-10 13:26:41.185.
+Test Case '-[MacToolsTests.MenuBarRealActionConsumptionTests testExistingDanglingRoundSymlinkIsNotVacant]' started.
+Test Case '-[MacToolsTests.MenuBarRealActionConsumptionTests testExistingDanglingRoundSymlinkIsNotVacant]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealActionConsumptionTests testInvalidBindingCannotConsumeEitherFile]' started.
+Test Case '-[MacToolsTests.MenuBarRealActionConsumptionTests testInvalidBindingCannotConsumeEitherFile]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealActionConsumptionTests testRoundCannotBeReusedByAnotherSessionModeOrBinding]' started.
+Test Case '-[MacToolsTests.MenuBarRealActionConsumptionTests testRoundCannotBeReusedByAnotherSessionModeOrBinding]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealActionConsumptionTests testSecondWriteFailureDoesNotReopenGlobalRoundOrOverwriteSession]' started.
+Test Case '-[MacToolsTests.MenuBarRealActionConsumptionTests testSecondWriteFailureDoesNotReopenGlobalRoundOrOverwriteSession]' passed (0.001 seconds).
+Test Suite 'MenuBarRealActionConsumptionTests' passed at 2026-10-10 13:26:41.189.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.004 (0.004) seconds
+Test Suite 'MenuBarRealInputDiagnosticTests' started at 2026-10-10 13:26:41.189.
+Test Case '-[MacToolsTests.MenuBarRealInputDiagnosticTests testArmTimeFenceChangeCannotBeHiddenBySharedHandoff]' started.
+Test Case '-[MacToolsTests.MenuBarRealInputDiagnosticTests testArmTimeFenceChangeCannotBeHiddenBySharedHandoff]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealInputDiagnosticTests testRealSessionAndUnboundDirectoryCannotEnterDiagnosticNamespace]' started.
+Test Case '-[MacToolsTests.MenuBarRealInputDiagnosticTests testRealSessionAndUnboundDirectoryCannotEnterDiagnosticNamespace]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealInputDiagnosticTests testSameHandoffArmsRealGateAndConsumesOnlyInProcessPermit]' started.
+Test Case '-[MacToolsTests.MenuBarRealInputDiagnosticTests testSameHandoffArmsRealGateAndConsumesOnlyInProcessPermit]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealInputDiagnosticTests testStoppedBeforeAndAfterFenceHaveDifferentReadCounts]' started.
+Test Case '-[MacToolsTests.MenuBarRealInputDiagnosticTests testStoppedBeforeAndAfterFenceHaveDifferentReadCounts]' passed (0.000 seconds).
+Test Suite 'MenuBarRealInputDiagnosticTests' passed at 2026-10-10 13:26:41.193.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'MenuBarRealLocalAuthorizationTests' started at 2026-10-10 13:26:41.193.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testBothCallbackOrdersProduceOnlySingleRealPermitAndHandoff]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testBothCallbackOrdersProduceOnlySingleRealPermitAndHandoff]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testBrokerFailureMatrixKeepsOriginAndFenceFactsAcrossCleanup]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testBrokerFailureMatrixKeepsOriginAndFenceFactsAcrossCleanup]' passed (0.006 seconds).
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testCompletedHandoffTerminalDoesNotReopenEitherAuthorization]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testCompletedHandoffTerminalDoesNotReopenEitherAuthorization]' passed (0.007 seconds).
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testDifferentGateLeaseOrPlanNeverHandsOff]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testDifferentGateLeaseOrPlanNeverHandsOff]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testExpiryCancelStallAndWrongNonceHaveNoPermit]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testExpiryCancelStallAndWrongNonceHaveNoPermit]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testFailedInputReceiptPersistenceDoesNotIssuePermitOrAllowRetry]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testFailedInputReceiptPersistenceDoesNotIssuePermitOrAllowRetry]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testIndependentTerminalPeerSurvivesUncertainStageAndCleanup]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testIndependentTerminalPeerSurvivesUncertainStageAndCleanup]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testInputBetweenFinalSamplePermitAndHandoffRefuses]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testInputBetweenFinalSamplePermitAndHandoffRefuses]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testInputDuringOtherTapReadCannotFitIntoHandoffGap]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testInputDuringOtherTapReadCannotFitIntoHandoffGap]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testNoMoveResultAndVirtualStartCannotCreateRealPermit]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testNoMoveResultAndVirtualStartCannotCreateRealPermit]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testReentrantPollCannotGrantPermitBeforeOuterSamplingCompletes]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testReentrantPollCannotGrantPermitBeforeOuterSamplingCompletes]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testRejectedHardwareLikeUpRetainsExactCauseAndPreCleanupLedger]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testRejectedHardwareLikeUpRetainsExactCauseAndPreCleanupLedger]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testSessionFenceChangeOrLossCannotBeErasedByLaterQuiet]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testSessionFenceChangeOrLossCannotBeErasedByLaterQuiet]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testTerminalDistinguishesBeforeStartLossFromLaterFenceFailure]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testTerminalDistinguishesBeforeStartLossFromLaterFenceFailure]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testTerminalWriteUncertaintyRetainsOriginalFailureAndNeverRetries]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testTerminalWriteUncertaintyRetainsOriginalFailureAndNeverRetries]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testUnavailableBackupCannotOverwriteEitherOriginalErrorOrExistingReceipt]' started.
+Test Case '-[MacToolsTests.MenuBarRealLocalAuthorizationTests testUnavailableBackupCannotOverwriteEitherOriginalErrorOrExistingReceipt]' passed (0.002 seconds).
+Test Suite 'MenuBarRealLocalAuthorizationTests' passed at 2026-10-10 13:26:41.224.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 0.030 (0.031) seconds
+Test Suite 'MenuBarRealRequestIsolationTests' started at 2026-10-10 13:26:41.224.
+Test Case '-[MacToolsTests.MenuBarRealRequestIsolationTests testCompiledNativeAuthorityIsIndependentOfInjectedPolicy]' started.
+Test Case '-[MacToolsTests.MenuBarRealRequestIsolationTests testCompiledNativeAuthorityIsIndependentOfInjectedPolicy]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarRealRequestIsolationTests testDiagnosticAndInjectedRealPermitsCannotWriteEitherActionMarker]' started.
+Test Case '-[MacToolsTests.MenuBarRealRequestIsolationTests testDiagnosticAndInjectedRealPermitsCannotWriteEitherActionMarker]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealRequestIsolationTests testRealPolicyCatchesInputDuringQuietRescanFinalRescanAndFenceRead]' started.
+Test Case '-[MacToolsTests.MenuBarRealRequestIsolationTests testRealPolicyCatchesInputDuringQuietRescanFinalRescanAndFenceRead]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealRequestIsolationTests testRealPolicyLaterInputPermanentlyStopsEveryAuthorizationPhase]' started.
+Test Case '-[MacToolsTests.MenuBarRealRequestIsolationTests testRealPolicyLaterInputPermanentlyStopsEveryAuthorizationPhase]' passed (0.008 seconds).
+Test Case '-[MacToolsTests.MenuBarRealRequestIsolationTests testRealRequestNeedsEntireQuietWindowCountdownAndFreshReadsInBothOrders]' started.
+Test Case '-[MacToolsTests.MenuBarRealRequestIsolationTests testRealRequestNeedsEntireQuietWindowCountdownAndFreshReadsInBothOrders]' passed (0.002 seconds).
+Test Suite 'MenuBarRealRequestIsolationTests' passed at 2026-10-10 13:26:41.238.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.013 (0.013) seconds
+Test Suite 'MenuBarRealRunControlTests' started at 2026-10-10 13:26:41.238.
+Test Case '-[MacToolsTests.MenuBarRealRunControlTests testFreshBoundCancelLatchesWithoutGrantingStart]' started.
+Test Case '-[MacToolsTests.MenuBarRealRunControlTests testFreshBoundCancelLatchesWithoutGrantingStart]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealRunControlTests testRemoteTriggerCannotStartLocalRealWorker]' started.
+Test Case '-[MacToolsTests.MenuBarRealRunControlTests testRemoteTriggerCannotStartLocalRealWorker]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRealRunControlTests testWrongBindingStaleAndSymlinkAreRefused]' started.
+Test Case '-[MacToolsTests.MenuBarRealRunControlTests testWrongBindingStaleAndSymlinkAreRefused]' passed (0.003 seconds).
+Test Suite 'MenuBarRealRunControlTests' passed at 2026-10-10 13:26:41.242.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.005 (0.005) seconds
+Test Suite 'MenuBarRequestReceiptHistoryTests' started at 2026-10-10 13:26:41.242.
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testActual2F48RequestPrefixMatchesButFullSuffixRefusesRealHIDChange]' started.
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testActual2F48RequestPrefixMatchesButFullSuffixRefusesRealHIDChange]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testAnyActivityAfterOwnReceiptIncludingDelayedPreUpPacketIsSticky]' started.
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testAnyActivityAfterOwnReceiptIncludingDelayedPreUpPacketIsSticky]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testCancellationBeforeReceiptRequestWarmupAndCountdownIsPermanent]' started.
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testCancellationBeforeReceiptRequestWarmupAndCountdownIsPermanent]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testDeferredPreUpActivityIsRecordedInBothOrdersAndNeverClassifiedAsQuiet]' started.
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testDeferredPreUpActivityIsRecordedInBothOrdersAndNeverClassifiedAsQuiet]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testFirstPostReceiptReadCannotBeReplacedByLaterGoodReads]' started.
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testFirstPostReceiptReadCannotBeReplacedByLaterGoodReads]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testHistorySealRejectsMissingVersionTimesSequencesCounterAndDroppedActivity]' started.
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testHistorySealRejectsMissingVersionTimesSequencesCounterAndDroppedActivity]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testMetadataPostUpBeforeAppKitCannotHideInUnqualifiedHistory]' started.
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testMetadataPostUpBeforeAppKitCannotHideInUnqualifiedHistory]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testMissingOrNonImmediatePredecessorCannotUseOlderQuietSample]' started.
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testMissingOrNonImmediatePredecessorCannotUseOlderQuietSample]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testReceiptPredecessorStrictBoundaryAndExisting250msLimit]' started.
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testReceiptPredecessorStrictBoundaryAndExisting250msLimit]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testTrackingModeRegistrationIsExplicitAndIsolatedAdapterRemainsSenderFree]' started.
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testTrackingModeRegistrationIsExplicitAndIsolatedAdapterRemainsSenderFree]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testUnknownOrImpossibleDeferredTimeAndPhysicalPostUpActivityRefuse]' started.
+Test Case '-[MacToolsTests.MenuBarRequestReceiptHistoryTests testUnknownOrImpossibleDeferredTimeAndPhysicalPostUpActivityRefuse]' passed (0.000 seconds).
+Test Suite 'MenuBarRequestReceiptHistoryTests' passed at 2026-10-10 13:26:41.250.
+	 Executed 11 tests, with 0 failures (0 unexpected) in 0.006 (0.007) seconds
+Test Suite 'MenuBarRequestWarmupCapturedTests' started at 2026-10-10 13:26:41.250.
+Test Case '-[MacToolsTests.MenuBarRequestWarmupCapturedTests testCompleteNativeTracePassesWithUnchangedSamplesInBothCallbackOrders]' started.
+Test Case '-[MacToolsTests.MenuBarRequestWarmupCapturedTests testCompleteNativeTracePassesWithUnchangedSamplesInBothCallbackOrders]' passed (0.006 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestWarmupCapturedTests testInjectedLaterActivityStopsWarmupCountdownAndPostValidationPermanently]' started.
+Test Case '-[MacToolsTests.MenuBarRequestWarmupCapturedTests testInjectedLaterActivityStopsWarmupCountdownAndPostValidationPermanently]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestWarmupCapturedTests testRealPolicyUsesIdenticalNativeSamplesAndKeepsAllTwelveRefusals]' started.
+Test Case '-[MacToolsTests.MenuBarRequestWarmupCapturedTests testRealPolicyUsesIdenticalNativeSamplesAndKeepsAllTwelveRefusals]' passed (0.018 seconds).
+Test Suite 'MenuBarRequestWarmupCapturedTests' passed at 2026-10-10 13:26:41.277.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.027 (0.028) seconds
+Test Suite 'MenuBarRequestWarmupTests' started at 2026-10-10 13:26:41.277.
+Test Case '-[MacToolsTests.MenuBarRequestWarmupTests testActivityBetweenFirstPostUpSampleAndRequestClaimCannotBeRebased]' started.
+Test Case '-[MacToolsTests.MenuBarRequestWarmupTests testActivityBetweenFirstPostUpSampleAndRequestClaimCannotBeRebased]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestWarmupTests testActivityDuringEitherFreshRescanCannotCompleteQuietOrCountdown]' started.
+Test Case '-[MacToolsTests.MenuBarRequestWarmupTests testActivityDuringEitherFreshRescanCannotCompleteQuietOrCountdown]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestWarmupTests testFirstFenceAndFinalHandoffGapsRemainGuarded]' started.
+Test Case '-[MacToolsTests.MenuBarRequestWarmupTests testFirstFenceAndFinalHandoffGapsRemainGuarded]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestWarmupTests testSameBrokerRequiresFencedQuietWindowThenFullCountdownAndSinglePermit]' started.
+Test Case '-[MacToolsTests.MenuBarRequestWarmupTests testSameBrokerRequiresFencedQuietWindowThenFullCountdownAndSinglePermit]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestWarmupTests testUnmodifiedHumanTraceBecomesRequestOnlyNeverNativeAuthorization]' started.
+Test Case '-[MacToolsTests.MenuBarRequestWarmupTests testUnmodifiedHumanTraceBecomesRequestOnlyNeverNativeAuthorization]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestWarmupTests testWarmupAndCountdownActivityPermanentlyStopWithoutRestartingTimer]' started.
+Test Case '-[MacToolsTests.MenuBarRequestWarmupTests testWarmupAndCountdownActivityPermanentlyStopWithoutRestartingTimer]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarRequestWarmupTests testWarmupPermitIsConfinedToDiagnosticHandoff]' started.
+Test Case '-[MacToolsTests.MenuBarRequestWarmupTests testWarmupPermitIsConfinedToDiagnosticHandoff]' passed (0.001 seconds).
+Test Suite 'MenuBarRequestWarmupTests' passed at 2026-10-10 13:26:41.290.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.013 (0.013) seconds
+Test Suite 'MenuBarSemanticIdentityTests' started at 2026-10-10 13:26:41.290.
+Test Case '-[MacToolsTests.MenuBarSemanticIdentityTests testAXGeometryRevalidationPreservesOffscreenIdentityButRejectsLayoutChanges]' started.
+Test Case '-[MacToolsTests.MenuBarSemanticIdentityTests testAXGeometryRevalidationPreservesOffscreenIdentityButRejectsLayoutChanges]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarSemanticIdentityTests testExactCurrentLaunchCanIdentifyOffscreenItemWithoutGuessingAnotherCopy]' started.
+Test Case '-[MacToolsTests.MenuBarSemanticIdentityTests testExactCurrentLaunchCanIdentifyOffscreenItemWithoutGuessingAnotherCopy]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarSemanticIdentityTests testRestartOnlyRematchesSingletonAndRejectsDuplicateOrRecycledOwner]' started.
+Test Case '-[MacToolsTests.MenuBarSemanticIdentityTests testRestartOnlyRematchesSingletonAndRejectsDuplicateOrRecycledOwner]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarSemanticIdentityTests testSemanticIdentitySurvivesOcclusionWithoutMakingCoordinateClickSafe]' started.
+Test Case '-[MacToolsTests.MenuBarSemanticIdentityTests testSemanticIdentitySurvivesOcclusionWithoutMakingCoordinateClickSafe]' passed (0.000 seconds).
+Test Suite 'MenuBarSemanticIdentityTests' passed at 2026-10-10 13:26:41.291.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'MenuBarSharedStopTests' started at 2026-10-10 13:26:41.291.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testCancellationInsidePendingReceiptWaitStopsPidAndUp]' started.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testCancellationInsidePendingReceiptWaitStopsPidAndUp]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testCancellationProviderCannotRunOnAnotherThread]' started.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testCancellationProviderCannotRunOnAnotherThread]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testConcurrentStopIsAcceptedWhileAnAdmittedEffectIsWaiting]' started.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testConcurrentStopIsAcceptedWhileAnAdmittedEffectIsWaiting]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testDifferentMouseNumberCannotDischargeTheRecordedDown]' started.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testDifferentMouseNumberCannotDischargeTheRecordedDown]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testLastPidPumpDetectsCancellationHealthAndReceiptLoss]' started.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testLastPidPumpDetectsCancellationHealthAndReceiptLoss]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testNormalPairRecordsDeliveryWithoutPhysicalReleaseProof]' started.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testNormalPairRecordsDeliveryWithoutPhysicalReleaseProof]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testPermissionLostAfterSessionWritePreventsAllNativeRoutes]' started.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testPermissionLostAfterSessionWritePreventsAllNativeRoutes]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testRealListenerCallbacksAndUnavailableReadFeedSharedLatchWithoutStartingTap]' started.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testRealListenerCallbacksAndUnavailableReadFeedSharedLatchWithoutStartingTap]' passed (0.031 seconds).
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testStickyStopCannotBeResetByReceiptOrNewCheckAndCancellationClosureExpires]' started.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testStickyStopCannotBeResetByReceiptOrNewCheckAndCancellationClosureExpires]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testStopAfterDurableSessionWitnessPreventsFirstNativeRoute]' started.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testStopAfterDurableSessionWitnessPreventsFirstNativeRoute]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testStopDuringAdmittedCallAllowsOnlyThatInFlightCall]' started.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testStopDuringAdmittedCallAllowsOnlyThatInFlightCall]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testStopDuringPidWitnessWritePreventsSecondRoute]' started.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testStopDuringPidWitnessWritePreventsSecondRoute]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testUncertainDownNeverAutomaticallyPostsCleanupOrClearsResponsibility]' started.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testUncertainDownNeverAutomaticallyPostsCleanupOrClearsResponsibility]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testUnknownReceiptKeepsFixed100msBudgetAndResponsibility]' started.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testUnknownReceiptKeepsFixed100msBudgetAndResponsibility]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testUpRouteFailureIsUnconfirmedAndRetained]' started.
+Test Case '-[MacToolsTests.MenuBarSharedStopTests testUpRouteFailureIsUnconfirmedAndRetained]' passed (0.001 seconds).
+Test Suite 'MenuBarSharedStopTests' passed at 2026-10-10 13:26:41.334.
+	 Executed 15 tests, with 0 failures (0 unexpected) in 0.042 (0.043) seconds
+Test Suite 'MenuBarStartHistoryBoundaryTests' started at 2026-10-10 13:26:41.334.
+Test Case '-[MacToolsTests.MenuBarStartHistoryBoundaryTests testCapacityInsideRequiredIntervalStillStopsAndCannotRestart]' started.
+Test Case '-[MacToolsTests.MenuBarStartHistoryBoundaryTests testCapacityInsideRequiredIntervalStillStopsAndCannotRestart]' passed (0.008 seconds).
+Test Case '-[MacToolsTests.MenuBarStartHistoryBoundaryTests testExactCutoffAndAllLaterObservationsSurviveBeginUnchanged]' started.
+Test Case '-[MacToolsTests.MenuBarStartHistoryBoundaryTests testExactCutoffAndAllLaterObservationsSurviveBeginUnchanged]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarStartHistoryBoundaryTests testLateOrCrossStageInputAndMissingAnchorRemainRefusals]' started.
+Test Case '-[MacToolsTests.MenuBarStartHistoryBoundaryTests testLateOrCrossStageInputAndMissingAnchorRemainRefusals]' passed (0.019 seconds).
+Test Case '-[MacToolsTests.MenuBarStartHistoryBoundaryTests testLongWaitThenStartPreservesSequenceCountersAndFullProofInBothOrders]' started.
+Test Case '-[MacToolsTests.MenuBarStartHistoryBoundaryTests testLongWaitThenStartPreservesSequenceCountersAndFullProofInBothOrders]' passed (0.010 seconds).
+Test Case '-[MacToolsTests.MenuBarStartHistoryBoundaryTests testProofPhaseCapacityCannotBeEvadedByRetiringMoreHistory]' started.
+Test Case '-[MacToolsTests.MenuBarStartHistoryBoundaryTests testProofPhaseCapacityCannotBeEvadedByRetiringMoreHistory]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarStartHistoryBoundaryTests testRecordedHumanOverflowPrefixNowMatchesRequestWithoutInventedQuietSuffix]' started.
+Test Case '-[MacToolsTests.MenuBarStartHistoryBoundaryTests testRecordedHumanOverflowPrefixNowMatchesRequestWithoutInventedQuietSuffix]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.MenuBarStartHistoryBoundaryTests testStaleFutureOrStoppedStartCannotTrimWaitingEvidence]' started.
+Test Case '-[MacToolsTests.MenuBarStartHistoryBoundaryTests testStaleFutureOrStoppedStartCannotTrimWaitingEvidence]' passed (0.028 seconds).
+Test Suite 'MenuBarStartHistoryBoundaryTests' passed at 2026-10-10 13:26:41.407.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.073 (0.073) seconds
+Test Suite 'MenuBarTemporaryMoveJournalTests' started at 2026-10-10 13:26:41.407.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testBindingMismatchDoesNotEraseAndInspectStillReportsPendingResponsibility]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testBindingMismatchDoesNotEraseAndInspectStillReportsPendingResponsibility]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testClearFailureAfterRemovalCanOnlyAcknowledgeRestoredAbsence]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testClearFailureAfterRemovalCanOnlyAcknowledgeRestoredAbsence]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testDirectoryAndLockSymlinksOrUnsafeModeAreRejectedWithoutRepair]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testDirectoryAndLockSymlinksOrUnsafeModeAreRejectedWithoutRepair]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testDirectoryReplacementAndLockContentionCannotBypassStore]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testDirectoryReplacementAndLockContentionCannotBypassStore]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testFailuresBeforeRenameKeepPreviousAndAfterRenameExposePossibleEffectRecord]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testFailuresBeforeRenameKeepPreviousAndAfterRenameExposePossibleEffectRecord]' passed (0.006 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testFileSymlinkHardLinkOversizeAndPublicModeFailClosed]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testFileSymlinkHardLinkOversizeAndPublicModeFailClosed]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testLifecycleSeparateFilenamePrivateModesAndDurableRepeatedSave]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testLifecycleSeparateFilenamePrivateModesAndDurableRepeatedSave]' passed (0.007 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testMalformedTruncatedAndChecksumDamagedFilesCannotBeOverwrittenOrCleared]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testMalformedTruncatedAndChecksumDamagedFilesCannotBeOverwrittenOrCleared]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testModelKeepsPossibleEffectResponsibilityWhenPersistenceResultIsUnknown]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testModelKeepsPossibleEffectResponsibilityWhenPersistenceResultIsUnknown]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testOrphanTemporaryFileCannotReplacePendingRecoveryRecord]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testOrphanTemporaryFileCannotReplacePendingRecoveryRecord]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testStaleDuplicateTransactionAndBackwardPhaseCannotOverwriteResponsibility]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testStaleDuplicateTransactionAndBackwardPhaseCannotOverwriteResponsibility]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testUnsupportedSchemaAndChangedPlanAreRejectedBeforeWrite]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveJournalTests testUnsupportedSchemaAndChangedPlanAreRejectedBeforeWrite]' passed (0.003 seconds).
+Test Suite 'MenuBarTemporaryMoveJournalTests' passed at 2026-10-10 13:26:41.449.
+	 Executed 12 tests, with 0 failures (0 unexpected) in 0.040 (0.041) seconds
+Test Suite 'MenuBarTemporaryMoveModelTests' started at 2026-10-10 13:26:41.449.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testActualSavedOwnerNegativeVisibilityCannotPrepareAMove]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testActualSavedOwnerNegativeVisibilityCannotPrepareAMove]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testDeadlinePreservesResponsibilityAndOriginalProofCanSettleWithoutReturnMove]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testDeadlinePreservesResponsibilityAndOriginalProofCanSettleWithoutReturnMove]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testFullModelTransactionPersistsBeforeBothMovesAndAfterVerifiedRestore]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testFullModelTransactionPersistsBeforeBothMovesAndAfterVerifiedRestore]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testHumanInterferenceOrRevocationAfterPersistenceRetainsRecord]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testHumanInterferenceOrRevocationAfterPersistenceRetainsRecord]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testJournalFailureAndCorruptPlanCannotBeForgottenOrReplayed]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testJournalFailureAndCorruptPlanCannotBeForgottenOrReplayed]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testMenuUnknownDoesNotAuthorizeReturnAndMixedCloseSamplesFail]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testMenuUnknownDoesNotAuthorizeReturnAndMixedCloseSamplesFail]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testMissingEachExistingAccessCapabilityRefusesBeforeJournal]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testMissingEachExistingAccessCapabilityRefusesBeforeJournal]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testNonfiniteAlphaAndOpenMenuCannotPrepare]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testNonfiniteAlphaAndOpenMenuCannotPrepare]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testObserverLossSpaceDisplayOrScaleChangeCannotReplayCrashRecovery]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testObserverLossSpaceDisplayOrScaleChangeCannotReplayCrashRecovery]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testOrderedPeerPartlyPushedIntoNotchCannotProveMove]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testOrderedPeerPartlyPushedIntoNotchCannotProveMove]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testPostMoveRequiresTwoPositiveSamplesAndKeepsPreparedRecoveryOnFailure]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testPostMoveRequiresTwoPositiveSamplesAndKeepsPreparedRecoveryOnFailure]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testRestartAfterRestoreWasPreparedNeverRepeatsThatMoveBlindly]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testRestartAfterRestoreWasPreparedNeverRepeatsThatMoveBlindly]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testRightCapacityIncludesReservationAndTwentyPointInset]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testRightCapacityIncludesReservationAndTwentyPointInset]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testShrinkingTargetButtonCannotManufactureSlotProof]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testShrinkingTargetButtonCannotManufactureSlotProof]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testStalePersistenceReceiptAndDuplicateModelMoveDoNotReplay]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testStalePersistenceReceiptAndDuplicateModelMoveDoNotReplay]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testUnexpectedNonTargetPermutationIsRejectedEvenWithOrderedPixels]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testUnexpectedNonTargetPermutationIsRejectedEvenWithOrderedPixels]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testUnknownHiddenPeerIsNotRemovedToProveOrder]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testUnknownHiddenPeerIsNotRemovedToProveOrder]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testUnstableOrRepeatedSamplesNeverPrepare]' started.
+Test Case '-[MacToolsTests.MenuBarTemporaryMoveModelTests testUnstableOrRepeatedSamplesNeverPrepare]' passed (0.000 seconds).
+Test Suite 'MenuBarTemporaryMoveModelTests' passed at 2026-10-10 13:26:41.458.
+	 Executed 18 tests, with 0 failures (0 unexpected) in 0.009 (0.010) seconds
+Test Suite 'MenuBarVisibilityTests' started at 2026-10-10 13:26:41.458.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testCancellationStopsCaptureBeforeRefillingBatch]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testCancellationStopsCaptureBeforeRefillingBatch]' passed (0.001 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testCaptureFailureDoesNotReturnPartialGallery]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testCaptureFailureDoesNotReturnPartialGallery]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testCaptureHandlesSmallGroupsPreservesOrderAndBoundsConcurrency]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testCaptureHandlesSmallGroupsPreservesOrderAndBoundsConcurrency]' passed (0.068 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testCollapseConfirmationAndInterruptedTransitions]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testCollapseConfirmationAndInterruptedTransitions]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testFailedRecoveryKeepsStripExpanded]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testFailedRecoveryKeepsStripExpanded]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testGalleryReleasesImagesAndRejectsLateOrDuplicateCapture]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testGalleryReleasesImagesAndRejectsLateOrDuplicateCapture]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testGridPagingKeepsEveryIconReachableWithLargeHitAreas]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testGridPagingKeepsEveryIconReachableWithLargeHitAreas]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testInteractionRejectsNotchAndAcceptsSafePointOnBothDisplays]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testInteractionRejectsNotchAndAcceptsSafePointOnBothDisplays]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testLegacyPanelChoiceAndVisibleLimitRemainIntact]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testLegacyPanelChoiceAndVisibleLimitRemainIntact]' passed (0.004 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testNewUsersStayNativeAfterFirstOptInAndExplicitModePersists]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testNewUsersStayNativeAfterFirstOptInAndExplicitModePersists]' passed (0.002 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testNormalPopoverDismissalKeepsConfirmedCollapseAndIncompleteWorkFailsOpen]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testNormalPopoverDismissalKeepsConfirmedCollapseAndIncompleteWorkFailsOpen]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testNotchRecoveryUsesVisibleButtonInsteadOfTallerStatusWindow]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testNotchRecoveryUsesVisibleButtonInsteadOfTallerStatusWindow]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testPopoverWidthFitsSmallAndLargeCollections]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testPopoverWidthFitsSmallAndLargeCollections]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testRecoveryGeometryRejectsNotchAndPartiallyOffscreenControl]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testRecoveryGeometryRejectsNotchAndPartiallyOffscreenControl]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testRejectedMovePublishesRecoveryOnMainThreadWhenCalledFromBackground]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testRejectedMovePublishesRecoveryOnMainThreadWhenCalledFromBackground]' passed (0.003 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testSixSevenAndManyResidentsKeepIdentityWhenThumbnailIsUnavailable]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testSixSevenAndManyResidentsKeepIdentityWhenThumbnailIsUnavailable]' passed (0.000 seconds).
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testToolboxCallbackSelectsOrganizerAndExposesEditingWithoutDelegateCast]' started.
+Test Case '-[MacToolsTests.MenuBarVisibilityTests testToolboxCallbackSelectsOrganizerAndExposesEditingWithoutDelegateCast]' passed (0.002 seconds).
+Test Suite 'MenuBarVisibilityTests' passed at 2026-10-10 13:26:41.540.
+	 Executed 17 tests, with 0 failures (0 unexpected) in 0.080 (0.082) seconds
+Test Suite 'MacToolsPackageTests.xctest' passed at 2026-10-10 13:26:41.540.
+	 Executed 502 tests, with 0 failures (0 unexpected) in 5.001 (5.043) seconds
+Test Suite 'All tests' passed at 2026-10-10 13:26:41.540.
+	 Executed 502 tests, with 0 failures (0 unexpected) in 5.001 (5.045) seconds
+HOTKEYS: cross-owner conflict surfaced; removing owner/disabled plugin releases chord
+AWAKE: native assertions ON -> released on stop/deinit; no audio writes
+MIGRATION: preset IDs/lock/key preserved; legacy bytes unchanged; namespaced settings isolated
+QUICK CONTROLS: cap/restore/unlock preserved; stop clears locks/timer; stopped actions do not write
+PLUGIN HOST: new plugin views/menu/lifecycle need no host branch; disable persists; invalid IDs rejected
+PREVIEW: floating + resizable; landscape/portrait sizes verified; disabling plugin clears panel and pixels
+PREVIEW PAUSE: frame retained while hidden; automatically resumed after source reappeared
+PREVIEW: cancelled in-flight frame discarded; source failure clears stale pixels
+MENU BAR: load/stop inert until user opts in; no status icons created
+MENU BAR: only candidate status windows left of separator; recovery control geometry fail-closed
+◇ Test run started.
+↳ Testing Library Version: 1501
+↳ Target Platform: arm64e-apple-macos14.0
+✔ Test run with 0 tests in 0 suites passed after 0.001 seconds.

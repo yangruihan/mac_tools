@@ -110,5 +110,15 @@
       "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/page-click-20261010/completion.json"
     ],
     "ACCEPTANCE_EVENT": "user physical left/right click accepted; integrated 501/0 and rollback500/0"
+  },
+  "shelfStyleLatest": {
+    "ACTIVE_OBJECT": "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift",
+    "LAST_CONFIRMED_RESULT": "build15 physical left-click accepted by user: only rounded shelf, toolbox not raised; style and glyphs normal; tests501/502/501 and rollback hashes preserved",
+    "NEXT_EXECUTABLE_ACTION": "next planned gate: panel empty-row and cancellation native checks with self-owned fixtures, then post-layout click/open and restart persistence; do not move user icons without scoped authorization",
+    "INPUT_PATHS": [
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/shelf-style-20261010/completion.json",
+      "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/shelf-style-20261010/source-verification.json"
+    ],
+    "ACCEPTANCE_EVENT": "observed user confirmation: 只出现浮窗，样式和图标正常"
   }
 }

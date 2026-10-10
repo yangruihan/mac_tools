@@ -1,0 +1,88 @@
+{
+  "status": "accepted-human-physical-left-click-and-style",
+  "target": "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift",
+  "baselineCommit": "6a1f9c1f",
+  "installed": "/Applications/MacTools.app",
+  "build": 15,
+  "hostSHA256": "fc3ff00252101c2951979c50cae1f81eb3a17df18d5da8f505cdcea15cef7606",
+  "changedSymbols": [
+    "showPopover integrated path",
+    "showDragPanel",
+    "ShelfDragPanel.styleMask nonactivatingPanel",
+    "ShelfPanelView.iconButton background"
+  ],
+  "baseline": {
+    "command": "swift test",
+    "tests": 501,
+    "failures": 0,
+    "exit": 0,
+    "behavior": "activating capture popover and final borderless opaque panel; user supplied light low-contrast square screenshot"
+  },
+  "modified": {
+    "command": "swift test; swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "tests": 502,
+    "failures": 0,
+    "exit": 0,
+    "behavior": "production capture/help and thumbnail float share nonactivating panel; no explicit NSApp.activate; transparent window with darkAqua, 14-point rounded charcoal shell, 9-point gray icon backplates"
+  },
+  "rollback": {
+    "command": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/shelf-style-20261010/ROLLBACK.sh /Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/shelf-style-20261010/test-rollback; swift test --package-path /Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/shelf-style-20261010/test-rollback",
+    "tests": 501,
+    "failures": 0,
+    "exit": 0,
+    "sourceHashesRestored": {
+      "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": "2684d6d85b6eea66e17243d3bb28dfd44fc380b02aa851693ccbcdd9779a21d3",
+      "Tests/MacToolsTests/MenuBarOrganizerTests.swift": "b4d0f3b110aad4cbe831f3972571d29b66b0213f904093bdf788308e44df012d",
+      "scripts/build-ice-interface-product-candidate.sh": "8dbe7242776ff13c919ced017a0ca8408ab3c50e85ef7ec7ef64d62c5e797955"
+    },
+    "app": {
+      "command": [
+        "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/shelf-style-20261010/ROLLBACK_INSTALLED_APP.sh",
+        "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/shelf-style-20261010/rollback-final.app"
+      ],
+      "exit": 0,
+      "stdout": "restored old app; changed copy preserved at /Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/shelf-style-20261010/rollback-final.app.before-rollback-59284; settings and recovery records untouched\n",
+      "stderr": "",
+      "restoredSHA256": "c96e86b135868df6cfd3941218a1ae3cdc544cb28543c73b90945eeaffd5e89b"
+    }
+  },
+  "nativeUI": {
+    "actor": "assistant CUA page button, NOT physical status icon",
+    "observed": "final actual panel visible with rounded charcoal shell, gray rounded tiles, hidden-row original glyphs and both row controls",
+    "partial": "several resident glyphs blank in automation screenshot; cannot claim every thumbnail accepted",
+    "intermediate": "charcoal-only version had poor glyph visibility; added neutral gray tiles after screenshot inspection",
+    "interruptions": [
+      "first page attempt cancelled capture; preserved expanded state",
+      "CUA stale state user changed /Applications/MacTools.app; refreshed AX before one subsequent page action",
+      "subsequent screenshot saw panel closed, then AX noWindowsAvailable (-10005); stopped UI automation"
+    ],
+    "leftClickFocusAcceptance": "accepted by user physical input; assistant CUA page-button evidence kept separately"
+  },
+  "preserved": [
+    "original screenshot colors, no template tint or image rewriting",
+    "right click context menu",
+    "toolbox only on explicit open-toolbox callback",
+    "capture cancellation and safety guard",
+    "icon movement/15-second return logic",
+    "preferences and existing recovery journals"
+  ],
+  "remaining": [
+    "third-party drag and multi-display not retested"
+  ],
+  "committed": true,
+  "sourceHashes": {
+    "Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift": "3c364982cf59619746a2be12d425c335015d15c38e0c068c13c582dcfb225512",
+    "Tests/MacToolsTests/MenuBarOrganizerTests.swift": "0584f723317802bb90a48009a2a8f832b40a6629a154a6cc49e4d9c564108f16",
+    "scripts/build-ice-interface-product-candidate.sh": "be5286673e30fc2a6b0cc5eafb8c53998007598ca5b66dc3333300d8940a77fd"
+  },
+  "humanAcceptance": {
+    "question": "build 15 已替换。请从普通桌面左键点一次收纳图标，确认：是否只出现圆角收纳浮窗、不再带出工具箱？同时看看新的深灰底和图标底托是否清晰。不用拖动任何图标。",
+    "answer": "只出现浮窗，样式和图标正常",
+    "actor": "user physical input on ordinary desktop",
+    "accepted": [
+      "only shelf floats; toolbox not brought forward",
+      "rounded style and original glyphs normal"
+    ]
+  },
+  "commitScope": "shelf activation/style source, test, build15 config and scoped evidence; no push"
+}

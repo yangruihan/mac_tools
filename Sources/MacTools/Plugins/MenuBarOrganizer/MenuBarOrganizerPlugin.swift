@@ -653,6 +653,9 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         if let popover = notification.object as? NSPopover, popover === shelfPopover { dismissShelf() }
     }
     private func showPopover(_ content: AnyView, width: CGFloat) {
+        #if ICE_MENU_BAR_INTEGRATED
+        showDragPanel(content,width:width)
+        #else
         guard shelfPopover == nil, let button = control?.button, button.window?.isVisible == true, recoveryControlVisible(), !environment.sleeping else {
             expand(); status = "控制图标不可见，已展开；请从工具箱手动排列。"; return
         }
@@ -693,13 +696,18 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         controller.view.window?.title = "菜单栏收纳"
         NSApp.activate(ignoringOtherApps: true)
         controller.view.window?.makeKey()
+        #endif
     }
     private func showDragPanel(_ content:AnyView,width:CGFloat) {
-        guard let anchor=control?.button?.window,let screen=screen(for:anchor.frame),!environment.sleeping else{expand();return}
-        let view=NSHostingView(rootView:content.frame(width:width).padding(10).background(.regularMaterial))
+        guard let anchor=control?.button?.window,anchor.isVisible,recoveryControlVisible(),let screen=screen(for:anchor.frame),!environment.sleeping else{expand();return}
+        // Captured menu-bar glyphs are often white even when the toolbox uses light appearance.
+        let view=NSHostingView(rootView:content.frame(width:width).padding(10)
+            .background(Color(red:0.14,green:0.15,blue:0.17))
+            .overlay(RoundedRectangle(cornerRadius:14).strokeBorder(.white.opacity(0.12),lineWidth:1))
+            .clipShape(RoundedRectangle(cornerRadius:14)).preferredColorScheme(.dark))
         view.layoutSubtreeIfNeeded()
         let size=NSSize(width:width+20,height:max(80,view.fittingSize.height))
-        let panel=ShelfDragPanel(contentRect:NSRect(origin:.zero,size:size),styleMask:[.borderless],backing:.buffered,defer:false)
+        let panel=ShelfDragPanel(shelfRect:NSRect(origin:.zero,size:size))
         panel.title="菜单栏收纳";panel.level = .floating;panel.hidesOnDeactivate=false
         panel.isReleasedWhenClosed=false;panel.isMovableByWindowBackground=false;panel.contentView=view
         panel.setFrameOrigin(NSPoint(x:min(max(anchor.frame.midX-size.width/2,screen.minX+8),screen.maxX-size.width-8),
@@ -712,7 +720,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
             self.dismissShelf();return event
         }) {popoverMonitors.append(monitor)}
         if let monitor=NSEvent.addGlobalMonitorForEvents(matching:[.leftMouseDown,.rightMouseDown],handler:{[weak self] _ in self?.dismissShelf()}) {popoverMonitors.append(monitor)}
-        panel.makeKeyAndOrderFront(nil);NSApp.activate(ignoringOtherApps:true)
+        panel.makeKeyAndOrderFront(nil)
     }
     private func showHelpPanel() {
         guard let frame = control?.button?.window?.frame, let screen = screen(for: frame) else { expand(); return }
@@ -742,7 +750,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         let id = gallery.beginCapture()
         status = "正在等待菜单栏展开…"
         showPopover(AnyView(OrganizerCaptureView(plugin: self)), width: 300)
-        guard token == id, shelfPopover != nil else { return }
+        guard token == id, shelfPopover != nil || shelfWindow != nil else { return }
         work = Task { @MainActor [weak self] in
             do { try await Task.sleep(nanoseconds: 350_000_000) } catch { return }
             guard !Task.isCancelled, let self, self.token == id, self.isOrganizing else { return }
@@ -1034,7 +1042,12 @@ private struct OrganizerHelpView: View {
     }
 }
 
-private final class ShelfDragPanel: NSPanel {
+final class ShelfDragPanel: NSPanel {
+    convenience init(shelfRect:NSRect) {
+        self.init(contentRect:shelfRect,styleMask:[.borderless,.nonactivatingPanel],backing:.buffered,defer:false)
+        isOpaque=false; backgroundColor = .clear; hasShadow=true
+        appearance=NSAppearance(named:.darkAqua)
+    }
     override var canBecomeKey:Bool {true}
     override var canBecomeMain:Bool {false}
 }
@@ -1079,6 +1092,7 @@ private struct ShelfPanelView: View {
                     Image(systemName: "photo.badge.exclamationmark").resizable().aspectRatio(contentMode: .fit).foregroundStyle(.secondary)
                 }
             }.frame(width: 44, height: 44)
+                .padding(4).background(Color(white:0.50),in:RoundedRectangle(cornerRadius:9))
                 .frame(width: MenuBarPopoverLayout.tile, height: MenuBarPopoverLayout.tile)
         }.buttonStyle(.plain)
             .accessibilityLabel("\(hidden ? "收纳" : "可见")图标 \(index + 1)")
