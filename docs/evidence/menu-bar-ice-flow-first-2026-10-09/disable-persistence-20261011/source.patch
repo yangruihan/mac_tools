@@ -1,0 +1,103 @@
+--- a/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
++++ b/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
+@@ -140,9 +140,27 @@
+         removePopoverMonitors()
+         shelfPopover?.delegate = nil; shelfPopover?.close()
+         // AppKit resources are also released from stop() on normal shutdown.
+-        if let control { NSStatusBar.system.removeStatusItem(control) }
+-        if let divider { NSStatusBar.system.removeStatusItem(divider) }
++        Self.preserveOrganizerPositions(in:.standard) {
++            if let control { NSStatusBar.system.removeStatusItem(control) }
++            if let divider { NSStatusBar.system.removeStatusItem(divider) }
++        }
+     }
++    static func preserveOrganizerPositions(in defaults:UserDefaults,during remove:()->Void) {
++        let saved=[controlName,dividerName].compactMap { name -> (String,Any)? in
++            let key="NSStatusItem Preferred Position \(name)"
++            return defaults.object(forKey:key).map { (key,$0) }
++        }
++        // AppKit may erase native positions asynchronously after item removal.
++        for (key,value) in saved { defaults.set(value,forKey:"plugin.menu-bar-organizer.savedPosition."+key) }
++        remove()
++    }
++    static func restoreOrganizerPositions(in defaults:UserDefaults) {
++        for name in [controlName,dividerName] {
++            let key="NSStatusItem Preferred Position \(name)"
++            if defaults.object(forKey:key)==nil,
++               let value=defaults.object(forKey:"plugin.menu-bar-organizer.savedPosition."+key) { defaults.set(value,forKey:key) }
++        }
++    }
+     private func saveOptIn(_ value: Bool) {
+         if let data = try? JSONEncoder().encode(value) { context.settings.set(data, forKey: "optedIn") }
+     }
+@@ -154,6 +172,7 @@
+         }
+         // A full bar parks new items under app menus; seed visible, ordered slots before creation.
+         let defaults = UserDefaults.standard
++        Self.restoreOrganizerPositions(in:defaults)
+         let controlPositionKey = "NSStatusItem Preferred Position \(Self.controlName)"
+         let dividerPositionKey = "NSStatusItem Preferred Position \(Self.dividerName)"
+         if !Self.sanePositions(control: defaults.object(forKey: controlPositionKey) as? Double,
+@@ -207,8 +226,10 @@
+         environmentMonitor?.stop(); environmentMonitor = nil
+         environmentWork?.cancel(); environmentWork = nil
+         environment = MenuBarEnvironment()
+-        if let control { NSStatusBar.system.removeStatusItem(control) }
+-        if let divider { NSStatusBar.system.removeStatusItem(divider) }
++        Self.preserveOrganizerPositions(in:.standard) {
++            if let control { NSStatusBar.system.removeStatusItem(control) }
++            if let divider { NSStatusBar.system.removeStatusItem(divider) }
++        }
+         control = nil; divider = nil; visibility.disable()
+     }
+     func turnOff() {
+--- a/Tests/MacToolsTests/MenuBarOrganizerTests.swift
++++ b/Tests/MacToolsTests/MenuBarOrganizerTests.swift
+@@ -4,6 +4,36 @@
+ @testable import MacTools
+ 
+ final class MenuBarOrganizerTests: XCTestCase {
++    func testDisablingPreservesOnlyOrganizerNativePositions() throws {
++        let name="OrganizerPositions.\(UUID())",defaults=try XCTUnwrap(UserDefaults(suiteName:name))
++        defer { defaults.removePersistentDomain(forName:name) }
++        let control="NSStatusItem Preferred Position mactools_shelf_control"
++        let divider="NSStatusItem Preferred Position mactools_shelf_divider"
++        defaults.set(429.0,forKey:control);defaults.set(507.0,forKey:divider)
++        defaults.set(false,forKey:"optedIn");defaults.set(42.0,forKey:"another-item")
++        MenuBarOrganizerPlugin.preserveOrganizerPositions(in:defaults) {
++            defaults.removeObject(forKey:control);defaults.removeObject(forKey:divider)
++            defaults.removeObject(forKey:"another-item")
++        }
++        XCTAssertNil(defaults.object(forKey:control));XCTAssertNil(defaults.object(forKey:divider))
++        defaults.removeObject(forKey:control);defaults.removeObject(forKey:divider)
++        MenuBarOrganizerPlugin.restoreOrganizerPositions(in:defaults)
++        XCTAssertEqual(defaults.object(forKey:control) as? Double,429.0)
++        XCTAssertEqual(defaults.object(forKey:divider) as? Double,507.0)
++        defaults.set(600.0,forKey:control)
++        MenuBarOrganizerPlugin.restoreOrganizerPositions(in:defaults)
++        XCTAssertEqual(defaults.double(forKey:control),600.0)
++        XCTAssertFalse(defaults.bool(forKey:"optedIn"))
++        XCTAssertNil(defaults.object(forKey:"another-item"))
++    }
++    func testDisablingDoesNotInventMissingOrganizerPositions() throws {
++        let name="EmptyOrganizerPositions.\(UUID())",defaults=try XCTUnwrap(UserDefaults(suiteName:name))
++        defer { defaults.removePersistentDomain(forName:name) }
++        MenuBarOrganizerPlugin.preserveOrganizerPositions(in:defaults) {}
++        XCTAssertNil(defaults.object(forKey:"NSStatusItem Preferred Position mactools_shelf_control"))
++        XCTAssertNil(defaults.object(forKey:"NSStatusItem Preferred Position mactools_shelf_divider"))
++    }
++
+     @MainActor
+     func testPanelAppearanceUsesHostSettingsWithoutOpeningToolbox() throws {
+         let name="ShelfAppearance.\(UUID())", app=NSApplication.shared, original=NSApplication.shared.appearance
+--- a/scripts/build-ice-interface-product-candidate.sh
++++ b/scripts/build-ice-interface-product-candidate.sh
+@@ -34,7 +34,7 @@
+ for p in [repo/'COPYING.GPL-3.0',repo/'THIRD_PARTY_NOTICES.md',worker/'prepared-build.json']:shutil.copyfile(p,package/p.name)
+ for p in sources:
+  dest=resources/'Source'/p.relative_to(repo);dest.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dest)
+-(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'22' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
++(app/'Contents/Info.plist').write_bytes(plistlib.dumps({'CFBundleExecutable':'MacTools','CFBundleIdentifier':'com.ryanai.mactools' if integrated else 'com.ryanai.mactools.iceinterfacecandidate','CFBundleName':'Mac 工具箱' if integrated else 'MacTools Ice Interface Candidate','CFBundleIconFile':'AppIcon','CFBundlePackageType':'APPL','CFBundleShortVersionString':'0.2.2' if integrated else '0.2.1-ice-interface-candidate','CFBundleVersion':'24' if integrated else '4','LSMinimumSystemVersion':'14.0','LSUIElement':True,'NSHighResolutionCapable':True,'MacToolsSourceRevision':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'MacToolsUncommittedSource':True,'MacToolsIceIntegrationEnabled':integrated}))
+ (root/'source-manifest.json').write_text(json.dumps({str(p.relative_to(repo)):sha(p) for p in sources},indent=2,sort_keys=True)+'\n')
+ PY
+ swiftc -parse-as-library -D"$FLAG" -module-name MacTools -module-cache-path "$ROOT/module-cache" $(cat "$ROOT/sources.txt") -o "$APP/Contents/MacOS/MacTools"

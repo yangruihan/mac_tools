@@ -4,6 +4,36 @@ import AppKit
 @testable import MacTools
 
 final class MenuBarOrganizerTests: XCTestCase {
+    func testDisablingPreservesOnlyOrganizerNativePositions() throws {
+        let name="OrganizerPositions.\(UUID())",defaults=try XCTUnwrap(UserDefaults(suiteName:name))
+        defer { defaults.removePersistentDomain(forName:name) }
+        let control="NSStatusItem Preferred Position mactools_shelf_control"
+        let divider="NSStatusItem Preferred Position mactools_shelf_divider"
+        defaults.set(429.0,forKey:control);defaults.set(507.0,forKey:divider)
+        defaults.set(false,forKey:"optedIn");defaults.set(42.0,forKey:"another-item")
+        MenuBarOrganizerPlugin.preserveOrganizerPositions(in:defaults) {
+            defaults.removeObject(forKey:control);defaults.removeObject(forKey:divider)
+            defaults.removeObject(forKey:"another-item")
+        }
+        XCTAssertNil(defaults.object(forKey:control));XCTAssertNil(defaults.object(forKey:divider))
+        defaults.removeObject(forKey:control);defaults.removeObject(forKey:divider)
+        MenuBarOrganizerPlugin.restoreOrganizerPositions(in:defaults)
+        XCTAssertEqual(defaults.object(forKey:control) as? Double,429.0)
+        XCTAssertEqual(defaults.object(forKey:divider) as? Double,507.0)
+        defaults.set(600.0,forKey:control)
+        MenuBarOrganizerPlugin.restoreOrganizerPositions(in:defaults)
+        XCTAssertEqual(defaults.double(forKey:control),600.0)
+        XCTAssertFalse(defaults.bool(forKey:"optedIn"))
+        XCTAssertNil(defaults.object(forKey:"another-item"))
+    }
+    func testDisablingDoesNotInventMissingOrganizerPositions() throws {
+        let name="EmptyOrganizerPositions.\(UUID())",defaults=try XCTUnwrap(UserDefaults(suiteName:name))
+        defer { defaults.removePersistentDomain(forName:name) }
+        MenuBarOrganizerPlugin.preserveOrganizerPositions(in:defaults) {}
+        XCTAssertNil(defaults.object(forKey:"NSStatusItem Preferred Position mactools_shelf_control"))
+        XCTAssertNil(defaults.object(forKey:"NSStatusItem Preferred Position mactools_shelf_divider"))
+    }
+
     @MainActor
     func testPanelAppearanceUsesHostSettingsWithoutOpeningToolbox() throws {
         let name="ShelfAppearance.\(UUID())", app=NSApplication.shared, original=NSApplication.shared.appearance

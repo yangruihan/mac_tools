@@ -1,0 +1,40 @@
+{
+  "activeJournalPending" : false,
+  "archive" : "\/Users\/yangruihan\/Library\/Application Support\/MacTools\/IceInterfaceCandidate\/selected-relative-recovery-v2\/accepted-current-4944CC26.original.json",
+  "disposition" : "userAcceptedCurrentPlacementAfterOriginalNeighborRemoved",
+  "first" : {
+    "atUptime" : 1995342.923001375,
+    "currentInputReleased" : true,
+    "display" : 1,
+    "nativePosts" : 0,
+    "noOwnerInterface" : true,
+    "oldControllerGone" : true,
+    "oldNeighborAndAnchorAbsent" : true,
+    "ownerSignatureMatched" : true,
+    "space" : 4634,
+    "targetFrame" : "{{1495, 0}, {42, 37}}",
+    "targetID" : 144
+  },
+  "nativePosts" : 0,
+  "nativeReturnProven" : false,
+  "nonce" : "4944CC26-A257-4BB9-9E50-9FCE37CDA12E",
+  "originalEnvelopeSHA256" : "fc85c90a92de24eaba34668efd4c7adfc1f54e3a39ed2428bce821fb13de33a8",
+  "originalFailureRetained" : true,
+  "originalReturnUnproven" : true,
+  "physicalReleaseProven" : false,
+  "schemaVersion" : 1,
+  "second" : {
+    "atUptime" : 1995343.2650920418,
+    "currentInputReleased" : true,
+    "display" : 1,
+    "nativePosts" : 0,
+    "noOwnerInterface" : true,
+    "oldControllerGone" : true,
+    "oldNeighborAndAnchorAbsent" : true,
+    "ownerSignatureMatched" : true,
+    "space" : 4634,
+    "targetFrame" : "{{1495, 0}, {42, 37}}",
+    "targetID" : 144
+  },
+  "userAuthorization" : "接受当前位置，保留失败后归档"
+}

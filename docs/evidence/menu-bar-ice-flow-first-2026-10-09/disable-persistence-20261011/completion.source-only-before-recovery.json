@@ -1,0 +1,42 @@
+{
+  "target": "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift",
+  "userClarification": "停用／关闭菜单栏收纳后重新启用",
+  "changedSymbol": "preserveOrganizerPositions wrapping deactivate and deinit removeStatusItem cleanup",
+  "baseline": {
+    "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "exit": 0,
+    "tests": 510,
+    "behavior": "remove owned status items without preserving position keys"
+  },
+  "modified": {
+    "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "exit": 0,
+    "tests": 512,
+    "behavior": "retain existing own position keys; preserve explicit optOut; do not restore other keys or invent missing positions"
+  },
+  "rollback": {
+    "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "exit": 0,
+    "tests": 510,
+    "originalSourceHashesRestored": true,
+    "behavior": "original cleanup restored"
+  },
+  "acceptanceScope": "isolated UserDefaults removal simulation + whole package tests; real disable/reenable layout not tested",
+  "build": {
+    "command": "sh scripts/build-app.sh",
+    "exit": 1,
+    "stderr": "pending recovery: keep current worker\n",
+    "pendingSession": "4944CC26-A257-4BB9-9E50-9FCE37CDA12E",
+    "posts": 8,
+    "pendingRecovery": true,
+    "stateSHA256": "fc85c90a92de24eaba34668efd4c7adfc1f54e3a39ed2428bce821fb13de33a8",
+    "installedUnchangedSHA256": "58185973ea8c49ed5dea48a6650da2723edb70b8ec74bc26916c80ff633f48a0",
+    "action": "no worker overwrite, no recovery deletion, no automatic input retry"
+  },
+  "installedBuild": "22 unchanged",
+  "lostOldPositionsRecoverable": false,
+  "sourceFixReady": true,
+  "installComplete": false,
+  "next": "safely reconcile outstanding recovery before worker rebuild/replacement; no automatic native input retry",
+  "commitOrPush": false
+}

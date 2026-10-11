@@ -1,0 +1,3 @@
+Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift
+Tests/MacToolsTests/MenuBarOrganizerTests.swift
+scripts/build-ice-interface-product-candidate.sh

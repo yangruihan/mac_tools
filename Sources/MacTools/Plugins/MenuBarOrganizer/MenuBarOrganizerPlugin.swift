@@ -140,8 +140,26 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         removePopoverMonitors()
         shelfPopover?.delegate = nil; shelfPopover?.close()
         // AppKit resources are also released from stop() on normal shutdown.
-        if let control { NSStatusBar.system.removeStatusItem(control) }
-        if let divider { NSStatusBar.system.removeStatusItem(divider) }
+        Self.preserveOrganizerPositions(in:.standard) {
+            if let control { NSStatusBar.system.removeStatusItem(control) }
+            if let divider { NSStatusBar.system.removeStatusItem(divider) }
+        }
+    }
+    static func preserveOrganizerPositions(in defaults:UserDefaults,during remove:()->Void) {
+        let saved=[controlName,dividerName].compactMap { name -> (String,Any)? in
+            let key="NSStatusItem Preferred Position \(name)"
+            return defaults.object(forKey:key).map { (key,$0) }
+        }
+        // AppKit may erase native positions asynchronously after item removal.
+        for (key,value) in saved { defaults.set(value,forKey:"plugin.menu-bar-organizer.savedPosition."+key) }
+        remove()
+    }
+    static func restoreOrganizerPositions(in defaults:UserDefaults) {
+        for name in [controlName,dividerName] {
+            let key="NSStatusItem Preferred Position \(name)"
+            if defaults.object(forKey:key)==nil,
+               let value=defaults.object(forKey:"plugin.menu-bar-organizer.savedPosition."+key) { defaults.set(value,forKey:key) }
+        }
     }
     private func saveOptIn(_ value: Bool) {
         if let data = try? JSONEncoder().encode(value) { context.settings.set(data, forKey: "optedIn") }
@@ -154,6 +172,7 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         }
         // A full bar parks new items under app menus; seed visible, ordered slots before creation.
         let defaults = UserDefaults.standard
+        Self.restoreOrganizerPositions(in:defaults)
         let controlPositionKey = "NSStatusItem Preferred Position \(Self.controlName)"
         let dividerPositionKey = "NSStatusItem Preferred Position \(Self.dividerName)"
         if !Self.sanePositions(control: defaults.object(forKey: controlPositionKey) as? Double,
@@ -207,8 +226,10 @@ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPo
         environmentMonitor?.stop(); environmentMonitor = nil
         environmentWork?.cancel(); environmentWork = nil
         environment = MenuBarEnvironment()
-        if let control { NSStatusBar.system.removeStatusItem(control) }
-        if let divider { NSStatusBar.system.removeStatusItem(divider) }
+        Self.preserveOrganizerPositions(in:.standard) {
+            if let control { NSStatusBar.system.removeStatusItem(control) }
+            if let divider { NSStatusBar.system.removeStatusItem(divider) }
+        }
         control = nil; divider = nil; visibility.disable()
     }
     func turnOff() {

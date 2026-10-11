@@ -1,0 +1,138 @@
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/QuickControls/QuickControlsView.swift:39:10: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 37 |             .padding(10)
+ 38 |         }
+ 39 |         .onChange(of: preset.name) { _ in plugin.save() }
+    |          `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 40 |         .onChange(of: preset.value) { _ in plugin.save() }
+ 41 |     }
+
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/QuickControls/QuickControlsView.swift:40:10: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 38 |         }
+ 39 |         .onChange(of: preset.name) { _ in plugin.save() }
+ 40 |         .onChange(of: preset.value) { _ in plugin.save() }
+    |          `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 41 |     }
+ 42 | }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/UI/ContentView.swift:82:14: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 80 |         }.frame(minWidth: 900, minHeight: 640).background(Color(nsColor: .windowBackgroundColor))
+ 81 |             .groupBoxStyle(SystemCardStyle())
+ 82 |             .onChange(of: registry.enabledIDs) { ids in
+    |              `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 83 |                 if let selectedPluginID = model.selectedPluginID, !ids.contains(selectedPluginID) {
+ 84 |                     model.selectedPluginID = registry.enabledPlugins.first?.info.id
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/UI/SharedControls.swift:38:18: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+36 |                     ForEach(keyCodes.keys.sorted(), id: \.self) { Text($0).tag($0) }
+37 |                 }.labelsHidden().frame(width: 94)
+38 |                 .onChange(of: shortcut.key) { _ in save() }
+   |                  `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+39 |             }.controlSize(.small)
+40 |             if let error = hotkeys.error(owner: owner, id: bindingID) { Text(error).font(.caption).foregroundStyle(.red).fixedSize(horizontal: false, vertical: true) }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/yangruihan/Workspace/mac_tools/Tools/IceInterfaceProductWorker/IceSelectedOwnedRecovery.swift:44:37: warning: main actor-isolated static property 'packageRoot' can not be referenced from a nonisolated context; this is an error in the Swift 6 language mode
+ 41 | enum IceSelectedOwnedRecovery {
+ 42 |     static func digest(_ record:IceSelectedRecord)throws->String {let e=JSONEncoder();e.outputFormatting=[.sortedKeys];return IceSelectedJournal.hash(try e.encode(record))}
+ 43 |     static func owned(_ record:IceSelectedRecord)->Bool {
+    |                 `- note: add '@MainActor' to make static method 'owned' part of global actor 'MainActor'
+ 44 |         let root=IceSelectedSession.packageRoot.path
+    |                                     `- warning: main actor-isolated static property 'packageRoot' can not be referenced from a nonisolated context; this is an error in the Swift 6 language mode
+ 45 |         return record.phase == .stopped && record.binding.owner.identifier=="com.ryanai.mactools.nativetargets" && record.binding.owner.team=="58TJ64422P"
+ 46 |             && record.binding.controller.team==record.binding.owner.team
+
+/Users/yangruihan/Workspace/mac_tools/Tools/IceInterfaceProductWorker/IceSelectedSession.swift:8:16: note: static property declared here
+ 6 | @MainActor enum IceSelectedSession {
+ 7 |     static let root = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("MacTools/IceInterfaceCandidate", isDirectory: true)
+ 8 |     static let packageRoot = Bundle.main.bundleURL.deletingLastPathComponent()
+   |                `- note: static property declared here
+ 9 |     static var journal: IceSelectedJournal { IceSelectedJournal(directory:root.appendingPathComponent("selected-relative-recovery-v2")) }
+10 |     struct Prepared: Codable {
+
+/Users/yangruihan/Workspace/mac_tools/Tools/IceInterfaceProductWorker/IceSelectedOwnedRecovery.swift:69:37: warning: main actor-isolated static property 'root' can not be referenced from a nonisolated context; this is an error in the Swift 6 language mode
+ 65 |     /// deadline refusal, no final PID intent, and unchanged T/N before departure.
+ 66 |     /// This is a separate administrative disposition, never a transport ACK.
+ 67 |     static func evidence(_ record:IceSelectedRecord)throws->(String,String) {
+    |                 `- note: add '@MainActor' to make static method 'evidence' part of global actor 'MainActor'
+ 68 |         guard owned(record) else{throw IceSelectedFailure.binding}
+ 69 |         let root=IceSelectedSession.root,dir=root.appendingPathComponent("session-"+record.binding.nonce.uuidString)
+    |                                     `- warning: main actor-isolated static property 'root' can not be referenced from a nonisolated context; this is an error in the Swift 6 language mode
+ 70 |         let archive=root.appendingPathComponent("build-history/"+record.binding.controller.sha256)
+ 71 |         guard IceSelectedJournal.hash(try Data(contentsOf:archive.appendingPathComponent("controller")))==record.binding.controller.sha256,
+
+/Users/yangruihan/Workspace/mac_tools/Tools/IceInterfaceProductWorker/IceSelectedSession.swift:7:16: note: static property declared here
+ 5 | 
+ 6 | @MainActor enum IceSelectedSession {
+ 7 |     static let root = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("MacTools/IceInterfaceCandidate", isDirectory: true)
+   |                `- note: static property declared here
+ 8 |     static let packageRoot = Bundle.main.bundleURL.deletingLastPathComponent()
+ 9 |     static var journal: IceSelectedJournal { IceSelectedJournal(directory:root.appendingPathComponent("selected-relative-recovery-v2")) }
+/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/Worker/Ice Selected Controller.app: replacing existing signature
+/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/Worker/Ice Selected Fixture.app: replacing existing signature
+/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/Worker/Ice Interface Focus.app: replacing existing signature
+/Users/yangruihan/Workspace/mac_tools/build/ice-interface-product/Worker/Ice Product Targets.app: replacing existing signature
+interface-hold-replay: {"elapsedSeconds":47.410000000000025,"failure":"policy","heldInterfaceSeconds":32,"modeledPosts":14,"nativeClosedLoopClaimed":false,"nativePosts":0,"routeBudgetsPreserved":true}
+interface-hold-replay: {"elapsedSeconds":90.005999999999233,"failure":"budget","heldInterfaceSeconds":76,"modeledPosts":8,"nativeClosedLoopClaimed":false,"nativePosts":0,"routeBudgetsPreserved":true}
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift:110:88: warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+108 |             return
+109 |         }
+110 |         NSRunningApplication(processIdentifier: launch.proof.pid)?.activate(options: [.activateIgnoringOtherApps])
+    |                                                                                        `- warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+111 |     }
+112 |     func showOrdinaryEvidence() { if let ordinarySession { NSWorkspace.shared.open(ordinarySession) } }
+
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift:161:83: warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+159 |             status = "原控制窗口已退出或身份改变；不会激活其他进程。"; return
+160 |         }
+161 |         NSRunningApplication(processIdentifier:controllerPID)?.activate(options:[.activateIgnoringOtherApps])
+    |                                                                                   `- warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+162 |     }
+163 |     func showEvidence() { if let session { NSWorkspace.shared.open(session) } }
+
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift:199:95: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+197 |                             Text("\(row.title) · \(row.id)").tag(row.id)
+198 |                         }
+199 |                     }.disabled(model.busy || model.ordinaryAttempted || model.session != nil).onChange(of:model.ordinaryWindowID) { _ in model.bindOrdinaryTarget() }
+    |                                                                                               `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+200 |                 }
+201 |                 HStack {
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/QuickControls/QuickControlsView.swift:39:10: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 37 |             .padding(10)
+ 38 |         }
+ 39 |         .onChange(of: preset.name) { _ in plugin.save() }
+    |          `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 40 |         .onChange(of: preset.value) { _ in plugin.save() }
+ 41 |     }
+
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/QuickControls/QuickControlsView.swift:40:10: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 38 |         }
+ 39 |         .onChange(of: preset.name) { _ in plugin.save() }
+ 40 |         .onChange(of: preset.value) { _ in plugin.save() }
+    |          `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 41 |     }
+ 42 | }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/UI/ContentView.swift:82:14: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 80 |         }.frame(minWidth: 900, minHeight: 640).background(Color(nsColor: .windowBackgroundColor))
+ 81 |             .groupBoxStyle(SystemCardStyle())
+ 82 |             .onChange(of: registry.enabledIDs) { ids in
+    |              `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 83 |                 if let selectedPluginID = model.selectedPluginID, !ids.contains(selectedPluginID) {
+ 84 |                     model.selectedPluginID = registry.enabledPlugins.first?.info.id
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/UI/SharedControls.swift:38:18: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+36 |                     ForEach(keyCodes.keys.sorted(), id: \.self) { Text($0).tag($0) }
+37 |                 }.labelsHidden().frame(width: 94)
+38 |                 .onChange(of: shortcut.key) { _ in save() }
+   |                  `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+39 |             }.controlSize(.small)
+40 |             if let error = hotkeys.error(owner: owner, id: bindingID) { Text(error).font(.caption).foregroundStyle(.red).fixedSize(horizontal: false, vertical: true) }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/yangruihan/Workspace/mac_tools/build/ice-interface-integrated/MacTools.app: replacing existing signature

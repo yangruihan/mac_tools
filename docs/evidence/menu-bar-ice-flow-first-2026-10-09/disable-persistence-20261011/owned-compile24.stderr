@@ -1,0 +1,67 @@
+/Users/yangruihan/Workspace/mac_tools/build/disable-persistence-owned-20261011/Sources/UI/SharedControls.swift:38:18: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+36 |                     ForEach(keyCodes.keys.sorted(), id: \.self) { Text($0).tag($0) }
+37 |                 }.labelsHidden().frame(width: 94)
+38 |                 .onChange(of: shortcut.key) { _ in save() }
+   |                  `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+39 |             }.controlSize(.small)
+40 |             if let error = hotkeys.error(owner: owner, id: bindingID) { Text(error).font(.caption).foregroundStyle(.red).fixedSize(horizontal: false, vertical: true) }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/yangruihan/Workspace/mac_tools/build/disable-persistence-owned-20261011/Sources/UI/ContentView.swift:82:14: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 80 |         }.frame(minWidth: 900, minHeight: 640).background(Color(nsColor: .windowBackgroundColor))
+ 81 |             .groupBoxStyle(SystemCardStyle())
+ 82 |             .onChange(of: registry.enabledIDs) { ids in
+    |              `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 83 |                 if let selectedPluginID = model.selectedPluginID, !ids.contains(selectedPluginID) {
+ 84 |                     model.selectedPluginID = registry.enabledPlugins.first?.info.id
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/yangruihan/Workspace/mac_tools/build/disable-persistence-owned-20261011/Sources/Plugins/QuickControls/QuickControlsView.swift:39:10: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 37 |             .padding(10)
+ 38 |         }
+ 39 |         .onChange(of: preset.name) { _ in plugin.save() }
+    |          `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 40 |         .onChange(of: preset.value) { _ in plugin.save() }
+ 41 |     }
+
+/Users/yangruihan/Workspace/mac_tools/build/disable-persistence-owned-20261011/Sources/Plugins/QuickControls/QuickControlsView.swift:40:10: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 38 |         }
+ 39 |         .onChange(of: preset.name) { _ in plugin.save() }
+ 40 |         .onChange(of: preset.value) { _ in plugin.save() }
+    |          `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 41 |     }
+ 42 | }
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/yangruihan/Workspace/mac_tools/build/disable-persistence-owned-20261011/Sources/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift:110:88: warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+108 |             return
+109 |         }
+110 |         NSRunningApplication(processIdentifier: launch.proof.pid)?.activate(options: [.activateIgnoringOtherApps])
+    |                                                                                        `- warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+111 |     }
+112 |     func showOrdinaryEvidence() { if let ordinarySession { NSWorkspace.shared.open(ordinarySession) } }
+
+/Users/yangruihan/Workspace/mac_tools/build/disable-persistence-owned-20261011/Sources/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift:161:83: warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+159 |             status = "原控制窗口已退出或身份改变；不会激活其他进程。"; return
+160 |         }
+161 |         NSRunningApplication(processIdentifier:controllerPID)?.activate(options:[.activateIgnoringOtherApps])
+    |                                                                                   `- warning: 'activateIgnoringOtherApps' was deprecated in macOS 14.0: ignoringOtherApps is deprecated in macOS 14 and will have no effect. [#DeprecatedDeclaration]
+162 |     }
+163 |     func showEvidence() { if let session { NSWorkspace.shared.open(session) } }
+
+/Users/yangruihan/Workspace/mac_tools/build/disable-persistence-owned-20261011/Sources/Plugins/MenuBarOrganizer/MenuBarIceCandidateProduct.swift:199:95: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+197 |                             Text("\(row.title) · \(row.id)").tag(row.id)
+198 |                         }
+199 |                     }.disabled(model.busy || model.ordinaryAttempted || model.session != nil).onChange(of:model.ordinaryWindowID) { _ in model.bindOrdinaryTarget() }
+    |                                                                                               `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+200 |                 }
+201 |                 HStack {
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/yangruihan/Workspace/mac_tools/build/disable-persistence-owned-20261011/BoundaryMain.swift:15:52: warning: result of 'try?' is unused [#no-usage]
+13 |         let url=output.appendingPathExtension("events.jsonl")
+14 |         if !FileManager.default.fileExists(atPath:url.path){FileManager.default.createFile(atPath:url.path,contents:nil)}
+15 |         if let f=try? FileHandle(forWritingTo:url){try? f.seekToEnd();try? f.write(contentsOf:data+Data([10]));try? f.close()}
+   |                                                    `- warning: result of 'try?' is unused [#no-usage]
+16 |     }
+17 | }

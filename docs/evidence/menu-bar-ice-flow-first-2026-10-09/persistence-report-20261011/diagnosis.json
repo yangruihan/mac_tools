@@ -1,0 +1,44 @@
+{
+  "target": "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift",
+  "installedBuild": "22",
+  "command": [
+    "defaults",
+    "read",
+    "com.ryanai.mactools"
+  ],
+  "filteredStdout": "    \"plugin.menu-bar-organizer.optedIn\" = {length = 5, bytes = 0x66616c7365};\n    \"plugin.menu-bar-organizer.presentationMode\" = {length = 8, bytes = 0x226e617469766522};\n    \"plugin.menu-bar-organizer.visibleLimit\" = {length = 2, bytes = 0x3136};",
+  "stderr": "",
+  "exit": 0,
+  "observed": {
+    "optedIn": false,
+    "presentationMode": "native",
+    "visibleLimit": 16,
+    "ownPreferredPositionsPresent": false
+  },
+  "codeFacts": [
+    "window close does not quit app or disable organizer",
+    "turnOff explicitly persists optedIn=false",
+    "normal app termination calls plugin.stop/deactivate",
+    "deactivate removes owned control/divider",
+    "startup enable starts expanded; previous collapsed state is not persisted",
+    "layout has no independent saved membership/order mapping; relies on native menu bar positions"
+  ],
+  "notEstablished": [
+    "which close action user performed",
+    "which state user reports lost",
+    "formal reproduction of layout loss and exact reason own position keys disappeared"
+  ],
+  "previousObservedTests": {
+    "baseline": 509,
+    "modified": 510,
+    "rollback": 509,
+    "allExit": 0,
+    "rerun": false
+  },
+  "mutation": "no application source/settings or native icon movement; diagnostics only",
+  "inspectionError": {
+    "exit": 1,
+    "path": "Sources/MacTools/AppDelegate.swift",
+    "correction": "rg applicationWillTerminate Sources/MacTools located Sources/MacTools/MacTools.swift"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "build": "24",
+  "application": "/Applications/MacTools.app",
+  "hostSHA256": "95848a708f8dd821e3dd92fae79f59f41606819c15dd25d4e2d0eed6be0cd634",
+  "pluginSHA256": "cb777042a06a19fe05f1e5808d55e4c527fa24bf786a21361a72534f2420cd2f",
+  "failedBuild23PreservedAt": "/Applications/MacTools.failed-disable-persistence-build23-20261011.app",
+  "rollbackBaselineBuild": "22",
+  "sourceUncommitted": true
+}

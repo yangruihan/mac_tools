@@ -1,0 +1,55 @@
+{
+  "activeBaseline" : {
+    "display" : 1,
+    "nonce" : "4944CC26-A257-4BB9-9E50-9FCE37CDA12E",
+    "originalFrame" : [
+      [
+        901,
+        0
+      ],
+      [
+        42,
+        37
+      ]
+    ],
+    "owner" : {
+      "appleAnchor" : false,
+      "executable" : "\/Applications\/腾讯电脑管家.app\/Contents\/Library\/LoginItems\/AEMonitor.app\/Contents\/MacOS\/AEMonitor",
+      "identifier" : "com.tencent.aegis.monitor",
+      "launch" : 1789539762.7513659,
+      "pid" : 7432,
+      "sha256" : "c4972c4c68a8eceeed6ff290dc936f65b88ea837707f142911cd061d5de41530",
+      "team" : "FN2V63AD2J"
+    },
+    "space" : 4634,
+    "windowID" : 144
+  },
+  "hitTestRequired" : false,
+  "inputPolicy" : "iceMouseTracking",
+  "selectionBeforeAnchor" : {
+    "display" : 1,
+    "nonce" : "4944CC26-A257-4BB9-9E50-9FCE37CDA12E",
+    "originalFrame" : [
+      [
+        930,
+        0
+      ],
+      [
+        42,
+        37
+      ]
+    ],
+    "owner" : {
+      "appleAnchor" : false,
+      "executable" : "\/Applications\/腾讯电脑管家.app\/Contents\/Library\/LoginItems\/AEMonitor.app\/Contents\/MacOS\/AEMonitor",
+      "identifier" : "com.tencent.aegis.monitor",
+      "launch" : 1789539762.7513659,
+      "pid" : 7432,
+      "sha256" : "c4972c4c68a8eceeed6ff290dc936f65b88ea837707f142911cd061d5de41530",
+      "team" : "FN2V63AD2J"
+    },
+    "space" : 4634,
+    "windowID" : 144
+  },
+  "strictANYRequired" : false
+}

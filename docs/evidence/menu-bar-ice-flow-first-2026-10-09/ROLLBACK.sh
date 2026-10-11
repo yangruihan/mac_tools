@@ -1,5 +1,11 @@
 #!/bin/sh
 set -eu
+if [ "${1:-}" = "--disable-persistence-source" ] || [ "${1:-}" = "--disable-persistence-installed-app" ]; then
+ [ "$#" -eq 2 ] || exit 2
+ DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+ SCRIPT=ROLLBACK.sh; [ "$1" != "--disable-persistence-installed-app" ] || SCRIPT=ROLLBACK_INSTALLED_APP.sh
+ exec "$DIR/disable-persistence-20261011/$SCRIPT" "$2"
+fi
 if [ "${1:-}" = "--panel-appearance-source" ] || [ "${1:-}" = "--panel-appearance-installed-app" ]; then
  [ "$#" -eq 2 ] || exit 2
  DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)

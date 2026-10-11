@@ -832,5 +832,17 @@
     "verification": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/panel-appearance-toggle-20261010/completion.json",
     "rollbackSource": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/panel-appearance-toggle-20261010/ROLLBACK.sh",
     "rollbackInstalledApp": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/panel-appearance-toggle-20261010/ROLLBACK_INSTALLED_APP.sh"
+  },
+  "disablePersistence20261011": {
+    "supplement": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/disable-persistence-20261011",
+    "modifiedSources": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/disable-persistence-20261011/modified",
+    "diff": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/disable-persistence-20261011/source.patch",
+    "verification": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/disable-persistence-20261011/completion.json",
+    "rollbackSource": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/disable-persistence-20261011/ROLLBACK.sh",
+    "installedUnchanged": false,
+    "rollbackInstalledApp": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/disable-persistence-20261011/ROLLBACK_INSTALLED_APP.sh",
+    "installedBuild": "24",
+    "nativeCyclesPassed": 2,
+    "firstNativeFailurePreserved": true
   }
 }

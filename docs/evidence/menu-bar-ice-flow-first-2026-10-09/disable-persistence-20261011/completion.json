@@ -1,0 +1,98 @@
+{
+  "target": "/Users/yangruihan/Workspace/mac_tools/Sources/MacTools/Plugins/MenuBarOrganizer/MenuBarOrganizerPlugin.swift",
+  "changedSymbols": [
+    "preserveOrganizerPositions: durable independent backup before remove",
+    "restoreOrganizerPositions: restore missing native keys before enable"
+  ],
+  "baseline": {
+    "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "tests": 510,
+    "exit": 0
+  },
+  "modified": {
+    "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "tests": 512,
+    "exit": 0
+  },
+  "rollback": {
+    "command": "swift test -Xswiftc -DICE_MENU_BAR_INTEGRATED",
+    "tests": 510,
+    "exit": 0,
+    "originalHashesRestored": true
+  },
+  "firstNativeFailure": {
+    "build": 23,
+    "observed": "both native preferred-position keys absent after real turnOff; immediate rewrite insufficient",
+    "evidence": "/Users/yangruihan/Workspace/mac_tools/docs/evidence/menu-bar-ice-flow-first-2026-10-09/disable-persistence-20261011/native-disabled-first-failure.json",
+    "validationExit": 1,
+    "retained": true
+  },
+  "recovery": {
+    "nonce": "4944CC26-A257-4BB9-9E50-9FCE37CDA12E",
+    "userAcceptedCurrentPlacement": true,
+    "originalReturnUnproven": true,
+    "originalFailureAndEnvelopePreserved": true,
+    "originalEnvelopeSHA256": "fc85c90a92de24eaba34668efd4c7adfc1f54e3a39ed2428bce821fb13de33a8",
+    "archive": "/Users/yangruihan/Library/Application Support/MacTools/IceInterfaceCandidate/selected-relative-recovery-v2/accepted-current-4944CC26.original.json",
+    "activeJournalPending": false,
+    "nativePosts": 0,
+    "nativeReturnProven": false
+  },
+  "installed": {
+    "build": "24",
+    "application": "/Applications/MacTools.app",
+    "hostSHA256": "95848a708f8dd821e3dd92fae79f59f41606819c15dd25d4e2d0eed6be0cd634",
+    "pluginSHA256": "cb777042a06a19fe05f1e5808d55e4c527fa24bf786a21361a72534f2420cd2f",
+    "failedBuild23PreservedAt": "/Applications/MacTools.failed-disable-persistence-build23-20261011.app",
+    "rollbackBaselineBuild": "22",
+    "sourceUncommitted": true
+  },
+  "nativeAcceptance": {
+    "scope": "owned N/T/R fixture, same preservation/enable/deactivate source; unique status names and fixture PID filter; exact scope diff retained",
+    "cycles": 2,
+    "originalControlDividerPositions": [
+      450,
+      490
+    ],
+    "afterControlDividerPositions": [
+      450,
+      490
+    ],
+    "hidden": [
+      "N",
+      "R"
+    ],
+    "resident": [
+      "T"
+    ],
+    "orderUnchanged": true,
+    "preferencesPreserved": {
+      "presentationMode": "panel",
+      "visibleLimit": 7
+    },
+    "disabledOptIn": false,
+    "reenabledOptIn": true,
+    "newNativeControlIDs": true,
+    "nonOwnedIconRelativeOrderUnchanged": true,
+    "noApplicationIconClickOrNativeDrag": true,
+    "fixturesExited": true
+  },
+  "appRollback": {
+    "restoredBuild": 22,
+    "restoredSHA256": "58185973ea8c49ed5dea48a6650da2723edb70b8ec74bc26916c80ff633f48a0",
+    "matchingBridgeAssertions": 33,
+    "exit": 0
+  },
+  "formalFinalState": "build24 opened; existing user optOut and dark appearance preserved; did not enable organizer or rearrange user icons",
+  "oldLostUserLayoutRestored": false,
+  "commitOrPush": false,
+  "runtimeCorrection": {
+    "source": "duplicate rename of already consumed quit flag",
+    "innerExit": 1,
+    "changedCheck": "confirmed both quit flags absent before single new fixture launch; no duplicate launch"
+  },
+  "limitations": [
+    "actual user application arrangement not reenacted",
+    "OS reboot/multiple displays not tested this turn"
+  ]
+}

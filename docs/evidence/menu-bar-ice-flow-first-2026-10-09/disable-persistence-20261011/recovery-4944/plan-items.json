@@ -1,0 +1,36 @@
+{
+  "anchor" : {
+    "frame" : {
+      "height" : 37,
+      "width" : 29,
+      "x" : 1508,
+      "y" : 0
+    },
+    "id" : 379476,
+    "process" : {
+      "executable" : "\/Applications\/MacTools.app\/Contents\/Resources\/IceWorker\/Ice Selected Controller.app\/Contents\/MacOS\/IceSelectedController",
+      "identifier" : "com.ryanai.mactools",
+      "launch" : 1791683991.1357379,
+      "pid" : 77570,
+      "sha256" : "579d244c5d4466895d59984874a75bbdb2f904fc83c1bb045ddd55f868106c6b",
+      "team" : "58TJ64422P"
+    }
+  },
+  "target" : {
+    "frame" : {
+      "height" : 37,
+      "width" : 42,
+      "x" : 901,
+      "y" : 0
+    },
+    "id" : 144,
+    "process" : {
+      "executable" : "\/Applications\/腾讯电脑管家.app\/Contents\/Library\/LoginItems\/AEMonitor.app\/Contents\/MacOS\/AEMonitor",
+      "identifier" : "com.tencent.aegis.monitor",
+      "launch" : 1789539762.7513659,
+      "pid" : 7432,
+      "sha256" : "c4972c4c68a8eceeed6ff290dc936f65b88ea837707f142911cd061d5de41530",
+      "team" : "FN2V63AD2J"
+    }
+  }
+}

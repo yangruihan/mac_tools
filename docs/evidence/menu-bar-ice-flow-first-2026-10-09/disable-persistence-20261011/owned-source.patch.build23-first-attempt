@@ -1,0 +1,62 @@
+--- production23
++++ owned-native-verification23
+@@ -30,8 +30,8 @@
+ 
+ final class MenuBarOrganizerPlugin: NSObject, ObservableObject, ToolPlugin, NSPopoverDelegate {
+     static let id = "menu-bar-organizer"
+-    private static let controlName = "mactools_shelf_control"
+-    private static let dividerName = "mactools_shelf_divider"
++    private static let controlName = "disable_owned_20261011_control"
++    private static let dividerName = "disable_owned_20261011_divider"
+     private static let mainPositionKey = "NSStatusItem Preferred Position Item-0"
+     private static let priorMainPositionKey = "plugin.menu-bar-organizer.priorMainPosition"
+     private static let pinnedMainPosition = 200.0
+@@ -87,25 +87,7 @@
+         }
+     }
+ 
+-    static func prepareMainStatusPosition(defaults: UserDefaults = .standard) {
+-        let optedIn = defaults.data(forKey: "plugin.menu-bar-organizer.optedIn")
+-            .flatMap { try? JSONDecoder().decode(Bool.self, from: $0) } == true
+-        let position = defaults.object(forKey: mainPositionKey) as? Double
+-        if optedIn {
+-            if defaults.object(forKey: priorMainPositionKey) != nil {
+-                if position == 450 { defaults.set(pinnedMainPosition, forKey: mainPositionKey) }
+-            } else if position.map({ $0 > 250 }) ?? true {
+-                defaults.set(position ?? -1, forKey: priorMainPositionKey)
+-                defaults.set(pinnedMainPosition, forKey: mainPositionKey)
+-            }
+-        } else if let prior = defaults.object(forKey: priorMainPositionKey) as? Double {
+-            if position == pinnedMainPosition || position == 450 {
+-                if prior >= 0 { defaults.set(prior, forKey: mainPositionKey) }
+-                else { defaults.removeObject(forKey: mainPositionKey) }
+-            }
+-            defaults.removeObject(forKey: priorMainPositionKey)
+-        }
+-    }
++    static func prepareMainStatusPosition(defaults: UserDefaults = .standard) {}
+ 
+     init(context: PluginContext) {
+         self.context = context
+@@ -365,6 +347,7 @@
+         let level = Int(CGWindowLevelForKey(.statusWindow))
+         return list.compactMap { item in
+             guard (item[kCGWindowLayer as String] as? Int) == level,
++                  (item[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value == BoundaryScope.fixturePID,
+                   (item[kCGWindowOwnerPID as String] as? NSNumber)?.int32Value != ProcessInfo.processInfo.processIdentifier,
+                   let id = (item[kCGWindowNumber as String] as? NSNumber)?.uint32Value,
+                   let bounds = item[kCGWindowBounds as String] as? NSDictionary,
+@@ -894,6 +877,13 @@
+         showPopover(AnyView(view), width: width)
+         #endif
+     }
++    func boundaryState() -> [String:Any] {
++        let rows=statusWindows()
++        let p=placement()
++        let hidden=p.map{Self.hiddenWindows(rows,leftOf:$0.divider.minX,in:$0.screen,statusBarY:$0.screen.minY).map(\.id)} ?? []
++        let resident=p.map{Self.residentWindows(rows,after:$0.divider,in:$0.screen,statusBarY:$0.screen.minY).map(\.id)} ?? []
++        return ["enabled":isOrganizing,"visibility":isCollapsed ? "collapsed" : "expanded","control":control?.button?.window?.windowNumber ?? -1,"divider":divider?.button?.window?.windowNumber ?? -1,"hidden":hidden,"resident":resident,"status":status,"positions":Dictionary(uniqueKeysWithValues:[Self.controlName,Self.dividerName].map{let k="NSStatusItem Preferred Position "+$0;return(k,UserDefaults.standard.object(forKey:k) ?? "missing")})]
++    }
+     func setPanelAppearance(_ mode:AppearanceMode) { context.setAppearance(mode) }
+     func openToolbox() {
+         expand(); showsAdvancedOptions = true

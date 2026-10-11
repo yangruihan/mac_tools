@@ -1,0 +1,12 @@
+{
+  "root": "/Users/yangruihan/Workspace/mac_tools/build/disable-persistence-owned-20261011",
+  "nonce": "7218aa61-0134-4c6e-a6e7-94957e2de891",
+  "nativeDefaults": "standard for own nonce status names; isolated suite for optIn/settings",
+  "changes": [
+    "owned control/divider autosave names",
+    "disable main tray position preparation because QA host has no main tray",
+    "status-window list limited to fixture PID",
+    "state readout; lifecycle preservation code unchanged"
+  ],
+  "noThirdPartyNativeInput": true
+}

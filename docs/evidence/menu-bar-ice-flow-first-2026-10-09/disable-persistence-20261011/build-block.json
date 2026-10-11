@@ -1,0 +1,11 @@
+{
+  "command": "sh scripts/build-app.sh",
+  "exit": 1,
+  "stderr": "pending recovery: keep current worker\n",
+  "pendingSession": "4944CC26-A257-4BB9-9E50-9FCE37CDA12E",
+  "posts": 8,
+  "pendingRecovery": true,
+  "stateSHA256": "fc85c90a92de24eaba34668efd4c7adfc1f54e3a39ed2428bce821fb13de33a8",
+  "installedUnchangedSHA256": "58185973ea8c49ed5dea48a6650da2723edb70b8ec74bc26916c80ff633f48a0",
+  "action": "no worker overwrite, no recovery deletion, no automatic input retry"
+}
